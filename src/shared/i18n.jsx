@@ -112,8 +112,15 @@ function interpolate(str, params) {
 // vain yksi aktiivinen kieli, joten moduulimuuttuja riittää. LangProvider pitää tämän
 // synkassa Reactin tilan kanssa, jolloin hook-vapaa koodi (tapahtumalokin M-katalogit,
 // helpers.js:n taivutusapurit) voi kääntää ilman että lang pujotellaan jokaiseen kutsuun.
-// Alkukieli: tallennettu valinta (jos kelvollinen koodi) voittaa selaindetektoinnin.
+// Alkukieli: URL-parametri (?lang=krl) voittaa tallennetun valinnan, tallennettu valinta
+// selaindetektoinnin. Parametri on jaettavia linkkejä varten (esim. kieliyhteisölle
+// näytettävä käännös), eikä sitä tallenneta: linkillä avattu kieli ei saa jäädä
+// vierailijan pysyväksi valinnaksi, ja ilman parametria avattu käynti palaa entiseen.
 function initialLang() {
+  if (typeof window !== 'undefined') {
+    const fromUrl = new URLSearchParams(window.location.search).get('lang');
+    if (fromUrl && LANGS.some(l => l.code === fromUrl)) return fromUrl;
+  }
   const saved = loadPref('lang', null);
   if (saved && LANGS.some(l => l.code === saved)) return saved;
   return detectLang();
