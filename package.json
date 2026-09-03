@@ -1,7 +1,7 @@
 {
   "name": "jako",
   "private": true,
-  "version": "1.2.218",
+  "version": "1.2.219",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

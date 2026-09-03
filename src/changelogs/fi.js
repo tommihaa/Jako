@@ -14,6 +14,9 @@ export const CHANGELOG = [
       'Bottien Taistelu noudattaa nyt valitsemaasi koneälyn tasoa kaikissa peleissä. Kasinossa, Koputuksessa ja Seiskassa katselutila pelasi aiemmin aina Mestarin tasolla, vaikka aloitusnäytön teksti lupasi valitsemasi tason.',
       'Pelin omat kytkimet ja Asetukset puhuvat nyt samaa kieltä. Pelin äänikytkin ja lokin avaus muistetaan jatkossa. Asetuksista tehty muutos näkyy kesken pelin ilman uutta aloitusta.',
       'Bottien Taistelu näyttää kaikkien kortit kuten ennenkin. Se ei kuitenkaan enää jätä avoimia kortteja päälle sen jälkeen kun palaat tavalliseen peliin.',
+      'Kasinon kolme toimintonappia kertovat taas syyn. Jätä, Rakenna ja Kaappaa jäivät aiemmin kokonaan reagoimatta juuri silloin kun niiden piti kertoa miksi toiminto ei onnistu, esimerkiksi kun kaappausmahdollisuuksia ei ollut. Vika oli koodissa toukokuusta asti.',
+      'Bottien Taistelun tapahtumaloki ja kortit ovat nyt samassa hetkessä. Aiemmin lokirivi saattoi kertoa uudesta siirrosta samalla kun kortit näyttivät vielä edellisen tilanteen. Tämä koski kaikkia yhdeksää peliä.',
+      'Kasinossa botin rivi rakennelman viemisestä, kähvelluksesta ja kaappauksesta ilmestyy lokiin vasta kun kortit liikkuvat. Ennen rivi tuli ennen korttien liikettä, vaikka se kertoo jo tapahtuneesta.',
     ],
   },
   {
