@@ -283,7 +283,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   const [nP, setNP] = useState(playerCount);
   const [handoff,     setHandoff] = useState(null); // null | { name }
   const cardBack = 'ilves';
-  const { G, gRef, setG, setGS } = useGameState(/** @type {PeliTila|null} */ (null));
+  const { G, gRef, setGS } = useGameState(/** @type {PeliTila|null} */ (null));
   const [msg,         setMsg_]    = useState('');
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   const [selected,    setSel]     = useState([]);
@@ -444,9 +444,8 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     const playerDefs = slotsToPlayers(forcedSlots || playerSlots, playerNames);
     const g = mkInitState(playerDefs);
     resetLog(); setSel([]); setPakaAnim(false); setHandoff(null);
-    setGS(g);
     setRevealAll(seeAll || g.players.every(p => !p.isHuman));
-    addLog(M.gameStart(lblColored(g.discardTop)));
+    commit(g, M.gameStart(lblColored(g.discardTop)));
     if (g.players.every(p => !p.isHuman)) {
       aiDelayRef.current = 3000;
       setAiDelayMs(3000);
@@ -475,7 +474,9 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   }
 
   // ── Ässärangaistus: muut nostavat kortin ────────────────────
-  function applyAcePenalty(g, fromIdx) {
+  // Lokirivit kerätään `lines`-listaan eikä lokiteta täällä: tila kirjoitetaan ennen
+  // lokiriviä (kompositioauditointi H4), ja kutsuja tietää milloin tila on valmis.
+  function applyAcePenalty(g, fromIdx, lines = /** @type {string[]} */ ([])) {
     let g2 = reshuffleIfNeeded(g);
     let deck = [...g2.deck];
     const drew = new Set();
@@ -484,7 +485,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       if (!deck.length) return p;
       const drawn = deck.shift();
       drew.add(i);
-      addLog(M.aceDrawn(p.isHuman, p.name, lblColored(drawn)));
+      lines.push(M.aceDrawn(p.isHuman, p.name, lblColored(drawn)));
       return { ...p, hand: [...p.hand, drawn] };
     });
     // Nostanut pelaaja sai +1 kortin (käsi > 1) → poista lappuSaid-joukosta,
@@ -494,7 +495,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   }
 
   // ── Lappu-tarkistus ennen seuraavaa vuoroa ──────────────────
-  function applyLappu(g) {
+  function applyLappu(g, lines = /** @type {string[]} */ ([])) {
     if (g.pendingLappu === null || g.lappuSaid.has(g.pendingLappu)) {
       return { ...g, pendingLappu: null };
     }
@@ -512,17 +513,19 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       pendingLappu: null,
     };
     if (sndRef.current) SFX.take();
-    addLog(M.forgotLappu(g.players[g.pendingLappu].name, pen.length));
+    lines.push(M.forgotLappu(g.players[g.pendingLappu].name, pen.length));
     return g2;
   }
 
   // ── Vuoron vaihto ───────────────────────────────────────────
   function advanceTurn(g, fromIdx) {
-    let g2 = applyLappu(g);
+    const lines = /** @type {string[]} */ ([]);
+    let g2 = applyLappu(g, lines);
     const nextIdx = nextActive(g2.players, fromIdx, g2.finished);
     if (nextIdx === -1) return;
     const g3 = { ...g2, activePlayer: nextIdx, drawsThisTurn: 0 };
-    setGS(g3);
+    commit(g3);
+    lines.forEach(addLog);
     const nextPlayer = g3.players[nextIdx];
     const multiHuman = g3.players.filter(p => p.isHuman).length >= 2;
     if (!nextPlayer.isHuman) {
@@ -561,11 +564,14 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     // Kirjaa jokainen lyönti kortteineen — myös 7 ja A (niiden erikoisviesti tulee
     // lisärivinä perään). Ryhmässä nuoli osoittaa päällimmäiseksi jäävän kortin,
     // jotta seuraavan siirron laillisuus on luettavissa Lokista.
+    // Lyönnin lokirivi odottaa tilaa: se annetaan commitille alempana, kun uusi käsi ja
+    // poistopakan päällimmäinen ovat laskettuina (kompositioauditointi H4).
+    let playedMsg;
     if (!fromDraw) {
       const shown = cards.length > 1
         ? `${cards.map(lblColored).join(' ')} → ${lblColored(card)}`
         : lblColored(card);
-      addLog(M.played(isH, p.name, shown));
+      playedMsg = M.played(isH, p.name, shown);
     }
     flashLastPlay(isH ? p.name : p.name, cards, isH);
 
@@ -577,11 +583,10 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     // Tarkista voitto
     let finished = [...g.finished];
     let gameOver = false;
+    let wonNow = false;
     if (newHand.length === 0 && !finished.includes(playerIdx)) {
       finished = [...finished, playerIdx];
-      addLog(M.won(isH, p.name, finished.length));
-      if (sndRef.current) SFX.capture();
-      if (isH && sndRef.current) tm(() => SFX.fanfare(), 300);
+      wonNow = true;
       if (g.players.every((_, i) => finished.includes(i) || i === playerIdx)) {
         g.players.forEach((_, i) => { if (!finished.includes(i)) finished.push(i); });
         gameOver = true;
@@ -603,7 +608,12 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       } else {
         setPendingResult({ ranking });
       }
-      setGS({ ...g2, phase: 'finished' });
+      commit({ ...g2, phase: 'finished' }, playedMsg);
+      if (wonNow) {
+        addLog(M.won(isH, p.name, finished.length));
+        if (sndRef.current) SFX.capture();
+        if (isH && sndRef.current) tm(() => SFX.fanfare(), 300);
+      }
       if (sndRef.current) tm(() => SFX.fanfare(), 600);
       return;
     }
@@ -611,17 +621,27 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     setJP(card.id);
     tm(() => setJP(null), 2200);
 
+    // Poistopakka päivittyy joka haarassa samoin, joten se tehdään kerran tässä ja
+    // lyönnin lokirivi saa alleen valmiin tilan (kompositioauditointi H4).
+    const hadReqSuit = g2.reqSuit !== null;
+    g2 = { ...g2, discardTop: card, discardPile: [...g2.discardPile, ...cards], reqSuit: null };
+    commit(g2, playedMsg);
+    if (wonNow) {
+      addLog(M.won(isH, p.name, finished.length));
+      if (sndRef.current) SFX.capture();
+      if (isH && sndRef.current) tm(() => SFX.fanfare(), 300);
+    }
+
     // Seiska: valitse maa
     if (card.r === '7') {
-      const newDiscard = { ...g2, discardTop: card, discardPile: [...g2.discardPile, ...cards], reqSuit: null, finished };
+      const newDiscard = g2;
       const pendLappu = (newHand.length === 1 && !g2.lappuSaid.has(playerIdx)) ? playerIdx : g2.pendingLappu;
-      if (g2.reqSuit !== null) {
+      if (hadReqSuit) {
         const suit = card.s;
-        addLog(M.sevenOnSeven(isH, p.name, suit));
         g2 = { ...newDiscard, reqSuit: suit, pendingLappu: pendLappu };
+        commit(g2, M.sevenOnSeven(isH, p.name, suit));
       } else if (!suitChoice && p.isHuman) {
-        setGS({ ...newDiscard, phase: 'awaiting_suit', pendingLappu: null });
-        addLog(M.chooseSuit);
+        commit({ ...newDiscard, phase: 'awaiting_suit', pendingLappu: null }, M.chooseSuit);
         return;
       } else {
         // Kirjaa vaadittu maa aina. Tähän haaraan tullaan vain botilla (ihminen ilman
@@ -629,11 +649,9 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
         // synny. Aiempi !suitChoice-ehto vaiensi maarivin silloin kun botti pelasi
         // seiskan noston jälkeen ja kutsuja oli laskenut maan valmiiksi.
         const suit = suitChoice || aiSuit(newHand);
-        addLog(M.sevenPlayed(isH, p.name, suit));
         g2 = { ...newDiscard, reqSuit: suit, pendingLappu: pendLappu };
+        commit(g2, M.sevenPlayed(isH, p.name, suit));
       }
-    } else {
-      g2 = { ...g2, discardTop: card, discardPile: [...g2.discardPile, ...cards], reqSuit: null };
     }
 
     // Ässä: bonusvuoro
@@ -645,14 +663,15 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
           if (aiShouldFumble(effectiveLevel)) {
             g2 = { ...g2, pendingLappu: playerIdx };
           } else {
-            addLog(M.lappu(p.name));
             g2 = { ...g2, lappuSaid: new Set([...g2.lappuSaid, playerIdx]) };
+            commit(g2, M.lappu(p.name));
           }
         }
       }
-      addLog(M.aceBonus(isH, p.name, card.s));
-      g2 = applyAcePenalty(g2, playerIdx); // kaanon (SEISKA.md): muut nostavat aina, myös bonusvuoron yhteydessä
-      setGS(g2);
+      const penaltyLines = /** @type {string[]} */ ([]);
+      g2 = applyAcePenalty(g2, playerIdx, penaltyLines); // kaanon (SEISKA.md): muut nostavat aina, myös bonusvuoron yhteydessä
+      commit(g2, M.aceBonus(isH, p.name, card.s));
+      penaltyLines.forEach(addLog);
       if (!p.isHuman) aiTmr.current = aiTm(() => runAI(gRef.current), aiDelayRef.current + 400);
       return;
     }
@@ -665,13 +684,13 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
           g2 = { ...g2, pendingLappu: playerIdx };
           advanceTurn(g2, playerIdx);
         } else {
-          addLog(M.lappu(p.name));
           g2 = { ...g2, lappuSaid: new Set([...g2.lappuSaid, playerIdx]) };
+          commit(g2, M.lappu(p.name));
           advanceTurn(g2, playerIdx);
         }
       } else {
         g2 = { ...g2, pendingLappu: playerIdx };
-        setGS(g2);
+        commit(g2);
         tm(() => advanceTurn(gRef.current, playerIdx), 4000);
       }
     } else {
@@ -683,7 +702,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   function doDraw(g, playerIdx) {
     let g2 = reshuffleIfNeeded(g);
     if (g2.reshuffleCount !== (g.reshuffleCount || 0)) {
-      addLog(M.reshuffle);
+      commit(g2, M.reshuffle);
       if (sndRef.current) SFX.swap();
     }
     if (!g2.deck.length) {
@@ -702,7 +721,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     }
     g2 = { ...g2, deck, players, drawsThisTurn: draws, lappuSaid };
     const isH2 = g2.players[playerIdx].isHuman;
-    setGS(g2);
+    commit(g2);
 
     const hand  = players[playerIdx].hand;
     const valid = canSingle(drawn, g2.discardTop, g2.reqSuit, hand.length === 1);
@@ -885,7 +904,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     const g2 = /** @type {PeliTila} */ ({ ...g, aceBonus: null });
     const newHand = g2.players[idx].hand;
     if (newHand.length === 1 && !g2.lappuSaid.has(idx)) {
-      setGS({ ...g2, pendingLappu: idx });
+      commit({ ...g2, pendingLappu: idx });
       tm(() => advanceTurn(gRef.current, idx), 4000);
     } else {
       advanceTurn(g2, idx);
@@ -896,14 +915,15 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     const g = gRef.current;
     if (!g || g.phase !== 'awaiting_suit') return;
     const idx = g.activePlayer;
-    addLog(M.suitSelected(suit));
     const newHand = g.players[idx].hand;
     if (newHand.length === 1 && !g.lappuSaid.has(idx)) {
       const g2 = /** @type {PeliTila} */ ({ ...g, reqSuit: suit, phase: 'play', pendingLappu: idx });
-      setGS(g2);
+      commit(g2, M.suitSelected(suit));
       tm(() => advanceTurn(gRef.current, idx), 4000);
     } else {
-      advanceTurn({ ...g, reqSuit: suit, phase: 'play' }, idx);
+      const g2 = /** @type {PeliTila} */ ({ ...g, reqSuit: suit, phase: 'play' });
+      commit(g2, M.suitSelected(suit));
+      advanceTurn(g2, idx);
     }
   }
 
@@ -916,8 +936,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     const g = gRef.current;
     if (!g) return;
     const idx = g.activePlayer;
-    setGS({ ...g, lappuSaid: new Set([...g.lappuSaid, idx]), pendingLappu: null });
-    addLog(M.lappuSelf);
+    commit({ ...g, lappuSaid: new Set([...g.lappuSaid, idx]), pendingLappu: null }, M.lappuSelf);
   }
 
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);

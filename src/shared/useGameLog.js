@@ -51,10 +51,10 @@ export function useGameLog({ onMessage, skipEmpty = false, onSnapshot, isBotBatt
   // Tilamuutos ja sen lokirivi yhtenä tekona, tässä järjestyksessä. Ilman viestiä
   // (msg === undefined) tekee saman kuin setGS, jolloin lokiriviä ei synny eikä
   // frameakaan; se on tarkoitettu tilamuutokseen jota pelaajalle ei kerrota.
-  const commit = useCallback((g, msg) => {
+  const commit = useCallback(/** @type {(g: any, msg?: string) => void} */ ((g, msg) => {
     optsRef.current.setGS?.(g);
     if (msg !== undefined) addLog(msg);
-  }, [addLog]);
+  }), [addLog]);
 
   const resetLog = useCallback(() => { logRef.current = []; setLog([]); }, []);
 

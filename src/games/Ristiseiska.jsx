@@ -393,7 +393,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
   const [nP,       setNP]      = useState(playerCount);
   const [rules,    setRules]   = useStickySetting('ristiseiska:rules', DEFAULT_RULES); // sääntövalinta muistetaan
   const cardBack = 'ilves';
-  const { G, gRef, setG, setGS } = useGameState(/** @type {PeliTila|null} */ (null));
+  const { G, gRef, setGS } = useGameState(/** @type {PeliTila|null} */ (null));
   const [msg,      setMsg_]    = useState('');
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   const [selCard,  setSel]     = useState(null);
@@ -475,9 +475,8 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     const count = forcedCount ?? nP;
     const g = initGame(count, playerNames, allBotsMode, rules);
     resetLog(); setSel(null); setLastPlay(null);
-    setGS(g);
     const s = g.players[g.activePlayer];
-    addLog(M.gameStart(s.name, lblColored({ r: '7', s: '♣' })));
+    commit(g, M.gameStart(s.name, lblColored({ r: '7', s: '♣' })));
     setScreen('game');
     setShuffling(true);
     if (!s.isHuman) aiTmr.current = tm(guard(() => runAI(g)), 3100);
@@ -495,9 +494,8 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     const turnCount = g.turnCount + 1;
     const firstRoundDone = g.firstRoundDone || turnCount >= g.players.length;
     const g2 = { ...g, activePlayer: nextIdx, turnCount, firstRoundDone };
-    setGS(g2);
     if (!g.players[nextIdx].isHuman) {
-      addLog(M.turnOf(g.players[nextIdx].name));
+      commit(g2, M.turnOf(g.players[nextIdx].name));
       const d = allBotsRef.current ? aiDelayRef.current : 1100;
       aiTmr.current = tm(() => {
         if (pausedRef.current) { const w = () => { if (!pausedRef.current) runAI(g2); else tm(w, 300); }; w(); return; }
@@ -505,7 +503,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
       }, d + Math.random() * 400);
     } else {
       const canPlay = hasAnyPlay(g.players[nextIdx].hand, g2.rows);
-      addLog(M.yourTurn(canPlay));
+      commit(g2, M.yourTurn(canPlay));
     }
   }
 
@@ -516,7 +514,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     const v   = rv(card);
 
     if (sndRef.current) SFX.play();
-    addLog(M.played(isH, p.name, lblColored(card), playEffect(v)));
     flashLastPlay(p.name, card, isH);
 
     const rows = { ...g.rows };
@@ -533,8 +530,13 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
       : { ...pl, hand: pl.hand.filter(c => c.id !== card.id) });
 
     let finished = [...g.finished];
-    if (players[playerIdx].hand.length === 0 && !finished.includes(playerIdx)) {
-      finished = [...finished, playerIdx];
+    const wonNow = players[playerIdx].hand.length === 0 && !finished.includes(playerIdx);
+    if (wonNow) finished = [...finished, playerIdx];
+
+    // Tila ennen lokiriviä (kompositioauditointi H4): katselutilan frame kuvaa kättä
+    // lyönnin jälkeen. Voittorivi kuvaa samaa tilaa, joten se lokitetaan perään.
+    commit({ ...g, players, rows, finished }, M.played(isH, p.name, lblColored(card), playEffect(v)));
+    if (wonNow) {
       addLog(M.won(isH, p.name, finished.length));
       if (sndRef.current) SFX.capture();
       if (isH && sndRef.current) tm(() => SFX.fanfare(), 300);
@@ -546,7 +548,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
       const ranking = finished.map((idx, pos) => ({
         name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
       }));
-      setGS({ ...g, players, rows, finished, phase: 'gameover' });
+      commit({ ...g, players, rows, finished, phase: 'gameover' });
       if (allBotsRef.current) { tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY); }
       else { onResult?.({ ranking }); }
       return;
@@ -556,14 +558,13 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     const gaveBonus = (v === 1 || v === 13) && !finished.includes(playerIdx);
     const g2 = { ...g, players, rows, finished, bonusTurn: gaveBonus ? playerIdx : null };
     if (gaveBonus) {
-      setGS(g2);
       const suitGen = t('games.ristiseiska.suitGen.' + card.s);
       const pileName = t(v === 1 ? 'games.ristiseiska.pile.lower' : 'games.ristiseiska.pile.upper');
       if (!p.isHuman) {
-        addLog(M.aiBonus(p.name, suitGen, pileName));
+        commit(g2, M.aiBonus(p.name, suitGen, pileName));
         aiTmr.current = tm(guard(() => runAI(g2)), 900);
       } else {
-        addLog(M.humanBonus(suitGen, pileName));
+        commit(g2, M.humanBonus(suitGen, pileName));
       }
       return;
     }
@@ -590,8 +591,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     // Satunnais-variaatiossa kortti arvotaan myös ihmiseltä → valintavaihe ohitetaan.
     if (!randomPantti && giverIdx !== -1 && g.players[giverIdx].isHuman) {
       const g2 = { ...g, givingCardTo: playerIdx, givingPlayerIdx: giverIdx };
-      setGS(g2);
-      addLog(M.passGiveMe(isH, p.name));
+      commit(g2, M.passGiveMe(isH, p.name));
       return;
     }
 
@@ -611,7 +611,8 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
         return pl;
       });
       if (sndRef.current) SFX.leave();
-      addLog((randomPantti ? M.passGiveRandom : M.passGive)(isH, p.name, giver.isHuman, giver.name, lblColored(toGive)));
+      // Kädet vaihtuivat, joten tila kirjoitetaan ennen lokiriviä (H4).
+      commit({ ...g, players }, (randomPantti ? M.passGiveRandom : M.passGive)(isH, p.name, giver.isHuman, giver.name, lblColored(toGive)));
       if (sndRef.current) SFX.take();
     } else {
       addLog(M.passOnly(isH, p.name));
@@ -726,9 +727,9 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
       if (i === receiverIdx) return { ...pl, hand: [...pl.hand, card] };
       return pl;
     });
-    addLog(M.humanGives(lblColored(card), g.players[receiverIdx].name));
     setSel(null);
     const g2 = { ...g, players, givingCardTo: null, givingPlayerIdx: null };
+    commit(g2, M.humanGives(lblColored(card), g.players[receiverIdx].name));
     advanceTurnRS(g2, receiverIdx);
   }
 
