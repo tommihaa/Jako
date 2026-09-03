@@ -563,6 +563,36 @@ Ei konsolivirheitä. Testit 132 läpi.
 vuorossa, joten sen animaation jälkeinen commit nojaa koodinlukuun ja bottipolun samaan
 reittiin. Kasinon pelin päättyminen 16 pisteeseen jäi näkemättä.
 
-**Mitä H4:stä jää.** Läpsy. Se on eri kysymys kuin muut kahdeksan, koska siellä ei ole
-`G`:tä johon commitin voisi kohdistaa, eikä sen tilamallista ole päätöstä. Kysymys 4:n
-ristiintarkistustesti odottaa yhä.
+**Mitä H4:stä jäi tämän erän jälkeen.** Läpsy, ks. osio alla.
+
+### H4 Läpsy 3.9.2026 ja mikä siinä ei ollut H4:ää
+
+**Kysymys osoittautui kapeammaksi kuin miltä se näytti.** Raportti kirjasi Läpsyn omaksi
+kysymyksekseen sillä perusteella, ettei siellä ole `G`:tä johon `commit` voisi kohdistua.
+Se pitää paikkansa, mutta H4:n invariantti ei koske `G`:tä vaan sitä mitä snapshot lukee.
+Läpsyn snapshot lukee kahta refiä, `pilesRef` ja `centerRef`. Ne kirjoitetaan käsin
+statejen rinnalle. Kysymys oli siis vain se, tuleeko lokirivi kirjoituksen jälkeen.
+
+**Tehty.** Kirjoituspari esiintyi viidessä kohdassa ja se on nyt `setBoard`-apuri.
+Kolmessa kohdassa lokirivi tuli ennen kirjoitusta: väärä läpsäisy botin reitillä
+(`doSlap`), sama ihmisen reitillä (`humanSlap`) ja kaksintaistelun puolitus
+(`giveCenter`). Kaikissa kolmessa rivi kertoo nimenomaan uusista pinoista, joten frame
+näytti vanhat. Rivit ovat nyt kirjoituksen jälkeen. Muut kolmetoista lokiriviä olivat jo
+oikeassa järjestyksessä tai eivät kuvaa tilamuutosta.
+
+Peili kirjoitetaan yhä samassa lauseessa kuin state eikä effectissä. Syy on sama kuin
+`useGameState`ssa: läpsäisy herää ajastimesta ja lukee refin ennen renderiä.
+
+**Todennettu selaimessa.** Katselutila ajettiin läpi läpsäisyineen, haasteineen ja haasteen
+siirtoineen. Ihmispelissä tehtiin tahallinen hutiläpsäisy, joka vei päällimmäisen kortin
+oikein (13 → 12 korttia, kasa 1) ja kirjoitti rivin vasta sen jälkeen. Ei konsolivirheitä.
+Testit 132 läpi.
+
+**Mitä ei todennettu.** Botin väärä läpsäisy ei osunut kohdalle kummassakaan ajossa. Se on
+sama koodihaara jonka ihmisen hutiläpsäisy ajaa kahta riviä myöhemmin, mutta oma
+kutsupolkunsa.
+
+**H4 on nyt kiinni kaikissa yhdeksässä pelissä.** Läpsyn tilan sijainti eli kolmetoista
+useStatea ja yksitoista käsin ylläpidettyä refiä ilman yhtä tilaoliota on H5:ää eikä H4:ää,
+eikä siitä ole päätöstä. Se on Läpsyn oma kysymys ja jää auki. Kysymys 4:n
+ristiintarkistustesti on nyt tekemättömistä ensimmäinen, koska sen ehto täyttyi.
