@@ -27,6 +27,11 @@ Tarkastuskirjanpito ja ratkaisemattomat sopimusmuutoskysymykset: `docs/PELIKANON
 ennen kuin siteeraat `PELI.md`:tä säännön lähteenä, koska yhdeksästä kanonista kaksi on
 tarkistettu puhtaaksi ja seitsemässä on nimettyjä ristiriitoja.
 
+**Kompositioauditointi 3.9.2026:** kahdeksan havaintoa koodin rakenteesta (elinkaaren runko
+yhdeksänä kopiona, katselutilan taso, kuollut tulosruutukerros, snapshot-järjestys, tilan
+sijainti, asetuksen omistaja, botti vs neuvo) tiloineen ja Tommille osoitetut kysymykset:
+`docs/AUDITOINTI-KOMPOSITIO.md`. Lue se ennen rakennemuutosta tai uuden pelin lisäystä.
+
 ## Navigation
 Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
 - `playerCount` valitaan kunkin pelin aloitusnäytöllä (Pelaajia 2/3/4); App.jsx välittää vain oletuksen (4) propsina, ei globaalia säädintä. Asetukset → Pelaajat sisältää enää vastustajien nimiryhmän valinnan.

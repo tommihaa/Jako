@@ -1,0 +1,254 @@
+# Kompositioauditoinnin tila
+
+Ajettu 3.9.2026 Tommin tilauksesta, HEAD `acf80c3`. Kohde oli kompositio eikä syntaksi eikä
+pelisääntöjen oikeellisuus: toisteinen tieto, sääntö kommenttina vai rakenteena, tilan
+omistajuus, vastuiden paikat, saumat, riippuvuussuunta, nimeäminen ja orvot palaset.
+Menetelmä oli sama kuin `DGAndroid/docs/AUDITOINTI-KOMPOSITIO.md`:ssä 31.8.2026: neljä
+rinnakkaista tutkinta-agenttia (pelit Kasino, Moska, Paskahousu ja Seiska; pelit Ristiseiska,
+Maija, Koputus, Kultakala ja Läpsy; App.jsx ja shared-kerros; poikkileikkaavat rakenteet eli
+botit, neuvo, i18n-data ja testisaumat) sekä kantavien väitteiden tarkistus käsin koodista.
+Tarkistetut väitteet on merkitty. Rivinumerot ovat auditointihetken puusta ja liikkuvat.
+
+Auditoinnilla oli toinen tarkoitus DG:n rinnalla: testata toistuuko DG:n diagnoosi eri
+stackissa. DG on Kotlin ja sealed-hierarkiat, Jako on React ja JSX ilman tyyppijärjestelmää.
+Jos sama havainto toistuu, se on työtavan ominaisuus eikä kielen. Vastaus on Diagnoosi-osiossa.
+
+Tämä tiedosto vanhenee koodin mukana. Jos tiedosto ja koodi ovat eri mieltä, koodi voittaa.
+
+## Mentaalimalli
+
+Malli löytyy ja se on yhdenmukainen kaikissa yhdeksässä pelissä. Peli on komponentti jolla on
+aloitusruutu ja peliruutu, pelaajataulukko jossa indeksi 0 on Hero, yksi immutable `G`-tilaolio
+ja sen `gRef`-peili ajastimille, `addLog` joka lokittaa ja samalla lähettää katselutilan
+snapshotin, `useAIScheduler` ajastimille, moduulitason puhtaat valintafunktiot joita sekä botti
+että Mestarin neuvo kutsuvat ja `onResult({ranking})` jonka jälkeen App ottaa ohjat.
+App omistaa asetukset, tilastot, tulosruudun ja katselutilan toiston. `shared/` on lehtikerros.
+
+Riippuvuussuunta pitää täydellisesti (tarkistettu): `shared/` ei importoi pelejä eikä
+App.jsx:ää, pelit eivät importoi toisiaan ja `localStorage`a ei lueta `storage.js`:n ohi
+kertaakaan. Sama tulos kuin DG:ssä, jossa moduulirajat pitivät ja `core-domain` oli
+riippuvuudeton.
+
+Ongelma on sama kuin DG:ssä. Malli asuu yhdeksänä kopiona eikä yhtenä rakenteena. Pelit
+jakavat mallin mutta eivät koodia ja siellä missä koodi on jaettu (`useAIScheduler`,
+`BotBattleBar` joka kommenttinsa mukaan korvasi kuusi kopiota, `moskaCanPass`, Paskahousun
+`aiCards`) malli pitää. Siellä missä se on kopioitu, se on jo alkanut eriytyä.
+
+Kirjoittaja-arvio kuten DG:ssä: 368 committia samalta tekijältä sessiokerrontaviestein.
+Havainnot sopivat tähän. Jokainen peli on paikallisesti hiottu ja puutteet ovat pelien
+välisessä mittakaavassa jota yhden pelin kokoinen työyksikkö ei tuota itsestään.
+
+## Havainnot ja niiden tila
+
+Kahdeksan havaintoa tärkein ensin. Kaikki ovat auki 3.9.2026 ja kohtiin joissa puutetta ei
+voi erottaa valinnasta ilman Tommia viitataan Kysymykset-osioon.
+
+- **H1 Pelin elinkaaren runko on yhdeksän kopiota ja kopiot ovat ajautuneet.** `addLog`
+  aikaleimalla ja snapshotilla on 9 pelissä, `startBotBattle` 9, `togglePause` 9,
+  aloitusnäyttö (otsikko, pelaajamäärä, GroupPicker, kaksi nappia) 9, loki-JSX ja tilarivi 9,
+  `@keyframes lastPlayFade` 7. Moduulitasolla `AI_NAMES` ja `shuffledAINames` 8 pelissä,
+  `lblColored` 9, `mkDeck` 4 vaikka `helpers.newDeck` on identtinen ja Kasino käyttää sitä.
+
+  Ajautumat ilman kommenttia (tarkistettu grepillä): `onResult`-viive katselutilassa on
+  600 ms (Koputus, Moska), 800 (Kultakala, Läpsy, Paskahousu, Ristiseiska, Seiska), 1200
+  (Kasino) tai 1800 (Maija, jossa sama viive molemmissa haaroissa ja haara on siis turha).
+  Lokin pituusraja on 40, 50 tai 60. `sndRef`in alkuarvo on `true`, `false` tai
+  `initSoundOn` ja vaikutus on nolla koska effect synkkaa. `useAIScheduler`in oma kommentti
+  perustelee `togglePause`n jättämisen peliin "pelikohtaisella logiikalla", jota yhdessäkään
+  pelissä ei ole.
+
+  Tämä on DG:n H1 ja H4 yhdessä. Kotimuoto olisi `useGameShell`-hook (start, botBattle,
+  pause, log ja snapshot, result-ajoitus) sekä `GameFrame`-komponentti (aloitusnäyttö,
+  tilarivi, loki, BotBattleBar) ja `AI_NAMES`, `lblColored` ja `mkDeck` helpersiin.
+  Nosto ei kysy Tommilta mitään, koska yksikään kopio ei eroa tarkoituksella.
+
+- **H2 Efektiivinen AI-taso katselutilassa on kolme eri sääntöä ilman merkintää.**
+  Kaava `botLevelsRef.current?.[i] ?? aiLevelRef.current` esiintyy 17 kohdassa. Kolmessa
+  pelissä siinä on lisähaara joka pakottaa kaikki botit Mestariksi kun ihmistä ei ole
+  (tarkistettu: Kasino 1047, Koputus 529 ja 656, Seiska 654, 673 ja 788). Kuudessa pelissä
+  ei ole. Seiska laskee ehdon eri lähteestä (`players.every(!isHuman)`) kuin Kasino ja
+  Koputus (`allBotsRef`). Läpsyn `topLvl()` on neljäs muoto. Kommenttia ei ole missään, ei
+  koodissa, ei `BOTBENCH.md`:ssä eikä `PELIKANONIT.md`:ssä (tarkistettu grepillä).
+
+  Seuraus näkyy testissä: `allbots-smoke` antaa `aiLevel: 'normal'` (tarkistettu rivi 85),
+  joten kolme peliä pelaa savutestissä Mestaria ja kuusi Kisälliä huomaamatta. Botbench ei
+  kärsi, koska se antaa `botLevels`in aina. Katselutilan aloitusnäyttö lupaa valitun tason
+  tekstissä `botBattleSub` ja kolmessa pelissä lupaus ei pidä.
+
+  Tämä on sama vikamuoto kuin DG:n H1 lautanäkymässä: sääntö asuu 17 rivinä eikä yhdessä
+  funktiossa ja kolmessa rivissä sääntö on eri kuin muissa. **Kysymys 1.**
+
+- **H3 Edellisen arkkitehtuurin kerros on jäänyt peleihin kuolleena, noin 250 riviä.**
+  `pendingResult`-tila on määritelty 9 pelissä, mutta ei-null-arvo asetetaan vain Seiskassa
+  (tarkistettu grepillä: 17 kutsua, 16 on `setPendingResult(null)`). Kahdeksassa pelissä
+  katselutilan overlay ehdolla `pendingResult && allBots` ei voi renderöityä ja kolmessa
+  "Tulokset →" -nappi kutsuu `onResult` arvolla null. App on hoitanut saman asian
+  `botResult`-bannerilla 27.5.2026 alkaen (`b09353d`) ja pelien vanha reitti jätettiin.
+
+  Pelien omat tulosruudut ovat samassa asemassa. App renderöi `GameResult`in heti kun
+  `onResult` on kutsuttu ihmispelissä ja pelikomponentti unmountataan (tarkistettu App.jsx
+  1557–1568). Pelin `screen === 'gameover'` -ruutu näkyy siis vain jos `onResult` viivästyy
+  ja ihmispolussa se on synkroninen kaikissa paitsi Maijassa ja Läpsyssä. Kahdessa pelissä
+  (Maija, Läpsy) `setScreen('gameover')`-kutsua ei ole edes olemassa.
+
+  **Kultakalan tasapelin noppa-arvonta on tämän kerroksen sisällä.** `DiceRoll`-komponentti
+  (206–253) renderöidään vain pelin omassa tulosruudussa, jonne päädytään 2000 ms viiveellä
+  sen jälkeen kun `onResult` on jo kutsuttu synkronisesti (tarkistettu 610–620). Pelaaja ei
+  näe arvontaa koskaan ja `GameResult` näyttää tasapelaajille saman sijan. `KULTAKALA.md`
+  ei mainitse noppaa eikä tasapeliä (tarkistettu grepillä), joten arvonta on koodin oma
+  keksintö eikä kaanonin sääntö. Todennettava selaimessa ennen kuin väitetään bugiksi, mutta
+  koodipolku on suora. **Kysymys 3.**
+
+  Kääntämätön suomi (`🔮 Uusi katselutila`, `Tulokset →`) asuu Läpsyssä, Paskahousussa ja
+  Ristiseiskassa tämän kuolleen koodin sisällä ja on elävää vain Seiskassa (1239).
+  Pariteettitesti ei näe niitä, koska ne eivät kulje `t()`:n kautta.
+
+  Sama muoto kuin DG:n K1-fossiili, mutta kahdeksankertaisena. Kotimuoto on poisto, ja
+  `GameResult` on jo se yksi koti.
+
+- **H4 Snapshot on lokin sivuvaikutus ja kutsujärjestys pettää.** Snapshot otetaan
+  `addLog`in sisällä ja lukee `gRef.current`. Kaikissa yhdeksässä pelissä `addLog` kutsutaan
+  usein ennen `setGS`iä (tarkistettu Moska 609 vs 616; agentit nimesivät saman Kasinosta,
+  Paskahoususta, Seiskasta, Ristiseiskasta, Koputuksesta, Maijasta ja Kultakalasta), joten
+  katselutilan frame kuvaa edellisen siirron tilaa uuden siirron tekstillä. Tilamuutos ilman
+  lokiriviä ei tuota snapshotia lainkaan. Sama lag koskee Botbenchin `siirtorekisteri`-dataa.
+
+  Snapshotin kenttäjoukko on kopioitu 9 kertaa ja Maijan ja Moskan `extraText: 'Valtti: '`
+  on kääntämätön suomi i18n:n ohi. Invariantti "snapshot kuvaa tilaa lokirivin jälkeen" asuu
+  kutsujärjestyksessä eikä rakenteessa. Kotimuoto olisi `commit(g, msg)` joka tekee `setGS`,
+  `addLog` ja snapshot yhdessä tässä järjestyksessä.
+
+- **H5 Tilan sijaintia ei ole sovittu ja siitä seuraa ref-kaksosia ja puuttuvia
+  vartijoita.** Vaihe ja vuoro asuvat `G`:ssä neljässä pelissä (Ristiseiska, Moska,
+  Paskahousu, Seiska), `G`:n vieressä erillisinä useStateina neljässä (Kasino, Maija,
+  Koputus, Kultakala) ja Läpsyllä ei ole `G`:tä lainkaan. Seuraukset:
+
+  - Ref-kaksosia (state + ref samalle tiedolle, synkattu effectillä ja lisäksi käsin) on
+    7–11 paria per peli. Kasinossa on 14 käsin kirjoitettua `setG(g); gRef.current = g`,
+    Koputuksessa 20, kun muut käyttävät `setGS`-apuria. Ratkaisu on kopioitu eikä nimetty.
+  - Mestarin neuvon vanhenemisen `useEffect`-riippuvuuslista on eri joka pelissä (`[G]`,
+    `[G, phase, table]`, `[G, phase, drawn]`, `[G, phase, held, swapIdx]`) ja uusi
+    ulkokehän useState pudottaa neuvon vanhenemisen hiljaa.
+  - `getAdvice`-signatuurin ariteetti vaihtelee yhdestä viiteen ja mittaa suoraan kuinka
+    paljon tilaa asuu `G`:n ulkopuolella.
+  - Gameover-vartija on eri paikassa joka pelissä. Koputuksen `advance` ei tarkista
+    gameoveria, Kultakalan tarkistaa (tarkistettu 365–370 vs 378–381).
+  - Kultakalan `aiChainSwap` (468–470) mutatoi `G.players[idx]`-oliota paikallaan. Kaikki
+    muut polut ovat immutaabeleja. Kultakalan `drawnFromDeck` asetetaan seitsemän kertaa
+    eikä lueta kertaakaan.
+
+  Tämä on DG:n taito 2 (ruudun tila yhtenä koneena) sellaisenaan. Kotimuoto olisi
+  `useGameState` joka palauttaa `[G, commit, gRef]` ja kantaa vaiheen `G`:ssä. Ristiseiskan
+  malli on lähimpänä.
+
+- **H6 Asetuksen omistajuus on kahdessa paikassa eikä kumpikaan tiedä toisesta.** App
+  omistaa persistoinnin ja peli elävän arvon. `soundOn`, `seeAll` ja `showLog` kopioidaan
+  `init`-etuliitteisestä propsista paikalliseen tilaan 9/9 pelissä eikä synkronoida takaisin.
+  Pelin oma äänikytkin ei tallennu ja Asetuksista tehty muutos ei kuulu peliin ennen
+  remounttia. Oletukset eroavat: App `useStickySetting('soundOn', false)`, pelien signatuuri
+  `initSoundOn = true`. Kolme asetusta (`soundTheme`, `twoColorDeck`, `lang`) kulkee
+  moduulimutaationa eikä propseina, joten CLAUDE.md:n otsikko "props to all games" on
+  yhdeksän kahdestatoista.
+
+  "Mitkä propsit peli saa" asuu 14 kopiossa (App:n JSX, 9 signatuuria, CLAUDE.md kahdesti,
+  kaksi testiä) ja ajautuu jo: `hints` on CLAUDE.md:ssä kahdessa listassa ja koodissa 0 osumaa
+  (tarkistettu), `showCounts` destrukturoidaan 9/9 pelissä ja luetaan 0 kertaa (tarkistettu)
+  vaikka sillä on paneelin toggle, sticky-avain ja preset-arvo ja `botLevels` destrukturoidaan
+  9/9 mutta App ei välitä sitä koskaan. App.jsx:n kommentti 1547–1553 kirjaa jaetun
+  `GameProps`-typedefin puuttumisen tietoiseksi lykkäykseksi. Hinta on yllä. **Kysymys 2.**
+
+- **H7 Botti ja Mestarin neuvo kutsuvat samaa funktiota 7/9 pelissä ja taukovahti on
+  valinnainen.** `MESTARIN_NEUVO.md` sanoo "jokaisen pelin getAdvice kutsuu samaa
+  valintafunktiota". Se pitää seitsemässä. Kasinon `getAdvice` on 48 rivin peilikuva
+  `runAI`n hard-haarasta omalla prioriteettijärjestyksellään ja sama kynnys `<= 0.5` on
+  kirjoitettu kahdesti (286 ja 1130). Moskan puolustussilmukka on kopio `runAI`sta, ja
+  lisäyskynnys 268 on kovakoodattu kopio rivistä 764, minkä kommentti sanoo ääneen. Läpsy on
+  eri laji perustellusti. Neuvon perusteluteksti on sidottu valintaan vain merkkijonolla
+  `'games.X.advice.' + type` ja kaikki 54 avainta löytyvät koodista (0 orpoa) mutta mikään
+  testi ei tarkista sitä.
+
+  `useAIScheduler` tarjoaa taukovahditun `schedAI`n ja vahdittoman `tm`:n. Bottisiirroista
+  suurin osa käyttää vahditonta (tarkistettu grepillä `aiTmr.current = tm(` vs `schedAI(`):
+  Kasino 8 vs 3, Moska 11 vs 5, Maija 6 vs 0, Ristiseiska 5 vs 0, Paskahousu 2 vs 12. Seiska
+  teki oman `aiTm`in perustellusti, jolloin hookin vahti jää käyttämättä. Invariantti "botti
+  ei liiku tauolla" on hookin kommentissa eikä rakenteessa. Kotimuoto olisi että hook palauttaa
+  bottisiirroille vain vahditun ajastimen ja UI-animaatioille eri nimisen.
+
+- **H8 Pienemmät saman lajin kohdat.** App.jsx kantaa noin 17 vastuuta joista vain
+  `GAMES`-rekisteri on aito solmu; `MERKISTO`, `TODO`, 23 inline-SVG-lippua ja Replay ovat
+  samassa tiedostossa sijainnin eikä rakenteen takia. `SANASTO` on siirretty `glossary.js`:ään
+  mutta `MERKISTO` ei ja pariteettitesti tuntee poikkeuksen nimeltä. Audion sääntö "uusi ääni
+  lisätään molempiin tauluihin" on puoliksi rakenne: `SFX` on tyypitetty `oletusSfx`ista,
+  `hornKanteleSfx` ei ole tyypitetty sen avaimilla (tarkistettu audio.js 167–196), joten
+  puuttuva avain torvi-kannel-teemassa on ajonaikainen TypeError eikä käännösvirhe. Kommentti
+  sanoo "20 ja 20 (mitattu 17.8.2026)" eli mitattu kerran, ei valvottu. Koputus ja Kultakala
+  ovat sisarpelejä jotka jakavat käsitteet (`UNKNOWN_EV = 7` kahdesti, sama gain-vertailu,
+  identtinen poistopakan JSX) mutta eivät koodia. `isHuman` lasketaan rankingissa kolmella
+  tavalla (tarkistettu). `useLayoutEffect` importataan 9/9 pelissä ja käytetään 0 kertaa
+  (tarkistettu). `PlayerSetup.jsx` on shared-kerroksessa ja sitä käyttää vain Seiska, ja
+  vain sen `slotsToPlayers`.
+
+## Mitä pitää, eikä kannata koskea
+
+Riippuvuussuunta (0 käänteistä importtia). Storage-fasadi (0 ohitusta). i18n-avainten
+pariteetti testinä ja 0 avainta koodissa joita fi.js:ssä ei ole. Tulosolion ydin
+`{name, place, isHuman, score?}` sama 9/9 ja laajennukset `revealCards` ja `scoreBreakdown`
+perusteltu `GameResult.jsx`:n kommentissa. Bottilogiikka ja neuvo puhtaina moduulitason
+funktioina seitsemässä pelissä, perusteltuina kommenteilla. `moskaCanPass` esimerkkinä siitä
+miten sääntö siirretään kommentista rakenteeseen ja kommentti dokumentoi että kolme kopiota
+eriytyivät ennen yhtenäistystä. Sama tarina on nyt toistumassa H2:ssa ja H7:ssä.
+
+## Diagnoosi
+
+**DG:n diagnoosi toistuu Jakossa sellaisenaan ja se ratkaisee auditoinnin toisen
+kysymyksen.** Ykköstaito on sama: toiston lukeminen tietona ja säännön antaminen yhdelle
+omistajalle. H1, H2, H4 ja puoli H8:sta ovat sen ilmentymiä, kuten DG:ssä H1, H4, H5 ja
+puoli H6:sta. Myös DG:n kolme seuraavaa taitoa toistuvat: kerroksen sopimuksen suunnittelu
+(H6, asetuksen omistaja ja `GameProps`), ruudun tilan mallinnus yhtenä koneena (H5, vaihe
+`G`:ssä tai sen vieressä) ja testisauman suunnittelu rajapinnoin (Botbench kulkee komponentin
+läpi jsdomissa ja fake-timereilla, koska `runAI` kirjoittaa Reactin tilaa eikä sitä ole
+irrotettu; sauma tehtiin sinne missä funktio oli jo puhdas ja jäi sieltä missä se olisi
+vaatinut irrotusta). Koska stack on eri, kyse on työtavan ominaisuudesta eikä Kotlinin.
+Opeteltava taito ei kapene, se vahvistuu.
+
+**Yksi asia on Jakossa eri ja se on väline eikä taito.** Kotlinissa sääntö rakenteena
+tarkoitti sealed-hierarkiaa ja tyhjentävää `when`iä, joka kaatoi käännöksen. JS:ssä `strict`
+on pois ja rakenteita on kolme: JSDoc-typedef (`GameProps`, `hornKanteleSfx`), hook joka
+kantaa säännön (`useGameShell`, `commit`) ja testi joka greppaa (kuten DG:n `Failure.text()`
+-mitta). Mikään niistä ei kaada käännöstä yhtä kovaa kuin Kotlin, joten Jakossa testi on
+useammin se ankkuri. Botbench ja `allbots-smoke` ovat jo tässä roolissa ja ovat Jakon paras
+turvaverkko rakennemuutoksille.
+
+**Toinen Jakon oma piirre on kuollut kerros (H3).** Kun App otti vastuun tulosruudusta
+27.5.2026, kahdeksan pelin vanha reitti jäi paikalleen, koska mikään ei ilmoita
+saavuttamattomasta JSX:stä. DG:ssä vastaava oli yksi fossiili, Jakossa kahdeksan. Syy on
+yhdeksänkertaisuus: sama siivous pitäisi tehdä yhdeksään paikkaan ja sessio tekee sen
+yhteen. Se on H1:n hinta toisessa muodossa.
+
+## Kysymykset Tommille 3.9.2026
+
+Kolme kohtaa joissa puutetta ei voi erottaa valinnasta ilman Tommia ja yksi
+suuntapäätös. Muut havainnot ovat nostoja jotka eivät kysy mitään.
+
+1. **Katselutilan taso (H2).** Kasino, Koputus ja Seiska pakottavat kaikki botit Mestariksi
+   kun ihmistä ei ole, kuusi muuta peliä kunnioittavat valittua tasoa. Onko hard-pakotus
+   valinta (silloin se kirjataan `BOTBENCH.md`:hen ja viedään yhdeksään) vai virhe (silloin
+   se poistetaan kolmesta)? Botbench ei muutu kummassakaan, savutesti ja katselutila muuttuvat.
+2. **Asetuksen omistaja (H6).** Omistaako App äänet, huijaustilan ja lokin (peli lukee
+   propsin suoraan ja pelin nappi kutsuu takaisin App:iin, jolloin pelin nappi tallentuu) vai
+   omistaako peli (peli lukee `useStickySetting`-avaimen itse ja App ei välitä sitä)?
+   Nykytila on molemmat ja se on ainoa vaihtoehto joka ei kelpaa.
+3. **Kultakalan tasapeli (H3).** Koodissa on noppa-arvonta jota pelaaja ei näe, ja
+   `KULTAKALA.md` ei tunne tasapeliä. Onko oikea tila jaettu sija ilman arvontaa (silloin
+   `DiceRoll` poistetaan) vai arvonta (silloin se siirtyy `GameResult`iin ja kaanoniin)?
+   Sopimusmuutosprotokolla: kaanoni ensin.
+4. **Testisauma (Diagnoosi).** Onko `runAI`n irrottaminen komponentista puhtaaksi funktioksi
+   tavoite, jolloin Botbench voisi ajaa pelin ilman DOMia ja fake-timereita vai hautakivi,
+   jolloin `BOTBENCH.md`:hen kirjataan miksi komponentin läpi kulkeva sauma riittää?
+
+## Mitä ei tarkistettu
+
+Selaimessa ei ajettu mitään. H3:n Kultakala-väite on koodipolusta luettu ja todennetaan
+previewissä ennen korjausta. Agenttien rivinumeroista tarkistettiin käsin ne jotka on merkitty
+tarkistetuiksi; muut ovat agenttien lukemia. i18n-orpolaskenta (3 avainta 652:sta) on alaraja,
+koska 13 prefiksikäyttöä merkitsee kaikki prefiksin alla olevat avaimet käytetyiksi.
