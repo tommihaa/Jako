@@ -150,8 +150,9 @@ function maijaPickDefense(hand0, table, trump, deckEmpty, level) {
 
 // Mestarin neuvo Herolle (pelaaja 0): hard-tason logiikka, vain julkinen tieto.
 // Palauttaa { type, cards?/card?, target? } — type vastaa games.maija.advice.* -avainta.
-/** @param {*} g @param {Vaihe} phase @param {*} table */
-export function getAdvice(g, phase, table) {
+/** @param {*} g */
+export function getAdvice(g) {
+  const { phase, table } = g;
   if (!g) return null;
   if (phase === 'attacking' && g.attackerIdx === 0) {
     const hand = g.players[0].hand;
@@ -259,8 +260,12 @@ function initGame(nPlayers, pool, allBots = false) {
     isHuman: allBots ? false : i===0,
     hand:deck.splice(0, 5),
   }));
+  // Vaihe, pöytä ja pelistä pois pudonneet asuvat pelitilassa. Ennen ne olivat
+  // kolmena useStatena, joilla kaikilla oli käsin synkattu ref-kaksonen
+  // (phaseRef, tableRef, finRef) ajastimia varten (kompositioauditointi H5).
   return { players, deck, trump, trumpCard, discard:[],
-    attackerIdx:0, defenderIdx:1 };
+    attackerIdx:0, defenderIdx:1,
+    phase: /** @type {Vaihe} */ ('idle'), table: [], finished: /** @type {number[]} */ ([]) };
 }
 
 // ── Pääkomponentti ──────────────────────────────────────────────────
@@ -276,8 +281,6 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   const [nP, setNP] = useState(playerCount);
   const cardBack = 'ilves';
   const { G, gRef, setG, setGS } = useGameState();
-  const [phase, setPhase] = useState(/** @type {Vaihe} */ ('idle'));
-  const [table, setTable] = useState([]);
   const [selectedCards, setSel] = useState([]);
   const [selDefTargetIdx, setSelDefTargetIdx] = useState(null);
   const [msg, setMsg_] = useState('');
@@ -288,35 +291,34 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   // `startGame` palauttaa näkymän asetuksen mukaiseksi.
   const [revealAll, setRevealAll] = useState(seeAll);
   useEffect(() => { setRevealAll(seeAll); }, [seeAll]);
-  const [finished, setFinished] = useState([]);
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
   const [lastPlay, setLastPlay] = useState(null);
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [advice, setAdvice]               = useState(null); // { text, cardIds, targetId } | null
-  const phaseRef = useRef(/** @type {Vaihe} */ ('idle'));
   const prevDeckRef = useRef(null);
-  const tableRef = useRef([]);
   const sndRef     = useRef(soundOn);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
   const botLevelsRef = useRef(botLevels);
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
-  const finRef = useRef([]);
   const lastPlayTmr = useRef(null);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
-  useEffect(() => { phaseRef.current = phase; }, [phase]);
-  useEffect(() => { tableRef.current = table; }, [table]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  // neuvo vanhenee tilamuutoksesta; phase ja table ovat G:n ulkopuolisia useStateja
-  useEffect(() => { setAdvice(null); }, [G, phase, table]);
+  // Neuvo vanhenee jokaisesta tilamuutoksesta. Yksi riippuvuus riittää, koska vaihe
+  // ja pöytä asuvat G:ssä (kompositioauditointi H5).
+  useEffect(() => { setAdvice(null); }, [G]);
+
+  // Renderin lukemat: vaihe ja pöytä luetaan G:stä eikä rinnakkaisesta useStatesta.
+  const phase = G?.phase ?? 'idle';
+  const table = G?.table ?? [];
 
   function askAdvice() {
     const g = gRef.current;
     if (!g) return;
-    const a = getAdvice(g, phaseRef.current, tableRef.current);
+    const a = getAdvice(g);
     if (!a) return;
     const card = a.card || a.cards?.[0];
     setAdvice({
@@ -329,7 +331,6 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       targetId: a.target ? a.target.id : null,
     });
   }
-  useEffect(() => { finRef.current = finished; }, [finished]);
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
     const cur = G.deck.length;
@@ -387,14 +388,10 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     pausedRef.current = false; setPaused(false);
     clearTimeout(aiTmr.current);
     const count = forcedCount ?? nP;
-    const g = initGame(count, playerNames, allBotsMode);
-    setGS(g);
-    setPhase('attacking'); phaseRef.current = 'attacking';
-    setTable([]); tableRef.current = [];
+    const g = { ...initGame(count, playerNames, allBotsMode), phase: /** @type {Vaihe} */ ('attacking') };
     setSel([]); setSelDefTargetIdx(null);
-    setFinished([]); finRef.current = [];
     resetLog(); setPakaAnim(false);
-    addLog(M.gameStart(g.trumpCard, g.players[g.attackerIdx].name, g.players[g.defenderIdx].name));
+    commit(g, M.gameStart(g.trumpCard, g.players[g.attackerIdx].name, g.players[g.defenderIdx].name));
     setScreen('game');
     setShuffling(true);
     aiTmr.current = tm(() => maybeAIAttack(g), 3100 + Math.random() * 400);
@@ -414,8 +411,10 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     return { ...g, players, deck:g.deck.slice(drawn.length) };
   }
 
-  function checkWinners(g, fin) {
-    const newFin = [...fin];
+  // Palauttaa pelitilan johon uusi finished on kirjattu. Ennen se palautti pelkän
+  // listan, ja kutsuja kuljetti sitä erikseen kolmen funktion läpi.
+  function checkWinners(g) {
+    const newFin = [...g.finished];
     g.players.forEach((p, i) => {
       if (!newFin.includes(i) && p.hand.length===0 && g.deck.length===0) {
         newFin.push(i);
@@ -434,14 +433,13 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       const ranking = fullFin.map((idx, pos) => ({
         name: g.players[idx].name, place: pos + 1, isHuman: g.players[idx].isHuman,
       }));
-      setPhase('gameover'); phaseRef.current = 'gameover';
-      setFinished(newFin); finRef.current = newFin;
+      setGS({ ...g, finished: newFin, phase: /** @type {Vaihe} */ ('gameover') });
       // Ihmispelissä pidempi viive kuin katselutilassa: viimeinen tikki jää näkyviin
       // ennen kuin App vaihtaa tulosruutuun.
       tm(() => onResult?.({ ranking }), allBotsRef.current ? BOT_RESULT_DELAY : 1800);
-      return { done:true, fin:newFin };
+      return { done:true, g2:{ ...g, finished:newFin } };
     }
-    return { done:false, fin:newFin };
+    return { done:false, g2:{ ...g, finished:newFin } };
   }
 
   function nextAttDef(g, skipDefender, fin) {
@@ -459,45 +457,42 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     return { newAtt, newDef };
   }
 
-  function advanceRound(g, fin, skipDefender) {
-    const { newAtt, newDef } = nextAttDef(g, skipDefender, fin);
-    const g4 = { ...g, attackerIdx:newAtt, defenderIdx:newDef };
-    setGS(g4);
-    setTable([]); tableRef.current = [];
+  function advanceRound(g, skipDefender) {
+    const { newAtt, newDef } = nextAttDef(g, skipDefender, g.finished);
+    const g4 = { ...g, attackerIdx:newAtt, defenderIdx:newDef, table: [],
+                 phase: /** @type {Vaihe} */ ('attacking') };
     setSel([]); setSelDefTargetIdx(null);
-    setPhase('attacking'); phaseRef.current = 'attacking';
-    setFinished(fin); finRef.current = fin;
-    addLog(M.newAttack(g4.players[newAtt].name, g4.players[newDef].name));
+    commit(g4, M.newAttack(g4.players[newAtt].name, g4.players[newDef].name));
     aiTmr.current = tm(() => maybeAIAttack(g4), 1800);
   }
 
-  function resolveDefenseWin(g, tbl, fin) {
-    const allCards = tbl.flatMap(r => [r.att, r.def]);
+  function resolveDefenseWin(g) {
+    const allCards = g.table.flatMap(r => [r.att, r.def]);
     let g2 = { ...g, discard:[...g.discard, ...allCards] };
     g2 = drawHand(g2, g.defenderIdx);
     g2 = drawHand(g2, g.attackerIdx);
-    const { done, fin:newFin } = checkWinners(g2, fin);
+    const { done, g2:g3 } = checkWinners(g2);
     if (done) return;
-    advanceRound(g2, newFin, false);
+    advanceRound(g3, false);
   }
 
-  function resolveDefenseLoss(g, tbl, fin) {
-    const unbeaten = tbl.filter(r => !r.def).map(r => r.att);
-    const beaten = tbl.filter(r => r.def).flatMap(r => [r.att, r.def]);
+  function resolveDefenseLoss(g) {
+    const unbeaten = g.table.filter(r => !r.def).map(r => r.att);
+    const beaten = g.table.filter(r => r.def).flatMap(r => [r.att, r.def]);
     const players = g.players.map((p,i) => i===g.defenderIdx ? { ...p, hand:[...p.hand, ...unbeaten] } : p);
     let g2 = { ...g, players, discard:[...g.discard, ...beaten] };
     if (sndRef.current) SFX.take();
     const detail = beaten.length > 0 ? t('games.maija.msg.beatDetail', { n: beaten.length >> 1 }) : '';
     addLog(M.defendTake(g.players[g.defenderIdx].name, unbeaten.length, detail));
     g2 = drawHand(g2, g2.attackerIdx);
-    const { done, fin:newFin } = checkWinners(g2, fin);
+    const { done, g2:g3 } = checkWinners(g2);
     if (done) return;
-    advanceRound(g2, newFin, true);
+    advanceRound(g3, true);
   }
 
   function maybeAIAttack(g) {
     if (!g) g = gRef.current;
-    if (!g || phaseRef.current !== 'attacking') return;
+    if (!g || (gRef.current?.phase ?? g.phase) !== 'attacking') return;
     if (g.players[g.attackerIdx].isHuman) return;
     const baseDelay = allBotsRef.current ? aiDelayRef.current : 1200;
     const schedAttack = () => {
@@ -513,7 +508,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     {
       const hand = g2.players[g2.attackerIdx].hand;
       const defHandSize = g2.players[g2.defenderIdx].hand.length;
-      if (!hand.length) { resolveDefenseWin(g2, [], finRef.current); return; }
+      if (!hand.length) { resolveDefenseWin({ ...g2, table: [] }); return; }
       // Kyvykkyysporras (ei satunnaiskohinaa):
       //   Oppipoika: lyö VAIN YHDEN kortin kerrallaan; pelaa ISOT kortit ensin
       //              (haluaa "voittaa" kierroksia) eikä suunnittele Maijan
@@ -537,41 +532,38 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     if (sndRef.current) SFX.play();
     const attName = g.players[g.attackerIdx];
     const msg = M.aiAttack(attName.name, cards.map(lblColored).join(', '));
-    addLog(msg);
     flashLastPlay(attName.name, cards, attName.isHuman);
     const players = g.players.map((p,i) => i===g.attackerIdx
       ? { ...p, hand:p.hand.filter(c => !cards.find(x => x.id===c.id)) } : p);
     const tbl = cards.map(c => ({ att:c, def:null }));
     let g2 = { ...g, players };
     g2 = drawHand(g2, g.attackerIdx);
-    setGS(g2);
-    setTable(tbl); tableRef.current = tbl;
+    g2 = { ...g2, table: tbl, phase: /** @type {Vaihe} */ ('defending') };
     setSel([]);
-    setPhase('defending'); phaseRef.current = 'defending';
+    commit(g2, msg);
     const defName = g2.players[g.defenderIdx];
     addLog(M.aiDefense(defName.name, tbl.length));
     if (tbl.some(r => isMaija(r.att))) {
       addLog(M.maijaWarning);
     }
-    aiTmr.current = tm(() => maybeAIDefend(g2, tbl), 1000 + Math.random() * 400);
+    aiTmr.current = tm(() => maybeAIDefend(g2), 1000 + Math.random() * 400);
   }
 
-  function maybeAIDefend(g, tbl) {
+  function maybeAIDefend(g) {
     if (!g) g = gRef.current;
-    if (!g || phaseRef.current !== 'defending') return;
+    if (!g || (gRef.current?.phase ?? g.phase) !== 'defending') return;
     if (g.players[g.defenderIdx].isHuman) return;
     const baseDelay = allBotsRef.current ? aiDelayRef.current : 1000;
     const schedDefend = () => {
       if (pausedRef.current) { tm(schedDefend, 300); return; }
-      const g2 = gRef.current;
-      const tbl2 = tableRef.current;
-      runAIDefend(g2, tbl2);
+      runAIDefend(gRef.current);
     };
     aiTmr.current = tm(schedDefend, baseDelay + Math.random() * 400);
   }
 
-  function runAIDefend(g2, tbl2) {
-    if (!g2 || !tbl2) return;
+  function runAIDefend(g2) {
+    if (!g2 || !g2.table) return;
+    const tbl2 = g2.table;
     const defender = g2.players[g2.defenderIdx];
       const defLevel = botLevelsRef.current?.[g2.defenderIdx] ?? aiLevelRef.current;
       // Kaatopäätökset moduulitason maijaPickDefense-funktiossa (jaettu Heron neuvon
@@ -584,18 +576,17 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       const newTbl = tbl2.map((row, ri) => decMap.has(ri) ? { ...row, def: decMap.get(ri) } : row);
 
       const players = g2.players.map((p,i) => i===g2.defenderIdx ? { ...p, hand } : p);
-      setTable(newTbl); tableRef.current = newTbl;
+      const g3 = { ...g2, players, table: newTbl };
       const unbeaten = newTbl.filter(r => !r.def);
       if (unbeaten.length === 0) {
         const defName = g2.players[g2.defenderIdx];
-        const beaten = newTbl.length;
-        addLog(M.defenderWinRound(defName.name));
+        commit(g3, M.defenderWinRound(defName.name));
         if (sndRef.current) SFX.fanfare();
-        tm(() => resolveDefenseWin({ ...g2, players }, newTbl, finRef.current), 2200);
+        tm(() => resolveDefenseWin(g3), 2200);
       } else {
         const n = g2.players[g2.defenderIdx];
-        addLog(t('games.maija.msg.aiPartialBeat', { name: n.name, beat: newTbl.length - unbeaten.length, total: newTbl.length, cards: kortin(unbeaten.length) }));
-        tm(() => resolveDefenseLoss({ ...g2, players }, newTbl, finRef.current), 1500);
+        commit(g3, t('games.maija.msg.aiPartialBeat', { name: n.name, beat: newTbl.length - unbeaten.length, total: newTbl.length, cards: kortin(unbeaten.length) }));
+        tm(() => resolveDefenseLoss(g3), 1500);
       }
   }
 
@@ -639,23 +630,21 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       addLog(M.cardTooSmall(lblColored(card), lblColored(row.att))); return;
     }
     if (sndRef.current) SFX.beat();
-    addLog(M.beatWith(lblColored(row.att), lblColored(card)));
-    const newTbl = table.map((r, i) => i === selDefTargetIdx ? { ...r, def: card } : r);
+    const newTbl = g.table.map((r, i) => i === selDefTargetIdx ? { ...r, def: card } : r);
     const players = g.players.map((p, i) => i === 0 ? { ...p, hand: p.hand.filter(c => c.id !== card.id) } : p);
-    const g2 = { ...g, players };
-    setGS(g2);
-    setTable(newTbl); tableRef.current = newTbl;
+    const g2 = { ...g, players, table: newTbl };
+    commit(g2, M.beatWith(lblColored(row.att), lblColored(card)));
     setSelDefTargetIdx(null);
     if (newTbl.every(r => r.def)) {
       addLog(M.defenderWinRoundNext);
       if (sndRef.current) SFX.fanfare();
-      tm(() => resolveDefenseWin(g2, newTbl, finRef.current), 1200);
+      tm(() => resolveDefenseWin(g2), 1200);
     }
   }
 
   function humanTakeAll() {
     if (phase !== 'defending' || G.defenderIdx !== 0) return;
-    resolveDefenseLoss(gRef.current, tableRef.current, finRef.current);
+    resolveDefenseLoss(gRef.current);
   }
 
   // ── Pelaajien valinta ────────────────────────────────────────────
