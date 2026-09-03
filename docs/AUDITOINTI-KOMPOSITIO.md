@@ -525,11 +525,44 @@ avaus ja botin passaus. Ei konsolivirheitä. Testit 132 läpi.
 
 **Mitä ei todennettu.** Paskahousun vaihtotarjous ei osunut kohdalle kummassakaan ajossa,
 eikä yhtäkkinen kuolema. Pelin päättyminen jäi näkemättä kaikissa neljässä ja nojaa
-`allbots-smoke`-testiin. Kasinon lokituskohdat ovat yhä valtaosin commitin ulkopuolella
-(26 `addLog`, 15 `setGS`), joten H4 on siltä osin auki, samoin Maijan loppuosa
-(9 `addLog`, 1 `setGS`) ja Läpsy kokonaan.
+`allbots-smoke`-testiin. Kasino ja Maija olivat tämän erän jälkeen yhä auki. Ne tehtiin
+seuraavaksi, ks. osio alla.
 
 **Sivuhavainto, ei tästä erästä.** Moskan katselutilassa `TurnPrompt` näyttää rivin
 "Sinun vuorosi", koska `myTurn` katsoo istuinta 0 eikä sitä onko istuin ihmisen. Bottien
 Taistelussa istuin 0 on botti. Sama kaava on muissakin peleissä ja kuuluu H8:n lajiin.
 Ei korjattu, koska se ei ole H4:ää eikä siitä ole päätöstä.
+
+### H4 Kasino ja Maija 3.9.2026
+
+**Tehty.** Kahdeksassa pelissä yhdeksästä `setGS` on nyt poissa kutsupaikoista tai jäljellä
+vain siellä missä tilanmuutokseen ei liity lokiriviä (Koputuksen kurkkausvaihe, Kultakalan
+aloitus ja paljastus). Yhdeksäs on Läpsy, jolla ei ole `G`:tä lainkaan.
+
+Muoto oli sama keräyslista kuin edellisessä erässä. Kasinon `doCapture`, `doLeave`, `doBuild`
+ja `doBuildCapture` rakentavat uuden tilan kutsujalle eivätkä committoi sitä, joten niiden
+rivit menevät `lines`-listaan, samoin `advance`in uuden jaon rivi. Maijassa sama koskee
+`checkWinners`iä, jonka rivit purkaa `advanceRound` oman committinsa jälkeen, ja
+`resolveDefenseLoss`in korttien oton riviä.
+
+**Yksi ajoitusmuutos, joka näkyy pelaajalle.** Kasinon bottisiirroissa rivit "vie
+rakennelmansa", "kähveltää rakennelman" ja botin kaappaus kirjoitettiin ennen
+kaappausanimaatiota. Teksti on menneessä aikamuodossa eli se kertoo tapahtuneesta, mutta tila
+oli rivin hetkellä yhä vanha. Rivit siirtyivät animaation jälkeiseen committiin, joten ne
+ilmestyvät lokiin nyt vasta kun kortit oikeasti liikkuvat. Muut pelit tekevät jo näin.
+
+**Todennettu selaimessa.** Kasinon katselutila ajettiin kierroksen loppuun asti eli mukana
+olivat rakennelmat, kähvellys, mökki, uusi jako kesken kierroksen, pistelasku ja Seuraava
+peli. Maijan katselutila ajettiin pelin loppuun asti eli mukana olivat osittaiskaato,
+korttien otto, kaksi poistumista ja Maija-häviö. Ihmispeleissä ajettiin Kasinon jättö sekä
+kaappaus- ja rakennusnappien tyhjät haarat (samat napit jotka olivat kuolleita ennen
+edellisen session korjausta) ja Maijan hyökkäys, yksittäinen kaato ja loppujen ottaminen.
+Ei konsolivirheitä. Testit 132 läpi.
+
+**Mitä ei todennettu.** Kasinon onnistunut ihmiskaappaus ei osunut kohdalle kolmessa
+vuorossa, joten sen animaation jälkeinen commit nojaa koodinlukuun ja bottipolun samaan
+reittiin. Kasinon pelin päättyminen 16 pisteeseen jäi näkemättä.
+
+**Mitä H4:stä jää.** Läpsy. Se on eri kysymys kuin muut kahdeksan, koska siellä ei ole
+`G`:tä johon commitin voisi kohdistaa, eikä sen tilamallista ole päätöstä. Kysymys 4:n
+ristiintarkistustesti odottaa yhä.
