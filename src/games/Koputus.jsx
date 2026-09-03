@@ -526,7 +526,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
     }, 500);
     gState.players.forEach((p, i) => {
       if (p.isHuman) return;
-      const level = botLevelsRef.current?.[i] ?? (allBotsRef.current ? 'hard' : aiLevelRef.current);
+      const level = botLevelsRef.current?.[i] ?? aiLevelRef.current;
       const missProbability   = level === 'beginner' ? 0.5 : level === 'normal' ? 0.25 : 0.03;
       const wrongReactChance  = level === 'beginner' ? 0.15 : 0;
       const mi = [...p.known].find(ki => p.cards[ki]?.r === card.r);
@@ -653,7 +653,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
     //              täyttää tuntemattoman vain varmalla kortilla (A/2)
     //   Mestari:   + realistinen tuntemattoman arvio (×6) ja laajempi EV-vaihto
     //              tuntemattomaan paikkaan (≤4; KOPUTUS.md strategia, kohta 3)
-    const level = botLevelsRef.current?.[playerIdx] ?? (allBotsRef.current ? 'hard' : aiLevelRef.current);
+    const level = botLevelsRef.current?.[playerIdx] ?? aiLevelRef.current;
     if (knockRef.current === null) {
       if (koKnockEstimate(p, level).shouldKnock) {
         setKB(playerIdx); knockRef.current = playerIdx;

@@ -651,7 +651,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
       g2 = { ...g2, aceBonus: card.s };
       if (newHand.length === 1 && !g2.lappuSaid.has(playerIdx) && !finished.includes(playerIdx)) {
         if (!p.isHuman) {
-          const effectiveLevel = botLevelsRef.current?.[playerIdx] ?? (g2.players.every(pl => !pl.isHuman) ? 'hard' : aiLevelRef.current);
+          const effectiveLevel = botLevelsRef.current?.[playerIdx] ?? aiLevelRef.current;
           if (aiShouldFumble(effectiveLevel)) {
             g2 = { ...g2, pendingLappu: playerIdx };
           } else {
@@ -670,7 +670,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
     // Lappu
     if (newHand.length === 1 && !g2.lappuSaid.has(playerIdx) && !finished.includes(playerIdx)) {
       if (!p.isHuman) {
-        const effectiveLevel2 = botLevelsRef.current?.[playerIdx] ?? (g2.players.every(pl => !pl.isHuman) ? 'hard' : aiLevelRef.current);
+        const effectiveLevel2 = botLevelsRef.current?.[playerIdx] ?? aiLevelRef.current;
         if (aiShouldFumble(effectiveLevel2)) {
           g2 = { ...g2, pendingLappu: playerIdx };
           advanceTurn(g2, playerIdx);
@@ -785,7 +785,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
     const p = players[activePlayer];
     if (!p || p.isHuman) return;
     // Katsomotilassa (kaikki botteja) käytetään aina Mestari-tasoa (hard)
-    const level  = botLevelsRef.current?.[activePlayer] ?? (players.every(pl => !pl.isHuman) ? 'hard' : aiLevelRef.current);
+    const level  = botLevelsRef.current?.[activePlayer] ?? aiLevelRef.current;
     const isHard = level === 'hard';
 
     // ── Ässä-bonusvuoro ─────────────────────────────────────

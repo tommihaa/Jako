@@ -252,3 +252,88 @@ Selaimessa ei ajettu mitään. H3:n Kultakala-väite on koodipolusta luettu ja t
 previewissä ennen korjausta. Agenttien rivinumeroista tarkistettiin käsin ne jotka on merkitty
 tarkistetuiksi; muut ovat agenttien lukemia. i18n-orpolaskenta (3 avainta 652:sta) on alaraja,
 koska 13 prefiksikäyttöä merkitsee kaikki prefiksin alla olevat avaimet käytetyiksi.
+
+## Päätökset 3.9.2026
+
+Tommin vastaukset Kysymykset-osioon. Rivi kertoo päätöksen ja sen tilan koodissa.
+
+1. **Katselutilan taso (H2): hard-pakotus on virhe, poistettu kolmesta.** Kaava on nyt
+   `botLevelsRef.current?.[i] ?? aiLevelRef.current` kaikissa yhdeksässä pelissä (Kasino
+   1047, Koputus 529 ja 656, Seiska 654, 673 ja 788). Seiskan oma ehtolähde
+   `players.every(!isHuman)` poistui samalla, joten neljättä muotoa ei enää ole. Läpsyn
+   `topLvl()` jäi, koska se on eri asia: jaettu muistilaskuri päivitetään istuinten
+   korkeimman tason mukaan ja perustelu on koodissa. Botbench ei muutu, koska se antaa
+   `botLevels`in aina. `allbots-smoke` ajaa nyt kaikki yhdeksän Kisällillä. Testit 132
+   läpi. `BOTBENCH.md` ei tarvitse merkintää, koska sääntö on nyt yksi eikä poikkeusta ole.
+2. **Asetuksen omistaja (H6): auki.** Tommi kysyi konflikteista, ne on kirjattu
+   Konfliktit-osioon alle.
+3. **Kultakalan tasapeli (H3): jaettu sija ilman arvontaa.** `DiceRoll` poistetaan.
+   Toteutus odottaa kaanonimerkintää `KULTAKALA.md`:hen, koska sopimusmuutos menee
+   kaanoni ensin. `doReveal`in `ranking` laskee jo jaetun sijan
+   (`place = count(total < oma) + 1`), joten `GameResult` näyttää oikean tuloksen ilman
+   muutosta. Poistuvat: `DiceRoll` (206–253), `showDice`, `tiedPlayers`, `M.tieBreaker`
+   ja sen i18n-avaimet.
+### Kultakalan noppaväitteen todennus (kysymys 3)
+
+Väite tarkentui koodista eikä previewistä, ja se vahvistui. Raportti nojasi yhteen haaraan
+(App unmounttaa pelin heti `onResult`ista, joten 2000 ms myöhempi `setScreen('gameover')` ei
+ehdi). Toinen haara sulkeutuu rivillä 656: pelin oma tulosruutu on ehdon
+`screen === 'gameover' && G && !allBotsRef.current` takana, eli katselutilassa se on
+nimenomaisesti suljettu pois. Molemmat polut ovat siis kiinni ja `DiceRoll` on
+saavuttamaton kaikissa tiloissa. Preview-ajo ei voi näyttää arvontaa eikä siten todistaa
+väitettä; se näyttäisi vain että `GameResult` tulee heti. Siksi todennus tehtiin koodista.
+
+4. **Testisauma: auki.** Kysymys avattu, ks. Testisauman vaihtoehdot alla.
+
+### Konfliktit asetuksen omistajuudessa (kysymys 2)
+
+Kolme asetusta eivät ole sama tapaus, ja kaksi niistä ei kelpaa vaihtoehtoon "peli
+omistaa". Kysymyksen kaksi vaihtoehtoa eivät siis päde kaikkiin kolmeen.
+
+- **`seeAll` ei voi olla pelin omistama.** Kaanoni sanoo että cheat-tila ei tallennu
+  (`storage.js` 4–5, `CLAUDE.md` 49 ja 188). Sen päälle jokaisen pelin `startBotBattle`
+  kutsuu `setDebug(true)` (tarkistettu 9/9), eli peli kirjoittaa arvoa muusta syystä kuin
+  käyttäjän valinnasta. Sticky-avain jäisi päälle yhden katselutilan jälkeen. Omistajat
+  ovat jo eri mieltä samassa tilassa: App piilottaa seeAll-togglen katselutilassa
+  (`!isAllBots`, App 1122) samaan aikaan kun peli pakottaa sen päälle. Seuraus valinnalle
+  "App omistaa": katselutilan paljastus pitää erottaa asetuksesta omaksi käsitteekseen
+  (`revealAll = seeAll || allBots`), muuten takaisinkutsu jättäisi huijaustilan päälle.
+- **`showLog` ei voi olla pelin omistama.** Se kuuluu näkyvyysesiasetukseen
+  (`UI_PRESETS` App 778–781, `applyPreset` asettaa sen, toggle on merkitty `preset: true`
+  rivillä 1129). Jos avain olisi pelin, App joutuisi silti kirjoittamaan sitä, eli
+  omistaja olisi yhä App.
+- **`soundOn` on ainoa vapaa valinta.** App ei soita ääniä itse: se lukee arvoa vain
+  äänivalitsimen näkyvyyteen (1144 ja 1216). Pelikohtaisille sticky-avaimille on
+  ennakkotapaus (`kasino:rules`), mutta ne ovat pelikohtaisia asetuksia ja ääni on yksi
+  globaali arvo, joten App-omistus on luonteva.
+
+Konfliktit siis ratkaisevat kysymyksen: **App omistaa kaikki kolme, peli lukee propsin ja
+pelin nappi kutsuu takaisin.** Vaihtoehto "peli omistaa" on suljettu kahdelta kolmesta
+kaanonin ja preset-koneiston takia. Päätöstä odotetaan silti Tommilta, koska hinta on
+kolme uutta takaisinkutsupropsia yhdeksään signatuuriin.
+
+### Testisauman vaihtoehdot (kysymys 4)
+
+Nykytila: Botbench renderöi oikean komponentin jsdomissa, korvaa `Math.random`in
+siemennetyllä PRNG:llä, tynkää `AudioContext`in, ajaa fake-timereilla ja lukee tuloksen
+`onResult`- ja `onSnapshot`-propseista. Sauma on siis komponentin propsirajapinta.
+
+Kysymys ei ole itsenäinen. `runAI` ei ole useimmissa peleissä valitsija vaan kuljettaja:
+se ajastaa, kirjoittaa Reactin tilaa, soittaa äänet ja lokittaa. Puhdas
+`chooseMove(G, level)` on jo olemassa moduulitason funktiona seitsemässä pelissä (H7), eli
+puuttuva pala on puhdas `applyMove(G, move) → G` ja silmukka. Se on sama työ kuin H5
+(vaihe ja vuoro `G`:hen) ja H4 (`commit`). **Kysymys 4 on siis H1, H4 ja H5 -nostojen
+hyväksymiskriteeri eikä erillinen projekti.** Jos nostot tehdään kunnolla, puhdas sauma
+putoaa niistä ulos. Jos ne tehdään puolittain, ei putoa.
+
+Kolme vaihtoehtoa eikä kahta:
+
+- **Tavoite.** Puhdas sauma antaa nopeuden, ja nopeus on Botbenchissa tarkkuutta: enemmän
+  pelejä per pari kaventaa voittoprosentin luottamusväliä. Hinta on H4 ja H5 kokonaan.
+- **Hautakivi.** Komponenttisauma testaa sitä ohjelmaa jota pelaaja ajaa, ajastimet mukaan
+  lukien. Puhdas sauma testaisi eri ohjelmaa, jolloin ajastinvirhe jäisi kiinni
+  ottamatta. Tämä on aito peruste eikä laiskuuden verho.
+- **Molemmat.** `allbots-smoke` jää komponenttisaumaksi korrektiusverkoksi ja Botbench
+  siirtyy puhtaalle saumalle määrää varten. Hinta on että kaksi saumaa pitää saada
+  sanomaan samaa, mikä vaatii oman ristiintarkistustestin. Tämä vaihtoehto ei ollut
+  raportin kysymyksessä.

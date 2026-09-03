@@ -1044,7 +1044,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
     if (!g || phaseRef.current === 'idle') return;
     const p = g.players[playerIdx];
     if (!p.hand.length) { advance(g, playerIdx); return; }
-    const level = botLevelsRef.current?.[playerIdx] ?? (allBotsRef.current ? 'hard' : aiLevelRef.current);
+    const level = botLevelsRef.current?.[playerIdx] ?? aiLevelRef.current;
     // Kyvykkyysporras (ei satunnaiskohinaa):
     //   Oppipoika: naiivi kaappaus (korttimäärä, ei pisteet), ei rakenna, ei
     //              varasta, ei bonuksia; jättökortti ilman vaara-arviota
