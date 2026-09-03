@@ -865,7 +865,7 @@ sauma putoaa niistä ulos.
 
 **Päätöksen ehto on ristiintarkistustesti.** Kaksi saumaa jotka mittaavat samaa peliä
 ajautuvat erilleen samalla tavalla kuin yhdeksän kopiota elinkaaresta, ellei mikään pidä
-niitä yhdessä. Testin muoto: sama siemen, sama konfiguraatio, molemmat saumat, ja tuloksen
+niitä yhdessä. Testin muoto on sama siemen, sama konfiguraatio, molemmat saumat, ja tuloksen
 `ranking` on identtinen. Ilman sitä päätös rappeutuu kahdeksi eri totuudeksi bottien
 voimasta, ja silloin kumpikaan luku ei kelpaa. Tämä on avoin kohta 3.9.2026.
 

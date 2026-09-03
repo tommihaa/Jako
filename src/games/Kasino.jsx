@@ -488,7 +488,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   const [allBots, setAllBots] = useState(false);
   const [paused, setPaused] = useState(false);
   const [aiDelayMs, setAiDelayMs] = useState(2000);
-  const [pendingResult, setPendingResult] = useState(null);
   const [advice, setAdvice] = useState(null); // { text, handCardId, tableCardIds, buildId } | null
 
   const gRef    = useRef(null);
@@ -556,7 +555,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     let tid;
     const tryAdv = () => {
       if (pausedRef.current) { tid = tm(tryAdv, 500); return; }
-      setScores(null); // pendingResult overlay ottaa vallan
+      setScores(null); // kierrospisteiden paneeli piiloon uuden pelin alkaessa
     };
     tid = tm(tryAdv, 3000);
     return () => clearTimeout(tid);
@@ -588,7 +587,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
     setRevealAll(seeAll || allBotsMode);
     pausedRef.current = false; setPaused(false);
-    setPendingResult(null);
     const cnt = forcedCount || nP;
     const g = initGame(cnt, playerNames, allBotsMode, rules);
     setG(g); gRef.current = g;
@@ -1264,34 +1262,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     </div>
   );
 
-  if (screen === 'gameover' && G && !allBotsRef.current) {
-    const sorted = [...G.players].sort((a, b) => b.score - a.score);
-    return (
-      <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>
-        <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {sorted.map((p, i) => (
-            <div key={p.id} style={{ borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, background: i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${i === 0 ? C.gold + '55' : C.panelBorder}` }}>
-              <span style={{ fontSize: 20 }}>{i === 0 ? '🏆' : '🎯'}</span>
-              <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: i === 0 ? C.gold : C.text }}>{p.name}</span>
-              <span style={{ fontFamily: 'monospace', fontSize: 18, fontWeight: 700, color: i === 0 ? C.gold : C.dim }}>{p.score}<span style={{ fontSize: 11, opacity: 0.6 }}>p</span></span>
-            </div>
-          ))}
-        </div>
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          {allBots ? (
-            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1e9a)', border: 'none', borderRadius: 12, padding: '12px 28px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newWatch')}</button>
-          ) : (
-            <>
-              <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
-              <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.start.changePlayers')}</button>
-            </>
-          )}
-        </div>
-      </div>
-    );
-  }
-
   if (!G) return null;
 
   const human = G.players[0];
@@ -1385,14 +1355,10 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
               </div>
             );
           })}
+          {/* Ottelu on ratkennut. Ihmispelissä App on jo vaihtanut tulosruutuun, joten tässä
+              näkyy vain katselutilan teksti; katselutilassa peli jää näkyviin bannerin alle. */}
           {scores.some(s => s.totalScore >= 16) ? (
-            allBots ? (
-              <div style={{ marginTop: 10, textAlign: 'center', fontFamily: 'sans-serif', fontSize: 12, color: C.botMode }}>{t('games.kasino.ui.showingResults')}</div>
-            ) : (
-              <button onClick={() => setScreen('gameover')} style={{ marginTop: 10, width: '100%', background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 0', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 1 }}>
-                {t('games.kasino.ui.newMatch')}
-              </button>
-            )
+            <div style={{ marginTop: 10, textAlign: 'center', fontFamily: 'sans-serif', fontSize: 12, color: C.botMode }}>{t('games.kasino.ui.showingResults')}</div>
           ) : (
             <button onClick={startNextRound} style={{ marginTop: 10, width: '100%', background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 0', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 1 }}>
               {t('games.kasino.ui.nextGame')}
@@ -1843,24 +1809,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       })()}
 
       {/* PendingResult overlay — allBots-tilan loppunäyttö */}
-      {pendingResult && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 500, background: 'rgba(0,0,0,0.88)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24 }}>
-          <div style={{ fontSize: 26, color: C.botMode, fontFamily: 'Georgia,serif', letterSpacing: 4 }}>{t('ui.result.battleEnded')}</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 380 }}>
-            {pendingResult.ranking.map((p, i) => (
-              <div key={p.name} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderRadius: 12, background: i === 0 ? 'rgba(123,47,190,0.2)' : 'rgba(255,255,255,0.04)', border: `1px solid ${i === 0 ? 'rgba(192,132,252,0.5)' : 'rgba(255,255,255,0.08)'}` }}>
-                <span style={{ fontSize: 20 }}>{i === 0 ? '🏆' : '🤖'}</span>
-                <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 14, color: i === 0 ? C.botMode : C.text }}>{p.name}</span>
-                <span style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 700, color: i === 0 ? C.botMode : C.dim }}>{p.score}<span style={{ fontSize: 11, opacity: 0.6 }}>p</span></span>
-              </div>
-            ))}
-          </div>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginTop: 8 }}>
-            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1e9a)', border: 'none', borderRadius: 12, padding: '12px 28px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newBattle')}</button>
-            <button onClick={() => { setPendingResult(null); setScreen('select'); }} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12, padding: '12px 20px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.menu.back')}</button>
-          </div>
-        </div>
-      )}
 
       <style>{`button:active{transform:scale(0.97)}@keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}`}</style>
     </div>

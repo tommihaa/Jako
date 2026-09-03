@@ -158,7 +158,6 @@ export const krl = {
       fieldLabel: 'KENDÄ',
       discardLabel: 'POISTOPAKKA',
       handLabel: 'KIÄSSÄ',
-      spectatorEnded: 'KAČČOMOTILA LOPPUI',
     },
 
     result: {
@@ -169,7 +168,6 @@ export const krl = {
       pts: 'p',
       newGame: 'Uuži kiza →',
       place: ({ n }) => `Šija ${n}`,
-      newWatch: '🤖 Uuži kaččelutila',
       newShort: '🤖 Uuži',
       watchEnded: 'KAČČELUTILA LOPPUI',
       battleEnded: '🤖 TORA LOPPUI',
@@ -184,7 +182,6 @@ export const krl = {
       beginGame: 'Ala kiza →',
       botBattle: '🔮 Bottien Tora',
       botBattleSub: ({ n, level }) => `${n} bottie · ${level}`,
-      changePlayers: '← Vaiha kizuajie',
     },
 
     action: {
@@ -506,7 +503,6 @@ export const krl = {
         'Enžimmäizenä 16+ pisteidä voittau',
       ],
       ui: {
-        newMatch: 'Uuži otteluo →',
         roundPoints: 'KIERROKSEN PISTEET',
         buildsLabel: 'RAKNELMAT',
         scoring: '10♦ = 2p · 2♠ = 1p · jogahini ässä = 1p · enämbi korttie = 3p · enämbi puadua = 1p · jogahini mökki = 1p',

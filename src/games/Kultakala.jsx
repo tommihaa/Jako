@@ -227,7 +227,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   const [allBots, setAllBots]             = useState(false);
   const [paused, setPaused]               = useState(false);
   const [aiDelayMs, setAiDelayMs]         = useState(2000);
-  const [pendingResult, setPendingResult] = useState(null);
   const [advice, setAdvice]               = useState(null); // { text, target? } | null
 
   const gRef        = useRef(null);
@@ -297,7 +296,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
     setRevealAll(seeAll || allBotsMode);
     pausedRef.current = false; setPaused(false);
-    setPendingResult(null);
     clearTimeout(aiTmr.current);
     const count = forcedCount ?? nP;
     const g = initGame(count, playerNames, allBotsMode);
@@ -561,7 +559,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     // Tasapelissä samat pisteet jakavat sijan, ks. KULTAKALA.md > Tasapeli. Ranking laskee
     // sen jo (place = count(total < oma) + 1), joten tasapeli ei tarvitse omaa haaraa.
     addLog(M.gameOverScores(scores));
-    tm(() => setScreen('gameover'), 2000);
   }
 
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
@@ -596,40 +593,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       </div>
     </div>
   );
-
-  if (screen === 'gameover' && G && !allBotsRef.current) {
-    const scores = G.players.map(p => ({ ...p, total: p.unknown.v + p.row.reduce((s, c) => s + c.v, 0) })).sort((a, b) => a.total - b.total);
-    return (
-      <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>
-        <div style={{ width: '100%', maxWidth: 440, display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {scores.map((p, i) => (
-            <div key={p.id} style={{ borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, background: i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${i === 0 ? C.gold + '55' : C.panelBorder}` }}>
-              <span style={{ fontSize: 22, minWidth: 28 }}>{i === 0 ? '🏆' : i === scores.length - 1 ? '🐟' : '🎯'}</span>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: 'sans-serif', fontSize: 14, color: i === 0 ? C.gold : C.text, marginBottom: 6 }}>{p.name}</div>
-                <div style={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'nowrap' }}>
-                  <KaCard card={p.unknown} faceUp mini backStyle={BACKS[cardBack]} />
-                  <span style={{ color: C.dim, fontSize: 11, margin: '0 1px' }}>+</span>
-                  {p.row.map((c, ci) => <KaCard key={ci} card={c} faceUp mini highlight={!p.isHuman && p.known?.has(ci)} backStyle={BACKS[cardBack]} />)}
-                </div>
-              </div>
-              <div style={{ fontSize: 20, fontWeight: 700, color: i === 0 ? C.gold : C.dim }}>{p.total}<span style={{ fontSize: 11, opacity: 0.6 }}>p</span></div>
-            </div>
-          ))}
-        </div>
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          {allBots ? (<>
-            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 12, padding: '12px 32px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newWatch')}</button>
-            {pendingResult && <button onClick={() => { onResult?.(pendingResult); setPendingResult(null); }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.results')}</button>}
-          </>) : (<>
-            <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
-            <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.start.changePlayers')}</button>
-          </>)}
-        </div>
-      </div>
-    );
-  }
 
   if (!G) return null;
 
@@ -826,25 +789,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       </div>
 
       {/* Katselutila: pending result overlay */}
-      {allBots && pendingResult && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, zIndex: 300 }}>
-          <div style={{ background: '#1a0a2e', border: '2px solid rgba(123,47,190,0.7)', borderRadius: 20, padding: '32px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, maxWidth: 360 }}>
-            <span style={{ fontSize: 32 }}>🐟</span>
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 20, color: C.botMode, letterSpacing: 4 }}>{t('ui.result.watchEnded')}</span>
-            {pendingResult.ranking.map((p, i) => (
-              <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'center', width: '100%' }}>
-                <span style={{ fontSize: 16 }}>{i === 0 ? '🏆' : i === pendingResult.ranking.length - 1 ? '🐟' : '🎯'}</span>
-                <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: i === 0 ? C.botMode : C.botModeDim, flex: 1 }}>{p.name}</span>
-                <span style={{ fontFamily: 'monospace', fontSize: 14, color: i === 0 ? C.botMode : C.botModeDimmer }}>{p.score} p</span>
-              </div>
-            ))}
-            <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
-              <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1f8a)', border: 'none', borderRadius: 12, padding: '11px 24px', color: '#f0d0ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newShort')}</button>
-              <button onClick={() => { onResult?.(pendingResult); setPendingResult(null); }} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '11px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.results')}</button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
         <button onClick={() => onShowLogChange?.(!showLog)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>

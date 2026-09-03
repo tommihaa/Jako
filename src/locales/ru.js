@@ -166,7 +166,6 @@ export const ru = {
       fieldLabel: 'ПОЛЕ',
       discardLabel: 'СБРОС',
       handLabel: 'В РУКЕ',
-      spectatorEnded: 'РЕЖИМ ЗРИТЕЛЯ ЗАВЕРШЁН',
     },
 
     result: {
@@ -177,7 +176,6 @@ export const ru = {
       pts: 'о',
       newGame: 'Новая игра →',
       place: ({ n }) => `Место ${n}`,
-      newWatch: '🤖 Новый просмотр',
       newShort: '🤖 Новая',
       watchEnded: 'РЕЖИМ ПРОСМОТРА ЗАВЕРШЁН',
       battleEnded: '🤖 БИТВА ЗАВЕРШЕНА',
@@ -192,7 +190,6 @@ export const ru = {
       beginGame: 'Начать игру →',
       botBattle: '🔮 Битва ботов',
       botBattleSub: ({ n, level }) => `${n} ${plural(n, 'бот', 'бота', 'ботов')} · ${level}`,
-      changePlayers: '← Сменить игроков',
     },
 
     action: {
@@ -514,7 +511,6 @@ export const ru = {
         'Первый, кто наберёт 16+ очков, побеждает',
       ],
       ui: {
-        newMatch: 'Новый матч →',
         roundPoints: 'ОЧКИ РАУНДА',
         buildsLabel: 'ПОСТРОЙКИ',
         scoring: '10♦ = 2о · 2♠ = 1о · каждый туз = 1о · больше всего карт = 3о · больше всего пик = 1о · каждый замёт = 1о',

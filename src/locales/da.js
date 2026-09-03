@@ -157,7 +157,6 @@ export const da = {
       fieldLabel: 'FELT',
       discardLabel: 'KASTEBUNKE',
       handLabel: 'PÅ HÅNDEN',
-      spectatorEnded: 'SEERTILSTAND AFSLUTTET',
     },
 
     result: {
@@ -168,7 +167,6 @@ export const da = {
       pts: 'p',
       newGame: 'Nyt spil →',
       place: ({ n }) => `Plads ${n}`,
-      newWatch: '🤖 Ny seertilstand',
       newShort: '🤖 Ny',
       watchEnded: 'SEERTILSTAND AFSLUTTET',
       battleEnded: '🤖 KAMPEN ER SLUT',
@@ -183,7 +181,6 @@ export const da = {
       beginGame: 'Start spil →',
       botBattle: '🔮 Botternes Kamp',
       botBattleSub: ({ n, level }) => `${n} bots · ${level}`,
-      changePlayers: '← Skift spillere',
     },
 
     action: {
@@ -505,7 +502,6 @@ export const da = {
         'Først til 16+ point vinder',
       ],
       ui: {
-        newMatch: 'Ny dyst →',
         roundPoints: 'RUNDENS POINT',
         buildsLabel: 'BYGNINGER',
         scoring: '10♦ = 2p · 2♠ = 1p · hvert es = 1p · flest kort = 3p · flest spar = 1p · hver fejning = 1p',

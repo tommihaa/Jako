@@ -159,7 +159,6 @@ export const la = {
       fieldLabel: 'CAMPUS',
       discardLabel: 'CUMULUS DEIECTUS',
       handLabel: 'IN MANU',
-      spectatorEnded: 'MODUS SPECTANDI FINITUS',
     },
 
     result: {
@@ -170,7 +169,6 @@ export const la = {
       pts: 'p',
       newGame: 'Novus lusus →',
       place: ({ n }) => `Locus ${n}`,
-      newWatch: '🤖 Novus modus spectandi',
       newShort: '🤖 Novus',
       watchEnded: 'MODUS SPECTANDI FINITUS',
       battleEnded: '🤖 PROELIUM FINITUM',
@@ -185,7 +183,6 @@ export const la = {
       beginGame: 'Incipe lusum →',
       botBattle: '🔮 Proelium machinarum',
       botBattleSub: ({ n, level }) => `${n} machinae · ${level}`,
-      changePlayers: '← Muta lusores',
     },
 
     action: {
@@ -507,7 +504,6 @@ export const la = {
         'Primus 16+ puncta vincit',
       ],
       ui: {
-        newMatch: 'Novum certamen →',
         roundPoints: 'PUNCTA CIRCULI',
         buildsLabel: 'STRUCTURAE',
         scoring: '10♦ = 2p · 2♠ = 1p · quisque as = 1p · plurimae chartae = 3p · plurimae picae = 1p · quaeque casa = 1p',

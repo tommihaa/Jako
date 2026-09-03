@@ -157,7 +157,6 @@ export const et = {
       fieldLabel: 'VÄLI',
       discardLabel: 'VISKEHUNNIK',
       handLabel: 'KÄES',
-      spectatorEnded: 'PEALTVAATAJAREŽIIM LÕPPES',
     },
 
     result: {
@@ -168,7 +167,6 @@ export const et = {
       pts: 'p',
       newGame: 'Uus mäng →',
       place: ({ n }) => `Koht ${n}`,
-      newWatch: '🤖 Uus vaatlusrežiim',
       newShort: '🤖 Uus',
       watchEnded: 'VAATLUSREŽIIM LÕPPES',
       battleEnded: '🤖 LAHING LÕPPES',
@@ -183,7 +181,6 @@ export const et = {
       beginGame: 'Alusta mängu →',
       botBattle: '🔮 Bottide lahing',
       botBattleSub: ({ n, level }) => `${n} botti · ${level}`,
-      changePlayers: '← Vaheta mängijaid',
     },
 
     action: {
@@ -505,7 +502,6 @@ export const et = {
         'Esimesena 16+ punkti võidab',
       ],
       ui: {
-        newMatch: 'Uus matš →',
         roundPoints: 'RINGI PUNKTID',
         buildsLabel: 'EHITISED',
         scoring: '10♦ = 2p · 2♠ = 1p · iga äss = 1p · enim kaarte = 3p · enim potte = 1p · iga mökki = 1p',

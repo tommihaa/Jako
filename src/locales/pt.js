@@ -157,7 +157,6 @@ export const pt = {
       fieldLabel: 'CAMPO',
       discardLabel: 'DESCARTE',
       handLabel: 'NA MÃO',
-      spectatorEnded: 'MODO DE ESPECTADOR TERMINADO',
     },
 
     result: {
@@ -168,7 +167,6 @@ export const pt = {
       pts: 'p',
       newGame: 'Novo jogo →',
       place: ({ n }) => `${n}.º lugar`,
-      newWatch: '🤖 Novo modo de observação',
       newShort: '🤖 Novo',
       watchEnded: 'MODO DE OBSERVAÇÃO TERMINADO',
       battleEnded: '🤖 BATALHA TERMINADA',
@@ -183,7 +181,6 @@ export const pt = {
       beginGame: 'Começar jogo →',
       botBattle: '🔮 Batalha de Bots',
       botBattleSub: ({ n, level }) => `${n} bots · ${level}`,
-      changePlayers: '← Mudar jogadores',
     },
 
     action: {
@@ -505,7 +502,6 @@ export const pt = {
         'O primeiro a 16+ pontos vence',
       ],
       ui: {
-        newMatch: 'Novo confronto →',
         roundPoints: 'PONTOS DA RONDA',
         buildsLabel: 'CONSTRUÇÕES',
         scoring: '10♦ = 2p · 2♠ = 1p · cada ás = 1p · mais cartas = 3p · mais espadas = 1p · cada varridela = 1p',

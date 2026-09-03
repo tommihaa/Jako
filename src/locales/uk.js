@@ -166,7 +166,6 @@ export const uk = {
       fieldLabel: 'ПОЛЕ',
       discardLabel: 'СКИДАННЯ',
       handLabel: 'У РУЦІ',
-      spectatorEnded: 'РЕЖИМ СПОСТЕРЕЖЕННЯ ЗАВЕРШЕНО',
     },
 
     result: {
@@ -177,7 +176,6 @@ export const uk = {
       pts: 'о',
       newGame: 'Нова гра →',
       place: ({ n }) => `Місце ${n}`,
-      newWatch: '🤖 Новий режим спостереження',
       newShort: '🤖 Новий',
       watchEnded: 'РЕЖИМ СПОСТЕРЕЖЕННЯ ЗАВЕРШЕНО',
       battleEnded: '🤖 БИТВУ ЗАВЕРШЕНО',
@@ -192,7 +190,6 @@ export const uk = {
       beginGame: 'Почати гру →',
       botBattle: '🔮 Битва ботів',
       botBattleSub: ({ n, level }) => `${n} ${plural(n, 'бот', 'боти', 'ботів')} · ${level}`,
-      changePlayers: '← Змінити гравців',
     },
 
     action: {
@@ -514,7 +511,6 @@ export const uk = {
         'Перший, хто набере 16+ очок, перемагає',
       ],
       ui: {
-        newMatch: 'Новий матч →',
         roundPoints: 'ОЧКИ РАУНДУ',
         buildsLabel: 'КОНСТРУКЦІЇ',
         scoring: '10♦ = 2о · 2♠ = 1о · кожен туз = 1о · найбільше карт = 3о · найбільше пік = 1о · кожне змітання = 1о',

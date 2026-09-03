@@ -161,7 +161,6 @@ export const en = {
       fieldLabel: 'FIELD',
       discardLabel: 'DISCARD',
       handLabel: 'IN HAND',
-      spectatorEnded: 'SPECTATOR MODE ENDED',
     },
 
     result: {
@@ -172,7 +171,6 @@ export const en = {
       pts: 'p',
       newGame: 'New game →',
       place: ({ n }) => `Place ${n}`,
-      newWatch: '🤖 New watch mode',
       newShort: '🤖 New',
       watchEnded: 'WATCH MODE ENDED',
       battleEnded: '🤖 BATTLE ENDED',
@@ -187,7 +185,6 @@ export const en = {
       beginGame: 'Start game →',
       botBattle: '🔮 Bot Battle',
       botBattleSub: ({ n, level }) => `${n} bots · ${level}`,
-      changePlayers: '← Change players',
     },
 
     action: {
@@ -509,7 +506,6 @@ export const en = {
         'First to 16+ points wins',
       ],
       ui: {
-        newMatch: 'New match →',
         roundPoints: 'ROUND POINTS',
         buildsLabel: 'BUILDS',
         scoring: '10♦ = 2pts · 2♠ = 1pt · each ace = 1pt · most cards = 3pt · most spades = 1pt · each sweep = 1pt',

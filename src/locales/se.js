@@ -159,7 +159,6 @@ export const se = {
       fieldLabel: 'GIETTI',
       discardLabel: 'SIHKKUNSTOHKA',
       handLabel: 'GIEĐAS',
-      spectatorEnded: 'GEAHČČANDÁSSI NOGAI',
     },
 
     result: {
@@ -170,7 +169,6 @@ export const se = {
       pts: 'č',
       newGame: 'Ođđa speallu →',
       place: ({ n }) => `Sadji ${n}`,
-      newWatch: '🤖 Ođđa geahččandássi',
       newShort: '🤖 Ođđa',
       watchEnded: 'GEAHČČANDÁSSI NOGAI',
       battleEnded: '🤖 DOARRU NOGAI',
@@ -185,7 +183,6 @@ export const se = {
       beginGame: 'Álgge speallu →',
       botBattle: '🔮 Bohtosiid doarru',
       botBattleSub: ({ n, level }) => `${n} bohtosa · ${level}`,
-      changePlayers: '← Molsso spealáriid',
     },
 
     action: {
@@ -507,7 +504,6 @@ export const se = {
         'Vuosttažin 16+ čuoggát vuoitá',
       ],
       ui: {
-        newMatch: 'Ođđa spealan →',
         roundPoints: 'VUORU ČUOGGÁT',
         buildsLabel: 'HUKSEMAT',
         scoring: '10♦ = 2č · 2♠ = 1č · juohke áhssa = 1č · eanemus goarttat = 3č · eanemus speađat = 1č · juohke bartta = 1č',

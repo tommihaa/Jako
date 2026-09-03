@@ -159,7 +159,6 @@ export const ro = {
       fieldLabel: 'CÂMP',
       discardLabel: 'PACHET DE ARUNCARE',
       handLabel: 'ÎN MÂNĂ',
-      spectatorEnded: 'MODUL SPECTATOR S-A TERMINAT',
     },
 
     result: {
@@ -170,7 +169,6 @@ export const ro = {
       pts: 'p',
       newGame: 'Joc nou →',
       place: ({ n }) => `Locul ${n}`,
-      newWatch: '🤖 Mod spectator nou',
       newShort: '🤖 Nou',
       watchEnded: 'MODUL SPECTATOR S-A TERMINAT',
       battleEnded: '🤖 BĂTĂLIA S-A TERMINAT',
@@ -185,7 +183,6 @@ export const ro = {
       beginGame: 'Începe jocul →',
       botBattle: '🔮 Bătălia boților',
       botBattleSub: ({ n, level }) => `${n} boți · ${level}`,
-      changePlayers: '← Schimbă jucătorii',
     },
 
     action: {
@@ -507,7 +504,6 @@ export const ro = {
         'Primul cu 16+ puncte câștigă',
       ],
       ui: {
-        newMatch: 'Meci nou →',
         roundPoints: 'PUNCTELE RUNDEI',
         buildsLabel: 'CONSTRUCȚII',
         scoring: '10♦ = 2p · 2♠ = 1p · fiecare as = 1p · cele mai multe cărți = 3p · cele mai multe pici = 1p · fiecare mătură = 1p',

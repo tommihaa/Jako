@@ -76,11 +76,9 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   const [flipAnim,  setFA]   = useState(null); // { playerIdx, card }
   const [cardBackState]      = [cardBack];
   const [aiNames]            = useState(() => shuffledAINames(playerNames));
-  const [finishOrder, setFinishOrder] = useState([]); // eliminointijärjestys, ensin poistunut ensin
   const [allBots, setAllBots]         = useState(false);
   const [paused, setPaused]           = useState(false);
   const [aiDelayMs, setAiDelayMs]     = useState(2000);
-  const [pendingResult, setPendingResult] = useState(null);
 
   const pilesRef       = useRef([]);
   const finishOrderRef = useRef([]);
@@ -92,16 +90,10 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   const aiLevelRef   = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös.
-  // Muisti (memoryRef) on jaettu laskuri: päivitys tehdään istuinten korkeimman tason
-  // mukaan, mutta muistin KÄYTTÖ (ennakointi/ennustus) portitetaan istuinkohtaisesti.
+  // Muisti (memoryRef) on jaettu laskuri jonka YLLÄPITO on ehdoton, koska myös Heron
+  // Mestarin neuvo lukee sitä. Muistin KÄYTTÖ portitetaan istuinkohtaisesti lukuhetkellä.
   const botLevelsRef = useRef(botLevels);
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
-  const LVL_ORD = { beginner: 0, normal: 1, hard: 2 };
-  const topLvl = () => {
-    const bl = botLevelsRef.current;
-    if (!bl) return aiLevelRef.current;
-    return bl.reduce((m, l) => (LVL_ORD[l] ?? 0) > (LVL_ORD[m] ?? 0) ? l : m, 'beginner');
-  };
   // AI memory: kortinlaskija (normal) tracks seen ranks; tosilaskija (hard) also tracks collected-card order
   const memoryRef    = useRef({ seenByRank: {}, knownBottoms: {} });
   const predMatchRef = useRef(false); // tosilaskija: true when the next flip was predicted
@@ -183,7 +175,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
     setRevealAll(seeAll || allBotsMode);
     pausedRef.current = false; setPaused(false);
-    setPendingResult(null);
     clearTimeout(aiTmr.current);
     aiSlapTmrs.current.forEach(clearTimeout);
     clearTimeout(failTmr.current); setFR(null);
@@ -196,7 +187,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     setPhase('idle'); phaseRef.current = 'idle';
     setCh(null); chRef.current = null;
     setSR(null);
-    finishOrderRef.current = []; setFinishOrder([]);
+    finishOrderRef.current = []; // eliminointijärjestys, ensin poistunut ensin
     logRef.current = []; setLog([]);
     memoryRef.current = { seenByRank: {}, knownBottoms: {} };
     predMatchRef.current = false;
@@ -484,7 +475,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     if (newlyOut.length > 0) {
       const updated = [...alreadyOut, ...newlyOut];
       finishOrderRef.current = updated;
-      setFinishOrder(updated);
     }
   }
 
@@ -581,42 +571,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
       </div>
     </div>
   );
-
-  if (screen === 'gameover' && !allBotsRef.current) {
-    const winnerIdx = piles.findIndex(p => p.length > 0);
-    // Rakenna sijoituslista: voittaja ensin, sitten eliminointijärjestys käänteisesti
-    const ranked = [
-      winnerIdx >= 0 ? winnerIdx : null,
-      ...[...finishOrder].reverse(),
-    ].filter(i => i !== null);
-    const medals = ['🥇', '🥈', '🥉', '4️⃣'];
-
-    return (
-    <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-      <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 380 }}>
-        {ranked.map((playerIdx, rank) => {
-          const isWinner = rank === 0;
-          const p = piles[playerIdx];
-          return (
-            <div key={playerIdx} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderRadius: 12, background: isWinner ? C.gold + '14' : 'rgba(255,255,255,0.04)', border: `1px solid ${isWinner ? C.gold + '55' : C.panelBorder}` }}>
-              <span style={{ fontSize: 20, minWidth: 28 }}>{medals[rank] || '💀'}</span>
-              <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: isWinner ? C.gold : C.dim }}>{pName(playerIdx)}</span>
-              {isWinner
-                ? <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.gold, fontWeight: 700 }}>{t('ui.result.winCards', { n: p.length })}</span>
-                : <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }}>{t('ui.result.place', { n: rank + 1 })}</span>
-              }
-            </div>
-          );
-        })}
-      </div>
-      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-        <button onClick={startGame} style={{ background: `linear-gradient(135deg,${C.red},#8a1500)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: C.text, fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
-        <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.red}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.start.changePlayers')}</button>
-      </div>
-    </div>
-  );
-  }
 
   if (!piles.length) return null;
 
@@ -809,27 +763,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
           onDelayChange={v => { setAiDelayMs(v); aiDelayRef.current = v; }} isMobile={isMobile} />
       )}
 
-      {pendingResult && allBots && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(13,22,18,0.93)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, zIndex: 100, padding: 24 }}>
-          <div style={{ fontSize: 32 }}>🔮</div>
-          <h2 style={{ color: C.gold, fontFamily: 'Georgia,serif', margin: 0, letterSpacing: 4 }}>{t('ui.shared.spectatorEnded')}</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 340 }}>
-            {pendingResult.ranking.map((r, i) => {
-              const medals = ['🥇','🥈','🥉','4️⃣'];
-              return (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderRadius: 12, background: i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.04)', border: `1px solid ${i === 0 ? C.gold + '55' : C.panelBorder}` }}>
-                  <span style={{ fontSize: 18 }}>{medals[i] || ''}</span>
-                  <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: i === 0 ? C.gold : C.dim }}>{r.name}</span>
-                </div>
-              );
-            })}
-          </div>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <button onClick={startBotBattle} style={{ padding: '12px 28px', borderRadius: 12, background: 'rgba(123,47,190,0.3)', border: '1px solid rgba(123,47,190,0.5)', color: '#f0e6ff', fontSize: 14, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🔮 Uusi katselutila</button>
-            <button onClick={() => onResult?.(pendingResult)} style={{ padding: '12px 28px', borderRadius: 12, background: `linear-gradient(135deg,#e8c96a,${C.gold})`, border: 'none', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.results')}</button>
-          </div>
-        </div>
-      )}
 
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
         <button onClick={() => onShowLogChange?.(!showLog)} style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>

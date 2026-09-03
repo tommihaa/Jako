@@ -157,7 +157,6 @@ export const sv = {
       fieldLabel: 'FÄLT',
       discardLabel: 'KASTHÖG',
       handLabel: 'PÅ HAND',
-      spectatorEnded: 'ÅSKÅDARLÄGE AVSLUTAT',
     },
 
     result: {
@@ -168,7 +167,6 @@ export const sv = {
       pts: 'p',
       newGame: 'Nytt spel →',
       place: ({ n }) => `Plats ${n}`,
-      newWatch: '🤖 Nytt åskådarläge',
       newShort: '🤖 Ny',
       watchEnded: 'ÅSKÅDARLÄGET AVSLUTAT',
       battleEnded: '🤖 STRIDEN AVSLUTAD',
@@ -183,7 +181,6 @@ export const sv = {
       beginGame: 'Börja spelet →',
       botBattle: '🔮 Botternas Strid',
       botBattleSub: ({ n, level }) => `${n} bottar · ${level}`,
-      changePlayers: '← Byt spelare',
     },
 
     action: {
@@ -505,7 +502,6 @@ export const sv = {
         'Först till 16+ poäng vinner',
       ],
       ui: {
-        newMatch: 'Ny match →',
         roundPoints: 'RUNDANS POÄNG',
         buildsLabel: 'BYGGEN',
         scoring: '10♦ = 2p · 2♠ = 1p · varje ess = 1p · flest kort = 3p · flest spader = 1p · varje svep = 1p',

@@ -275,6 +275,7 @@ import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 // Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 // 'gameover' ei kuulu joukkoon tarkoituksella: kaksi sisarelta kopioitua vertailua
 // siihen on jo poistettu kuolleina (03e6b54, 24eaa6d), ja tämä tyyppi estää kolmannen.
+// Sisarten omat 'gameover'-tulosnäytöt poistettiin 3.9.2026 samasta syystä.
 /** @typedef {'play'|'awaiting_suit'|'finished'} Vaihe */
 /** @typedef {{phase: Vaihe, [k: string]: any}} PeliTila Vain vaihe on kiinnitetty; muut kentät vapaita. */
 
@@ -935,11 +936,11 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   }
 
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
-  // Sisarissa (Moska, Paskahousu, Ristiseiska) on tässä toinen efekti joka vierittää ylös
-  // kun phase on 'gameover'. Sitä ei ole tässä, ja se on tietoinen ero eikä puute: niissä
-  // 'gameover' vaihtaa näkymän kokonaan tulosnäytöksi, Seiskassa 'finished' jättää
-  // pelinäkymän paikalleen ja lisää alaosaan Tulokset-napin. Ylös vierittäminen veisi
-  // pelaajan pois siitä napista, ja tulosnäytön oma vieritys hoituu App.jsx:ssä.
+  // Sisarissa oli tässä toinen efekti joka vieritti ylös kun phase on 'gameover'. Se ja
+  // sen kohdenäyttö poistettiin 3.9.2026 kuolleina (kompositioauditointi H3), koska App
+  // vaihtaa tulosruutuun heti onResultista. Seiskan ero säilyy ja on tietoinen: 'finished'
+  // jättää pelinäkymän paikalleen ja lisää alaosaan Tulokset-napin, jota pelaaja klikkaa
+  // itse. Ylös vierittäminen veisi pelaajan pois siitä napista.
 
   // ── Select ──────────────────────────────────────────────────
   if (screen === 'select') return (
@@ -1240,7 +1241,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
             onClick={() => onResult?.(pendingResult)}
             style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}
           >
-            Tulokset →
+            {t('ui.result.results')}
           </button>
         )}
         {canAct && (

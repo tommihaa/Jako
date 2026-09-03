@@ -157,7 +157,6 @@ export const fr = {
       fieldLabel: 'TERRAIN',
       discardLabel: 'DÉFAUSSE',
       handLabel: 'EN MAIN',
-      spectatorEnded: 'MODE SPECTATEUR TERMINÉ',
     },
 
     result: {
@@ -168,7 +167,6 @@ export const fr = {
       pts: 'p',
       newGame: 'Nouvelle partie →',
       place: ({ n }) => `Place ${n}`,
-      newWatch: '🤖 Nouveau mode spectateur',
       newShort: '🤖 Nouveau',
       watchEnded: 'MODE SPECTATEUR TERMINÉ',
       battleEnded: '🤖 COMBAT TERMINÉ',
@@ -183,7 +181,6 @@ export const fr = {
       beginGame: 'Commencer la partie →',
       botBattle: '🔮 Combat de bots',
       botBattleSub: ({ n, level }) => `${n} bots · ${level}`,
-      changePlayers: '← Changer de joueurs',
     },
 
     action: {
@@ -505,7 +502,6 @@ export const fr = {
         'Premier à 16+ points gagne',
       ],
       ui: {
-        newMatch: 'Nouveau match →',
         roundPoints: 'POINTS DE LA MANCHE',
         buildsLabel: 'CONSTRUCTIONS',
         scoring: '10♦ = 2pts · 2♠ = 1pt · chaque as = 1pt · plus de cartes = 3pt · plus de piques = 1pt · chaque rafle = 1pt',

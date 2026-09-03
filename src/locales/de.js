@@ -157,7 +157,6 @@ export const de = {
       fieldLabel: 'FELD',
       discardLabel: 'ABLAGE',
       handLabel: 'AUF DER HAND',
-      spectatorEnded: 'ZUSCHAUERMODUS BEENDET',
     },
 
     result: {
@@ -168,7 +167,6 @@ export const de = {
       pts: 'P',
       newGame: 'Neues Spiel →',
       place: ({ n }) => `Platz ${n}`,
-      newWatch: '🤖 Neuer Zuschauermodus',
       newShort: '🤖 Neu',
       watchEnded: 'ZUSCHAUERMODUS BEENDET',
       battleEnded: '🤖 KAMPF BEENDET',
@@ -183,7 +181,6 @@ export const de = {
       beginGame: 'Spiel starten →',
       botBattle: '🔮 Bot-Kampf',
       botBattleSub: ({ n, level }) => `${n} Bots · ${level}`,
-      changePlayers: '← Spieler ändern',
     },
 
     action: {
@@ -505,7 +502,6 @@ export const de = {
         'Wer zuerst 16+ Punkte hat, gewinnt',
       ],
       ui: {
-        newMatch: 'Neues Match →',
         roundPoints: 'RUNDENPUNKTE',
         buildsLabel: 'AUFBAUTEN',
         scoring: '10♦ = 2P · 2♠ = 1P · jedes Ass = 1P · meiste Karten = 3P · meiste Pik = 1P · jedes Fegen = 1P',

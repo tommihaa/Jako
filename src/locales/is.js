@@ -157,7 +157,6 @@ export const is = {
       fieldLabel: 'REITUR',
       discardLabel: 'KASTHAUGUR',
       handLabel: 'Á HENDI',
-      spectatorEnded: 'ÁHORFSHAMUR LAUK',
     },
 
     result: {
@@ -168,7 +167,6 @@ export const is = {
       pts: 'st',
       newGame: 'Nýr leikur →',
       place: ({ n }) => `Sæti ${n}`,
-      newWatch: '🤖 Nýr áhorfshamur',
       newShort: '🤖 Nýr',
       watchEnded: 'ÁHORFSHAMUR LAUK',
       battleEnded: '🤖 ORRUSTU LAUK',
@@ -183,7 +181,6 @@ export const is = {
       beginGame: 'Hefja leik →',
       botBattle: '🔮 Orrusta bota',
       botBattleSub: ({ n, level }) => `${n} botar · ${level}`,
-      changePlayers: '← Skipta um leikmenn',
     },
 
     action: {
@@ -505,7 +502,6 @@ export const is = {
         'Fyrstur í 16+ stig vinnur',
       ],
       ui: {
-        newMatch: 'Ný viðureign →',
         roundPoints: 'STIG UMFERÐAR',
         buildsLabel: 'BYGGINGAR',
         scoring: '10♦ = 2st · 2♠ = 1st · hver ás = 1st · flest spil = 3st · flest spaðar = 1st · hvert svep = 1st',

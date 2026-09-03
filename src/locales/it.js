@@ -157,7 +157,6 @@ export const it = {
       fieldLabel: 'CAMPO',
       discardLabel: 'SCARTI',
       handLabel: 'IN MANO',
-      spectatorEnded: 'MODALITÀ SPETTATORE TERMINATA',
     },
 
     result: {
@@ -168,7 +167,6 @@ export const it = {
       pts: 'p',
       newGame: 'Nuova partita →',
       place: ({ n }) => `Posizione ${n}`,
-      newWatch: '🤖 Nuova modalità spettatore',
       newShort: '🤖 Nuova',
       watchEnded: 'MODALITÀ SPETTATORE TERMINATA',
       battleEnded: '🤖 BATTAGLIA TERMINATA',
@@ -183,7 +181,6 @@ export const it = {
       beginGame: 'Inizia la partita →',
       botBattle: '🔮 Battaglia dei Bot',
       botBattleSub: ({ n, level }) => `${n} bot · ${level}`,
-      changePlayers: '← Cambia giocatori',
     },
 
     action: {
@@ -505,7 +502,6 @@ export const it = {
         'Il primo a 16+ punti vince',
       ],
       ui: {
-        newMatch: 'Nuovo incontro →',
         roundPoints: 'PUNTI DEL GIRO',
         buildsLabel: 'COSTRUZIONI',
         scoring: '10♦ = 2pt · 2♠ = 1pt · ogni asso = 1pt · più carte = 3pt · più picche = 1pt · ogni scopa = 1pt',

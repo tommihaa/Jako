@@ -157,7 +157,6 @@ export const el = {
       fieldLabel: 'ΠΕΔΙΟ',
       discardLabel: 'ΑΠΟΡΡΙΨΗ',
       handLabel: 'ΣΤΟ ΧΕΡΙ',
-      spectatorEnded: 'Η ΛΕΙΤΟΥΡΓΙΑ ΘΕΑΤΗ ΤΕΛΕΙΩΣΕ',
     },
 
     result: {
@@ -168,7 +167,6 @@ export const el = {
       pts: 'π',
       newGame: 'Νέο παιχνίδι →',
       place: ({ n }) => `Θέση ${n}`,
-      newWatch: '🤖 Νέα λειτουργία θέασης',
       newShort: '🤖 Νέο',
       watchEnded: 'Η ΛΕΙΤΟΥΡΓΙΑ ΘΕΑΣΗΣ ΤΕΛΕΙΩΣΕ',
       battleEnded: '🤖 Η ΜΑΧΗ ΤΕΛΕΙΩΣΕ',
@@ -183,7 +181,6 @@ export const el = {
       beginGame: 'Ξεκίνα το παιχνίδι →',
       botBattle: '🔮 Μάχη μποτ',
       botBattleSub: ({ n, level }) => `${n} μποτ · ${level}`,
-      changePlayers: '← Άλλαξε παίκτες',
     },
 
     action: {
@@ -505,7 +502,6 @@ export const el = {
         'Πρώτος στους 16+ πόντους κερδίζει',
       ],
       ui: {
-        newMatch: 'Νέος αγώνας →',
         roundPoints: 'ΠΟΝΤΟΙ ΓΥΡΟΥ',
         buildsLabel: 'ΚΤΙΣΜΑΤΑ',
         scoring: '10♦ = 2π · 2♠ = 1π · κάθε άσος = 1π · περισσότερα χαρτιά = 3π · περισσότερα μπαστούνια = 1π · κάθε σάρωμα = 1π',

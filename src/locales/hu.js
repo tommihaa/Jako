@@ -160,7 +160,6 @@ export const hu = {
       fieldLabel: 'MEZŐ',
       discardLabel: 'DOBÓPAKLI',
       handLabel: 'KÉZBEN',
-      spectatorEnded: 'NÉZŐ MÓD VÉGE',
     },
 
     result: {
@@ -171,7 +170,6 @@ export const hu = {
       pts: 'p',
       newGame: 'Új játék →',
       place: ({ n }) => `${n}. hely`,
-      newWatch: '🤖 Új néző mód',
       newShort: '🤖 Új',
       watchEnded: 'NÉZŐ MÓD VÉGE',
       battleEnded: '🤖 CSATA VÉGE',
@@ -186,7 +184,6 @@ export const hu = {
       beginGame: 'Játék kezdése →',
       botBattle: '🔮 Botok csatája',
       botBattleSub: ({ n, level }) => `${n} bot · ${level}`,
-      changePlayers: '← Játékosok cseréje',
     },
 
     action: {
@@ -508,7 +505,6 @@ export const hu = {
         'Aki először 16+ pont, nyer',
       ],
       ui: {
-        newMatch: 'Új mérkőzés →',
         roundPoints: 'A KÖR PONTJAI',
         buildsLabel: 'ÉPÍTMÉNYEK',
         scoring: '10♦ = 2p · 2♠ = 1p · minden ász = 1p · legtöbb lap = 3p · legtöbb pikk = 1p · minden söprés = 1p',

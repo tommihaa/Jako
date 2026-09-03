@@ -168,7 +168,6 @@ export const cs = {
       fieldLabel: 'POLE',
       discardLabel: 'ODHAZOVACÍ BALÍČEK',
       handLabel: 'V RUCE',
-      spectatorEnded: 'REŽIM SLEDOVÁNÍ SKONČIL',
     },
 
     result: {
@@ -179,7 +178,6 @@ export const cs = {
       pts: 'b',
       newGame: 'Nová hra →',
       place: ({ n }) => `Místo ${n}`,
-      newWatch: '🤖 Nový režim sledování',
       newShort: '🤖 Nová',
       watchEnded: 'REŽIM SLEDOVÁNÍ SKONČIL',
       battleEnded: '🤖 BITVA SKONČILA',
@@ -194,7 +192,6 @@ export const cs = {
       beginGame: 'Začít hru →',
       botBattle: '🔮 Bitva botů',
       botBattleSub: ({ n, level }) => `${n} botů · ${level}`,
-      changePlayers: '← Změnit hráče',
     },
 
     action: {
@@ -516,7 +513,6 @@ export const cs = {
         'Kdo první 16+ bodů, vyhrává',
       ],
       ui: {
-        newMatch: 'Nový zápas →',
         roundPoints: 'BODY KOLA',
         buildsLabel: 'STAVBY',
         scoring: '10♦ = 2b · 2♠ = 1b · každé eso = 1b · nejvíc karet = 3b · nejvíc piků = 1b · každý domeček = 1b',

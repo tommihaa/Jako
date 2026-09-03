@@ -200,7 +200,6 @@ export const fi = {
       fieldLabel: 'KENTTÄ',
       discardLabel: 'POISTOPAKKA',
       handLabel: 'KÄDESSÄ',
-      spectatorEnded: 'KATSOMOTILA PÄÄTTYI',
     },
 
     result: {
@@ -211,7 +210,6 @@ export const fi = {
       pts: 'p',
       newGame: 'Uusi peli →',
       place: ({ n }) => `Sija ${n}`,
-      newWatch: '🤖 Uusi katselutila',
       newShort: '🤖 Uusi',
       watchEnded: 'KATSELUTILA PÄÄTTYI',
       battleEnded: '🤖 TAISTELU PÄÄTTYI',
@@ -227,7 +225,6 @@ export const fi = {
       beginGame: 'Aloita peli →',
       botBattle: '🔮 Bottien Taistelu',
       botBattleSub: ({ n, level }) => `${n} bottia · ${level}`,
-      changePlayers: '← Vaihda pelaajia',
     },
 
     action: {
@@ -549,7 +546,6 @@ export const fi = {
         'Ensimmäisenä 16+ pistettä voittaa',
       ],
       ui: {
-        newMatch: 'Uusi ottelu →',
         roundPoints: 'KIERROKSEN PISTEET',
         buildsLabel: 'RAKENNELMAT',
         scoring: '10♦ = 2p · 2♠ = 1p · kukin ässä = 1p · eniten kortteja = 3p · eniten patoja = 1p · kukin mökki = 1p',

@@ -245,7 +245,6 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   const [paused, setPaused]     = useState(false);
   const [aiDelayMs, setAiDelayMs] = useState(2000);
   const [intention, setIntention] = useState(null); // { playerIdx, slotIdx } | null
-  const [pendingResult, setPendingResult] = useState(null);
   const [advice, setAdvice] = useState(null); // { text, slot?, target? } | null
 
   const logRef     = useRef([]);
@@ -311,7 +310,6 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
     setRevealAll(seeAll || allBotsMode);
     pausedRef.current = false; setPaused(false);
-    setPendingResult(null);
     const cnt = forcedCount || nP;
     const g = initGame(cnt, playerNames, allBotsMode);
     setG(g); gRef.current = g;
@@ -397,7 +395,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     } else {
       onResult?.({ ranking, revealCards });
     }
-    setPhase('gameover'); setScreen('gameover'); setMsg(M.gameOver);
+    setPhase('gameover'); setMsg(M.gameOver);
   }
 
   function humanDrawDeck() {
@@ -749,40 +747,6 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     </div>
   );
 
-  if (screen === 'gameover' && G && !allBotsRef.current) {
-    const sorted = [...G.players].sort(pRank);
-    return (
-      <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>
-        <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {sorted.map((p, i) => (
-            <div key={p.id} style={{ borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, background: i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${i === 0 ? C.gold + '55' : '#1a3a22'}` }}>
-              <div style={{ fontSize: 24, minWidth: 32, textAlign: 'center' }}>{i === 0 ? '🏆' : i === sorted.length - 1 ? '💀' : '🎯'}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, color: i === 0 ? C.gold : C.text, marginBottom: 6, fontSize: 15 }}>{p.name}</div>
-                <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                  {p.cards.map((c, ci) => <Card key={ci} card={c} faceUp small />)}
-                </div>
-              </div>
-              <div style={{ fontSize: 22, fontWeight: 700, color: i === 0 ? C.gold : C.dim }}>{pScore(p)}<span style={{ fontSize: 11, opacity: 0.55 }}> p</span></div>
-            </div>
-          ))}
-        </div>
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          {allBots ? (
-            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1e9a)', border: 'none', borderRadius: 12, padding: '12px 28px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newWatch')}</button>
-          ) : (
-            <>
-              <Btn label={t('ui.result.newGame')} onClick={() => startGame()} color={C.gold} />
-              <Btn label={t('ui.start.changePlayers')} onClick={() => setScreen('select')} color={C.gold} outline />
-            </>
-          )}
-        </div>
-        <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}`}</style>
-      </div>
-    );
-  }
-
   if (!G) return null;
 
   const human = G.players[0];
@@ -987,24 +951,6 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       </div>
 
       {/* PendingResult overlay — allBots-tilan loppunäyttö */}
-      {pendingResult && screen === 'game' && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 500, background: 'rgba(0,0,0,0.88)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24 }}>
-          <div style={{ fontSize: 26, color: C.botMode, fontFamily: 'Georgia,serif', letterSpacing: 4 }}>{t('ui.result.battleEnded')}</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 380 }}>
-            {pendingResult.ranking.map((p, i) => (
-              <div key={p.name} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderRadius: 12, background: i === 0 ? 'rgba(123,47,190,0.2)' : 'rgba(255,255,255,0.04)', border: `1px solid ${i === 0 ? 'rgba(192,132,252,0.5)' : 'rgba(255,255,255,0.08)'}` }}>
-                <span style={{ fontSize: 20 }}>{i === 0 ? '🏆' : '🤖'}</span>
-                <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 14, color: i === 0 ? C.botMode : C.text }}>{p.name}</span>
-                <span style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 700, color: i === 0 ? C.botMode : C.dim }}>{p.score}<span style={{ fontSize: 11, opacity: 0.6 }}>p</span></span>
-              </div>
-            ))}
-          </div>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginTop: 8 }}>
-            <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1e9a)', border: 'none', borderRadius: 12, padding: '12px 28px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newBattle')}</button>
-            <button onClick={() => { setPendingResult(null); setScreen('select'); }} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12, padding: '12px 20px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.menu.back')}</button>
-          </div>
-        </div>
-      )}
 
       <style>{`
         @keyframes rpulse{0%{transform:scale(1);box-shadow:0 0 22px rgba(224,92,59,0.4)}40%{transform:scale(1.13);box-shadow:0 0 32px rgba(224,92,59,0.7)}100%{transform:scale(1);box-shadow:0 0 22px rgba(224,92,59,0.4)}}

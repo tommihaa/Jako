@@ -261,8 +261,9 @@ Tommin vastaukset Kysymykset-osioon. Rivi kertoo päätöksen ja sen tilan koodi
    `botLevelsRef.current?.[i] ?? aiLevelRef.current` kaikissa yhdeksässä pelissä (Kasino
    1047, Koputus 529 ja 656, Seiska 654, 673 ja 788). Seiskan oma ehtolähde
    `players.every(!isHuman)` poistui samalla, joten neljättä muotoa ei enää ole. Läpsyn
-   `topLvl()` jäi, koska se on eri asia: jaettu muistilaskuri päivitetään istuinten
-   korkeimman tason mukaan ja perustelu on koodissa. Botbench ei muutu, koska se antaa
+   `topLvl()` jäi aluksi, koska se näytti eri asialta. H3:n poiston yhteydessä selvisi
+   ettei sitä kutsuta mistään, ei myöskään auditointihetken puussa, joten se oli kuollut
+   funktio eikä neljäs sääntö. Se on nyt poistettu. Botbench ei muutu, koska se antaa
    `botLevels`in aina. `allbots-smoke` ajaa nyt kaikki yhdeksän Kisällillä. Testit 132
    läpi. `BOTBENCH.md` ei tarvitse merkintää, koska sääntö on nyt yksi eikä poikkeusta ole.
 2. **Asetuksen omistaja (H6): App omistaa kaikki kolme, tehty.** Pelit lukevat `soundOn`-,
@@ -280,13 +281,59 @@ Tommin vastaukset Kysymykset-osioon. Rivi kertoo päätöksen ja sen tilan koodi
    lokikytkin kirjoitti `jako:showLog`-arvon ja `jako:uiPreset`-arvon `custom`, ja Bottien
    Taistelun jälkeen aloitettu ihmispeli avautui paljastus pois päältä eli asetus ei
    likaantunut. Ei konsolivirheitä.
-3. **Kultakalan tasapeli (H3): jaettu sija ilman arvontaa, tehty.** Kaanoni ensin:
+3. **Kultakalan tasapeli (H3): jaettu sija ilman arvontaa, tehty.** Kaanoni ensin, eli
    `KULTAKALA.md` sai Tasapeli-osion. Sen jälkeen koodista poistuivat `DiceRoll`,
    `NoppaVaihe`-typedef, `showDice`, `tiedPlayers`, `M.tieBreaker` ja käyttämättä jäänyt
    `minScore`. Orvot i18n-avaimet poistettiin 23 localesta
    (`games.kultakala.msg.tieBreaker`, `games.kultakala.ui.showResults`, `ui.shared.tie`,
    `ui.shared.points`). `doReveal`in `ranking` laski jaetun sijan jo ennestään
-   (`place = count(total < oma) + 1`), joten `GameResult` ei muuttunut.
+   (`place = count(total < oma) + 1`), joten `GameResult` ei muuttunut. H3:n muu kuollut
+   kerros poistettiin samana päivänä, ks. H3 kuollut kerros poistettu 3.9.2026 alla.
+4. **Testisauma: molemmat saumat.** `allbots-smoke` jää komponenttisaumaksi
+   korrektiusverkoksi ja Botbench siirtyy puhtaalle saumalle määrää varten. Toteutus ei ole
+   oma projektinsa vaan H4:n ja H5:n hyväksymiskriteeri, ks. Testisauman vaihtoehdot alla.
+   Päätöksestä seuraa yksi uusi vaatimus, eli ristiintarkistustesti joka pitää kaksi saumaa
+   samaa mieltä. Ilman sitä päätös rappeutuu kahdeksi eri totuudeksi.
+
+### H3 kuollut kerros poistettu 3.9.2026
+
+Yhdeksän peliä siivottu, 441 riviä pois peleistä ja 92 riviä orpoja i18n-avaimia
+23 localesta. Poistettu neljässä osassa.
+
+- **`pendingResult`-kerros kahdeksasta pelistä.** Tila, katselutilan overlay ja
+  "Tulokset →" -napit. Seiskan `pendingResult` jäi, koska se on ainoa elävä: siellä
+  ihmispeli jättää pelinäkymän paikalleen ja pelaaja klikkaa itse tulokseen. Seiskan
+  kääntämätön `Tulokset →` vaihtui avaimeksi `ui.result.results`.
+- **Pelien omat tulosruudut kahdeksasta pelistä.** Viisi oli ehdon `screen === 'gameover'`
+  takana (Kasino, Koputus, Kultakala, Läpsy, Maija) ja kolme ehdon
+  `screen === 'game' && G?.phase === 'gameover'` takana (Moska, Paskahousu, Ristiseiska).
+  Jälkimmäistä kolmea auditointi ei nimennyt erikseen, ja ne löytyivät vasta poiston
+  aikana. Kaikissa kahdeksassa ihmispolun `onResult` on synkroninen samassa
+  tapahtumakäsittelijässä, joten App vaihtaa `GameResult`iin samassa commitissa eikä
+  pelin oma ruutu ehdi renderöityä. Mukana poistuivat niitä syöttäneet
+  `setScreen('gameover')`-kutsut ja kolme vieritysefektiä jotka vierittivät poistettuun
+  ruutuun.
+- **Kasinon kuollut haara.** Kun ottelu ratkesi ihmispelissä, JSX tarjosi napin uuteen
+  otteluun. App oli jo vaihtanut tulosruutuun, joten haara poistui ja jäljelle jäi
+  katselutilan teksti.
+- **Läpsyn `topLvl()` ja `finishOrder`.** `topLvl` osoittautui kutsumattomaksi jo
+  auditointihetken puussa (`acf80c3`), joten H2:n väite neljännestä muodosta oli väärä:
+  se ei ollut neljäs sääntö vaan kuollut funktio. Sen viereinen kommentti väitti muistin
+  ylläpidon menevän istuinten korkeimman tason mukaan, mikä ei pidä paikkaansa, koska
+  ylläpito on ehdoton ja portti on lukuhetkellä. Kommentti korjattiin. `finishOrder`-tila
+  jäi kuolleeksi tulosruudun poiston myötä ja `finishOrderRef` kantaa saman tiedon.
+- **Orvot i18n-avaimet.** `ui.result.newWatch`, `ui.start.changePlayers`,
+  `ui.shared.spectatorEnded` ja `games.kasino.ui.newMatch` poistettiin 23 localesta.
+
+Todennettu previewissä. Kultakalan ihmispeli pelattiin loppuun ja `GameResult` avautui
+sijoituksineen ja paljastettuine kortteineen, ja Ristiseiskan katselutila ajettiin loppuun
+ja App:n bottibanneri Toisto-nappeineen tuli näkyviin pelinäkymän päälle. Ei
+konsolivirheitä. Testit 132 läpi, typecheck puhdas.
+
+Jäljelle jäi kaksi kohtaa jotka näyttävät samalta mutta kuuluvat muihin havaintoihin.
+Kultakalan `drawnFromDeck` asetetaan seitsemän kertaa eikä lueta kertaakaan (H5) ja
+Seiskan `setPlayerSlots` ei ole kutsuttu (H8, `PlayerSetup`).
+
 ### Kultakalan noppaväitteen todennus (kysymys 3)
 
 Väite tarkentui koodista eikä previewistä, ja se vahvistui. Raportti nojasi yhteen haaraan
@@ -296,12 +343,6 @@ ehdi). Toinen haara sulkeutuu rivillä 656: pelin oma tulosruutu on ehdon
 nimenomaisesti suljettu pois. Molemmat polut ovat siis kiinni ja `DiceRoll` on
 saavuttamaton kaikissa tiloissa. Preview-ajo ei voi näyttää arvontaa eikä siten todistaa
 väitettä; se näyttäisi vain että `GameResult` tulee heti. Siksi todennus tehtiin koodista.
-
-4. **Testisauma: molemmat saumat.** `allbots-smoke` jää komponenttisaumaksi
-   korrektiusverkoksi ja Botbench siirtyy puhtaalle saumalle määrää varten. Toteutus ei ole
-   oma projektinsa vaan H4:n ja H5:n hyväksymiskriteeri, ks. Testisauman vaihtoehdot alla.
-   Päätöksestä seuraa yksi uusi vaatimus: ristiintarkistustesti joka pitää kaksi saumaa
-   samaa mieltä. Ilman sitä päätös rappeutuu kahdeksi eri totuudeksi.
 
 ### Konfliktit asetuksen omistajuudessa (kysymys 2)
 

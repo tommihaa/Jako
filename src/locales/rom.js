@@ -160,7 +160,6 @@ export const rom = {
       fieldLabel: 'POLE',
       discardLabel: 'KUPA ŠUDIMASKI',
       handLabel: 'ANDO VAST',
-      spectatorEnded: 'MODO DIKHIMASKO AGORIME',
     },
 
     result: {
@@ -171,7 +170,6 @@ export const rom = {
       pts: 'p',
       newGame: 'Nevo khelipe →',
       place: ({ n }) => `Than ${n}`,
-      newWatch: '🤖 Nevo modo dikhimasko',
       newShort: '🤖 Nevo',
       watchEnded: 'MODO DIKHIMASKO AGORIME',
       battleEnded: '🤖 MARIPE AGORIME',
@@ -186,7 +184,6 @@ export const rom = {
       beginGame: 'Šuru o khelipe →',
       botBattle: '🔮 Maripe le botengo',
       botBattleSub: ({ n, level }) => `${n} boti · ${level}`,
-      changePlayers: '← Paruv le khelutnen',
     },
 
     action: {
@@ -508,7 +505,6 @@ export const rom = {
         'Angluno 16+ punkti nirisarel',
       ],
       ui: {
-        newMatch: 'Nevo meči →',
         roundPoints: 'PUNKTI LE RUNDOSKE',
         buildsLabel: 'VAZDIMATA',
         scoring: '10♦ = 2p · 2♠ = 1p · sako aso = 1p · majbut karti = 3p · majbut pike = 1p · sako kher = 1p',

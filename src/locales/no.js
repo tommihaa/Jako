@@ -157,7 +157,6 @@ export const no = {
       fieldLabel: 'FELT',
       discardLabel: 'KASTBUNKE',
       handLabel: 'PÅ HÅNDEN',
-      spectatorEnded: 'SEMODUS AVSLUTTET',
     },
 
     result: {
@@ -168,7 +167,6 @@ export const no = {
       pts: 'p',
       newGame: 'Nytt spill →',
       place: ({ n }) => `Plass ${n}`,
-      newWatch: '🤖 Ny semodus',
       newShort: '🤖 Ny',
       watchEnded: 'SEMODUS AVSLUTTET',
       battleEnded: '🤖 KAMP AVSLUTTET',
@@ -183,7 +181,6 @@ export const no = {
       beginGame: 'Start spill →',
       botBattle: '🔮 Botkamp',
       botBattleSub: ({ n, level }) => `${n} boter · ${level}`,
-      changePlayers: '← Bytt spillere',
     },
 
     action: {
@@ -505,7 +502,6 @@ export const no = {
         'Først til 16+ poeng vinner',
       ],
       ui: {
-        newMatch: 'Ny kamp →',
         roundPoints: 'RUNDENS POENG',
         buildsLabel: 'BYGGVERK',
         scoring: '10♦ = 2p · 2♠ = 1p · hvert ess = 1p · flest kort = 3p · flest spar = 1p · hver feiing = 1p',

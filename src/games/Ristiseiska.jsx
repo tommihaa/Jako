@@ -415,7 +415,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
   const [paused, setPaused]               = useState(false);
   const [aiDelayMs, setAiDelayMs]         = useState(2000);
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
-  const [pendingResult, setPendingResult] = useState(null);
   const [advice, setAdvice]               = useState(null); // { text, cardIds } | null
 
   const gRef       = useRef(null);
@@ -488,7 +487,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
     setRevealAll(seeAll || allBotsMode);
     pausedRef.current = false; setPaused(false);
-    setPendingResult(null);
     clearTimeout(aiTmr.current);
     const count = forcedCount ?? nP;
     const g = initGame(count, playerNames, allBotsMode, rules);
@@ -754,7 +752,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
   }
 
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
-  useEffect(() => { if (G?.phase === 'gameover') window.scrollTo(0, 0); }, [G?.phase]);
 
   // ── Select ──────────────────────────────────────────────────
   if (screen === 'select') return (
@@ -810,32 +807,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
   );
 
   // ── Gameover ────────────────────────────────────────────────
-  if (screen === 'game' && G?.phase === 'gameover' && !allBotsRef.current) {
-    const { finished, players } = G;
-    return (
-      <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-        <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>
-        <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {finished.map((pid, i) => {
-            const p = players[pid];
-            const isFirst = i === 0, isLast = i === finished.length - 1;
-            return (
-              <div key={pid} style={{ borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, background: isFirst ? C.gold + '14' : 'rgba(255,255,255,0.02)', border: `1px solid ${isFirst ? C.gold + '55' : C.panelBorder}` }}>
-                <span style={{ fontSize: 20 }}>{isFirst ? '🏆' : isLast ? '💀' : '🎯'}</span>
-                <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: isFirst ? C.gold : C.text }}>{p.name}</span>
-                <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }}>{t('ui.result.place', { n: i + 1 })}</span>
-              </div>
-            );
-          })}
-        </div>
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.result.newGame')}</button>
-          <button onClick={() => setScreen('select')} style={{ background: 'transparent', border: `1px solid ${C.gold}55`, borderRadius: 12, padding: '12px 24px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.start.changePlayers')}</button>
-        </div>
-      </div>
-    );
-  }
-
   if (!G) return null;
 
   const human       = G.players[0];
@@ -1031,27 +1002,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
           onDelayChange={v => { setAiDelayMs(v); aiDelayRef.current = v; }} isMobile={isMobile} />
       )}
 
-      {pendingResult && allBots && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(13,22,18,0.93)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, zIndex: 100, padding: 24 }}>
-          <div style={{ fontSize: 32 }}>🔮</div>
-          <h2 style={{ color: C.gold, fontFamily: 'Georgia,serif', margin: 0, letterSpacing: 4 }}>{t('ui.shared.spectatorEnded')}</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 340 }}>
-            {pendingResult.ranking.map((r, i) => {
-              const medals = ['🥇','🥈','🥉','4️⃣'];
-              return (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderRadius: 12, background: i === 0 ? C.gold + '14' : 'rgba(255,255,255,0.04)', border: `1px solid ${i === 0 ? C.gold + '55' : C.panelBorder}` }}>
-                  <span style={{ fontSize: 18 }}>{medals[i] || ''}</span>
-                  <span style={{ fontFamily: 'sans-serif', fontSize: 14, flex: 1, color: i === 0 ? C.gold : C.dim }}>{r.name}</span>
-                </div>
-              );
-            })}
-          </div>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <button onClick={startBotBattle} style={{ padding: '12px 28px', borderRadius: 12, background: 'rgba(123,47,190,0.3)', border: '1px solid rgba(123,47,190,0.5)', color: '#f0e6ff', fontSize: 14, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>🔮 Uusi katselutila</button>
-            <button onClick={() => onResult?.(pendingResult)} style={{ padding: '12px 28px', borderRadius: 12, background: `linear-gradient(135deg,#e8c96a,${C.gold})`, border: 'none', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>Tulokset →</button>
-          </div>
-        </div>
-      )}
 
       {/* Loki */}
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>

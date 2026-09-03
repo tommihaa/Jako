@@ -166,7 +166,6 @@ export const pl = {
       fieldLabel: 'POLE',
       discardLabel: 'STOS ZRZUTÓW',
       handLabel: 'W RĘCE',
-      spectatorEnded: 'TRYB WIDZA ZAKOŃCZONY',
     },
 
     result: {
@@ -177,7 +176,6 @@ export const pl = {
       pts: 'p',
       newGame: 'Nowa gra →',
       place: ({ n }) => `Miejsce ${n}`,
-      newWatch: '🤖 Nowe oglądanie',
       newShort: '🤖 Nowa',
       watchEnded: 'TRYB OGLĄDANIA ZAKOŃCZONY',
       battleEnded: '🤖 BITWA ZAKOŃCZONA',
@@ -192,7 +190,6 @@ export const pl = {
       beginGame: 'Rozpocznij grę →',
       botBattle: '🔮 Bitwa botów',
       botBattleSub: ({ n, level }) => `${n} ${plural(n, 'bot', 'boty', 'botów')} · ${level}`,
-      changePlayers: '← Zmień graczy',
     },
 
     action: {
@@ -514,7 +511,6 @@ export const pl = {
         'Pierwszy, kto zdobędzie 16+ punktów, wygrywa',
       ],
       ui: {
-        newMatch: 'Nowy mecz →',
         roundPoints: 'PUNKTY RUNDY',
         buildsLabel: 'BUDOWLE',
         scoring: '10♦ = 2p · 2♠ = 1p · każdy as = 1p · najwięcej kart = 3p · najwięcej pik = 1p · każda zamiatka = 1p',
