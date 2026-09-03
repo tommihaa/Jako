@@ -668,9 +668,22 @@ nähtiin lyönti, passaus panttikortteineen ja bonusvuoro. Katselutila ajettiin 
 (105 kehystä, tulosbanneri ja Toisto). Ei konsolivirheitä. Testit 137 läpi, tyyppitarkistus
 puhdas.
 
-**Mitä ei todennettu.** Sääntövariaatiota "satunnainen pantti" ei ajettu selaimessa, eikä
-sitä kata mikään testi, koska saumaparitesti ajaa vakiosäännöllä. Ihmispeliä ei pelattu
-loppuun asti, joten ihmispolun synkroninen `onResult` nojaa katselutilan ajoon ja testeihin.
+**Kaksi aukkoa jäi ensin auki ja ne suljettiin samana päivänä.** Sääntövariaatio "satunnainen
+pantti" oli kaikkien porttien ulkopuolella, koska saumaparitesti ajaa vakiosäännöllä. Arvottu
+pantti kuluttaa satunnaislukuja, eivätkä saumojen lukujonot ole samat, joten sitä ei voi
+lisätä siihen testiin. Tilalle tuli `test/ristiseiska-pantti.test.js`, joka ajaa säännön
+moottorista ilman Reactia ja kattaa kolme kohtaa `RISTISEISKA.md`:n Pantti-osiosta. Vakiossa
+ihminen antajana pysäyttää pelin valintaan eivätkä kädet muutu ennen valintaa,
+satunnaisasennossa kortti arvotaan myös ihmiseltä ja juuri se kortti siirtyy antajalta
+passaajalle, ja ensimmäisellä kierroksella panttia ei anneta kummassakaan asennossa.
+
+Molemmat aukot todennettiin myös selaimessa erillisessä ajossa, jossa sääntövalinta oli
+Satunnainen ja ihmispeli pelattiin loppuun asti. Aloitusnäytön valinta vaihtoi ohjetekstin,
+Hero passasi ja sai arvotun kortin ilman valintaruutua ("Hero passaa ja vetää korttipantiksi
+satunnaisen kortin (4♣) pelaajan Hipster viuhkasta"), botit tekivät saman keskenään, ja
+ensimmäisen kierroksen passaus tuli lokiin rangaistuksettomana. Hero voitti pelin, ja
+tulosruutu tuli oikealla järjestyksellä vasta kun kolme neljästä oli lopettanut. Matkalla
+ajettiin toinen bonusvuoro ja sen En jatka -nappi. Ei konsolivirheitä.
 
 **Mitä tästä seuraa muille kahdeksalle pelille.** Koe mittasi hinnan yhdestä pelistä.
 Ristiseiska on 979 rivillään pienin ja rakenteeltaan lähimpänä mallia, joten se on alaraja
