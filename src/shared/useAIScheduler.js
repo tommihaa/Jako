@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 // Jaettu AI-vuoron ajastin-primitiivi kaikille peleille.
 // Kapseloi ajastimen tila + siivous yhteen paikkaan; peli saa kahvan sen
@@ -6,24 +6,46 @@ import { useRef, useEffect } from 'react';
 //
 // Refit palautetaan sellaisenaan, koska pelit kirjoittavat .current jatkuvasti
 // (pausedRef.current = next togglePausessa, allBotsRef.current = mode Replayssa).
-// useState-parit (setPaused/setAllBots/setAiDelayMs) + togglePause jäävät peliin —
-// ne ohjaavat renderiä ja voivat sisältää pelikohtaista logiikkaa.
 //
-//   defaultDelay      — perusviive (Seiska 1200, muut 2000)
+// useState-parit ja togglePause siirtyivät tänne 3.9.2026 (kompositioauditointi H1).
+// Ne olivat yhdeksänä kopiona, ja hookin vanha kommentti perusteli jäämistä
+// "pelikohtaisella logiikalla" jota oli vain Seiskassa. Se on nyt onResume-optio.
+//
+//   defaultDelay      — perusviive ja aiDelayMs:n alkuarvo (Seiska 1200, muut 2000)
 //   jitter            — satunnaislisä viiveeseen (Paskahousu 300, muut 400)
 //   extraTimerRefs    — pelikohtaiset lisä-setTimeout-refit siivottavaksi (esim. [lastPlayTmr])
 //   extraIntervalRefs — pelikohtaiset setInterval-refit siivottavaksi (esim. [reactInt])
+//   onResume          — ajetaan kun tauko vapautetaan (Seiska jatkaa odottavan siirron)
+/**
+ * @param {{ defaultDelay?: number, jitter?: number,
+ *           extraTimerRefs?: Array<{current: any}>, extraIntervalRefs?: Array<{current: any}>,
+ *           onResume?: () => void }} [opts]
+ */
 export function useAIScheduler({
   defaultDelay = 2000,
   jitter = 400,
   extraTimerRefs = [],
   extraIntervalRefs = [],
+  onResume,
 } = {}) {
   const aiTmr      = useRef(null);
   const tmrs       = useRef(new Set());
   const pausedRef  = useRef(false);
   const allBotsRef = useRef(false);
   const aiDelayRef = useRef(defaultDelay);
+
+  // Renderiä ohjaavat parit. Refit yllä ovat ajastinlogiikan totuus, nämä ovat sama
+  // tieto näytölle; pari pidetään synkassa kirjoittamalla molemmat samassa lauseessa.
+  const [paused, setPaused]       = useState(false);
+  const [allBots, setAllBots]     = useState(false);
+  const [aiDelayMs, setAiDelayMs] = useState(defaultDelay);
+
+  const onResumeRef = useRef(onResume); onResumeRef.current = onResume;
+  function togglePause() {
+    const next = !pausedRef.current;
+    pausedRef.current = next; setPaused(next);
+    if (!next) onResumeRef.current?.();
+  }
 
   // Vahditon UI-ajastin — ei pysähdy Tauko-tilassa. Rekisteröi id:n siivousta varten.
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
@@ -55,5 +77,6 @@ export function useAIScheduler({
     intervalRefsRef.current.forEach(r => r && clearInterval(r.current));
   }, []);
 
-  return { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard };
+  return { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard,
+           paused, setPaused, allBots, setAllBots, aiDelayMs, setAiDelayMs, togglePause };
 }

@@ -4,7 +4,7 @@ import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, shuffle, truncName, newDeck, cardName } from '../shared/helpers.js';
+import { isRed, lbl, shuffle, truncName, newDeck, cardName, shuffledAINames, lblColored, LOG_MAX, BOT_RESULT_DELAY } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -13,12 +13,9 @@ import { useT, tr } from '../shared/i18n.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
-const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 
 // Värilliset kortit lokeissa
-const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 const M = {
   get gameStart() { return tr('games.kultakala.msg.gameStart'); },
@@ -224,16 +221,13 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   const [shuffling, setShuffling] = useState(false);
   const [kohahdus, setKohahdus] = useState(null);
   const [lastPlay, setLastPlay] = useState(null);
-  const [allBots, setAllBots]             = useState(false);
-  const [paused, setPaused]               = useState(false);
-  const [aiDelayMs, setAiDelayMs]         = useState(2000);
   const [advice, setAdvice]               = useState(null); // { text, target? } | null
 
   const gRef        = useRef(null);
   const phaseRef    = useRef(/** @type {Vaihe} */ ('idle'));
   const curRef      = useRef(0);
   const logRef      = useRef([]);
-  const sndRef      = useRef(true);
+  const sndRef      = useRef(soundOn);
   const aiLevelRef  = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
@@ -241,7 +235,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const drawnFromRef = useRef(null); // 'deck' | 'discard' | null
   const lastPlayTmr  = useRef(null);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; }, [G]);
@@ -273,7 +267,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   function addLog(m) {
     setMsg_(m);
     const e = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
-    logRef.current = [e, ...logRef.current].slice(0, 50);
+    logRef.current = [e, ...logRef.current].slice(0, LOG_MAX);
     setLog([...logRef.current]);
     if (allBotsRef.current && onSnapshot && gRef.current) {
       const g = gRef.current;
@@ -318,10 +312,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     startGame(nP, true);
   }
 
-  function togglePause() {
-    const next = !pausedRef.current;
-    pausedRef.current = next; setPaused(next);
-  }
 
   function advance(g, fromIdx) {
     if (phaseRef.current === 'gameover') return;
@@ -554,7 +544,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       place: sortedSc.filter(q => q.total < p.total).length + 1,
     }));
     const revealCards = g.players.map(p => ({ name: p.name, cards: [p.unknown, ...p.row] }));
-    if (allBotsRef.current) { tm(() => onResult?.({ ranking, revealCards }), 800); }
+    if (allBotsRef.current) { tm(() => onResult?.({ ranking, revealCards }), BOT_RESULT_DELAY); }
     else { onResult?.({ ranking, revealCards }); }
     // Tasapelissä samat pisteet jakavat sijan, ks. KULTAKALA.md > Tasapeli. Ranking laskee
     // sen jo (place = count(total < oma) + 1), joten tasapeli ei tarvitse omaa haaraa.

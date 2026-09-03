@@ -3,7 +3,7 @@ import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import GroupPicker from '../shared/GroupPicker.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName, sortHand as sortHandBy } from '../shared/helpers.js';
+import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName, sortHand as sortHandBy, shuffledAINames, lblColored, newDeck, LOG_MAX, BOT_RESULT_DELAY } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -17,10 +17,7 @@ import { useAIScheduler } from '../shared/useAIScheduler.js';
 // 5 vaatii 8 ensin, 8 vaatii 6 ensin (kiusanteko)
 // A kaataa ala-pinon (bonusvuoro), K kaataa ylä-pinon (bonusvuoro)
 
-const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
-const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 const RANK_VAL = { A: 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, J: 11, Q: 12, K: 13 };
 
@@ -58,12 +55,6 @@ function playEffect(v) {
   return v <= 5 ? tr('games.ristiseiska.effect.toLower') : tr('games.ristiseiska.effect.toUpper');
 }
 
-function mkDeck() {
-  return shuffle(SUITS.flatMap(s => RANKS.map(r => ({
-    s, r, v: VAL[r], id: `${r}${s}_${Math.random()}`,
-  }))));
-}
-
 function initRows() {
   const rows = {};
   SUITS.forEach(s => { rows[s] = { active: false, low: null, high: null }; });
@@ -76,7 +67,7 @@ const DEFAULT_RULES = { randomPantti: false };
 
 function initGame(nP, pool, allBots = false, rules = DEFAULT_RULES) {
   const aiNames = shuffledAINames(pool);
-  const deck = mkDeck();
+  const deck = newDeck();
   const per   = Math.floor(52 / nP);
   const extra = 52 % nP; // ylijäävät kortit jaetaan yksi kerrallaan, ettei mikään kortti jää jakamatta
   const players = Array.from({ length: nP }, (_, i) => ({
@@ -411,22 +402,19 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
   useEffect(() => { setRevealAll(seeAll); }, [seeAll]);
   const [shuffling, setShuffling] = useState(false);
   const [lastPlay, setLastPlay] = useState(null);
-  const [allBots, setAllBots]             = useState(false);
-  const [paused, setPaused]               = useState(false);
-  const [aiDelayMs, setAiDelayMs]         = useState(2000);
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [advice, setAdvice]               = useState(null); // { text, cardIds } | null
 
   const gRef       = useRef(null);
   const lastPlayTmr = useRef(null);
   const logRef     = useRef([]);
-  const sndRef     = useRef(true);
+  const sndRef     = useRef(soundOn);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
   const botLevelsRef = useRef(botLevels);
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; },        [G]);
@@ -447,7 +435,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
   function addLog(m) {
     setMsg_(m);
     const e = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
-    logRef.current = [e, ...logRef.current].slice(0, 60);
+    logRef.current = [e, ...logRef.current].slice(0, LOG_MAX);
     setLog([...logRef.current]);
     if (allBotsRef.current && onSnapshot && gRef.current) {
       const g = gRef.current;
@@ -505,7 +493,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     aiDelayRef.current = 2000; setAiDelayMs(2000);
     startGame(nP, true);
   }
-  function togglePause() { pausedRef.current = !pausedRef.current; setPaused(p => !p); }
 
   // ── Vuoron vaihto ───────────────────────────────────────────
   function advanceTurnRS(g, fromIdx) {
@@ -566,7 +553,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
         name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
       }));
       setGS({ ...g, players, rows, finished, phase: 'gameover' });
-      if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 800); }
+      if (allBotsRef.current) { tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY); }
       else { onResult?.({ ranking }); }
       return;
     }

@@ -8,6 +8,7 @@ export const truncName = (name, len = 8) => name && name.length > len ? name.sli
 export const lbl    = c => c ? `${c.r}${c.s}` : '—';
 // Ruudunlukijalle: maa + arvo (esim. "pata 7" / "spades 7"). Lokalisoitu currentLangin mukaan.
 import { getLang } from './i18n.jsx';
+import { SUIT_COLOR } from './colors.js';
 const SUIT_NAME = {
   fi: { '♠': 'pata',    '♥': 'hertta',  '♦': 'ruutu',     '♣': 'risti' },
   en: { '♠': 'spades',  '♥': 'hearts',  '♦': 'diamonds',  '♣': 'clubs' },
@@ -113,6 +114,25 @@ export function shuffle(a) {
   }
   return a;
 }
+
+// Katselutilan tulosviive: kuinka kauan viimeinen siirto jää näkyviin ennen kuin peli
+// luovuttaa tuloksen App:lle (bottibanneri). Oli ennen 600, 800, 1200 ja 1800 ilman
+// perustelua; yhtenäistetty 3.9.2026 (kompositioauditointi H1).
+export const BOT_RESULT_DELAY = 800;
+
+// Lokin pituusraja. Oli ennen 40, 50 tai 60; yhtenäistetty 3.9.2026 samasta syystä.
+export const LOG_MAX = 60;
+
+// Korttimerkintä lokiin ja viestikupliin, maan värillä. Palauttaa HTML:ää, joten kutsuja
+// renderöi sen dangerouslySetInnerHTML-kentässä. Lukee SUIT_COLORia kutsuhetkellä, koska
+// setTwoColorDeck mutatoi paletin paikallaan (ks. colors.js).
+// Kasino ei käytä tätä vaan `lbl`ää, koska sen loki on tekstiä eikä HTML:ää.
+export const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
+
+// Vastustajien oletusnimet kun App ei anna nimiryhmää (testit ja suora mountti).
+// Nimiryhmät ovat playerGroups.js:ssä; tämä on vain varalista.
+export const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
+export const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 export function newDeck() {
   return shuffle(SUITS.flatMap(s => RANKS.map(r => ({ s, r, v: VAL[r], id: `${r}${s}_${Math.random()}` }))));

@@ -4,7 +4,7 @@ import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, newDeck, sortHand as sortHandBy } from '../shared/helpers.js';
+import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, newDeck, sortHand as sortHandBy, shuffledAINames, LOG_MAX, BOT_RESULT_DELAY } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
@@ -13,8 +13,6 @@ import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 
-const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 function renderLogMessage(text) {
   const parts = [];
@@ -417,7 +415,6 @@ function dealHands(g) {
 
 const sortHand = hand => sortHandBy(hand, handVal);
 
-const lblColored = c => c ? `${c.r}${c.s}` : '—';
 
 const mokkiSfx = isMokki => isMokki ? tr('games.kasino.msg.mokkiSuffix') : '';
 const M = {
@@ -485,9 +482,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     return () => window.removeEventListener('keydown', onEsc);
   }, [showOptions]);
   const [helpTerm, setHelpTerm] = useState(null); // 'kaappaus' | 'rakennus'
-  const [allBots, setAllBots] = useState(false);
-  const [paused, setPaused] = useState(false);
-  const [aiDelayMs, setAiDelayMs] = useState(2000);
   const [advice, setAdvice] = useState(null); // { text, handCardId, tableCardIds, buildId } | null
 
   const gRef    = useRef(null);
@@ -498,14 +492,14 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   const cumulBdRef    = useRef(null); // kumulatiivinen pisteytysdata joka kierros
   const showNextBtnRef = useRef(showNextBtn);
   useEffect(() => { showNextBtnRef.current = showNextBtn; }, [showNextBtn]);
-  const sndRef     = useRef(false);
+  const sndRef     = useRef(soundOn);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
   const botLevelsRef = useRef(botLevels);
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const lastPlayTmr = useRef(null);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; }, [G]);
@@ -564,7 +558,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   function addLog(m) {
     setMsg_(m);
     const e = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
-    logRef.current = [e, ...logRef.current].slice(0, 60);
+    logRef.current = [e, ...logRef.current].slice(0, LOG_MAX);
     setLog([...logRef.current]);
     if (allBotsRef.current && onSnapshot && gRef.current) {
       const g = gRef.current;
@@ -613,10 +607,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     startGame(nP, true);
   }
 
-  function togglePause() {
-    const next = !pausedRef.current;
-    pausedRef.current = next; setPaused(next);
-  }
 
   function getTurnHint(hand, table, builds = []) {
     const uniq = arr => arr.filter((hc, i, a) => a.findIndex(c => c.id === hc.id) === i);
@@ -634,8 +624,8 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
 
     if (table.length === 0) {
       const parts = [];
-      if (ownBuildHCards.length) parts.push(t('games.kasino.hint.viaBuild', { cards: ownBuildHCards.map(c => lblColored(c)).join(', ') }));
-      if (stealHCards.length)    parts.push(t('games.kasino.hint.steal', { cards: stealHCards.map(c => lblColored(c)).join(', ') }));
+      if (ownBuildHCards.length) parts.push(t('games.kasino.hint.viaBuild', { cards: ownBuildHCards.map(c => lbl(c)).join(', ') }));
+      if (stealHCards.length)    parts.push(t('games.kasino.hint.steal', { cards: stealHCards.map(c => lbl(c)).join(', ') }));
       if (parts.length) return t('games.kasino.hint.emptyWith', { parts: parts.join(' · ') });
       return t('games.kasino.hint.emptyLeave');
     }
@@ -671,9 +661,9 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     if (!totalCount) return t('games.kasino.hint.noCapture');
 
     const parts = [];
-    if (allCaptureHCards.length)   parts.push(t('games.kasino.hint.capture', { cards: allCaptureHCards.map(c => lblColored(c)).join(', ') }));
-    if (uniqueStealHCards.length)  parts.push(t('games.kasino.hint.steal', { cards: uniqueStealHCards.map(c => lblColored(c)).join(', ') }));
-    if (buildCreateHCards.length)  parts.push(t('games.kasino.hint.build', { cards: buildCreateHCards.map(c => lblColored(c)).join(', ') }));
+    if (allCaptureHCards.length)   parts.push(t('games.kasino.hint.capture', { cards: allCaptureHCards.map(c => lbl(c)).join(', ') }));
+    if (uniqueStealHCards.length)  parts.push(t('games.kasino.hint.steal', { cards: uniqueStealHCards.map(c => lbl(c)).join(', ') }));
+    if (buildCreateHCards.length)  parts.push(t('games.kasino.hint.build', { cards: buildCreateHCards.map(c => lbl(c)).join(', ') }));
     return parts.join(' · ');
   }
 
@@ -773,7 +763,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
         return { name: p.name, score: newScores[i].totalScore, items };
       }).sort((a, b) => b.score - a.score);
       if (allBotsRef.current) {
-        tm(() => onResult?.({ ranking, scoreBreakdown }), 1200);
+        tm(() => onResult?.({ ranking, scoreBreakdown }), BOT_RESULT_DELAY);
       } else {
         onResult?.({ ranking, scoreBreakdown });
       }
@@ -837,7 +827,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       const captureStr = groups.length > 1
         ? groups.map(grp => grp.map(id => lbl(tableCards.find(c => c.id === id))).join('+')).join(' ja ')
         : tableCards.map(lbl).join('+');
-      addLog(M.humanCapture(who, lblColored(handCard), captureStr, isMökki));
+      addLog(M.humanCapture(who, lbl(handCard), captureStr, isMökki));
     }
     return newG;
   }
@@ -852,7 +842,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     tm(() => setJP(null), 2200);
     if (sndRef.current) SFX.leave();
     const who = g.players[playerIdx].name;
-    addLog(M.humanLeave(who, lblColored(handCard)));
+    addLog(M.humanLeave(who, lbl(handCard)));
     flashLastPlay(g.players[playerIdx].name, handCard, g.players[playerIdx].isHuman);
     return newG;
   }
@@ -888,7 +878,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     if (sndRef.current) SFX.build();
     addLog(t('games.kasino.msg.buildMade', {
       who: g.players[playerIdx].name,
-      cards: build.cards.map(lblColored).join(' + '),
+      cards: build.cards.map(lbl).join(' + '),
       value: buildValue,
     }));
     return { ...g, players, table: newTable, builds: [...g.builds, build] };
@@ -957,7 +947,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       const allMatchValue = selectedBuildObjs.every(b => b.value === hv);
       const extraTableValid = selTable.length === 0 || canPartition(selTable, hv);
       if (!allMatchValue || !extraTableValid) {
-        addLog(M.invalidMove(lblColored(card)));
+        addLog(M.invalidMove(lbl(card)));
         return;
       }
       const snapshotBuilds = [...selectedBuildObjs];
@@ -985,7 +975,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
         setPhase('idle'); phaseRef.current = 'idle';
         tm(() => advance(g2, 0), 600);
       } else {
-        addLog(M.invalidMove(lblColored(card)));
+        addLog(M.invalidMove(lbl(card)));
       }
       return;
     }
@@ -1018,7 +1008,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       return;
     }
 
-    addLog(M.invalidMove(lblColored(card)));
+    addLog(M.invalidMove(lbl(card)));
   }
 
   // Oppipojan naiivi kaappaus: maksimoi korttien MÄÄRÄ, ei pistearvoa —
@@ -1152,7 +1142,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       const captureStr = groups.length > 1
         ? groups.map(grp => grp.map(id => lbl(captureToUse.tableCards.find(c => c.id === id))).join('+')).join(' ja ')
         : captureToUse.tableCards.map(lbl).join('+');
-      addLog(M.aiCapture(p.name, lblColored(captureToUse.handCard), captureStr, captureToUse.isMokki));
+      addLog(M.aiCapture(p.name, lbl(captureToUse.handCard), captureStr, captureToUse.isMokki));
       setCaptureAnim({ handCard: captureToUse.handCard, tableCards: captureToUse.tableCards });
       setAiSel({ handCard: captureToUse.handCard, tableCards: captureToUse.tableCards });
       aiTmr.current = tm(() => {

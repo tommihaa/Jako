@@ -4,7 +4,7 @@ import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName, sortHand as sortHandBy } from '../shared/helpers.js';
+import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName, sortHand as sortHandBy, lblColored, newDeck, LOG_MAX, BOT_RESULT_DELAY } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -14,15 +14,8 @@ import { useAIScheduler } from '../shared/useAIScheduler.js';
 import PlayerSetup, { slotsToPlayers } from '../shared/PlayerSetup.jsx';
 
 // ── Seiska ─────────────────────────────────────────────────────
-const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 const coloredSuit = s => `<span style="color:${SUIT_COLOR[s]}">${s}</span>`;
 const SUIT_SYMS = ['♠', '♥', '♦', '♣'];
-
-function mkDeck() {
-  return shuffle(SUITS.flatMap(s => RANKS.map(r => ({
-    s, r, v: VAL[r], id: `${r}${s}_${Math.random()}`,
-  }))));
-}
 
 // Voidaanko yksittäinen kortti lyödä
 function canSingle(card, discardTop, reqSuit, isLast) {
@@ -50,7 +43,7 @@ function validSingles(hand, discardTop, reqSuit) {
 
 // playerDefs: [{name, isHuman}, ...]
 function mkInitState(playerDefs) {
-  let deck = mkDeck();
+  let deck = newDeck();
   const players = playerDefs.map((def, i) => ({
     id: i, name: def.name, isHuman: def.isHuman,
     hand: deck.splice(0, 7),
@@ -301,15 +294,13 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   const [shuffling,   setShuffling] = useState(false);
   const [lastPlay,    setLastPlay] = useState(null);
   const [lappuSecsLeft, setLappuSecsLeft] = useState(null);
-  const [paused,    setPaused]   = useState(false);
-  const [aiDelayMs, setAiDelayMs] = useState(1200);
   const [intention, setIntention] = useState(null); // { playerIdx, cards } | null
   const [pendingResult, setPendingResult] = useState(null); // { ranking } — odottaa käyttäjän "Tulokset →" -klikkiä
   const [advice, setAdvice] = useState(null); // { text, cardIds } | null
 
   const gRef   = useRef(null);
   const logRef = useRef([]);
-  const sndRef = useRef(true);
+  const sndRef = useRef(soundOn);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
@@ -319,8 +310,17 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   const prevRCRef    = useRef(0);
   const lastPlayTmr  = useRef(null);
   const pendingFnRef = useRef(null);
-  const { aiTmr, tmrs, pausedRef, aiDelayRef, tm } =
-    useAIScheduler({ defaultDelay: 1200, extraTimerRefs: [lastPlayTmr] });
+  const { aiTmr, tmrs, pausedRef, aiDelayRef, tm, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause } =
+    useAIScheduler({
+      defaultDelay: 1200, extraTimerRefs: [lastPlayTmr],
+      // Seiskan oma jatko: tauolla odottava siirto ajetaan kun tauko vapautetaan.
+      onResume: () => {
+        const fn = pendingFnRef.current;
+        if (!fn) return;
+        pendingFnRef.current = null;
+        fn();
+      },
+    });
   // AI-siirtoajastin (pysähtyy Tauko-tilassa) — Seiskan oma pending-fn-mekanismi:
   // säilyttää vain VIIMEISIMMÄN odottavan siirron ja jatkaa sen togglePausessa
   // (eri semantiikka kuin hookin schedAI-recursive-wait; ks. useAIScheduler).
@@ -386,7 +386,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   function addLog(m) {
     setMsg_(m);
     const e = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
-    logRef.current = [e, ...logRef.current].slice(0, 60);
+    logRef.current = [e, ...logRef.current].slice(0, LOG_MAX);
     setLog([...logRef.current]);
     if (onSnapshot && gRef.current?.players.every(p => !p.isHuman)) {
       const g = gRef.current;
@@ -398,16 +398,6 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
 
   function setGS(g) { setG(g); gRef.current = g; }
 
-  function togglePause() {
-    const next = !pausedRef.current;
-    pausedRef.current = next;
-    setPaused(next);
-    if (!next && pendingFnRef.current) {
-      const fn = pendingFnRef.current;
-      pendingFnRef.current = null;
-      fn();
-    }
-  }
 
   function changeDelay(delta) {
     const next = Math.max(200, Math.min(3000, aiDelayRef.current + delta));
@@ -614,7 +604,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       }));
       const isBotBattle = g2.players.every(p => !p.isHuman);
       if (isBotBattle) {
-        tm(() => onResult?.({ ranking }), 800);
+        tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY);
       } else {
         setPendingResult({ ranking });
       }

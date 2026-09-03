@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
-import { SUITS, RANKS, isRed, lbl, korttia, kortin, shuffle, cardName, sortHand as sortHandBy } from '../shared/helpers.js';
+import { SUITS, RANKS, isRed, lbl, korttia, kortin, shuffle, cardName, sortHand as sortHandBy, shuffledAINames, lblColored, LOG_MAX, BOT_RESULT_DELAY } from '../shared/helpers.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -26,7 +26,6 @@ const QCard = ({ s = 1 }) => (
     <span style={{ fontSize:13*s, color:'#1a1a1a' }}>♠</span>
   </span>
 );
-const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 function newDeck() {
   return shuffle(SUITS.flatMap(s => RANKS.map(r => ({ s, r, v:VAL[r], id:`${r}${s}_${Math.random()}` }))));
@@ -239,8 +238,6 @@ function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, 
 
 const sortHand = hand => sortHandBy(hand, c => c.v);
 
-const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 // ── Alustus ─────────────────────────────────────────────────────────
 function initGame(nPlayers, pool, allBots = false) {
@@ -292,9 +289,6 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
   const [lastPlay, setLastPlay] = useState(null);
-  const [allBots, setAllBots]             = useState(false);
-  const [paused, setPaused]               = useState(false);
-  const [aiDelayMs, setAiDelayMs]         = useState(2000);
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [advice, setAdvice]               = useState(null); // { text, cardIds, targetId } | null
 
@@ -303,7 +297,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   const prevDeckRef = useRef(null);
   const tableRef = useRef([]);
   const logRef = useRef([]);
-  const sndRef     = useRef(false);
+  const sndRef     = useRef(soundOn);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
@@ -311,7 +305,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const finRef = useRef([]);
   const lastPlayTmr = useRef(null);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; }, [G]);
@@ -348,7 +342,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   function addLog(m) {
     setMsg_(m);
     const e = { t:new Date().toLocaleTimeString('fi', { hour:'2-digit', minute:'2-digit', second:'2-digit' }), m };
-    logRef.current = [e, ...logRef.current].slice(0, 60);
+    logRef.current = [e, ...logRef.current].slice(0, LOG_MAX);
     setLog([...logRef.current]);
     if (allBotsRef.current && onSnapshot && gRef.current) {
       const g = gRef.current;
@@ -414,10 +408,6 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     startGame(nP, true);
   }
 
-  function togglePause() {
-    const next = !pausedRef.current;
-    pausedRef.current = next; setPaused(next);
-  }
 
   function drawHand(g, playerIdx) {
     const need = 5 - g.players[playerIdx].hand.length;
@@ -449,8 +439,9 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       }));
       setPhase('gameover'); phaseRef.current = 'gameover';
       setFinished(newFin); finRef.current = newFin;
-      if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 1800); }
-      else { tm(() => onResult?.({ ranking }), 1800); }
+      // Ihmispelissä pidempi viive kuin katselutilassa: viimeinen tikki jää näkyviin
+      // ennen kuin App vaihtaa tulosruutuun.
+      tm(() => onResult?.({ ranking }), allBotsRef.current ? BOT_RESULT_DELAY : 1800);
       return { done:true, fin:newFin };
     }
     return { done:false, fin:newFin };

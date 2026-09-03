@@ -4,7 +4,7 @@ import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle, aiShouldFumble, truncName } from '../shared/helpers.js';
+import { lbl, korttia, shuffle, aiShouldFumble, truncName, shuffledAINames, lblColored, LOG_MAX, BOT_RESULT_DELAY } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
@@ -14,8 +14,6 @@ import BotBattleBar from '../shared/BotBattleBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 
-const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 // ── Paskahousu (Wikipedia-versio) ────────────────────────────────────────────
 // Arvot: ♥2/♦2 = 2 (pienin) · 3=3 … A=14 · ♠2/♣2 = 15 (suurin)
@@ -28,7 +26,6 @@ const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 // 10/A tyhjälle → seuraava nostaa ja menettää vuoronsa
 // Voit pelata 1–4 samanarvoista korttia kerralla (ei pakkoa)
 
-const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 const SUITS      = ['♠','♥','♦','♣'];
 const BASE_RANKS = ['3','4','5','6','7','8','9','10','J','Q','K','A'];
@@ -334,9 +331,6 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
   const [kasaAnim, setKasaAnim] = useState(null); // 'clear' | 'quad' | 'take' | null
   const [pakaAnim, setPakaAnim] = useState(false); // pakka ehtyi -animaatio
   const [shuffling, setShuffling] = useState(false);
-  const [allBots, setAllBots]             = useState(false);
-  const [paused, setPaused]               = useState(false);
-  const [aiDelayMs, setAiDelayMs]         = useState(2000);
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [timerLeft,    setTimerLeft]     = useState(null); // yhtäkkinen kuolema -laskuri (sekunteina)
   const [advice, setAdvice]              = useState(null); // { text, cardIds } | null
@@ -344,7 +338,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
   const gRef    = useRef(null);
   const swapTmr = useRef(null);
   const logRef  = useRef([]);
-  const sndRef     = useRef(true);
+  const sndRef     = useRef(soundOn);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös.
@@ -359,7 +353,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     : aiLevelRef.current === 'hard';
   const suddenDeathTmr     = useRef(null);
   const suddenDeathStarted = useRef(false);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
     useAIScheduler({ jitter: 300, extraIntervalRefs: [swapTmr, suddenDeathTmr] });
 
   useEffect(() => { gRef.current = G; },         [G]);
@@ -406,7 +400,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
       m,
     };
-    logRef.current = [e, ...logRef.current].slice(0, 60);
+    logRef.current = [e, ...logRef.current].slice(0, LOG_MAX);
     setLog([...logRef.current]);
     if (allBotsRef.current && onSnapshot && gRef.current) {
       const g = gRef.current;
@@ -464,7 +458,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     }));
     setTimerLeft(null);
     setGS({ ...g, finished: newFinished, phase: 'gameover' });
-    if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 800); }
+    if (allBotsRef.current) { tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY); }
     else { onResult?.({ ranking }); }
   }
 
@@ -495,7 +489,6 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     aiDelayRef.current = 2000; setAiDelayMs(2000);
     startGame(nP, true);
   }
-  function togglePause() { pausedRef.current = !pausedRef.current; setPaused(p => !p); }
 
   // ── applyPlay ─────────────────────────────────────────────────────────────
   function applyPlay(g, pidx, cards) {
@@ -548,7 +541,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
       }));
       setGS({ ...g, players, draw, pile, top: newTop, finished: f, phase: 'gameover' });
-      if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 800); } else { onResult?.({ ranking }); }
+      if (allBotsRef.current) { tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY); } else { onResult?.({ ranking }); }
       return;
     }
 
@@ -657,7 +650,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
           name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
         }));
         setGS({ ...g, players, draw, pile, top: knocked, finished: f, phase: 'gameover' });
-        if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 800); } else { onResult?.({ ranking }); }
+        if (allBotsRef.current) { tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY); } else { onResult?.({ ranking }); }
         return;
       }
 

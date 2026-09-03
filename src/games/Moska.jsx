@@ -4,7 +4,7 @@ import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, isRed, aiShouldFumble, sortHand as sortHandBy } from '../shared/helpers.js';
+import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, isRed, aiShouldFumble, sortHand as sortHandBy, shuffledAINames, lblColored, newDeck, LOG_MAX, BOT_RESULT_DELAY } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -14,18 +14,11 @@ import { useAIScheduler } from '../shared/useAIScheduler.js';
 
 // ── Moska (Durak) ─────────────────────────────────────────────
 // A=14 kaikissa taisteluvertailuissa
-const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 const MV = c => c.r === 'A' ? 14 : c.v;
 
 function canBeat(atk, def, ts) {
   if (def.s === atk.s) return MV(def) > MV(atk);
   return def.s === ts && atk.s !== ts;
-}
-
-function mkDeck() {
-  return shuffle(SUITS.flatMap(s => RANKS.map(r => ({
-    s, r, v: VAL[r], id: `${r}${s}_${Math.random()}`,
-  }))));
 }
 
 function drawFrom(deck, tc, n) {
@@ -47,13 +40,11 @@ function nextActive(players, from) {
   return from;
 }
 
-const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 // ── Alustus ───────────────────────────────────────────────────
 function initGame(nP, pool, allBots = false) {
   const aiNames = shuffledAINames(pool);
-  const raw = mkDeck();
+  const raw = newDeck();
   const trumpCard = raw.pop();
   const ts = trumpCard.s;
   const deck = [...raw];
@@ -308,9 +299,6 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   const [pendingDraw, setPendingDraw] = useState(null); // odottaa nostojen tekemistä
 
   const [lastPlay, setLastPlay] = useState(null);
-  const [allBots, setAllBots]             = useState(false);
-  const [paused, setPaused]               = useState(false);
-  const [aiDelayMs, setAiDelayMs]         = useState(2000);
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [advice, setAdvice]               = useState(null); // { text, cardIds, targetId } | null
 
@@ -318,7 +306,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
 
   const gRef    = useRef(null);
   const logRef  = useRef([]);
-  const sndRef         = useRef(false);
+  const sndRef         = useRef(soundOn);
   const aiLevelRef     = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
@@ -327,7 +315,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   const prevDeckRef    = useRef(null);
   const lastPlayTmr    = useRef(null);
   const showNextBtnRef = useRef(showNextBtn);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; }, [G]);
@@ -372,7 +360,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   function addLog(m) {
     setMsg_(m);
     const e = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
-    logRef.current = [e, ...logRef.current].slice(0, 60);
+    logRef.current = [e, ...logRef.current].slice(0, LOG_MAX);
     setLog([...logRef.current]);
     if (allBotsRef.current && onSnapshot && gRef.current) {
       const g = gRef.current;
@@ -456,10 +444,6 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     startGame(nP, true);
   }
 
-  function togglePause() {
-    const next = !pausedRef.current;
-    pausedRef.current = next; setPaused(next);
-  }
 
   // ── Kierroksen ratkaisu ───────────────────────────────────
   function resolveRound(g, defWon) {
@@ -542,7 +526,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       const ranking = rankings.map((id, pos) => ({
         name: players[id].name, place: pos + 1, isHuman: players[id].isHuman,
       }));
-      if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 600); }
+      if (allBotsRef.current) { tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY); }
       else { onResult?.({ ranking }); }
       const g2 = { ...g, players, deck, trumpCard: tc, rankings, table: [], phase: 'gameover' };
       setGS(g2);
@@ -1029,7 +1013,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         const ranking = rankings.map((id, pos) => ({
           name: players[id].name, place: pos + 1, isHuman: players[id].isHuman,
         }));
-        if (allBotsRef.current) { tm(() => onResult?.({ ranking }), 600); }
+        if (allBotsRef.current) { tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY); }
         else { onResult?.({ ranking }); }
         setGS({ ...g2, players, deck, trumpCard: tc, rankings, table: [], phase: 'gameover' });
         setPendingDraw(null);

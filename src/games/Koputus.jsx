@@ -4,7 +4,7 @@ import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, shuffle, newDeck } from '../shared/helpers.js';
+import { isRed, lbl, shuffle, newDeck, shuffledAINames, lblColored, LOG_MAX, BOT_RESULT_DELAY } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -20,10 +20,7 @@ const pCards = p => p.cards.filter(Boolean).length;
 // on kiinnitetty testissä test/koputus-tasapeli.test.js.
 export const pRank  = (a, b) => (pScore(a) - pScore(b)) || (pCards(a) - pCards(b));
 const pBetter = (q, p) => pRank(q, p) < 0;
-const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
-const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 function initGame(n, pool, allBots = false) {
   const aiNames = shuffledAINames(pool);
@@ -241,9 +238,6 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   const cardBack = 'ilves';
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
-  const [allBots, setAllBots]   = useState(false);
-  const [paused, setPaused]     = useState(false);
-  const [aiDelayMs, setAiDelayMs] = useState(2000);
   const [intention, setIntention] = useState(null); // { playerIdx, slotIdx } | null
   const [advice, setAdvice] = useState(null); // { text, slot?, target? } | null
 
@@ -262,14 +256,14 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const sndRef     = useRef(soundOn);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
     useAIScheduler({ extraIntervalRefs: [reactInt] });
 
   const setMsg = m => {
     setMsg_(m);
     if (!m) return;
     const entry = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
-    logRef.current = [entry, ...logRef.current].slice(0, 40);
+    logRef.current = [entry, ...logRef.current].slice(0, LOG_MAX);
     setLog([...logRef.current]);
     if (allBotsRef.current && onSnapshot && gRef.current) {
       const g = gRef.current;
@@ -340,10 +334,6 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     startGame(nP, true);
   }
 
-  function togglePause() {
-    const next = !pausedRef.current;
-    pausedRef.current = next; setPaused(next);
-  }
 
   function onPeek(idx) {
     if (peeksDone >= 2) return;
@@ -391,7 +381,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     const revealCards = players.map(p => ({ name: p.name, cards: p.cards }));
     if (sndRef.current) { SFX.reveal(); tm(() => SFX.fanfare(), 500); }
     if (allBotsRef.current) {
-      tm(() => onResult?.({ ranking, revealCards }), 600);
+      tm(() => onResult?.({ ranking, revealCards }), BOT_RESULT_DELAY);
     } else {
       onResult?.({ ranking, revealCards });
     }

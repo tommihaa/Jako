@@ -4,19 +4,16 @@ import GroupPicker from '../shared/GroupPicker.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, shuffle, aiNoise, newDeck, korttia } from '../shared/helpers.js';
+import { isRed, lbl, shuffle, aiNoise, newDeck, korttia, shuffledAINames, lblColored, LOG_MAX, BOT_RESULT_DELAY } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 
-const AI_NAMES = ['Fortuna', 'Loki', 'Tyche'];
-const shuffledAINames = pool => shuffle(pool || AI_NAMES);
 
 const SPEC   = { J: 1, Q: 2, K: 3, A: 4 };
 const isSpec = r => r in SPEC;
-const lblColored = c => c ? `<span style="color:${SUIT_COLOR[c.s]}">${c.r}${c.s}</span>` : '—';
 
 function deal(nPlayers) {
   const deck = newDeck();
@@ -76,9 +73,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   const [flipAnim,  setFA]   = useState(null); // { playerIdx, card }
   const [cardBackState]      = [cardBack];
   const [aiNames]            = useState(() => shuffledAINames(playerNames));
-  const [allBots, setAllBots]         = useState(false);
-  const [paused, setPaused]           = useState(false);
-  const [aiDelayMs, setAiDelayMs]     = useState(2000);
 
   const pilesRef       = useRef([]);
   const finishOrderRef = useRef([]);
@@ -86,7 +80,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   const phaseRef     = useRef(/** @type {Vaihe} */ ('idle'));
   const curRef       = useRef(0);
   const chRef        = useRef(null);
-  const sndRef       = useRef(false);
+  const sndRef       = useRef(soundOn);
   const aiLevelRef   = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös.
@@ -104,7 +98,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   const duelTmr      = useRef(null);
   const halvePending = useRef(false);
   const logRef       = useRef([]);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
     useAIScheduler({ extraTimerRefs: [failTmr] });
   const allBotNamesRef = useRef([]);
   const onSnapshotRef = useRef(onSnapshot);
@@ -120,7 +114,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
 
   const addLog = useCallback(m => {
     const entry = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
-    logRef.current = [entry, ...logRef.current].slice(0, 50);
+    logRef.current = [entry, ...logRef.current].slice(0, LOG_MAX);
     setLog([...logRef.current]);
     setMsg(m);
     if (allBotsRef.current && onSnapshotRef.current) {
@@ -208,10 +202,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     startGame(nP, true);
   }
 
-  function togglePause() {
-    pausedRef.current = !pausedRef.current;
-    setPaused(p => !p);
-  }
 
   function nextTurn(fromIdx, newPiles, newCenter, ch) {
     const activeNow = newPiles.filter(p => p.length > 0);
@@ -529,11 +519,9 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
       const ranking = fullOrder.map((idx, pos) => ({
         name: pName(idx), place: pos + 1, isHuman: idx === 0 && !allBotsRef.current,
       }));
-      if (allBotsRef.current) {
-        tm(() => onResult?.({ ranking }), 800);
-      } else {
-        tm(() => onResult?.({ ranking }), 1800);
-      }
+      // Ihmispelissä pidempi viive kuin katselutilassa: viimeinen läpsy ja sen ääni
+      // ehtivät soida ennen kuin App vaihtaa tulosruutuun.
+      tm(() => onResult?.({ ranking }), allBotsRef.current ? BOT_RESULT_DELAY : 1800);
       return true;
     }
     return false;
