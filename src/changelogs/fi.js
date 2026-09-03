@@ -9,6 +9,14 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '3.9.2026',
+    items: [
+      'Bottien Taistelu noudattaa nyt valitsemaasi koneälyn tasoa kaikissa peleissä. Kasinossa, Koputuksessa ja Seiskassa katselutila pelasi aiemmin aina Mestarin tasolla, vaikka aloitusnäytön teksti lupasi valitsemasi tason.',
+      'Pelin omat kytkimet ja Asetukset puhuvat nyt samaa kieltä. Pelin äänikytkin ja lokin avaus muistetaan jatkossa. Asetuksista tehty muutos näkyy kesken pelin ilman uutta aloitusta.',
+      'Bottien Taistelu näyttää kaikkien kortit kuten ennenkin. Se ei kuitenkaan enää jätä avoimia kortteja päälle sen jälkeen kun palaat tavalliseen peliin.',
+    ],
+  },
+  {
     date: '22.8.2026',
     items: [
       'Vastustajien ensimmäinen nimiryhmä on nyt nimeltään Paikalliset. Nimet ryhmän sisällä ovat samat kuin ennen ja valintasi säilyy. Nimi vaihtui toista kertaa lyhyessä ajassa, koska Paikalliset kuvaa ryhmää paremmin ja kääntyy luontevasti jokaiselle kielelle.',
