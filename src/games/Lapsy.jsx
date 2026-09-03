@@ -49,11 +49,10 @@ export function lapsyAdvice(memory, center, heroIdx = 0) {
 // Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 /** @typedef {'idle'|'match'|'gameover'} Vaihe */
 
-export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAll = false, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP]         = useState(playerCount);
-  const [soundOn, setSnd]   = useState(initSoundOn);
   const [phase, setPhase]   = useState(/** @type {Vaihe} */ ('idle'));
   const [center, setCenter] = useState([]);
   const [piles, setPiles]   = useState([]);
@@ -62,8 +61,13 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
   const [msg, setMsg]       = useState('');
   const [log, setLog]       = useState([]);
   const cardBack = 'ilves';
-  const [logOpen, setLO]    = useState(showLog);
-  const [debugOpen, setDebug] = useState(initSeeAll);
+  const logOpen = showLog; // omistaja on App, ks. onShowLogChange
+  // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
+  // `seeAll` on App:n omistama asetus joka ei tallennu, ja `revealAll` on tämän pelin
+  // näkymätila. Katselutila pakottaa paljastuksen päälle koskematta asetukseen, ja
+  // `startGame` palauttaa näkymän asetuksen mukaiseksi.
+  const [revealAll, setRevealAll] = useState(seeAll);
+  useEffect(() => { setRevealAll(seeAll); }, [seeAll]);
   const [shuffling, setShuffling] = useState(false);
   const [advice, setAdvice]  = useState(null); // { text } | null
   const [slapResult, setSR]   = useState(null);
@@ -177,6 +181,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
 
   function startGame(forcedCount, allBotsMode = false) {
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
+    setRevealAll(seeAll || allBotsMode);
     pausedRef.current = false; setPaused(false);
     setPendingResult(null);
     clearTimeout(aiTmr.current);
@@ -209,7 +214,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
     aiLevelRef.current = aiLevel;
     onAiLevelChange?.(aiLevel);
     aiDelayRef.current = 2000; setAiDelayMs(2000);
-    setDebug(true);
     startGame(nP, true);
   }
 
@@ -641,7 +645,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
                   🤖 {pName(pi).slice(0, 8)}{curTurn === pi ? ' ●' : ''}
                 </span>
                 <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', flex: 1 }}>
-                  {debugOpen
+                  {revealAll
                     ? <>
                         {pile.slice(0, 6).map((c, ci) => <Card key={ci} card={c} small backStyle={BACKS[cardBack]} />)}
                         {pile.length > 6 && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, alignSelf: 'center', flexShrink: 0 }}>+{pile.length - 6}</span>}
@@ -664,7 +668,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
                     🤖 {pName(pi)}{curTurn === pi ? ' ●' : ''}
                   </div>
                   <div style={{ margin: '0 auto' }}>
-                    {debugOpen
+                    {revealAll
                       ? <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
                           {pile.slice(0, 6).map((c, ci) => <Card key={ci} card={c} small backStyle={BACKS[cardBack]} />)}
                           {pile.length > 6 && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, alignSelf: 'center' }}>+{pile.length - 6}</span>}
@@ -796,8 +800,8 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.lapsy.ui.goal')}</span>
-        <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.red + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.red + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
+        <button onClick={() => onSoundOnChange?.(!soundOn)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.red + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
+        <button onClick={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${revealAll ? C.red + '55' : '#2a4a32'}`, background: 'transparent', color: revealAll ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{revealAll ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
       </div>
 
       {allBots && phase !== 'gameover' && (
@@ -828,7 +832,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn: initSoundOn =
       )}
 
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
-        <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
+        <button onClick={() => onShowLogChange?.(!showLog)} style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
           <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>

@@ -48,14 +48,25 @@ Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
 
 Asetukset persistoidaan `useStickySetting`-hookilla (ks. Tech-osio). Poikkeus: `seeAll` ei tallennu (nollautuu joka latauksessa).
 
+**Omistaja on App (päätös 3.9.2026, kompositioauditointi H6).** Peli lukee `soundOn`-,
+`seeAll`- ja `showLog`-arvon propsista eikä kopioi sitä omaan tilaansa, ja pelin oma nappi
+kutsuu takaisin App:iin (`onSoundOnChange`, `onSeeAllChange`, `onShowLogChange`). Siksi
+Asetuksista tehty muutos näkyy pelissä heti ilman remounttia ja pelistä tehty muutos
+tallentuu. Lokin kytkin kuuluu näkyvyysesiasetukseen, joten pelistä tehty muutos merkitsee
+esiasetuksen `custom`-tilaan samoin kuin Asetuksissa. **Katselutilan paljastus on eri asia
+kuin `seeAll`.** Pelissä on oma `revealAll`-tila jonka `startGame` asettaa arvoon
+`seeAll || allBotsMode`, joten Bottien Taistelu paljastaa kortit koskematta asetukseen.
+Aiemmin peli kopioi kaikki kolme omaan tilaansa `init`-etuliitteisestä propsista, jolloin
+pelin nappi ei tallentunut eikä Asetusten muutos kuulunut peliin.
+
 **Näkyvyysesiasetus (`uiPreset`):** Peliasetusten alussa segmented-valinta *Aloittelija/Kokenut* asettaa kuusi opastustoggea kerralla (`UI_PRESETS`-kartta App.jsx:ssä); yksittäiset togglet ovat "Lisäasetukset"-taitoksen takana (`showLisaasetukset`). Manuaalinen toggle-muutos → `uiPreset='custom'`.
 
 **Intuitiivisuus-UI (kesäkuu 2026):** Päävalikon pelikorteissa suosikit (`g.suosikki`) merkitään ★:llä + ensikäynnin "aloita tästä" -vyö (näkyy kun yhtään peliä ei pelattu, `stats`-summasta). Säännöt avautuvat selkeästä "Säännöt"-pillistä (ei enää matalakontrastinen ℹ, sillä ℹ tarkoittaa nyt vain yläpalkin sovellus-Infoa); laajennuksessa linkki Sanastoon. Jaetut komponentit: `shared/GroupPicker.jsx` (vastustajaryhmän valinta jokaisen pelin aloitusnäytöllä, data `shared/playerGroups.js` = `NAME_GROUPS`/`POOL_BY_GROUP`; App välittää `playerGroup`+`onPlayerGroupChange` kaikille peleille) ja `shared/TurnPrompt.jsx` (pysyvä "👉 Sinun vuorosi: <toiminto>" -banneri pelinäkymän yläosassa, kytketty kunkin pelin ihmisvuoro-ehtoon; tekstit `ui.turn.*`).
 
 ## Component props (kaikki 9 peliä)
-App.jsx välittää saman propsijoukon kaikille peleille, mutta **jokainen peli destrukturoi vain tarvitsemansa**, yhtä kanonista signatuuria ei ole. Kaikille välitetään: `onResult, onSnapshot, game, hints, soundOn, seeAll, showCounts, showLastPlay, showIntention, showNextBtn, showAIKnown, isMobile, playerCount, playerNames, aiLevel, onAiLevelChange`.
+App.jsx välittää saman propsijoukon kaikille peleille, mutta **jokainen peli destrukturoi vain tarvitsemansa**, yhtä kanonista signatuuria ei ole. Kaikille välitetään: `onResult, onSnapshot, game, showLog, soundOn, seeAll, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts, showLastPlay, showIntention, showNextBtn, showAIKnown, isMobile, playerCount, playerNames, playerGroup, onPlayerGroupChange, aiLevel, onAiLevelChange`. `hints` on ollut listalla mutta sitä ei välitetä eikä lueta missään (kompositioauditointi H6).
 
-Yhteiset (kaikki destrukturoivat): `onResult, hints, soundOn: initSoundOn, seeAll: initSeeAll, showCounts, showLastPlay, isMobile, playerCount, playerNames, aiLevel, onAiLevelChange, onSnapshot`.
+Yhteiset (kaikki destrukturoivat): `onResult, showLog, soundOn, seeAll, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts, showLastPlay, isMobile, playerCount, playerNames, aiLevel, onAiLevelChange, onSnapshot`.
 
 Pelikohtaiset (vain osa ottaa):
 - `game`: vain Kasino

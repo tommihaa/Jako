@@ -213,7 +213,7 @@ function Btn({ label, onClick, color, outline, small: sm }) {
 // Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 /** @typedef {'idle'|'peeking'|'draw'|'drawn'|'spec_j'|'spec_q_own'|'spec_q_tgt'|'spec_k'|'spec_k_decide'|'spec_k_confirm'|'reaction'|'gameover'} Vaihe */
 
-export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, showAIKnown = true, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Koputus({ onResult, showLog = true, soundOn = false, seeAll = false, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, showAIKnown = true, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(playerCount);
@@ -223,7 +223,12 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
   const [drawn, setDrawn]       = useState(null);
   const [msg, setMsg_]          = useState('');
   const [log, setLog]           = useState([]);
-  const [debugOpen, setDebug]   = useState(initSeeAll);
+  // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
+  // `seeAll` on App:n omistama asetus joka ei tallennu, ja `revealAll` on tämän pelin
+  // näkymätila. Katselutila pakottaa paljastuksen päälle koskematta asetukseen, ja
+  // `startGame` palauttaa näkymän asetuksen mukaiseksi.
+  const [revealAll, setRevealAll] = useState(seeAll);
+  useEffect(() => { setRevealAll(seeAll); }, [seeAll]);
   const [peeksDone, setPD]      = useState(0);
   const [tempPeek, setTP]       = useState(new Set());
   const [reactionOpen, setRO]   = useState(false);
@@ -232,8 +237,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
   const [lastRound, setLR]      = useState(null);
   const [specState, setSS]      = useState(null);
   const [lastSwap, setLastSwap] = useState(null);
-  const [soundOn, setSnd]   = useState(initSoundOn);
-  const [logOpen, setLogOpen]   = useState(showLog);
+  const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   const cardBack = 'ilves';
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
@@ -257,7 +261,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
   const botLevelsRef = useRef(botLevels);
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
-  const sndRef     = useRef(initSoundOn);
+  const sndRef     = useRef(soundOn);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard } =
     useAIScheduler({ extraIntervalRefs: [reactInt] });
@@ -305,6 +309,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
   function startGame(forcedCount, allBotsMode = false) {
     clearTimeout(aiTmr.current); clearInterval(reactInt.current);
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
+    setRevealAll(seeAll || allBotsMode);
     pausedRef.current = false; setPaused(false);
     setPendingResult(null);
     const cnt = forcedCount || nP;
@@ -334,7 +339,6 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
     aiLevelRef.current = aiLevel;
     onAiLevelChange?.(aiLevel);
     aiDelayRef.current = 2000; setAiDelayMs(2000);
-    setDebug(true);
     startGame(nP, true);
   }
 
@@ -835,7 +839,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
                     <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', flex: 1, paddingTop: 8 }}>
                       {ai.cards.map((c, ci) =>
                         c
-                          ? <Card key={ci} card={c} small backStyle={BACKS[cardBack]} faceUp={debugOpen}
+                          ? <Card key={ci} card={c} small backStyle={BACKS[cardBack]} faceUp={revealAll}
                               selected={intention?.playerIdx === pi && intention.slotIdx === ci}
                               // Katselutila ei käytä PlayerGridiä, joten muistikorostus
                               // (showAIKnown) piti kytkeä tähän erikseen; ilman tätä
@@ -856,7 +860,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
                 return (
                   <div key={ai.id} style={isMobile ? { width: '100%' } : { flex: 1, minWidth: 110 }}>
                     <PlayerGrid player={ai} isActive={curIdx === pi} small={true} backStyle={BACKS[cardBack]}
-                      phase={phase} debug={debugOpen} showKnown={showAIKnown}
+                      phase={phase} debug={revealAll} showKnown={showAIKnown}
                       lastSwap={lastSwap?.pIdx === pi ? lastSwap.cIdx : null}
                       clickableSet={tgtClickable(pi)}
                       intentSlot={intention?.playerIdx === pi ? intention.slotIdx : undefined}
@@ -923,7 +927,7 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
 
       {!allBots && (
       <div style={{ marginBottom: isMobile ? 6 : 12 }}>
-        <PlayerGrid player={human} isActive={isHuman} phase={phase} debug={debugOpen || allBots} backStyle={BACKS[cardBack]}
+        <PlayerGrid player={human} isActive={isHuman} phase={phase} debug={revealAll || allBots} backStyle={BACKS[cardBack]}
           clickableSet={ownClickable()} onCardClick={onOwnCard} peekSet={tempPeek}
           adviceSlot={advice?.slot}
           lastSwap={lastSwap?.pIdx === 0 ? lastSwap.cIdx : null} small={isMobile} />
@@ -961,12 +965,12 @@ export default function Koputus({ onResult, showLog = true, soundOn: initSoundOn
 
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid #1a3a22', alignItems: 'center' }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.koputus.ui.goal')}</span>
-        <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
+        <button onClick={() => onSoundOnChange?.(!soundOn)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
+        <button onClick={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${revealAll ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: revealAll ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{revealAll ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
       </div>
 
       <div style={{ marginTop: 14, border: '1px solid #1a3a22', borderRadius: 12, overflow: 'hidden' }}>
-        <button onClick={() => setLogOpen(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', borderBottom: logOpen ? '1px solid #1a3a22' : 'none', padding: '7px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
+        <button onClick={() => onShowLogChange?.(!showLog)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', borderBottom: logOpen ? '1px solid #1a3a22' : 'none', padding: '7px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
           <span style={{ fontSize: 11, fontFamily: 'sans-serif', letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
           <span style={{ fontSize: 14, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>

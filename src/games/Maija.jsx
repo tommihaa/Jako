@@ -269,11 +269,10 @@ import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 // Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 /** @typedef {'idle'|'attacking'|'defending'|'gameover'} Vaihe */
 
-export default function Maija({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Maija({ onResult, showLog = true, soundOn = false, seeAll = false, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
-  const [soundOn, setSnd] = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G, setG] = useState(null);
   const [phase, setPhase] = useState(/** @type {Vaihe} */ ('idle'));
@@ -282,8 +281,13 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
   const [selDefTargetIdx, setSelDefTargetIdx] = useState(null);
   const [msg, setMsg_] = useState('');
   const [log, setLog] = useState([]);
-  const [logOpen, setLO] = useState(showLog);
-  const [debugOpen, setDebug] = useState(initSeeAll);
+  const logOpen = showLog; // omistaja on App, ks. onShowLogChange
+  // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
+  // `seeAll` on App:n omistama asetus joka ei tallennu, ja `revealAll` on tämän pelin
+  // näkymätila. Katselutila pakottaa paljastuksen päälle koskematta asetukseen, ja
+  // `startGame` palauttaa näkymän asetuksen mukaiseksi.
+  const [revealAll, setRevealAll] = useState(seeAll);
+  useEffect(() => { setRevealAll(seeAll); }, [seeAll]);
   const [finished, setFinished] = useState([]);
   const [pakaAnim, setPakaAnim] = useState(false);
   const [shuffling, setShuffling] = useState(false);
@@ -386,6 +390,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
 
   function startGame(forcedCount, allBotsMode = false) {
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
+    setRevealAll(seeAll || allBotsMode);
     pausedRef.current = false; setPaused(false);
     setPendingResult(null);
     clearTimeout(aiTmr.current);
@@ -408,7 +413,6 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
     aiLevelRef.current = aiLevel;
     onAiLevelChange?.(aiLevel);
     aiDelayRef.current = 2000; setAiDelayMs(2000);
-    setDebug(true);
     startGame(nP, true);
   }
 
@@ -814,7 +818,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
                       {isAtt ? '⚔️' : isDef ? '🛡️' : '🤖'} {p.name}
                     </div>
                     <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-                      {debugOpen
+                      {revealAll
                         ? p.hand.map(c => {
                             const isIntended = intention?.playerIdx === p.id && intention.cards?.some(ic => ic.id === c.id);
                             return <Card key={c.id} card={c} xsmall backStyle={BACKS[cardBack]} selected={isIntended} />;
@@ -968,15 +972,15 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
       <div style={{ display:'flex', gap:6, flexWrap:'wrap', paddingTop:10,
         borderTop:`1px solid ${C.panelBorder}`, alignItems:'center', marginBottom:12 }}>
         <span style={{ fontFamily:'sans-serif', fontSize:10, color:C.dim, flex:1 }}><span style={{ color:C.gold, fontWeight:700 }}>{t('ui.shared.goal')}</span> {t('games.maija.ui.goal')}</span>
-        <button onClick={() => setSnd(s => !s)} style={{ fontSize:11, padding:'5px 10px', borderRadius:12,
+        <button onClick={() => onSoundOnChange?.(!soundOn)} style={{ fontSize:11, padding:'5px 10px', borderRadius:12,
           border:`1px solid ${soundOn ? C.gold+'55' : C.panelBorder}`,
           background:'transparent', color:soundOn ? C.gold : C.dim, cursor:'pointer', fontFamily:'sans-serif' }}>
           {soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}
         </button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize:11, padding:'5px 10px', borderRadius:12,
-          border:`1px solid ${debugOpen ? C.gold+'55' : '#2a4a32'}`, background:'transparent',
-          color:debugOpen ? C.gold : C.dim, cursor:'pointer', fontFamily:'sans-serif' }}>
-          {debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}
+        <button onClick={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }} style={{ fontSize:11, padding:'5px 10px', borderRadius:12,
+          border:`1px solid ${revealAll ? C.gold+'55' : '#2a4a32'}`, background:'transparent',
+          color:revealAll ? C.gold : C.dim, cursor:'pointer', fontFamily:'sans-serif' }}>
+          {revealAll ? '🙈' : '🔍'} {t('ui.shared.openCards')}
         </button>
       </div>
 
@@ -1003,7 +1007,7 @@ export default function Maija({ onResult, showLog = true, soundOn: initSoundOn =
 
       {/* Loki */}
       <div style={{ border:`1px solid ${C.panelBorder}`, borderRadius:10, overflow:'hidden' }}>
-        <button onClick={() => setLO(o => !o)} style={{ width:'100%', background:'rgba(255,255,255,0.02)',
+        <button onClick={() => onShowLogChange?.(!showLog)} style={{ width:'100%', background:'rgba(255,255,255,0.02)',
           border:'none', padding:'6px 14px', display:'flex', alignItems:'center',
           gap:8, cursor:'pointer', color:C.dim }}>
           <span style={{ fontFamily:'sans-serif', fontSize:10, letterSpacing:1.5, flex:1, textAlign:'left' }}>

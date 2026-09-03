@@ -1623,12 +1623,22 @@ export default function App() {
             {t('ui.loading')}
           </div>
         }>
+        {/* Asetuksen omistaja on App (kompositioauditointi H6, päätös 3.9.2026). Peli lukee
+            soundOn-, seeAll- ja showLog-arvon propsista eikä kopioi sitä omaan tilaansa, ja
+            pelin oma nappi kutsuu takaisin tänne. Näin Asetuksista tehty muutos näkyy pelissä
+            heti ja pelistä tehty muutos tallentuu. seeAll pysyy tallentumattomana (ks.
+            storage.js), ja katselutilan paljastus on pelin oma tila joka ei koske tähän
+            asetukseen. Lokin kytkin kuuluu näkyvyysesiasetukseen, joten pelistä tehty muutos
+            merkitsee esiasetuksen custom-tilaan samoin kuin Asetuksissa. */}
         <GameComponent
           key={gameKey}
           game={game}
           showLog={showLog}
           soundOn={soundOn}
           seeAll={seeAll}
+          onSoundOnChange={setSoundOn}
+          onSeeAllChange={setSeeAll}
+          onShowLogChange={(v) => { setShowLog(v); setUiPreset('custom'); }}
           showCounts={showCounts}
           showLastPlay={showLastPlay}
           showIntention={showIntention}

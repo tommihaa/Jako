@@ -278,19 +278,23 @@ import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 /** @typedef {'play'|'awaiting_suit'|'finished'} Vaihe */
 /** @typedef {{phase: Vaihe, [k: string]: any}} PeliTila Vain vaihe on kiinnitetty; muut kentät vapaita. */
 
-export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Seiska({ onResult, showLog = true, soundOn = false, seeAll = false, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen,      setScreen]  = useState('select');
   const [playerSlots, setPlayerSlots] = useState(() => initSlots(playerCount));
   const [nP, setNP] = useState(playerCount);
   const [handoff,     setHandoff] = useState(null); // null | { name }
-  const [soundOn,     setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G,           setG]       = useState(/** @type {PeliTila|null} */ (null));  const [msg,         setMsg_]    = useState('');
   const [log,         setLog]     = useState([]);
-  const [logOpen,     setLO]      = useState(showLog);
+  const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   const [selected,    setSel]     = useState([]);
-  const [debugOpen,   setDebug]   = useState(initSeeAll);
+  // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
+  // `seeAll` on App:n omistama asetus joka ei tallennu, ja `revealAll` on tämän pelin
+  // näkymätila. Katselutila pakottaa paljastuksen päälle koskematta asetukseen, ja
+  // `startGame` palauttaa näkymän asetuksen mukaiseksi.
+  const [revealAll, setRevealAll] = useState(seeAll);
+  useEffect(() => { setRevealAll(seeAll); }, [seeAll]);
   const [pakaAnim,    setPakaAnim] = useState(false);
   const [jpId,        setJP]      = useState(null);
   const [shuffling,   setShuffling] = useState(false);
@@ -453,6 +457,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
     const g = mkInitState(playerDefs);
     logRef.current = []; setLog([]); setSel([]); setPakaAnim(false); setHandoff(null);
     setGS(g);
+    setRevealAll(seeAll || g.players.every(p => !p.isHuman));
     addLog(M.gameStart(lblColored(g.discardTop)));
     if (g.players.every(p => !p.isHuman)) {
       aiDelayRef.current = 3000;
@@ -479,7 +484,6 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
     aiLevelRef.current = aiLevel;
     onAiLevelChange?.(aiLevel);
     aiDelayRef.current = 2000; setAiDelayMs(2000);
-    setDebug(true);
     const slots = Array(nP).fill(null).map((_, i) => ({ name: '', isHuman: false, active: true }));
     startGame(slots);
   }
@@ -721,7 +725,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
       const pName = g2.players[playerIdx].name;
       const wd = Math.max(300, aiDelayRef.current * 0.6); // nostoketjun viive skaalautuu tahdin mukana
       if (valid) {
-        addLog(M.aiDraws(pName, debugOpen ? lblColored(drawn) : null));
+        addLog(M.aiDraws(pName, revealAll ? lblColored(drawn) : null));
         // Valitse paras siirto KOKO kädestä — ei vain nostettua korttia. Tärkeä
         // erikoistapaus: jos kädessä on pelattava ässä ja loppukäsi on yhtä arvoa
         // (ässän maata), pelaa ässä ensin → ässäbonus jatkaa lopuilla → käsi tyhjäksi.
@@ -1029,7 +1033,7 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
                   {hasLappu && <span style={{ color: C.red, marginLeft: 4 }}>LAPPU</span>}
                   {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
                 </span>
-                {debugOpen ? (
+                {revealAll ? (
                   <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', minWidth: 0, paddingTop: 8 }}>
                     {p.hand.map(c => {
                       const isIntended = intention?.playerIdx === p.id
@@ -1275,14 +1279,14 @@ export default function Seiska({ onResult, showLog = true, soundOn: initSoundOn 
           {' · '}{G.reqSuit ? t('games.seiska.ui.required', { suit: G.reqSuit }) : t('games.seiska.ui.topCard', { card: lbl(G.discardTop) })}
         </span>
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
-          <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
+          <button onClick={() => onSoundOnChange?.(!soundOn)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
+          <button onClick={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${revealAll ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: revealAll ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{revealAll ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
         </div>
       </div>
 
       {/* Loki */}
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
-        <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
+        <button onClick={() => onShowLogChange?.(!showLog)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
           <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>

@@ -265,10 +265,21 @@ Tommin vastaukset Kysymykset-osioon. Rivi kertoo päätöksen ja sen tilan koodi
    korkeimman tason mukaan ja perustelu on koodissa. Botbench ei muutu, koska se antaa
    `botLevels`in aina. `allbots-smoke` ajaa nyt kaikki yhdeksän Kisällillä. Testit 132
    läpi. `BOTBENCH.md` ei tarvitse merkintää, koska sääntö on nyt yksi eikä poikkeusta ole.
-2. **Asetuksen omistaja (H6): App omistaa kaikki kolme.** Peli lukee propsin ja pelin nappi
-   kutsuu takaisin App:iin. `seeAll` pysyy tallentumattomana ja katselutilan paljastus
-   erotetaan omaksi käsitteekseen. Konfliktit jotka sulkivat vaihtoehdon "peli omistaa" ovat
+2. **Asetuksen omistaja (H6): App omistaa kaikki kolme, tehty.** Pelit lukevat `soundOn`-,
+   `seeAll`- ja `showLog`-arvon propsista, ja `initSoundOn`- ja `initSeeAll`-kopiot poistuivat
+   yhdeksästä signatuurista. App välittää `onSoundOnChange`, `onSeeAllChange` ja
+   `onShowLogChange`, ja lokin kytkin merkitsee esiasetuksen `custom`-tilaan samoin kuin
+   Asetuksissa. Katselutilan paljastus erotettiin asetuksesta omaksi `revealAll`-tilakseen,
+   jonka `startGame` asettaa arvoon `seeAll || allBotsMode`, joten `setDebug(true)` poistui
+   yhdeksästä `startBotBattle`sta. Nimi `debugOpen` vaihtui `revealAll`iksi, koska se ei ole
+   debug-lippu vaan näkymätila. Konfliktit jotka sulkivat vaihtoehdon "peli omistaa" ovat
    Konfliktit-osiossa alla.
+
+   Todennettu previewissä peli käynnissä. Pelin äänikytkin kirjoitti `jako:soundOn`-arvon
+   `true`, Asetuksista tehty muutos vaihtoi pelin napin `🔇`-tilaan ilman remounttia, pelin
+   lokikytkin kirjoitti `jako:showLog`-arvon ja `jako:uiPreset`-arvon `custom`, ja Bottien
+   Taistelun jälkeen aloitettu ihmispeli avautui paljastus pois päältä eli asetus ei
+   likaantunut. Ei konsolivirheitä.
 3. **Kultakalan tasapeli (H3): jaettu sija ilman arvontaa, tehty.** Kaanoni ensin:
    `KULTAKALA.md` sai Tasapeli-osion. Sen jälkeen koodista poistuivat `DiceRoll`,
    `NoppaVaihe`-typedef, `showDice`, `tiedPlayers`, `M.tieBreaker` ja käyttämättä jäänyt

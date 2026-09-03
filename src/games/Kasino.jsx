@@ -444,13 +444,12 @@ import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 // Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 /** @typedef {'idle'|'select_table'} Vaihe */
 
-export default function Kasino({ game, onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Kasino({ game, onResult, showLog = true, soundOn = false, seeAll = false, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const [rules, setRules] = useStickySetting('kasino:rules', KASINO_DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä; muistetaan
   const buildCap = rules.specialBuilds ? 16 : 13; // rakennelman max-arvo (13=K, 16=♦10 erikoissäännöllä)
-  const [soundOn, setSnd] = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G, setG] = useState(null);
   const [curIdx, setCur] = useState(0);
@@ -461,8 +460,13 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
   const [leaveMode, setLeaveMode] = useState(false); // jättämistila
   const [msg, setMsg_] = useState('');
   const [log, setLog] = useState([]);
-  const [logOpen, setLO] = useState(showLog);
-  const [debugOpen, setDebug] = useState(initSeeAll);
+  const logOpen = showLog; // omistaja on App, ks. onShowLogChange
+  // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
+  // `seeAll` on App:n omistama asetus joka ei tallennu, ja `revealAll` on tämän pelin
+  // näkymätila. Katselutila pakottaa paljastuksen päälle koskematta asetukseen, ja
+  // `startGame` palauttaa näkymän asetuksen mukaiseksi.
+  const [revealAll, setRevealAll] = useState(seeAll);
+  useEffect(() => { setRevealAll(seeAll); }, [seeAll]);
   const [scores, setScores] = useState(null);
   const [pakaAnim, setPakaAnim] = useState(false);
   const [aiSel, setAiSel] = useState({ handCard: null, tableCards: [] });
@@ -582,6 +586,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
   function startGame(forcedCount, allBotsMode = false) {
     clearTimeout(aiTmr.current);
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
+    setRevealAll(seeAll || allBotsMode);
     pausedRef.current = false; setPaused(false);
     setPendingResult(null);
     const cnt = forcedCount || nP;
@@ -607,7 +612,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
     aiLevelRef.current = aiLevel;
     onAiLevelChange?.(aiLevel);
     aiDelayRef.current = 2000; setAiDelayMs(2000);
-    setDebug(true);
     startGame(nP, true);
   }
 
@@ -1421,8 +1425,8 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
                   <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: curIdx === p.id ? C.gold : C.dim, marginBottom: 4 }}>
                     🤖 {p.name} {curIdx === p.id ? '●' : ''}{!isMobile && ` · ${korttia(p.captured.length)} ${t('games.kasino.ui.captured')}`}
                   </div>
-                  <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: debugOpen ? 'wrap' : 'nowrap', overflow: debugOpen ? 'visible' : 'hidden' }}>
-                    {debugOpen
+                  <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: revealAll ? 'wrap' : 'nowrap', overflow: revealAll ? 'visible' : 'hidden' }}>
+                    {revealAll
                       ? p.hand.map(c => <Card key={c.id} card={c} small showBadges backStyle={BACKS[cardBack]} selected={initShowIntention && aiSel.handCard?.id === c.id} />)
                       : p.hand.map((_, ci) => <div key={ci} style={{ width: 28, height: 40, borderRadius: 4, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}` }} />)
                     }
@@ -1646,17 +1650,17 @@ export default function Kasino({ game, onResult, showLog = true, soundOn: initSo
         <button onClick={() => setShowInfo(v => !v)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${showInfo ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: showInfo ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
           ℹ {t('games.kasino.ui.points')}
         </button>
-        <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
+        <button onClick={() => onSoundOnChange?.(!soundOn)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
           {soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}
         </button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          {debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}
+        <button onClick={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${revealAll ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: revealAll ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
+          {revealAll ? '🙈' : '🔍'} {t('ui.shared.openCards')}
         </button>
       </div>
 
       {/* Loki */}
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
-        <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
+        <button onClick={() => onShowLogChange?.(!showLog)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
           <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>

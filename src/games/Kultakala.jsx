@@ -200,11 +200,10 @@ function KaCard({ card, faceUp, small, mini, tiny, highlight, dim, pulse, unknow
 // Suljetut arvojoukot: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 /** @typedef {'idle'|'drawing'|'holding'|'swapping'|'gameover'} Vaihe */
 
-export default function Kultakala({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, showAIKnown = true, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Kultakala({ onResult, showLog = true, soundOn = false, seeAll = false, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, showAIKnown = true, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen]   = useState('select');
   const [nP, setNP]           = useState(playerCount);
-  const [soundOn, setSnd]     = useState(initSoundOn);
   const cardBack = 'ilves';
   const [G, setG]             = useState(null);
   const [phase, setPhase]     = useState(/** @type {Vaihe} */ ('idle'));
@@ -213,10 +212,15 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
   const [swapIdx, setSwapIdx] = useState(null);
   const [msg, setMsg_]        = useState('');
   const [log, setLog]         = useState([]);
-  const [logOpen, setLO]      = useState(showLog);
+  const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   const [revealed, setRevealed] = useState(false);
   const [drawnFromDeck, setFromDeck] = useState(false);
-  const [debugOpen, setDebug] = useState(initSeeAll);
+  // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
+  // `seeAll` on App:n omistama asetus joka ei tallennu, ja `revealAll` on tämän pelin
+  // näkymätila. Katselutila pakottaa paljastuksen päälle koskematta asetukseen, ja
+  // `startGame` palauttaa näkymän asetuksen mukaiseksi.
+  const [revealAll, setRevealAll] = useState(seeAll);
+  useEffect(() => { setRevealAll(seeAll); }, [seeAll]);
   const [shuffling, setShuffling] = useState(false);
   const [kohahdus, setKohahdus] = useState(null);
   const [lastPlay, setLastPlay] = useState(null);
@@ -291,6 +295,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
 
   function startGame(forcedCount, allBotsMode = false) {
     allBotsRef.current = allBotsMode; setAllBots(allBotsMode);
+    setRevealAll(seeAll || allBotsMode);
     pausedRef.current = false; setPaused(false);
     setPendingResult(null);
     clearTimeout(aiTmr.current);
@@ -312,7 +317,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     aiLevelRef.current = aiLevel;
     onAiLevelChange?.(aiLevel);
     aiDelayRef.current = 2000; setAiDelayMs(2000);
-    setDebug(true);
     startGame(nP, true);
   }
 
@@ -668,12 +672,12 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
                   {/* Sama kehyslaatikko kaikille (reunus läpinäkyvä ilman korostusta),
                       jotta korostettu, korostamaton ja tuntematon istuvat samalla tasolla */}
                   <div style={{ borderRadius: 4, border: '2px solid transparent', padding: 1 }}>
-                    <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
+                    <KaCard card={p.unknown} unknown={!revealed && !revealAll} faceUp={revealed || revealAll} tiny backStyle={BACKS[cardBack]} />
                   </div>
                   <div style={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                     {p.row.map((c, ci) => (
                       <div key={ci} style={{ borderRadius: 4, border: `2px solid ${showAIKnown && p.known.has(ci) ? C.gold : 'transparent'}`, boxShadow: showAIKnown && p.known.has(ci) ? `0 0 6px ${C.gold}66` : 'none', padding: 1 }}>
-                        <KaCard card={c} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
+                        <KaCard card={c} faceUp={revealed || revealAll} tiny backStyle={BACKS[cardBack]} />
                       </div>
                     ))}
                   </div>
@@ -692,12 +696,12 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
                   {/* Sama kehyslaatikko kaikille (reunus läpinäkyvä ilman korostusta),
                       jotta korostettu, korostamaton ja tuntematon istuvat samalla tasolla */}
                   <div style={{ borderRadius: 6, border: '2px solid transparent', padding: 2 }}>
-                    <KaCard card={p.unknown} unknown={!revealed && !debugOpen} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
+                    <KaCard card={p.unknown} unknown={!revealed && !revealAll} faceUp={revealed || revealAll} tiny backStyle={BACKS[cardBack]} />
                   </div>
                   <div style={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                     {p.row.map((c, ci) => (
                       <div key={ci} style={{ borderRadius: 6, border: `2px solid ${showAIKnown && p.known.has(ci) ? C.gold : 'transparent'}`, boxShadow: showAIKnown && p.known.has(ci) ? `0 0 8px ${C.gold}66` : 'none', padding: 2 }}>
-                        <KaCard card={c} faceUp={revealed || debugOpen} tiny backStyle={BACKS[cardBack]} />
+                        <KaCard card={c} faceUp={revealed || revealAll} tiny backStyle={BACKS[cardBack]} />
                       </div>
                     ))}
                   </div>
@@ -782,7 +786,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
             const isSwapTarget = canSwapRow && swapIdx === i;
             return (
               <div key={i} style={{ textAlign: 'center', flexShrink: 0 }}>
-                <KaCard card={c} faceUp={debugOpen || allBots || human.known.has(i)} small={!isMobile} tiny={isMobile}
+                <KaCard card={c} faceUp={revealAll || allBots || human.known.has(i)} small={!isMobile} tiny={isMobile}
                   highlight={isSwapTarget}
                   pulse={human.known.has(i) && !isSwapTarget}
                   backStyle={BACKS[cardBack]} />
@@ -817,8 +821,8 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
       {/* Tilarivi */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.kultakala.ui.goal')}</span>
-        <button onClick={() => setSnd(s => !s)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
-        <button onClick={() => setDebug(d => !d)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${debugOpen ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: debugOpen ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{debugOpen ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
+        <button onClick={() => onSoundOnChange?.(!soundOn)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
+        <button onClick={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${revealAll ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: revealAll ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{revealAll ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
       </div>
 
       {/* Katselutila: pending result overlay */}
@@ -843,7 +847,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
       )}
 
       <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
-        <button onClick={() => setLO(o => !o)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
+        <button onClick={() => onShowLogChange?.(!showLog)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
           <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
         </button>
