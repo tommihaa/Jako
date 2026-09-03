@@ -280,7 +280,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const cardBack = 'ilves';
-  const { G, gRef, setG, setGS } = useGameState(/** @type {PeliTila|null} */ (null));
+  const { G, gRef, setGS } = useGameState(/** @type {PeliTila|null} */ (null));
   const [msg, setMsg_] = useState('');
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
@@ -423,7 +423,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     resetLog();
     setSelAtk([]); setSelDefTarget(null); setSelPass([]); setSelAdd([]); setPakaAnim(false);
     setAwaitingPlayerContinue(false); setPendingDraw(null);
-    setGS(g);
+    commit(g);
     if (g.exchangeMsg) addLog(g.exchangeMsg);
     const trumpSpan = `<span style="color:${SUIT_COLOR[g.ts]}">${g.ts}</span>`;
     addLog(M.gameStart(trumpSpan, g.players[g.primaryAtk].name, g.players[g.defender].name));
@@ -444,6 +444,10 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   function resolveRound(g, defWon) {
     const defPlayer = g.players[g.defender];
     let players = g.players.map(p => ({ ...p }));
+    // Kierroksen lokirivit odottavat tilaa: ne kirjoitetaan vasta kun uusi tila on
+    // committoitu, jotta katselutilan frame ei kuvaa edellistä kierrosta
+    // (kompositioauditointi H4).
+    const lines = /** @type {string[]} */ ([]);
 
     // Kuvaa pöydän tilanne kun kierros päättyi
     const tableDesc = g.table.map(t =>
@@ -456,12 +460,12 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         removedRef.current.add(`${t.atk.r}${t.atk.s}`);
         if (t.def) removedRef.current.add(`${t.def.r}${t.def.s}`);
       });
-      addLog(M.defenderWon(defPlayer.name, tableDesc));
+      lines.push(M.defenderWon(defPlayer.name, tableDesc));
       if (sndRef.current) SFX.capture();
     } else {
       const taken = g.table.flatMap(t => [t.atk, t.def].filter(Boolean));
       players[g.defender] = { ...players[g.defender], hand: [...players[g.defender].hand, ...taken] };
-      addLog(M.defenderTook(defPlayer.name, kortin(taken.length), tableDesc));
+      lines.push(M.defenderTook(defPlayer.name, kortin(taken.length), tableDesc));
       if (sndRef.current) SFX.leave();
     }
 
@@ -483,7 +487,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
           const { drawn, deck: d2, trumpCard: t2 } = drawFrom(deck, tc, need);
           if (drawn.length) {
             players[idx] = { ...players[idx], hand: [...players[idx].hand, ...drawn] };
-            addLog(M.playerDrew(players[idx].name, kortin(drawn.length)));
+            lines.push(M.playerDrew(players[idx].name, kortin(drawn.length)));
           }
           deck = d2; tc = t2;
         }
@@ -500,9 +504,9 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         rankings = [...rankings, i];
         // Eri viesti riippuen sijoituksesta
         if (rank === 1) {
-          addLog(M.won(p.name));
+          lines.push(M.won(p.name));
         } else {
-          addLog(M.out(p.name));
+          lines.push(M.out(p.name));
         }
       }
     });
@@ -515,7 +519,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
           const rank = rankings.length + 1;
           players[p.id] = { ...p, rank };
           rankings = [...rankings, p.id];
-          addLog(M.lost(p.name));
+          lines.push(M.lost(p.name));
         }
       });
       const ranking = rankings.map((id, pos) => ({
@@ -524,7 +528,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       if (allBotsRef.current) { tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY); }
       else { onResult?.({ ranking }); }
       const g2 = { ...g, players, deck, trumpCard: tc, rankings, table: [], phase: 'gameover' };
-      setGS(g2);
+      commit(g2);
+      lines.forEach(addLog);
       return;
     }
 
@@ -549,7 +554,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       // Päivitä pelaajat ja ranking, mutta pidä pöytä näkyvissä
       // Tyhjennä addQueue ja passChain jotta myTurn tulee falseksi (ei näytetä interaktio-elementtejä)
       const gShowResults = { ...g, players, rankings, addQueue: [], passChain: [] };
-      setGS(gShowResults);
+      commit(gShowResults);
+      lines.forEach(addLog);
 
       // Jos ihminen puolusti, näytä puolustuksen tulos Viesti-kentässä (älä näytä vielä seuraavan kierroksen tietoja)
       if (g.defender === 0) {
@@ -572,8 +578,9 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       setAwaitingPlayerContinue(true);
     } else {
       // Ihminen ei ollut osallisena - päivitä pelitilanteen ja jatka
+      commit(g2);
+      lines.forEach(addLog);
       addLog(M.nextRound(players[nextAtk].name, players[nextDef].name));
-      setGS(g2);
       if (!players[nextAtk].isHuman) {
         // AI hyökkää seuraavaksi
         schedAI(() => runAI(gRef.current), 1600);
@@ -587,18 +594,20 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     const newHand = p.hand.filter(c => !cards.find(a => a.id === c.id));
     const newTable = cards.map(c => ({ atk: c, def: null, atkBy: atkIdx }));
     const players = g.players.map((pl, i) => i === atkIdx ? { ...pl, hand: newHand } : pl);
-    addLog(M.attack(p.name, cards.map(lblColored).join(', ')));
     flashLastPlay(p.name, cards, p.isHuman);
     if (sndRef.current) SFX.leave();
     const ids = new Set(cards.map(c => c.id));
     setJustPlaced(ids);
     tm(() => setJustPlaced(new Set()), 1800);
     const g2 = { ...g, players, table: newTable, attackers: [atkIdx], phase: 'defend' };
-    setGS(g2);
+    commit(g2, M.attack(p.name, cards.map(lblColored).join(', ')));
     goDefend(g2);
   }
 
-  function doBeat(g, atkId, defCard) {
+  // Palauttaa uuden tilan committoimatta sitä, koska botti kaataa monta korttia peräkkäin
+  // ja kutsuja kirjoittaa tilan kerran. Siksi lokirivi menee `lines`-listaan, jonka
+  // kutsuja purkaa vasta commitin jälkeen (kompositioauditointi H4).
+  function doBeat(g, atkId, defCard, lines = /** @type {string[]} */ ([])) {
     const def = g.players[g.defender];
     const newHand = def.hand.filter(c => c.id !== defCard.id);
     const atkCard = g.table.find(t => t.atk.id === atkId)?.atk;
@@ -610,7 +619,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     const beaten = newTable.filter(t => t.def).length;
     const statusMsg = unbeaten > 0 ? t('games.moska.msg.statusOnTable', { beaten, unbeaten }) : t('games.moska.msg.statusAllBeaten');
 
-    addLog(M.beat(def.name, lblColored(defCard), lblColored(atkCard), statusMsg));
+    lines.push(M.beat(def.name, lblColored(defCard), lblColored(atkCard), statusMsg));
     flashLastPlay(def.name, defCard, def.isHuman);
     if (sndRef.current) SFX.beat();
     return { ...g, players, table: newTable };
@@ -627,14 +636,13 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     const newHand = def.hand.filter(c => !passCards.find(pc => pc.id === c.id));
     const newTable = [...g.table, ...passCards.map(c => ({ atk: c, def: null, atkBy: g.defender }))];
     const players = g.players.map((p, i) => i === g.defender ? { ...p, hand: newHand } : p);
-    addLog(M.pass(def.name, passCards.map(lblColored).join(','), g.players[nextDef].name));
     const g2 = {
       ...g, players, table: newTable, defender: nextDef,
       passChain: [...g.passChain, g.defender],
       attackers: [...new Set([...g.attackers, g.defender])],
       phase: 'defend',
     };
-    setGS(g2);
+    commit(g2, M.pass(def.name, passCards.map(lblColored).join(','), g.players[nextDef].name));
     goDefend(g2);
   }
 
@@ -643,7 +651,6 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     const newHand = p.hand.filter(c => !cards.find(a => a.id === c.id));
     const newTable = [...g.table, ...cards.map(c => ({ atk: c, def: null, atkBy: playerIdx }))];
     const players = g.players.map((pl, i) => i === playerIdx ? { ...pl, hand: newHand } : pl);
-    addLog(M.add(p.name, cards.map(lblColored).join(', ')));
     const ids = new Set(cards.map(c => c.id));
     setJustPlaced(ids);
     tm(() => setJustPlaced(new Set()), 1800);
@@ -653,7 +660,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       attackers: [...new Set([...g.attackers, playerIdx])],
       addQueue: rest, phase: 'add',
     };
-    setGS(g2);
+    commit(g2, M.add(p.name, cards.map(lblColored).join(', ')));
     // Jatka lisäysvaiheen jonoa seuraavalle pelaajalle (phase pysyy 'add')
     aiTmr.current = tm(() => processAddQueue(gRef.current), 600);
   }
@@ -689,7 +696,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       // Jos puolustajalla on vielä lyömättömiä kortteja, anna hänelle vuoro kaataa ne
       if (unbeaten > 0) {
         const g2 = { ...g, phase: 'defend' };
-        setGS(g2);
+        commit(g2);
         goDefend(g2);
         return;
       }
@@ -700,10 +707,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
 
     // Näytä lisäysvaiheen alku
     const tableCards = g.table.map(t => lblColored(t.atk)).join(', ');
-    addLog(M.addPhase(tableCards));
-
     const g2 = { ...g, phase: 'add', addQueue: queue };
-    setGS(g2);
+    commit(g2, M.addPhase(tableCards));
     processAddQueue(g2);
   }
 
@@ -714,7 +719,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       // Jos puolustajalla on vielä lyömättömiä kortteja, anna hänelle vuoro kaataa ne
       if (unbeaten > 0) {
         const g2 = { ...g, phase: 'defend' };
-        setGS(g2);
+        commit(g2);
         goDefend(g2);
         return;
       }
@@ -728,7 +733,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     if (!addable.length) {
       const rest = g.addQueue.slice(1);
       const g2 = { ...g, addQueue: rest };
-      setGS(g2);
+      commit(g2);
       aiTmr.current = tm(() => processAddQueue(g2), 200);
       return;
     }
@@ -755,10 +760,9 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
           aiTmr.current = tm(() => { doAdd(gRef.current, next, [card]); }, 900 + Math.random() * 300);
         }
       } else {
-        addLog(M.aiSkips(p.name));
         const rest = g.addQueue.slice(1);
         const g2 = { ...g, addQueue: rest };
-        setGS(g2);
+        commit(g2, M.aiSkips(p.name));
         aiTmr.current = tm(() => processAddQueue(g2), 600);
       }
     }
@@ -839,10 +843,12 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       if (canBeatAll) {
         aiTmr.current = tm(() => {
           let cur = gRef.current;
+          const beatLines = /** @type {string[]} */ ([]);
           for (const { atkId, defCard } of beats) {
-            cur = doBeat(cur, atkId, defCard);
+            cur = doBeat(cur, atkId, defCard, beatLines);
           }
-          setGS(cur);
+          commit(cur);
+          beatLines.forEach(addLog);
           aiTmr.current = tm(() => startAddPhase(cur), isSN ? 400 : 700);
         }, isSN ? 450 : 900);
       } else {
@@ -897,14 +903,14 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       return;
     }
     const g = gRef.current;
-    let g2 = doBeat(g, selDefTarget.atk.id, card);
+    const beatLines = /** @type {string[]} */ ([]);
+    let g2 = doBeat(g, selDefTarget.atk.id, card, beatLines);
     setSelDefTarget(null);
     const stillUnbeaten = g2.table.filter(t => !t.def).length;
+    commit(g2);
+    beatLines.forEach(addLog);
     if (stillUnbeaten === 0) {
-      setGS(g2);
       aiTmr.current = tm(() => startAddPhase(gRef.current), 500);
-    } else {
-      setGS(g2);
     }
   }
 
@@ -958,7 +964,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     const g = gRef.current;
     const rest = (g.addQueue || []).slice(1);
     const g2 = { ...g, addQueue: rest };
-    setGS(g2);
+    commit(g2);
     processAddQueue(g2);
   }
 
@@ -969,6 +975,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       // Tee nostojen jäljelle jääneet logiikka
       const { drawOrder, deck: initialDeck, tc: initialTc, players, nextAtk, g2 } = pendingDraw;
       let deck = initialDeck, tc = initialTc;
+      // Lokirivit odottavat tilaa, ks. resolveRound (kompositioauditointi H4).
+      const lines = /** @type {string[]} */ ([]);
 
       // Tee nosto
       for (const idx of drawOrder) {
@@ -978,7 +986,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
           const { drawn, deck: d2, trumpCard: t2 } = drawFrom(deck, tc, need);
           if (drawn.length) {
             players[idx] = { ...players[idx], hand: [...players[idx].hand, ...drawn] };
-            addLog(M.playerDrew(players[idx].name, kortin(drawn.length)));
+            lines.push(M.playerDrew(players[idx].name, kortin(drawn.length)));
           }
           deck = d2; tc = t2;
         }
@@ -993,7 +1001,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
           const rank = rankings.length + 1;
           players[i] = { ...p, rank };
           rankings = [...rankings, i];
-          addLog(rank === 1 ? M.won(p.name) : M.out(p.name));
+          lines.push(rank === 1 ? M.won(p.name) : M.out(p.name));
         }
       });
 
@@ -1003,14 +1011,15 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
           const rank = rankings.length + 1;
           players[p.id] = { ...p, rank };
           rankings = [...rankings, p.id];
-          addLog(M.lost(p.name));
+          lines.push(M.lost(p.name));
         });
         const ranking = rankings.map((id, pos) => ({
           name: players[id].name, place: pos + 1, isHuman: players[id].isHuman,
         }));
         if (allBotsRef.current) { tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY); }
         else { onResult?.({ ranking }); }
-        setGS({ ...g2, players, deck, trumpCard: tc, rankings, table: [], phase: 'gameover' });
+        commit({ ...g2, players, deck, trumpCard: tc, rankings, table: [], phase: 'gameover' });
+        lines.forEach(addLog);
         setPendingDraw(null);
         return;
       }
@@ -1026,7 +1035,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         ...g2, players, deck, trumpCard: tc, rankings,
         primaryAtk: finalAtk, defender: finalDef, attackers: [finalAtk],
       };
-      setGS(g2Updated);
+      commit(g2Updated);
+      lines.forEach(addLog);
       setPendingDraw(null);
 
       // Näytä seuraavan kierroksen viesti

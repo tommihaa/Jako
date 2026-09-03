@@ -318,7 +318,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
   const [nP,       setNP]      = useState(playerCount);
   const [rules,    setRules]   = useStickySetting('paskahousu:rules', DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä; muistetaan
   const cardBack = 'ilves';
-  const { G, gRef, setG, setGS } = useGameState(/** @type {PeliTila|null} */ (null));
+  const { G, gRef, setGS } = useGameState(/** @type {PeliTila|null} */ (null));
   const [msg,      setMsg_]    = useState('');
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   const [jpIds,    setJP]      = useState(new Set());
@@ -443,14 +443,14 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     const sorted  = [...active].sort((a, b) => a.hand.length - b.hand.length);
     const winner  = sorted[0];
     const loser   = sorted[sorted.length - 1];
-    addLog(t('games.paskahousu.msg.suddenDeathEnd', { name: winner.name, wk: winner.hand.length, lk: loser.hand.length }));
+    const sdLine = t('games.paskahousu.msg.suddenDeathEnd', { name: winner.name, wk: winner.hand.length, lk: loser.hand.length });
     if (sndRef.current) SFX.capture();
     const newFinished = [...g.finished, winner.id, loser.id];
     const ranking = newFinished.map((idx, pos) => ({
       name: g.players[idx].name, place: pos + 1, isHuman: g.players[idx].isHuman && !allBotsRef.current,
     }));
     setTimerLeft(null);
-    setGS({ ...g, finished: newFinished, phase: 'gameover' });
+    commit({ ...g, finished: newFinished, phase: 'gameover' }, sdLine);
     if (allBotsRef.current) { tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY); }
     else { onResult?.({ ranking }); }
   }
@@ -467,10 +467,9 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     const count = forcedCount ?? nP;
     const g = mkGame(count, playerNames, allBotsMode, rules);
     resetLog();
-    setGS(g);
     const s = g.players[g.turn];
     const lowestCard = s.hand.reduce((a, b) => a.v <= b.v ? a : b);
-    addLog(M.gameStart(s.isHuman, s.name, lblColored(lowestCard)));
+    commit(g, M.gameStart(s.isHuman, s.name, lblColored(lowestCard)));
     setScreen('game');
     setShuffling(true);
     if (!s.isHuman) schedAI(() => runAI(gRef.current), 3100);
@@ -492,7 +491,10 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     const ids      = new Set(cards.map(c => c.id));
 
     p.hand = p.hand.filter(c => !ids.has(c.id));
-    addLog(M.played(isH, p.name, cards.map(lblColored).join(', ')));
+    // Lokirivit odottavat tilaa ja purkautuvat vasta commitin jälkeen
+    // (kompositioauditointi H4).
+    const lines = /** @type {string[]} */ ([]);
+    lines.push(M.played(isH, p.name, cards.map(lblColored).join(', ')));
     if (sndRef.current) SFX.play();
     setJP(ids);
     setLP({ name: p.name, cards, isHuman: isH });
@@ -510,13 +512,13 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       setPakaAnim(true); // pakka on tyhjä
       const activeNow = g.players.length - g.finished.length;
       if (!(suddenDeathArmed() && activeNow === 2))
-        addLog(t('games.paskahousu.msg.deckEmpty'));
+        lines.push(t('games.paskahousu.msg.deckEmpty'));
     }
 
     let finished = [...g.finished];
     if (p.hand.length === 0 && !finished.includes(pidx)) {
       finished = [...finished, pidx];
-      addLog(finished.length === 1 ? M.won(p.name) : M.out(p.name));
+      lines.push(finished.length === 1 ? M.won(p.name) : M.out(p.name));
       if (sndRef.current) SFX.capture();
       if (isH && sndRef.current) tm(() => SFX.fanfare(), 300);
     }
@@ -527,25 +529,27 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       const f = [...finished];
       remaining.forEach(pl => { if (!f.includes(pl.id)) f.push(pl.id); });
       const loser = players[f[f.length - 1]];
-      addLog(M.loser(loser.name));
+      lines.push(M.loser(loser.name));
       const ranking = f.map((idx, pos) => ({
         name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
       }));
-      setGS({ ...g, players, draw, pile, top: newTop, finished: f, phase: 'gameover' });
+      commit({ ...g, players, draw, pile, top: newTop, finished: f, phase: 'gameover' });
+      lines.forEach(addLog);
       if (allBotsRef.current) { tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY); } else { onResult?.({ ranking }); }
       return;
     }
 
     // Kaato? → kaataja jatkaa (uusi vuoro)
     if (pileClears(cards, topBefore, pile)) {
-      addLog(M.swept(isH, p.name, pile.length));
+      lines.push(M.swept(isH, p.name, pile.length));
       if (sndRef.current) SFX.capture();
       const isQuad = cards[0].r !== '10' && cards[0].r !== 'A';
       triggerKasaAnim(isQuad ? 'quad' : 'clear');
       const contP = finished.includes(pidx) ? nextActive(players, pidx, finished) : pidx;
       const g2 = { ...g, players, draw, pile: [], top: null, finished, turn: contP, skipNext: -1, phase: 'play',
         clearedCards: [...(g.clearedCards || []), ...pile] };
-      setGS(g2);
+      commit(g2);
+      lines.forEach(addLog);
       if (players[contP] && !players[contP].isHuman)
         schedAI(() => runAI(gRef.current), 1400);
       else addLog(M.yourTurnCont);
@@ -558,7 +562,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       const nextP = nextActive(players, pidx, finished);
       if (nextP !== -1) {
         skipNext = nextP;
-        addLog(M.emptyPenalty(lblColored(cards[0]), players[nextP].name));
+        lines.push(M.emptyPenalty(lblColored(cards[0]), players[nextP].name));
       }
     }
 
@@ -583,7 +587,8 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
           skipNext, phase: 'swap_offer',
           swapData: { prevPile, prevTop: topBefore, playedCards: cards, eligible, pidx },
         };
-        setGS(g2); setSel([]);
+        commit(g2); setSel([]);
+        lines.forEach(addLog);
         if (players[pidx].isHuman) startSwapCountdown(g2);
         else aiTmr.current = tm(guard(() => doAISwap(g2, pidx)), 900);
         return;
@@ -592,7 +597,8 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
 
     const advTurn = nextActive(players, pidx, finished);
     const g2 = { ...g, players, draw, pile, top: newTop, finished, turn: advTurn, skipNext, phase: 'play' };
-    setGS(g2);
+    commit(g2);
+    lines.forEach(addLog);
     if (players[advTurn] && !players[advTurn].isHuman)
       schedAI(() => runAI(gRef.current), 1400);
     else addLog(M.turnOf('Hero'));
@@ -601,6 +607,8 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
   // ── applyKnock ────────────────────────────────────────────────────────────
   function applyKnock(g, pidx) {
     if (!g.draw.length) return;
+    // Lokirivit odottavat tilaa, ks. applyPlay (kompositioauditointi H4).
+    const kLines = /** @type {string[]} */ ([]);
     let players    = g.players.map(p => ({ ...p, hand: [...p.hand] }));
     let draw       = [...g.draw];
     let pile       = [...g.pile];
@@ -621,13 +629,13 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         setPakaAnim(true); // pakka on tyhjä
         const activeNow = g.players.length - g.finished.length;
         if (!(suddenDeathArmed() && activeNow === 2))
-          addLog(t('games.paskahousu.msg.deckEmpty'));
+          kLines.push(t('games.paskahousu.msg.deckEmpty'));
       }
 
       let finished = [...g.finished];
       if (p.hand.length === 0 && !finished.includes(pidx)) {
         finished = [...finished, pidx];
-        addLog(finished.length === 1 ? M.won(p.name) : M.out(p.name));
+        kLines.push(finished.length === 1 ? M.won(p.name) : M.out(p.name));
         if (sndRef.current) SFX.capture();
       }
 
@@ -636,53 +644,57 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         const f = [...finished];
         remaining.forEach(pl => { if (!f.includes(pl.id)) f.push(pl.id); });
         const loserK = players[f[f.length - 1]];
-        addLog(M.loser(loserK.name));
+        kLines.push(M.loser(loserK.name));
         const ranking = f.map((idx, pos) => ({
           name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
         }));
-        setGS({ ...g, players, draw, pile, top: knocked, finished: f, phase: 'gameover' });
+        commit({ ...g, players, draw, pile, top: knocked, finished: f, phase: 'gameover' });
+        kLines.forEach(addLog);
         if (allBotsRef.current) { tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY); } else { onResult?.({ ranking }); }
         return;
       }
 
       if (pileClears([knocked], topBefore, pile)) {
-        addLog(M.blindSwept(isH, p.name, lblColored(knocked), pile.length));
+        kLines.push(M.blindSwept(isH, p.name, lblColored(knocked), pile.length));
         if (sndRef.current) SFX.capture();
         triggerKasaAnim('clear');
         const contP = finished.includes(pidx) ? nextActive(players, pidx, finished) : pidx;
         const g2 = { ...g, players, draw, pile: [], top: null, finished, turn: contP, skipNext: -1, phase: 'play',
           clearedCards: [...(g.clearedCards || []), ...pile] };
-        setGS(g2);
+        commit(g2);
+        kLines.forEach(addLog);
         if (players[contP] && !players[contP].isHuman)
           schedAI(() => runAI(gRef.current), 1400);
         else addLog(M.yourTurnCont);
         return;
       }
 
-      addLog(M.blindGood(isH, p.name, lblColored(knocked)));
+      kLines.push(M.blindGood(isH, p.name, lblColored(knocked)));
 
       let skipNext = g.skipNext;
       if (!topBefore && emptyPenalty(knocked)) {
         const nextP = nextActive(players, pidx, finished);
         if (nextP !== -1) {
           skipNext = nextP;
-          addLog(M.emptyPenalty2(lblColored(knocked), players[nextP].name));
+          kLines.push(M.emptyPenalty2(lblColored(knocked), players[nextP].name));
         }
       }
 
       const advTurn = nextActive(players, pidx, finished);
       const g2 = { ...g, players, draw, pile, top: knocked, finished, turn: advTurn, skipNext, phase: 'play' };
-      setGS(g2);
+      commit(g2);
+      kLines.forEach(addLog);
       if (players[advTurn] && !players[advTurn].isHuman)
         schedAI(() => runAI(gRef.current), 1400);
       else addLog(M.turnOf('Hero'));
     } else {
-      addLog(M.blindBad(isH, p.name, lblColored(knocked)));
+      kLines.push(M.blindBad(isH, p.name, lblColored(knocked)));
       triggerKasaAnim('take');
       p.hand = [...p.hand, knocked, ...pile];
       const advTurn = nextActive(players, pidx, g.finished);
       const g2 = { ...g, players, draw, pile: [], top: null, finished: g.finished, turn: advTurn, skipNext: g.skipNext, phase: 'play' };
-      setGS(g2);
+      commit(g2);
+      kLines.forEach(addLog);
       if (players[advTurn] && !players[advTurn].isHuman)
         schedAI(() => runAI(gRef.current), 1400);
       else addLog(M.turnOf('Hero'));
@@ -694,12 +706,11 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     if (!g.pile.length) return;
     let players = g.players.map(p => ({ ...p, hand: [...p.hand] }));
     const isH = players[pidx].isHuman;
-    addLog(M.tookPile(isH, players[pidx].name, g.pile.length));
     triggerKasaAnim('take');
     players[pidx].hand = [...players[pidx].hand, ...g.pile];
     const advTurn = nextActive(players, pidx, g.finished);
     const g2 = { ...g, players, pile: [], top: null, finished: g.finished, turn: advTurn, skipNext: g.skipNext, phase: 'play' };
-    setGS(g2);
+    commit(g2, M.tookPile(isH, players[pidx].name, g.pile.length));
     if (players[advTurn] && !players[advTurn].isHuman)
       schedAI(() => runAI(g2), 1600);
     else addLog(M.turnOf('Hero'));
@@ -714,24 +725,26 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
 
     let pile = [...g.pile];
     let newTop = g.top;
+    // Rivi odottaa tilaa, ks. applyPlay (kompositioauditointi H4).
+    let skipLine;
 
     if (pile.length > 0) {
       // Rangaistuskortti on kasasta (juuri lyöty 10 tai A tyhjälle)
       const penaltyCard = pile.pop();
       newTop = pile.length > 0 ? pile[pile.length - 1] : null;
       players[pidx].hand.push(penaltyCard);
-      addLog(M.skipCard(isH, pname, lblColored(penaltyCard)));
+      skipLine = M.skipCard(isH, pname, lblColored(penaltyCard));
     } else if (draw.length) {
       const drawn = draw.shift();
       players[pidx].hand.push(drawn);
-      addLog(M.skipCard(isH, pname, lblColored(drawn)));
+      skipLine = M.skipCard(isH, pname, lblColored(drawn));
     } else {
-      addLog(M.skipNoCard(isH, pname));
+      skipLine = M.skipNoCard(isH, pname);
     }
 
     const nextP = nextActive(players, pidx, g.finished);
     const g2 = { ...g, players, draw, pile, top: newTop, skipNext: -1, turn: nextP, phase: 'play' };
-    setGS(g2);
+    commit(g2, skipLine);
     if (nextP !== -1) {
       if (!players[nextP]?.isHuman) schedAI(() => runAI(g2), 1600);
       else addLog(M.turnOf('Hero'));
@@ -757,7 +770,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     const { pidx } = g.swapData;
     const advTurn = nextActive(g.players, pidx, g.finished);
     const g2 = { ...g, phase: 'play', swapData: null, turn: advTurn };
-    setGS(g2); setSel([]);
+    commit(g2); setSel([]);
     if (advTurn !== -1 && !g.players[advTurn]?.isHuman)
       schedAI(() => runAI(g2), 1600);
     else if (advTurn !== -1) addLog(M.turnOf('Hero'));
@@ -773,7 +786,8 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     const swapIds = new Set(swapCards.map(c => c.id));
     p.hand = p.hand.filter(c => !swapIds.has(c.id));
     p.hand = [...p.hand, ...playedCards];
-    addLog(M.swapped(p.isHuman, p.name, swapCards.map(lblColored).join(', ')));
+    // Lokirivit odottavat tilaa, ks. applyPlay (kompositioauditointi H4).
+    const sLines = /** @type {string[]} */ ([M.swapped(p.isHuman, p.name, swapCards.map(lblColored).join(', '))]);
     if (sndRef.current) SFX.swap();
     setJP(new Set(swapCards.map(c => c.id)));
     tm(() => setJP(new Set()), 2000);
@@ -781,13 +795,14 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     const newTop  = swapCards[swapCards.length - 1];
     setSel([]);
     if (pileClears(swapCards, prevTop, newPile)) {
-      addLog(M.swapSwept(p.isHuman, p.name, newPile.length, swapCards.map(lblColored).join(', ')));
+      sLines.push(M.swapSwept(p.isHuman, p.name, newPile.length, swapCards.map(lblColored).join(', ')));
       if (sndRef.current) SFX.capture();
       triggerKasaAnim('clear');
       const contP = g.finished.includes(pidx) ? nextActive(players, pidx, g.finished) : pidx;
       const g2 = { ...g, players, pile: [], top: null, turn: contP, skipNext: -1, phase: 'play', swapData: null,
         clearedCards: [...(g.clearedCards || []), ...newPile] };
-      setGS(g2);
+      commit(g2);
+      sLines.forEach(addLog);
       if (players[contP] && !players[contP].isHuman)
         schedAI(() => runAI(gRef.current), 1400);
       else addLog(M.yourTurnCont);
@@ -800,12 +815,13 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       const nextP = nextActive(players, pidx, g.finished);
       if (nextP !== -1) {
         skipNext = nextP;
-        addLog(M.emptyPenalty(lblColored(swapCards[0]), players[nextP].name));
+        sLines.push(M.emptyPenalty(lblColored(swapCards[0]), players[nextP].name));
       }
     }
     const advTurn = nextActive(players, pidx, g.finished);
     const g2 = { ...g, players, pile: newPile, top: newTop, turn: advTurn, skipNext, phase: 'play', swapData: null };
-    setGS(g2);
+    commit(g2);
+    sLines.forEach(addLog);
     if (players[advTurn] && !players[advTurn].isHuman)
       schedAI(() => runAI(g2), 1600);
     else addLog(M.turnOf('Hero'));
@@ -863,10 +879,9 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     if (draw.length)     { applyKnock(gRef.current, turn);       return; }
     if (g.pile.length)   { applyTakePile(gRef.current, turn);    return; }
 
-    addLog(M.aiStuck(p.name));
     const nextP = nextActive(players, turn, finished);
     const g2 = { ...g, turn: nextP };
-    setGS(g2);
+    commit(g2, M.aiStuck(p.name));
     if (nextP !== -1 && !players[nextP]?.isHuman)
       schedAI(() => runAI(g2), 1600);
     else addLog(M.turnOf('Hero'));
