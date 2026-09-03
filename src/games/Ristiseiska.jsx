@@ -3,7 +3,11 @@ import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import GameStartScreen from '../shared/GameStartScreen.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, SUITS, aiShouldFumble, truncName, sortHand as sortHandBy, shuffledAINames, lblColored, newDeck, BOT_RESULT_DELAY } from '../shared/helpers.js';
+import { lbl, korttia, SUITS, truncName, sortHand as sortHandBy, lblColored, BOT_RESULT_DELAY } from '../shared/helpers.js';
+import {
+  RANK_VAL, isPlayable, hasAnyPlay, DEFAULT_RULES, initGame,
+  chooseMove, applyMove, applyGiveCard, getAdvice,
+} from './ristiseiskaEngine.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -21,36 +25,6 @@ import { useGameState } from '../shared/useGameState.js';
 // 5 vaatii 8 ensin, 8 vaatii 6 ensin (kiusanteko)
 // A kaataa ala-pinon (bonusvuoro), K kaataa ylä-pinon (bonusvuoro)
 
-
-
-const RANK_VAL = { A: 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, J: 11, Q: 12, K: 13 };
-
-function rv(card) { return RANK_VAL[card.r]; }
-
-function isPlayable(card, rows) {
-  const row = rows[card.s];
-  const v   = rv(card);
-  if (!row.active) {
-    if (v !== 7) return false;
-    // ♣7 on pakko pelata ensin — muut 7:t vasta sen jälkeen
-    if (!rows['♣'].active && card.s !== '♣') return false;
-    return true;
-  }
-  if (v === row.low - 1) {
-    if (v === 5) return row.high >= 8;  // 5 vaatii 8 ensin
-    return true;
-  }
-  if (v === row.high + 1) {
-    if (v === 8) return row.low <= 6;   // 8 vaatii 6 ensin
-    return true;
-  }
-  return false;
-}
-
-function hasAnyPlay(hand, rows) {
-  return hand.some(c => isPlayable(c, rows));
-}
-
 // Kuvaa pelatun kortin vaikutus (kiusanteko-mekaniikka: 5 vaatii 8:n, 8 vaatii 6:n).
 function playEffect(v) {
   if (v === 7) return tr('games.ristiseiska.effect.open');
@@ -59,69 +33,8 @@ function playEffect(v) {
   return v <= 5 ? tr('games.ristiseiska.effect.toLower') : tr('games.ristiseiska.effect.toUpper');
 }
 
-function initRows() {
-  const rows = {};
-  SUITS.forEach(s => { rows[s] = { active: false, low: null, high: null }; });
-  return rows;
-}
-
-// Sääntövariaatio (aloitusnäytöltä): randomPantti=false (vakio) → antaja valitsee panttikortin;
-// true → kortti arvotaan antajan kädestä (koskee myös ihmistä). Antaja säilyy samana (edeltävä pelaaja).
-const DEFAULT_RULES = { randomPantti: false };
-
-function initGame(nP, pool, allBots = false, rules = DEFAULT_RULES) {
-  const aiNames = shuffledAINames(pool);
-  const deck = newDeck();
-  const per   = Math.floor(52 / nP);
-  const extra = 52 % nP; // ylijäävät kortit jaetaan yksi kerrallaan, ettei mikään kortti jää jakamatta
-  const players = Array.from({ length: nP }, (_, i) => ({
-    id: i, name: i === 0 ? (allBots ? aiNames[aiNames.length - 1] || 'Nemesis' : 'Hero') : aiNames[i - 1],
-    isHuman: allBots ? false : i === 0,
-    hand: deck.splice(0, per + (i < extra ? 1 : 0)),
-  }));
-
-  let starter = 0;
-  for (let i = 0; i < players.length; i++) {
-    if (players[i].hand.some(c => c.r === '7' && c.s === '♣')) { starter = i; break; }
-  }
-
-  return {
-    players,
-    rows: initRows(),
-    activePlayer: starter,
-    finished: [],
-    bonusTurn: null,
-    givingCardTo: null,
-    givingPlayerIdx: null,
-    rules,
-    phase: /** @type {Vaihe} */ ('play'),
-    turnCount: 0,
-    firstRoundDone: false,
-  };
-}
-
-function nextActive(players, from, finished) {
-  const n = players.length;
-  for (let i = 1; i <= n; i++) {
-    const idx = (from + i) % n;
-    if (!finished.includes(idx)) return idx;
-  }
-  return -1;
-}
-
-function prevWithCards(players, from, finished) {
-  const n = players.length;
-  for (let i = 1; i < n; i++) {
-    const idx = (from - i + n) % n;
-    if (!finished.includes(idx) && players[idx].hand.length > 1) return idx;
-  }
-  return -1;
-}
-
 const sortHand = hand => sortHandBy(hand, c => RANK_VAL[c.r]);
 
-// Montako korttia käsikorteista on samaa maata kuin annettu kortti
-function suitCount(hand, suit) { return hand.filter(c => c.s === suit).length; }
 
 const rankFromVal = v => {
   if (v === 1)  return 'A';
@@ -307,78 +220,6 @@ function StackRow({ suit, G, isMobile, cardBack, t }) {
   );
 }
 
-// Kuinka monen kortin päässä kortti on pelattavaksi (0 = pelattavissa nyt)
-function distanceToPlay(card, rows) {
-  const row = rows[card.s];
-  if (!row.active) return 99;
-  const v = rv(card);
-  if (v < row.low) return row.low - v;
-  if (v > row.high) return v - row.high;
-  return 0;
-}
-
-// AI: seiskat ensin (priorisoi maa jossa on eniten omia kortteja),
-// porttikortteja (6 ja 8) pihdetään strategisesti, muuten pienin arvo.
-function aiBestCard(hand, rows, level = 'normal') {
-  const valid = hand.filter(c => isPlayable(c, rows));
-  if (!valid.length) return null;
-
-  const sevens = valid.filter(c => c.r === '7');
-  if (sevens.length) {
-    return sevens.sort((a, b) => suitCount(hand, b.s) - suitCount(hand, a.s))[0];
-  }
-
-  const isHard = level === 'hard';
-
-  // Normal/beginner: pidättele porttia aina kun samaa maata on useampi → pakotettu passaus
-  // Hard: pidättelyn ehto on maakohtainen, ks. RISTISEISKA.md kohta 2.
-  const nonGates = valid.filter(c => {
-    if (c.r !== '6' && c.r !== '8') return true;
-    const cnt = suitCount(hand, c.s);
-    if (!isHard) {
-      // Normal: pidättele jos samaa maata on useampi (cnt > 1), muuten pelaa
-      return cnt <= 1;
-    }
-    // Mestari (hard): lukittu pöytä pakottaa passaamaan, ja passatessa annetaan kortti
-    // panttina. Pidättely on siis keino päästä eroon yhdestä kortista jota ei muuten saisi
-    // pelattua, joten se kannattaa kun samassa maassa on ENINTÄÄN yksi kaukainen kortti
-    // (distanceToPlay ≥ 3, porttia itseään ei lasketa). Kaksi tai useampi kaukaista samassa
-    // maassa → yksi pantti ei riitä niistä eroon, joten portti pelataan auki.
-    // Nolla kaukaista → pidättele silti: lukko on silloin puhdas blokkaus ilman omaa hintaa.
-    // Muutettu 18.8.2026, aiempi ehto laski kaukaisia koko kädestä maasta riippumatta.
-    const farSameSuit = hand.filter(
-      other => other.id !== c.id && other.s === c.s && distanceToPlay(other, rows) >= 3
-    ).length;
-    return farSameSuit > 1; // pelaa portti vasta kun pantti ei riitä
-  });
-
-  const pool = nonGates.length ? nonGates : valid;
-  return [...pool].sort((a, b) => rv(a) - rv(b))[0];
-}
-
-// Korttipanttiin annetaan huonoin kortti: kauimpana pelattavuudesta,
-// toissijainen kriteeri: maa jossa on vähiten omia kortteja (yksinäinen kortti)
-function aiWorstCard(hand, rows) {
-  return [...hand].sort((a, b) => {
-    const da = distanceToPlay(a, rows), db = distanceToPlay(b, rows);
-    if (db !== da) return db - da;
-    return suitCount(hand, a.s) - suitCount(hand, b.s);
-  })[0];
-}
-
-// Mestarin neuvo Herolle: sama päätöslogiikka kuin hard-botilla, vain julkista tietoa.
-// Palauttaa { type, card? } — type vastaa games.ristiseiska.advice.* -avainta.
-export function getAdvice(g) {
-  const hero = g.players[0];
-  if (g.givingCardTo !== null && g.givingPlayerIdx === 0) {
-    const card = aiWorstCard(hero.hand, g.rows);
-    return card ? { type: 'give', card } : null;
-  }
-  const card = aiBestCard(hero.hand, g.rows, 'hard');
-  if (!card) return g.bonusTurn === 0 ? { type: 'bonusEnd' } : { type: 'pass' };
-  return { type: card.r === '7' ? 'playSeven' : 'play', card };
-}
-
 // ── Komponentti ─────────────────────────────────────────────────
 import { useT, tr } from '../shared/i18n.jsx';
 import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
@@ -487,200 +328,128 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     startGame(nP, true);
   }
 
-  // ── Vuoron vaihto ───────────────────────────────────────────
-  function advanceTurnRS(g, fromIdx) {
-    const nextIdx = nextActive(g.players, fromIdx, g.finished);
-    if (nextIdx === -1) return;
-    const turnCount = g.turnCount + 1;
-    const firstRoundDone = g.firstRoundDone || turnCount >= g.players.length;
-    const g2 = { ...g, activePlayer: nextIdx, turnCount, firstRoundDone };
-    if (!g.players[nextIdx].isHuman) {
-      commit(g2, M.turnOf(g.players[nextIdx].name));
-      const d = allBotsRef.current ? aiDelayRef.current : 1100;
-      aiTmr.current = tm(() => {
-        if (pausedRef.current) { const w = () => { if (!pausedRef.current) runAI(g2); else tm(w, 300); }; w(); return; }
-        runAI(g2);
-      }, d + Math.random() * 400);
-    } else {
-      const canPlay = hasAnyPlay(g.players[nextIdx].hand, g2.rows);
-      commit(g2, M.yourTurn(canPlay));
-    }
-  }
+  // ── Kuljettaja ──────────────────────────────────────────────
+  // Säännöt asuvat `ristiseiskaEngine.js`:ssä, ja tämä komponentti on niiden yksi
+  // kuljettaja. Se kääntää moottorin askeleet lokiriveiksi, ääniksi ja ajastimiksi
+  // eikä tee sääntöpäätöksiä itse. Toinen kuljettaja on moottorin `runHeadless`,
+  // ja `test/ristiseiska-saumapari.test.jsx` vaatii että ne päätyvät samaan.
 
-  // ── Lyönti ──────────────────────────────────────────────────
-  function doPlay(g, playerIdx, card) {
-    const p   = g.players[playerIdx];
-    const isH = p.isHuman;
-    const v   = rv(card);
+  const levelOf = idx => botLevelsRef.current?.[idx] ?? aiLevelRef.current;
 
-    if (sndRef.current) SFX.play();
-    flashLastPlay(p.name, card, isH);
+  // Aja moottorin askeljono: jokainen askel on tila, lokirivi tai molemmat, ja
+  // järjestys on moottorin eikä tämän funktion päätös.
+  function playSteps(steps) {
+    // Nimi ja ihmisyys eivät muutu pelin aikana, joten ne luetaan yhdestä tilasta.
+    const base = gRef.current;
+    const nameOf  = i => base?.players[i]?.name ?? '';
+    const humanAt = i => !!base?.players[i]?.isHuman;
 
-    const rows = { ...g.rows };
-    const row  = rows[card.s];
-    if (!row.active) {
-      rows[card.s] = { active: true, low: 7, high: 7 };
-    } else if (v === row.low - 1) {
-      rows[card.s] = { ...row, low: v };
-    } else {
-      rows[card.s] = { ...row, high: v };
-    }
+    for (const s of steps) {
+      const ev = s.ev;
+      let msg; // undefined = ei lokiriviä
 
-    let players = g.players.map((pl, i) => i !== playerIdx ? pl
-      : { ...pl, hand: pl.hand.filter(c => c.id !== card.id) });
-
-    let finished = [...g.finished];
-    const wonNow = players[playerIdx].hand.length === 0 && !finished.includes(playerIdx);
-    if (wonNow) finished = [...finished, playerIdx];
-
-    // Tila ennen lokiriviä (kompositioauditointi H4): katselutilan frame kuvaa kättä
-    // lyönnin jälkeen. Voittorivi kuvaa samaa tilaa, joten se lokitetaan perään.
-    commit({ ...g, players, rows, finished }, M.played(isH, p.name, lblColored(card), playEffect(v)));
-    if (wonNow) {
-      addLog(M.won(isH, p.name, finished.length));
-      if (sndRef.current) SFX.capture();
-      if (isH && sndRef.current) tm(() => SFX.fanfare(), 300);
-    }
-
-    const remaining = players.filter((_, i) => !finished.includes(i));
-    if (remaining.length <= 1) {
-      remaining.forEach(pl => { if (!finished.includes(pl.id)) finished.push(pl.id); });
-      const ranking = finished.map((idx, pos) => ({
-        name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
-      }));
-      commit({ ...g, players, rows, finished, phase: 'gameover' });
-      if (allBotsRef.current) { tm(() => onResult?.({ ranking }), BOT_RESULT_DELAY); }
-      else { onResult?.({ ranking }); }
-      return;
-    }
-
-    // A kaataa ala-pinon, K kaataa ylä-pinon → jatkaa (ei bonusta jos kortit loppuivat)
-    const gaveBonus = (v === 1 || v === 13) && !finished.includes(playerIdx);
-    const g2 = { ...g, players, rows, finished, bonusTurn: gaveBonus ? playerIdx : null };
-    if (gaveBonus) {
-      const suitGen = t('games.ristiseiska.suitGen.' + card.s);
-      const pileName = t(v === 1 ? 'games.ristiseiska.pile.lower' : 'games.ristiseiska.pile.upper');
-      if (!p.isHuman) {
-        commit(g2, M.aiBonus(p.name, suitGen, pileName));
-        aiTmr.current = tm(guard(() => runAI(g2)), 900);
-      } else {
-        commit(g2, M.humanBonus(suitGen, pileName));
+      switch (ev?.t) {
+        case 'played':
+          if (sndRef.current) SFX.play();
+          flashLastPlay(nameOf(ev.playerIdx), ev.card, humanAt(ev.playerIdx));
+          msg = M.played(humanAt(ev.playerIdx), nameOf(ev.playerIdx), lblColored(ev.card), playEffect(ev.v));
+          break;
+        case 'won':
+          msg = M.won(humanAt(ev.playerIdx), nameOf(ev.playerIdx), ev.rank);
+          break;
+        case 'bonus': {
+          const suitGen  = t('games.ristiseiska.suitGen.' + ev.card.s);
+          const pileName = t(ev.v === 1 ? 'games.ristiseiska.pile.lower' : 'games.ristiseiska.pile.upper');
+          msg = humanAt(ev.playerIdx)
+            ? M.humanBonus(suitGen, pileName)
+            : M.aiBonus(nameOf(ev.playerIdx), suitGen, pileName);
+          break;
+        }
+        case 'turnOf':
+          msg = M.turnOf(nameOf(ev.playerIdx));
+          break;
+        case 'yourTurn':
+          msg = M.yourTurn(ev.canPlay);
+          break;
+        case 'passFirst':
+          if (sndRef.current) SFX.leave();
+          msg = M.passFirst(humanAt(ev.playerIdx), nameOf(ev.playerIdx));
+          break;
+        case 'passGiveMe':
+          msg = M.passGiveMe(humanAt(ev.playerIdx), nameOf(ev.playerIdx));
+          break;
+        case 'passGive':
+          if (sndRef.current) SFX.leave();
+          msg = (ev.random ? M.passGiveRandom : M.passGive)(
+            humanAt(ev.playerIdx), nameOf(ev.playerIdx),
+            humanAt(ev.giverIdx), nameOf(ev.giverIdx), lblColored(ev.card));
+          break;
+        case 'passOnly':
+          msg = M.passOnly(humanAt(ev.playerIdx), nameOf(ev.playerIdx));
+          break;
+        case 'humanGives':
+          msg = M.humanGives(lblColored(ev.card), nameOf(ev.receiverIdx));
+          break;
+        default:
+          break; // gameover ei tuota lokiriviä, tulos näkyy tulosruudussa
       }
-      return;
+
+      if (s.g) commit(s.g, msg);
+      else if (msg !== undefined) addLog(msg);
+
+      if (ev?.t === 'won') {
+        if (sndRef.current) SFX.capture();
+        if (humanAt(ev.playerIdx) && sndRef.current) tm(() => SFX.fanfare(), 300);
+      }
+      if (ev?.t === 'passGive' && sndRef.current) SFX.take();
+      if (ev?.t === 'gameover') {
+        if (allBotsRef.current) tm(() => onResult?.({ ranking: ev.ranking }), BOT_RESULT_DELAY);
+        else onResult?.({ ranking: ev.ranking });
+        return;
+      }
     }
 
-    advanceTurnRS(g2, playerIdx);
+    scheduleNext();
   }
 
-  // ── Passaus ─────────────────────────────────────────────────
-  function doPass(g, playerIdx) {
-    const p   = g.players[playerIdx];
-    const isH = p.isHuman;
+  // Kuka liikkuu seuraavaksi ja milloin. Ainoa paikka joka ajastaa bottisiirron
+  // kesken pelin; aloitusvuoron ajastaa `startGame`.
+  function scheduleNext() {
+    const g = gRef.current;
+    if (!g || g.phase === 'gameover') return;
+    if (g.givingCardTo !== null) return; // odotetaan ihmisen panttikorttia
+    const p = g.players[g.activePlayer];
+    if (!p || p.isHuman) return;
 
-    if (!g.firstRoundDone) {
-      if (sndRef.current) SFX.leave();
-      addLog(M.passFirst(isH, p.name));
-      advanceTurnRS({ ...g }, playerIdx);
+    if (g.bonusTurn === g.activePlayer) {
+      aiTmr.current = tm(guard(() => runAI(gRef.current)), 900);
       return;
     }
-
-    const giverIdx = prevWithCards(g.players, playerIdx, g.finished);
-    const randomPantti = g.rules?.randomPantti;
-
-    // Vakiosääntö: ihminen antajana valitsee itse panttikortin (pysähdytään valintaan).
-    // Satunnais-variaatiossa kortti arvotaan myös ihmiseltä → valintavaihe ohitetaan.
-    if (!randomPantti && giverIdx !== -1 && g.players[giverIdx].isHuman) {
-      const g2 = { ...g, givingCardTo: playerIdx, givingPlayerIdx: giverIdx };
-      commit(g2, M.passGiveMe(isH, p.name));
-      return;
-    }
-
-    let players = g.players;
-    if (giverIdx !== -1) {
-      const giver = g.players[giverIdx];
-      const randomCard = giver.hand[Math.floor(Math.random() * giver.hand.length)];
-      // Satunnais-variaatio: aina arvottu kortti (kuka tahansa antaja).
-      // Vakio: strategisesti huonoin — AI:n aloittelija-virhe antaa silti satunnaisen.
-      const toGive = randomPantti
-        ? randomCard
-        : (!giver.isHuman && aiShouldFumble(botLevelsRef.current?.[giverIdx] ?? aiLevelRef.current)) ? randomCard
-        : aiWorstCard(giver.hand, g.rows);
-      players = g.players.map((pl, i) => {
-        if (i === giverIdx)  return { ...pl, hand: pl.hand.filter(c => c.id !== toGive.id) };
-        if (i === playerIdx) return { ...pl, hand: [...pl.hand, toGive] };
-        return pl;
-      });
-      if (sndRef.current) SFX.leave();
-      // Kädet vaihtuivat, joten tila kirjoitetaan ennen lokiriviä (H4).
-      commit({ ...g, players }, (randomPantti ? M.passGiveRandom : M.passGive)(isH, p.name, giver.isHuman, giver.name, lblColored(toGive)));
-      if (sndRef.current) SFX.take();
-    } else {
-      addLog(M.passOnly(isH, p.name));
-    }
-
-    advanceTurnRS({ ...g, players }, playerIdx);
+    const d = (allBotsRef.current ? aiDelayRef.current : 1100) + Math.random() * 400;
+    aiTmr.current = tm(() => {
+      if (pausedRef.current) { const w = () => { if (!pausedRef.current) runAI(gRef.current); else tm(w, 300); }; w(); return; }
+      runAI(gRef.current);
+    }, d);
   }
 
   // ── AI ──────────────────────────────────────────────────────
   function runAI(g) {
     if (!g) g = gRef.current;
     if (!g || g.phase === 'gameover') return;
-    const { activePlayer, players, rows, bonusTurn } = g;
-    const p = players[activePlayer];
+    const idx = g.activePlayer;
+    const p = g.players[idx];
     if (!p || p.isHuman) return;
 
-    const level = botLevelsRef.current?.[activePlayer] ?? aiLevelRef.current;
+    const move = chooseMove(g, idx, levelOf(idx));
 
-    if (bonusTurn !== null && bonusTurn === activePlayer) {
-      const g2 = { ...gRef.current, bonusTurn: null };
-      const card = aiBestCard(p.hand, rows, level);
-      if (card) {
-        if (initShowIntention) {
-          const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
-          setIntention({ playerIdx: activePlayer, cards: [card] });
-          aiTmr.current = tm(() => { setIntention(null); doPlay(g2, activePlayer, card); }, intentionMs);
-        } else {
-          doPlay(g2, activePlayer, card);
-        }
-      } else {
-        advanceTurnRS(g2, activePlayer);
-      }
+    // Aikeen näyttäminen on kuljettajan asia: se viivästyttää siirtoa muttei muuta sitä.
+    if (move.t === 'play' && initShowIntention) {
+      const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
+      setIntention({ playerIdx: idx, cards: [move.card] });
+      aiTmr.current = tm(() => { setIntention(null); playSteps(applyMove(gRef.current, idx, move, levelOf)); }, intentionMs);
       return;
     }
-
-    const card = aiBestCard(p.hand, rows, level);
-    let bestCard = card;
-
-    if (bestCard) {
-      if (bestCard.r === '7') {
-        // Aloittelija-virhe: avaa seiskan väärään maahan — valitsee huonoimman maan
-        if (aiShouldFumble(level)) {
-          const sevens = p.hand.filter(c => c.r === '7' && isPlayable(c, rows));
-          if (sevens.length > 1) {
-            bestCard = sevens.sort((a, b) => suitCount(p.hand, a.s) - suitCount(p.hand, b.s))[0];
-          }
-        }
-      } else if (bestCard.r !== '6' && bestCard.r !== '8') {
-        // Aloittelija-virhe: pelaa porttikortin jota älykäs AI pidättelisi
-        if (aiShouldFumble(level)) {
-          const allValid = p.hand.filter(c => isPlayable(c, rows));
-          const heldGate = allValid.find(c => (c.r === '6' || c.r === '8') && suitCount(p.hand, c.s) > 1);
-          if (heldGate) bestCard = heldGate;
-        }
-      }
-    }
-
-    if (bestCard) {
-      if (initShowIntention) {
-        const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
-        setIntention({ playerIdx: activePlayer, cards: [bestCard] });
-        aiTmr.current = tm(() => { setIntention(null); doPlay(gRef.current, activePlayer, bestCard); }, intentionMs);
-      } else {
-        doPlay(gRef.current, activePlayer, bestCard);
-      }
-    } else {
-      doPass(gRef.current, activePlayer);
-    }
+    playSteps(applyMove(g, idx, move, levelOf));
   }
 
   // ── Ihmistoiminnot ──────────────────────────────────────────
@@ -691,13 +460,13 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
 
   function humanPlay() {
     if (!selCard || !G) return;
-    const g = /** @type {PeliTila} */ ({ ...gRef.current, bonusTurn: null });
+    const g = gRef.current;
     if (!isPlayable(selCard, g.rows)) {
       addLog(M.badCard);
       return;
     }
     const card = selCard; setSel(null);
-    doPlay(g, 0, card);
+    playSteps(applyMove(g, 0, { t: 'play', card }, levelOf));
   }
 
   function humanPass() {
@@ -707,30 +476,22 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
       return;
     }
     setSel(null);
-    doPass(gRef.current, 0);
+    playSteps(applyMove(gRef.current, 0, { t: 'pass' }, levelOf));
   }
 
   function humanEndBonusTurn() {
     const g = gRef.current;
     if (!g || g.bonusTurn !== 0) return;
     setSel(null);
-    advanceTurnRS({ ...g, bonusTurn: null }, 0);
+    playSteps(applyMove(g, 0, { t: 'endBonus' }, levelOf));
   }
 
   function humanGiveCard() {
     const g = gRef.current;
     const card = selCard;
     if (!g || g.givingCardTo === null || !card) return;
-    const receiverIdx = g.givingCardTo;
-    const players = g.players.map((pl, i) => {
-      if (i === 0)           return { ...pl, hand: pl.hand.filter(c => c.id !== card.id) };
-      if (i === receiverIdx) return { ...pl, hand: [...pl.hand, card] };
-      return pl;
-    });
     setSel(null);
-    const g2 = { ...g, players, givingCardTo: null, givingPlayerIdx: null };
-    commit(g2, M.humanGives(lblColored(card), g.players[receiverIdx].name));
-    advanceTurnRS(g2, receiverIdx);
+    playSteps(applyGiveCard(g, card));
   }
 
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);

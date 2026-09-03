@@ -40,6 +40,13 @@ yhdeksänä kopiona, katselutilan taso, kuollut tulosruutukerros, snapshot-järj
 sijainti, asetuksen omistaja, botti vs neuvo) tiloineen ja Tommille osoitetut kysymykset:
 `docs/AUDITOINTI-KOMPOSITIO.md`. Lue se ennen rakennemuutosta tai uuden pelin lisäystä.
 
+**Ristiseiska on rakenteeltaan eri kuin muut kahdeksan (4.9.2026).** Sen säännöt, AI-valinta
+ja siirtymät asuvat `src/games/ristiseiskaEngine.js`:ssä, ja komponentti on niiden kuljettaja
+joka kääntää moottorin askeleet lokiriveiksi, ääniksi ja ajastimiksi. Sääntömuutos tehdään
+moottoriin eikä komponenttiin. Muoto syntyi kysymyksen 4 kokeesta, ja `test/ristiseiska-saumapari.test.jsx`
+vaatii että moottorin oma silmukka (`runHeadless`) ja komponentti pelaavat samasta siemenestä
+saman pelin. Muissa kahdeksassa pelissä säännöt ovat yhä komponentin sisällä.
+
 ## Navigation
 Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
 - `playerCount` valitaan kunkin pelin aloitusnäytöllä (Pelaajia 2/3/4); App.jsx välittää vain oletuksen (4) propsina, ei globaalia säädintä. Asetukset → Pelaajat sisältää enää vastustajien nimiryhmän valinnan.

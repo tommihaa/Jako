@@ -596,3 +596,85 @@ kutsupolkunsa.
 useStatea ja yksitoista käsin ylläpidettyä refiä ilman yhtä tilaoliota on H5:ää eikä H4:ää,
 eikä siitä ole päätöstä. Se on Läpsyn oma kysymys ja jää auki. Kysymys 4:n
 ristiintarkistustesti on nyt tekemättömistä ensimmäinen, koska sen ehto täyttyi.
+
+### Kysymys 4: ristiintarkistustesti ja Ristiseiskan puhdas sauma 4.9.2026
+
+**Työ alkoi löydöksestä joka kumosi raportin oletuksen.** Päätös 4 sanoi että toteutus ei ole
+oma projektinsa vaan H1:n, H4:n ja H5:n hyväksymiskriteeri ja että puhdas sauma putoaa
+nostoista ulos jos ne tehdään kunnolla. Nostot on tehty, mutta sauma ei pudonnut. `commit`
+korjasi kirjoitusjärjestyksen eikä siirtänyt sääntöjä ulos komponentista. `doPlay`, `doPass`
+ja `advanceTurnRS` olivat yhä komponentin sisäisiä funktioita jotka kutsuvat `commit`ia eli
+kirjoittavat React-tilaa. Mitattuna yhdeksän pelin sääntölogiikka asui komponenttikerroksessa
+(122 `commit`-kutsupaikkaa, moduulikerros päättyy riviltä 52 riville 452 pelistä riippuen).
+`chooseMove` oli moduulitasolla seitsemässä pelissä, mutta `applyMove(G, siirto) → G` ei
+ollut missään.
+
+Ristiintarkistustesti ei siis ollut kirjoitettavissa, koska verrattavaa toista saumaa ei
+ollut olemassa. Tommin valinta oli koe yhdellä pelillä. Peliksi valittiin Ristiseiska, joka
+on lähimpänä mentaalimallia ja jossa on vähiten ajastimia.
+
+**Tehty.** `src/games/ristiseiskaEngine.js` omistaa nyt säännöt, valinnan ja siirtymät.
+Komponentti ei tee sääntöpäätöksiä vaan kääntää moottorin askeleet lokiriveiksi, ääniksi ja
+ajastimiksi. Kahta kopiota säännöistä ei ole. Se on ehto eikä sivutuote, koska kaksi saumaa
+omine sääntöineen ajautuisi juuri niin kuin H2 ja H7 ovat jo ajautuneet.
+
+Muoto on **askeljono**. Yksi siirto palauttaa listan askeleita `{ g, ev }`, joissa `g` on uusi
+tila tai null ja `ev` on tapahtuma. Muoto valittiin siksi, että yksi siirto tuottaa useamman
+lokirivin ja jokainen niistä kuvaa eri tilaa. Kun kuljettaja kävelee jonon järjestyksessä,
+H4:n invariantti "tila ennen lokiriviä" seuraa rakenteesta eikä kutsujärjestyksestä. Vanha
+koodi luotti järjestykseen. Juuri se oli H4.
+
+| Osa | Ennen | Nyt |
+|---|---|---|
+| Säännöt ja AI | Ristiseiska.jsx, osin komponentin sisällä | `ristiseiskaEngine.js`, moduulitasolla |
+| Siirron soveltaminen | `doPlay`/`doPass` kutsuvat `commit`ia | `applyMove` palauttaa askeljonon |
+| Vuoron ajastus | `advanceTurnRS`n sisällä, kaksi kohtaa | `scheduleNext`, yksi kohta |
+| Puhdas ajo | ei ollut | `runHeadless` |
+
+**Testi.** `test/ristiseiska-saumapari.test.jsx` ajaa saman siemenen molempien saumojen läpi
+ja vaatii saman rankingin **ja** saman kehysjonon askel askeleelta. Kehysvertailu on mukana
+siksi, että pelkkä lopputulos voi osua yhteen eri siirtojärjestyksellä. Viisi siementä menee
+läpi. Siemennetty PRNG siirtyi `test/prng.js`:ään, koska sitä tarvitsee nyt kaksi tiedostoa.
+
+Testin kaatumiskyky todennettiin mutaatiolla. Kun komponentin `runAI` vaihdettiin kutsumaan
+`chooseMove`a kovakoodatulla tasolla `normal` istuinkohtaisen sijaan, kaikki viisi siementä
+kaatuivat. Rankingit erosivat, ja yhdessä kehysten määrä oli 111 vastaan 114. Mutaatio
+peruttiin heti.
+
+**Kaksi asiaa jouduttiin ratkaisemaan matkalla. Molemmat kuuluvat tähän tiedostoon.**
+
+1. *Determinismi ostetaan tasolla eikä arpojan injektoinnilla.* `aiNoise('hard')` on 0, joten
+   Mestari ei arvo aloittelijan virhettä ja botin valinta on tilan funktio. Vasta se tekee
+   saumoista vertailtavia, koska komponentti nostaa Math.randomia myös ajastinjitteriin eikä
+   lukujono voi olla sama. **Rajoite on kirjattu testin alkuun.** Beginner- ja normal-tasojen
+   virhearvonta jää tämän testin ulkopuolelle, ja sen kattaminen vaatisi arpojan injektoinnin
+   moottoriin.
+2. *Siemen asetetaan renderin jälkeen.* Ensimmäinen ajo kaatui, eikä syy ollut pelissä.
+   Aloitusnäytön renderöinti kuluttaa satunnaislukuja, ensimmäisellä kerralla eri määrän kuin
+   myöhemmillä, joten pakka meni eri järjestykseen. Jako alkaa vasta napin painalluksesta,
+   joten siemen kuuluu sinne. Tämä on sama vikamuoto kuin H4. Oikeellisuus riippui
+   järjestyksestä jota mikään ei pitänyt paikallaan.
+
+**Mitattu hyöty.** Puhdas sauma ajoi 500 peliä 55 millisekunnissa, eli 0,11 ms per peli, ja
+kaikki 500 päättyivät. Komponenttisauma maksaa samassa ajoympäristössä noin 430 ms per peli
+(saumaparitestin viisi peliä 2,16 sekunnissa, josta puhtaan osuus on alle millisekunnin).
+Ero on noin nelituhatkertainen. Botbenchin nykyinen 20 peliä paria kohti olisi puhtaalla
+saumalla tuhansia, ja voittoprosentin luottamusväli kapenee vain pelien määrällä.
+
+**Todennettu selaimessa.** Ihmispeli pelattiin läpi kaikilla poluilla joita moottorimuutos
+koskee: lyönti, passaus kun mikään kortti ei käy, panttikortin antaminen ihmisen valintana,
+Ässän kaatama alapino ja sen bonusvuoro, En jatka -nappi sekä Mestarin neuvo. Botin puolelta
+nähtiin lyönti, passaus panttikortteineen ja bonusvuoro. Katselutila ajettiin loppuun asti
+(105 kehystä, tulosbanneri ja Toisto). Ei konsolivirheitä. Testit 137 läpi, tyyppitarkistus
+puhdas.
+
+**Mitä ei todennettu.** Sääntövariaatiota "satunnainen pantti" ei ajettu selaimessa, eikä
+sitä kata mikään testi, koska saumaparitesti ajaa vakiosäännöllä. Ihmispeliä ei pelattu
+loppuun asti, joten ihmispolun synkroninen `onResult` nojaa katselutilan ajoon ja testeihin.
+
+**Mitä tästä seuraa muille kahdeksalle pelille.** Koe mittasi hinnan yhdestä pelistä.
+Ristiseiska on 979 rivillään pienin ja rakenteeltaan lähimpänä mallia, joten se on alaraja
+eikä keskiarvo. Kasino (1794 riviä, 23 ajastinta) ja Koputus (919 riviä, 29 ajastinta) ovat
+eri kokoluokkaa. Botbench ei siirry puhtaalle saumalle ennen kuin peleillä on moottori, koska
+mittari ajaa kaikki yhdeksän samalla koneistolla. Päätös siitä tehdäänkö loput kahdeksan on
+auki. Se on nyt hinnoiteltu eikä arvattu.
