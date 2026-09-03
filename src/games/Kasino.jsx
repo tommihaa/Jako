@@ -407,7 +407,11 @@ function initGame(nPlayers, pool, allBots = false, rules = KASINO_DEFAULT_RULES)
   }));
   const table = deck.splice(0, 4);
   players.forEach(p => p.hand = deck.splice(0, 4));
-  return { players, deck, table, builds: [], lastCapture: null, round: 1, rules };
+  // Vaihe ja vuoro asuvat pelitilassa. Ennen ne olivat kahtena useStatena, joilla
+  // molemmilla oli käsin synkattu ref-kaksonen (phaseRef, curRef) ajastimia ja
+  // klikkivartijoita varten (kompositioauditointi H5).
+  return { players, deck, table, builds: [], lastCapture: null, round: 1, rules,
+           phase: /** @type {Vaihe} */ ('idle'), cur: 0 };
 }
 
 function dealHands(g) {
@@ -453,8 +457,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   const buildCap = rules.specialBuilds ? 16 : 13; // rakennelman max-arvo (13=K, 16=♦10 erikoissäännöllä)
   const cardBack = 'ilves';
   const { G, gRef, setG, setGS } = useGameState();
-  const [curIdx, setCur] = useState(0);
-  const [phase, setPhase] = useState(/** @type {Vaihe} */ ('idle'));  const [selTable, setSelTable] = useState([]);
+  const [selTable, setSelTable] = useState([]);
   const [selBuilds, setSelBuilds] = useState([]); // selected build IDs for capture
   const [captureMode, setCaptureMode] = useState(false); // kaappaustila
   const [buildMode, setBuildMode] = useState(false); // rakennustila
@@ -486,9 +489,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   }, [showOptions]);
   const [helpTerm, setHelpTerm] = useState(null); // 'kaappaus' | 'rakennus'
   const [advice, setAdvice] = useState(null); // { text, handCardId, tableCardIds, buildId } | null
-  const phaseRef = useRef(/** @type {Vaihe} */ ('idle'));
   const prevDeckRef = useRef(null);
-  const curRef  = useRef(0);
   const cumulBdRef    = useRef(null); // kumulatiivinen pisteytysdata joka kierros
   const showNextBtnRef = useRef(showNextBtn);
   useEffect(() => { showNextBtnRef.current = showNextBtn; }, [showNextBtn]);
@@ -501,10 +502,12 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   const lastPlayTmr = useRef(null);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
-  useEffect(() => { phaseRef.current = phase; }, [phase]);
-  useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { setAdvice(null); }, [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
+
+  // Renderin lukemat: vaihe ja vuoro luetaan G:stä eikä rinnakkaisesta useStatesta.
+  const phase  = G?.phase ?? 'idle';
+  const curIdx = G?.cur ?? 0;
 
   function askAdvice() {
     const g = gRef.current;
@@ -580,10 +583,9 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     setRevealAll(seeAll || allBotsMode);
     pausedRef.current = false; setPaused(false);
     const cnt = forcedCount || nP;
-    const g = initGame(cnt, playerNames, allBotsMode, rules);
+    const g = { ...initGame(cnt, playerNames, allBotsMode, rules),
+                phase: /** @type {Vaihe} */ ('select_table') };
     setGS(g);
-    setCur(0); curRef.current = 0;
-    setPhase('select_table'); phaseRef.current = 'select_table';
     setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false); setScores(null); setPakaAnim(false);
     resetLog();
     cumulBdRef.current = null;
@@ -678,20 +680,15 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     // Ei koske pelaajaa jolla on oma rakennelma pöydällä — sitä ei saa jättää lunastamatta (noBuildLeave).
     const hasOwnBuildForced = g2.builds.some(b => b.ownerIdx === 0);
     if (next === 0 && p.isHuman && p.hand.length === 1 && g2.table.length === 0 && !hasOwnBuildForced) {
-      setCur(0); curRef.current = 0;
-      setPhase('idle'); phaseRef.current = 'idle';
       setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false);
-      setGS(g2);
-      const g3 = doLeave(g2, 0, p.hand[0]);
-      setGS(g3);
-      addLog(M.forcedLeave);
+      const g3 = { ...doLeave({ ...g2, cur: 0, phase: /** @type {Vaihe} */ ('idle') }, 0, p.hand[0]) };
+      commit(g3, M.forcedLeave);
       aiTmr.current = tm(() => advance(g3, 0), 1200);
       return;
     }
 
-    setCur(next); curRef.current = next;
-    setPhase('select_table'); phaseRef.current = 'select_table';
     setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false);
+    g2 = { ...g2, cur: next, phase: /** @type {Vaihe} */ ('select_table') };
     setGS(g2);
     if (p.isHuman) {
       const hint = getTurnHint(p.hand, g2.table, g2.builds);
@@ -780,10 +777,8 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       ...newG,
       players: newG.players.map((p, i) => ({ ...p, score: finalPlayers[i]?.score || 0 })),
     };
-    setGS(withScores);
+    setGS({ ...withScores, cur: 0, phase: /** @type {Vaihe} */ ('select_table') });
     setScores(null); setSelTable([]); setSelBuilds([]); setPakaAnim(false);
-    setCur(0); curRef.current = 0;
-    setPhase('select_table'); phaseRef.current = 'select_table';
     const h0 = withScores.players[0];
     const scoreStr = finalPlayers.map(p => t('games.kasino.msg.scoreItem', { name: p.name, score: p.score })).join(', ');
     if (allBotsRef.current) {
@@ -915,8 +910,16 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   }
 
   // Ihmispelaajan toiminnot
+  // Sama vartija kolmessa kohdassa: valinta on auki vain Heron omalla vuorolla
+  // ja vain valintavaiheessa. Luetaan pelitilasta, koska klikki voi osua kesken
+  // ajastetun bottisiirron.
+  const isHumanTurn = () => {
+    const g = gRef.current;
+    return !!g && g.phase === 'select_table' && g.cur === 0;
+  };
+
   function humanToggleTable(card) {
-    if (phaseRef.current !== 'select_table' || curRef.current !== 0) return;
+    if (!isHumanTurn()) return;
     setSelTable(prev => {
       const has = prev.find(c => c.id === card.id);
       return has ? prev.filter(c => c.id !== card.id) : [...prev, card];
@@ -924,7 +927,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   }
 
   function humanToggleBuild(build) {
-    if (phaseRef.current !== 'select_table' || curRef.current !== 0) return;
+    if (!isHumanTurn()) return;
     setSelBuilds(prev => {
       const has = prev.includes(build.id);
       return has ? prev.filter(id => id !== build.id) : [...prev, build.id];
@@ -932,7 +935,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   }
 
   function humanSelectHand(card) {
-    if (phaseRef.current !== 'select_table' || curRef.current !== 0) return;
+    if (!isHumanTurn()) return;
     const g = gRef.current;
     const hasOwnBuild = g.builds.some(b => b.ownerIdx === 0);
     const hv = handVal(card);
@@ -951,7 +954,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       const animCards = [...snapshotBuilds.flatMap(b => b.cards), ...snapshotTable];
       setCaptureAnim({ handCard: card, tableCards: animCards });
       setSelTable([]); setSelBuilds([]);
-      setPhase('idle'); phaseRef.current = 'idle';
+      setGS({ ...g, phase: /** @type {Vaihe} */ ('idle') });
       aiTmr.current = tm(() => {
         const g2 = doBuildCapture(gRef.current, 0, card, snapshotBuilds, snapshotTable);
         setGS(g2);
@@ -965,10 +968,9 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       if (hasOwnBuild && selTable.length === 0) { addLog(M.noBuildLeave); return; }
       const buildVal = getBuildValue(card, selTable, g.players[0].hand);
       if (buildVal !== null) {
-        const g2 = doBuild(g, 0, card, selTable, buildVal);
+        const g2 = { ...doBuild(g, 0, card, selTable, buildVal), phase: /** @type {Vaihe} */ ('idle') };
         setGS(g2);
         setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false);
-        setPhase('idle'); phaseRef.current = 'idle';
         tm(() => advance(g2, 0), 600);
       } else {
         addLog(M.invalidMove(lbl(card)));
@@ -982,8 +984,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       if (captureMode) { addLog(t('games.kasino.msg.captureModeHint')); return; }
       if (!leaveMode)  { addLog(t('games.kasino.msg.chooseAction')); return; }
       // leaveMode: jätä kortti pöytään
-      phaseRef.current = 'idle'; setPhase('idle');
-      const g2 = doLeave(g, 0, card);
+      const g2 = { ...doLeave(g, 0, card), phase: /** @type {Vaihe} */ ('idle') };
       setGS(g2);
       setSelTable([]); setSelBuilds([]); setLeaveMode(false);
       tm(() => advance(g2, 0), 600);
@@ -995,7 +996,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       const captured = [...selTable];
       setCaptureAnim({ handCard: card, tableCards: captured });
       setSelTable([]); setSelBuilds([]);
-      setPhase('idle'); phaseRef.current = 'idle';
+      setGS({ ...g, phase: /** @type {Vaihe} */ ('idle') });
       aiTmr.current = tm(() => {
         const g2 = doCapture(gRef.current, 0, card, captured);
         setGS(g2);
@@ -1029,7 +1030,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
 
   function runAI(playerIdx, g) {
     if (!g) g = gRef.current;
-    if (!g || phaseRef.current === 'idle') return;
+    if (!g || (gRef.current?.phase ?? g.phase) === 'idle') return;
     const p = g.players[playerIdx];
     if (!p.hand.length) { advance(g, playerIdx); return; }
     const level = botLevelsRef.current?.[playerIdx] ?? aiLevelRef.current;
@@ -1191,8 +1192,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     setCaptureAnim(null);
     setAiSel({ handCard: null, tableCards: [] });
     setSelBuilds([]); setCaptureMode(false); setBuildMode(false);
-    setPhase('select_table'); phaseRef.current = 'select_table';
-    advance(g2, fromIdx);
+    advance({ ...g2, phase: /** @type {Vaihe} */ ('select_table') }, fromIdx);
   }
 
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
@@ -1514,8 +1514,11 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
           <button
             onClick={() => {
               if (!captureMode) {
-                const h = G.players[0].hand, t = G.table;
-                const hasTableCapture = hasAnyTableCapture(h, t);
+                // Nimi on tbl eikä t, koska t on käännösfunktio. Varjostus teki
+                // alla olevasta addLogista ajonaikaisen TypeErrorin ja nappi kuoli
+                // juuri siinä tilanteessa jossa sen piti kertoa syy.
+                const h = G.players[0].hand, tbl = G.table;
+                const hasTableCapture = hasAnyTableCapture(h, tbl);
                 const hasBuildCapture = G.builds.some(b => h.some(hc => handVal(hc) === b.value));
                 if (!hasTableCapture && !hasBuildCapture) {
                   addLog(t('games.kasino.msg.noCaptureOpts'));
@@ -1533,8 +1536,8 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
           <button
             onClick={() => {
               if (!buildMode) {
-                const h = G.players[0].hand, t = G.table;
-                if (!hasAnyBuildOption(h, h, t, buildCap)) { addLog(t('games.kasino.msg.noBuildOpts')); return; }
+                const h = G.players[0].hand, tbl = G.table;
+                if (!hasAnyBuildOption(h, h, tbl, buildCap)) { addLog(t('games.kasino.msg.noBuildOpts')); return; }
               }
               setBuildMode(m => !m); setCaptureMode(false); setLeaveMode(false); setSelTable([]); setSelBuilds([]);
             }}
@@ -1547,9 +1550,9 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
           <button
             onClick={() => {
               if (!leaveMode) {
-                const h = G.players[0].hand, t = G.table;
-                const hasCapture = hasAnyTableCapture(h, t) || G.builds.some(b => h.some(hc => handVal(hc) === b.value));
-                const hasBuild = hasAnyBuildOption(h, h, t, buildCap);
+                const h = G.players[0].hand, tbl = G.table;
+                const hasCapture = hasAnyTableCapture(h, tbl) || G.builds.some(b => h.some(hc => handVal(hc) === b.value));
+                const hasBuild = hasAnyBuildOption(h, h, tbl, buildCap);
                 const voit = [];
                 if (hasCapture) voit.push(t('games.kasino.msg.canCapture'));
                 if (hasBuild)   voit.push(t('games.kasino.msg.canBuild'));
