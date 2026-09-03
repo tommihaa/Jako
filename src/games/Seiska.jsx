@@ -9,6 +9,7 @@ import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import GameLog from '../shared/GameLog.jsx';
+import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import HandoffScreen from '../shared/HandoffScreen.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
@@ -1238,23 +1239,21 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       </div>
 
       {/* Tilapalkki */}
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10 }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}>
-          <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('ui.shared.firstOutWins')}
-          {' · '}
-          <span style={{
-            color: G.deck.length === 0 && G.discardPile.length <= 1 ? C.red : 'inherit',
-            fontWeight: G.deck.length === 0 && G.discardPile.length <= 1 ? 700 : 'inherit',
-            animation: pakaAnim ? 'pakkaFlash 2.5s ease forwards' : undefined }}>
-            {G.deck.length === 0 && G.discardPile.length <= 1 ? t('games.seiska.ui.deckEmpty') : t('games.seiska.ui.deckCount', { n: G.deck.length })}
-          </span>
-          {' · '}{G.reqSuit ? t('games.seiska.ui.required', { suit: G.reqSuit }) : t('games.seiska.ui.topCard', { card: lbl(G.discardTop) })}
+      <GameStatusBar
+        soundOn={soundOn} onSoundToggle={() => onSoundOnChange?.(!soundOn)}
+        revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
+        isMobile={isMobile}
+      >
+        <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('ui.shared.firstOutWins')}
+        {' · '}
+        <span style={{
+          color: G.deck.length === 0 && G.discardPile.length <= 1 ? C.red : 'inherit',
+          fontWeight: G.deck.length === 0 && G.discardPile.length <= 1 ? 700 : 'inherit',
+          animation: pakaAnim ? 'pakkaFlash 2.5s ease forwards' : undefined }}>
+          {G.deck.length === 0 && G.discardPile.length <= 1 ? t('games.seiska.ui.deckEmpty') : t('games.seiska.ui.deckCount', { n: G.deck.length })}
         </span>
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          <button onClick={() => onSoundOnChange?.(!soundOn)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
-          <button onClick={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${revealAll ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: revealAll ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{revealAll ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
-        </div>
-      </div>
+        {' · '}{G.reqSuit ? t('games.seiska.ui.required', { suit: G.reqSuit }) : t('games.seiska.ui.topCard', { card: lbl(G.discardTop) })}
+      </GameStatusBar>
 
       {/* Loki */}
       <GameLog log={log} open={logOpen} onToggle={() => onShowLogChange?.(!showLog)} />

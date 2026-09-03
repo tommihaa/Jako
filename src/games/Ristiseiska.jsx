@@ -10,6 +10,7 @@ import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import GameLog from '../shared/GameLog.jsx';
+import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
@@ -959,15 +960,13 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
       </div>
 
       {/* Tilapalkki */}
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 6 : 10 }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}>
-          <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('ui.shared.firstOutWins')} · {t('games.ristiseiska.ui.openings')} {SUITS.filter(s => G.rows[s].active).length}/4
-        </span>
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          <button onClick={() => onSoundOnChange?.(!soundOn)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
-          <button onClick={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${revealAll ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: revealAll ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{revealAll ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
-        </div>
-      </div>
+      <GameStatusBar
+        soundOn={soundOn} onSoundToggle={() => onSoundOnChange?.(!soundOn)}
+        revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
+        isMobile={isMobile}
+      >
+        <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('ui.shared.firstOutWins')} · {t('games.ristiseiska.ui.openings')} {SUITS.filter(s => G.rows[s].active).length}/4
+      </GameStatusBar>
 
       {allBots && G?.phase !== 'gameover' && (
         <BotBattleBar paused={paused} onTogglePause={togglePause} aiDelayMs={aiDelayMs}

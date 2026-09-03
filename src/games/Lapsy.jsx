@@ -10,6 +10,7 @@ import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import GameLog from '../shared/GameLog.jsx';
+import GameStatusBar from '../shared/GameStatusBar.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
 
@@ -720,11 +721,15 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
         </div>
       )}
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
-        <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, flex: 1 }}><span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.lapsy.ui.goal')}</span>
-        <button onClick={() => onSoundOnChange?.(!soundOn)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.red + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}</button>
-        <button onClick={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${revealAll ? C.red + '55' : '#2a4a32'}`, background: 'transparent', color: revealAll ? C.red : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{revealAll ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
-      </div>
+      <GameStatusBar
+        soundOn={soundOn} onSoundToggle={() => onSoundOnChange?.(!soundOn)}
+        revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
+        isMobile={isMobile}
+        accent={C.red}
+        borderTop={false}
+      >
+        <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.lapsy.ui.goal')}
+      </GameStatusBar>
 
       {allBots && phase !== 'gameover' && (
         <BotBattleBar paused={paused} onTogglePause={togglePause} aiDelayMs={aiDelayMs}

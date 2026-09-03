@@ -12,6 +12,7 @@ import { useGameLog } from '../shared/useGameLog.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import GameLog from '../shared/GameLog.jsx';
+import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 
@@ -1585,17 +1586,16 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       </div>
 
       {/* Tilarivi */}
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', paddingTop: isMobile ? 4 : 10, borderTop: `1px solid ${C.panelBorder}`, alignItems: 'center', marginBottom: isMobile ? 4 : 10, justifyContent: 'flex-end' }}>
-        <button onClick={() => setShowInfo(v => !v)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${showInfo ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: showInfo ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          ℹ {t('games.kasino.ui.points')}
-        </button>
-        <button onClick={() => onSoundOnChange?.(!soundOn)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${soundOn ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: soundOn ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          {soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}
-        </button>
-        <button onClick={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${revealAll ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: revealAll ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-          {revealAll ? '🙈' : '🔍'} {t('ui.shared.openCards')}
-        </button>
-      </div>
+      <GameStatusBar
+        soundOn={soundOn} onSoundToggle={() => onSoundOnChange?.(!soundOn)}
+        revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
+        isMobile={isMobile}
+        extras={
+          <button onClick={() => setShowInfo(v => !v)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${showInfo ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: showInfo ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
+            ℹ {t('games.kasino.ui.points')}
+          </button>
+        }
+      />
 
       {/* Loki */}
       <GameLog log={log} open={logOpen} onToggle={() => onShowLogChange?.(!showLog)} renderMessage={renderLogMessage} />
