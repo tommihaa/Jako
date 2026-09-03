@@ -49,7 +49,12 @@ function initGame(nPlayers, pool, allBots = false) {
     row: [deck.shift(), deck.shift(), deck.shift(), deck.shift(), deck.shift()],
     known: new Set(),
   }));
-  return { players, deck, discard: [] };
+  // Vaihe, vuoro ja kädessä oleva kortti asuvat pelitilassa eivätkä komponentin
+  // omissa useStateissa (kompositioauditointi H5). Ennen ne olivat neljänä
+  // useStatena ja kolmena refinä, ja neuvon vanheneminen riippui siitä että
+  // jokainen niistä muistettiin listata efektin riippuvuuksiin.
+  return { players, deck, discard: [], phase: /** @type {Vaihe} */ ('idle'),
+           cur: 0, held: null, swapIdx: null, drawnFrom: /** @type {'deck'|'discard'|null} */ (null) };
 }
 
 // ── Bottipäätökset puhtaina funktioina ──────────────────────────
@@ -114,10 +119,14 @@ function kkChainStep(p, held, idxPos, playerCount) {
 }
 
 // Mestarin neuvo Herolle. phase 'drawing' → nostolähde; 'holding'/'swapping' →
-// jatkanko ketjua paikassa swapIdx vai lopetanko (canStop=false → pakko vaihtaa).
+// jatkanko ketjua paikassa swapIdx vai lopetanko (poistopakasta nostettua on pakko
+// vaihtaa). Lukee kaiken pelitilasta: ariteetti oli viisi ja mittasi sitä, kuinka
+// paljon vuoron tilaa asui G:n ulkopuolella (kompositioauditointi H5).
 // Palauttaa { type, card?, slot? } — type vastaa games.kultakala.advice.* -avainta.
-/** @param {*} g @param {Vaihe} phase */
-export function getAdvice(g, phase, held, swapIdx, canStop) {
+/** @param {*} g */
+export function getAdvice(g) {
+  const { phase, held, swapIdx } = g;
+  const canStop = g.drawnFrom !== 'discard';
   const p = g.players[0];
   if (!p) return null;
   if (phase === 'drawing') {
@@ -207,14 +216,9 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   const [nP, setNP]           = useState(playerCount);
   const cardBack = 'ilves';
   const { G, gRef, setG, setGS } = useGameState();
-  const [phase, setPhase]     = useState(/** @type {Vaihe} */ ('idle'));
-  const [curIdx, setCur]      = useState(0);
-  const [held, setHeld]       = useState(null);
-  const [swapIdx, setSwapIdx] = useState(null);
   const [msg, setMsg_]        = useState('');
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   const [revealed, setRevealed] = useState(false);
-  const [drawnFromDeck, setFromDeck] = useState(false);
   // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
   // `seeAll` on App:n omistama asetus joka ei tallennu, ja `revealAll` on tämän pelin
   // näkymätila. Katselutila pakottaa paljastuksen päälle koskematta asetukseen, ja
@@ -225,27 +229,30 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   const [kohahdus, setKohahdus] = useState(null);
   const [lastPlay, setLastPlay] = useState(null);
   const [advice, setAdvice]               = useState(null); // { text, target? } | null
-  const phaseRef    = useRef(/** @type {Vaihe} */ ('idle'));
-  const curRef      = useRef(0);
   const sndRef      = useRef(soundOn);
   const aiLevelRef  = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
   const botLevelsRef = useRef(botLevels);
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
-  const drawnFromRef = useRef(null); // 'deck' | 'discard' | null
   const lastPlayTmr  = useRef(null);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
-  useEffect(() => { phaseRef.current = phase; }, [phase]);
-  useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  useEffect(() => { setAdvice(null); }, [G, phase, held, swapIdx]); // neuvo vanhenee tilamuutoksista
+  // Neuvo vanhenee jokaisesta tilamuutoksesta. Riippuvuuslista on yksi, koska vuoron
+  // tila asuu G:ssä; ennen listassa oli neljä kohdetta ja uusi ulkokehän useState olisi
+  // pudottanut vanhenemisen hiljaa (kompositioauditointi H5).
+  useEffect(() => { setAdvice(null); }, [G]);
+
+  // Renderin lukemat: vuoron tila luetaan G:stä eikä rinnakkaisesta useStatesta.
+  const phase   = G?.phase ?? 'idle';
+  const curIdx  = G?.cur ?? 0;
+  const held    = G?.held ?? null;
+  const swapIdx = G?.swapIdx ?? null;
 
   function askAdvice() {
     const g = gRef.current; if (!g) return;
-    const canStopNow = drawnFromRef.current !== 'discard';
-    const a = getAdvice(g, phaseRef.current, held, swapIdx, canStopNow);
+    const a = getAdvice(g);
     if (!a) return;
     setAdvice({
       text: t('games.kultakala.advice.' + a.type, {
@@ -290,11 +297,9 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     pausedRef.current = false; setPaused(false);
     clearTimeout(aiTmr.current);
     const count = forcedCount ?? nP;
-    const g = initGame(count, playerNames, allBotsMode);
+    const g = { ...initGame(count, playerNames, allBotsMode), phase: /** @type {Vaihe} */ ('drawing') };
     setGS(g);
-    setCur(0); curRef.current = 0;
-    setPhase('drawing'); phaseRef.current = 'drawing';
-    setHeld(null); setSwapIdx(null); setRevealed(false); drawnFromRef.current = null; setFromDeck(false);
+    setRevealed(false);
     resetLog();
     addLog(M.gameStart);
     setScreen('game');
@@ -309,23 +314,22 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
 
 
   function advance(g, fromIdx) {
-    if (phaseRef.current === 'gameover') return;
+    if (gRef.current?.phase === 'gameover') return;
     const next = (fromIdx + 1) % g.players.length;
     if (g.deck.length === 0) {
       addLog(M.deckEmpty);
       tm(() => doReveal(g), 800);
       return;
     }
-    setCur(next); curRef.current = next;
-    setPhase('drawing'); phaseRef.current = 'drawing';
-    setHeld(null); setSwapIdx(null); drawnFromRef.current = null; setFromDeck(false);
-    const p = g.players[next];
-    addLog(p.isHuman ? M.yourTurn : M.aiThinking(p));
-    aiTmr.current = tm(guard(() => maybeAI(next, g)), 600);
+    const g2 = { ...g, cur: next, phase: /** @type {Vaihe} */ ('drawing'),
+                 held: null, swapIdx: null, drawnFrom: null };
+    const p = g2.players[next];
+    commit(g2, p.isHuman ? M.yourTurn : M.aiThinking(p));
+    aiTmr.current = tm(guard(() => maybeAI(next, g2)), 600);
   }
 
   function maybeAI(idx, g) {
-    if (phaseRef.current === 'gameover') return;
+    if (gRef.current?.phase === 'gameover') return;
     if (idx === 0 && !allBotsRef.current) return;
     const baseDelay = allBotsRef.current ? aiDelayRef.current : 900;
     const schedFlip = () => {
@@ -336,7 +340,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   }
 
   function aiTurn(idx, g) {
-    if (!g || phaseRef.current === 'gameover') return;
+    if (!g || g.phase === 'gameover') return;
     const p = g.players[idx];
     const top = g.discard[g.discard.length - 1];
 
@@ -362,16 +366,14 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     if (decision.source === 'discard') {
       const discard = [...g.discard]; discard.pop();
       newG = { ...g, discard }; card = top;
-      addLog(M.aiDrawDiscard(p));
-      setGS(newG);
+      commit({ ...newG, drawnFrom: 'discard' }, M.aiDrawDiscard(p));
       if (sndRef.current) SFX.flip();
       if (decision.mode === 'swapWorst') tm(() => aiDoSwap(idx, gRef.current, card, decision.worstKnownIdx), 1000);
       else tm(() => aiChainSwap(idx, gRef.current, card, true), 1000);
     } else {
       if (!g.deck.length) { advance(g, idx); return; }
       card = g.deck[0]; newG = { ...g, deck: g.deck.slice(1) };
-      addLog(M.aiDrawDeck(p));
-      setGS(newG);
+      commit({ ...newG, drawnFrom: 'deck' }, M.aiDrawDeck(p));
       if (sndRef.current) SFX.flip();
       tm(() => {
         // Oppipoika: ketju jatkuu vain ilmiselvän hyvällä kortilla (A-3);
@@ -438,50 +440,43 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     const known = new Set(p.known); known.add(rowIdx);
     const players = g.players.map((pl, i) => i === idx ? { ...pl, row: newRow, known } : pl);
     const newG = { ...g, players, discard: [...g.discard, old] };
-    setGS(newG);
     if (sndRef.current) SFX.swap();
-    addLog(M.aiSwapRow(g.players[idx], rowIdx, card, old));
+    commit(newG, M.aiSwapRow(g.players[idx], rowIdx, card, old));
     if (rowIdx === 0 && old.v <= 2) triggerKohahdus(old);
     tm(() => advance(newG, idx), 700);
   }
 
   function aiDoDiscard(idx, g, card) {
     const newG = { ...g, discard: [...g.discard, card] };
-    setGS(newG);
-    addLog(M.aiDiscard(g.players[idx], card));
+    commit(newG, M.aiDiscard(g.players[idx], card));
     flashLastPlay(g.players[idx].name, card, false);
     tm(() => advance(newG, idx), 600);
   }
 
   function humanDraw(fromDiscard) {
-    // Varmista, että olemme 'drawing' vaiheessa, ei 'viewing'
-    if (phaseRef.current !== 'drawing' || curIdx !== 0) {
-      // Jos olemme 'viewing' vaiheessa, älä tee mitään
-      return;
-    }
     const g = gRef.current;
-    let card, newG;
+    // Vain nostovaiheessa ja vain Heron omalla vuorolla
+    if (!g || g.phase !== 'drawing' || g.cur !== 0) return;
+    let card, newG, logMsg;
     if (fromDiscard) {
       if (!g.discard.length) return;
       const discard = [...g.discard]; card = discard.pop();
       newG = { ...g, discard };
-      addLog(M.humanDrawDiscard(card, card.v));
+      logMsg = M.humanDrawDiscard(card, card.v);
     } else {
       if (!g.deck.length) return;
       card = g.deck[0]; newG = { ...g, deck: g.deck.slice(1) };
-      addLog(M.humanDrawDeck(card, card.v));
+      logMsg = M.humanDrawDeck(card, card.v);
     }
     if (sndRef.current) SFX.flip();
-    setGS(newG);
-    drawnFromRef.current = fromDiscard ? 'discard' : 'deck';
-    setHeld(card); setSwapIdx(4); setFromDeck(!fromDiscard);
-    setPhase('holding'); phaseRef.current = 'holding';
+    commit({ ...newG, held: card, swapIdx: 4, phase: /** @type {Vaihe} */ ('holding'),
+             drawnFrom: fromDiscard ? 'discard' : 'deck' }, logMsg);
   }
 
   function humanSwapRow(rowIdx) {
-    if ((phaseRef.current !== 'holding' && phaseRef.current !== 'swapping') || curIdx !== 0) return;
     const g = gRef.current;
-    if (!g) return;
+    if (!g || (g.phase !== 'holding' && g.phase !== 'swapping') || g.cur !== 0) return;
+    const held = g.held;
     const p = g.players[0];
     const newRow = [...p.row];
     const known = new Set(p.known);
@@ -494,46 +489,38 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     const wasKnown = p.known.has(rowIdx);
     const oldName = wasKnown ? `${lbl(old)} (${old.v} p)` : `${lbl(old)} (${old.v} p paljastui)`;
     const nextIdx = rowIdx - 1;
-    drawnFromRef.current = null; setFromDeck(false);
 
     if (nextIdx < 0) {
       // Reached leftmost — displaced card forced to discard
-      const finalG = { ...g, players, discard: [...g.discard, old] };
-      setGS(finalG);
-      addLog(M.humanSwappedEnd(rowIdx, held, held.v, oldName));
+      const finalG = { ...g, players, discard: [...g.discard, old], drawnFrom: null,
+                       held: null, swapIdx: null, phase: /** @type {Vaihe} */ ('drawing') };
+      commit(finalG, M.humanSwappedEnd(rowIdx, held, held.v, oldName));
       if (old.v <= 2) triggerKohahdus(old);
-      setHeld(null); setSwapIdx(null);
-      setPhase('drawing'); phaseRef.current = 'drawing';
       tm(() => advance(finalG, 0), 500);
     } else {
       // Displaced card goes to KÄDESSÄ for possible continued chain
-      const newG = { ...g, players };
-      setGS(newG);
-      addLog(M.humanSwappedContinue(rowIdx, held, held.v, oldName));
-      setHeld(old);
-      setSwapIdx(nextIdx);
-      setPhase('swapping'); phaseRef.current = 'swapping';
+      const newG = { ...g, players, drawnFrom: null, held: old, swapIdx: nextIdx,
+                     phase: /** @type {Vaihe} */ ('swapping') };
+      commit(newG, M.humanSwappedContinue(rowIdx, held, held.v, oldName));
     }
   }
 
   function humanStopSwap() {
-    if ((phaseRef.current !== 'swapping' && phaseRef.current !== 'holding') || curIdx !== 0) return;
-    if (drawnFromRef.current === 'discard') return;
     const g = gRef.current;
-    const newG = { ...g, discard: [...g.discard, held] };
-    setGS(newG);
-    addLog(M.humanDiscard(held));
+    if (!g || (g.phase !== 'swapping' && g.phase !== 'holding') || g.cur !== 0) return;
+    if (g.drawnFrom === 'discard') return;
+    const held = g.held;
+    const newG = { ...g, discard: [...g.discard, held], held: null, swapIdx: null,
+                   drawnFrom: null, phase: /** @type {Vaihe} */ ('drawing') };
+    commit(newG, M.humanDiscard(held));
     flashLastPlay(g.players[0].name, held, true);
-    setHeld(null); setSwapIdx(null); drawnFromRef.current = null; setFromDeck(false);
-    setPhase('drawing'); phaseRef.current = 'drawing';
     tm(() => advance(newG, 0), 300);
   }
 
   function doReveal(g) {
-    setPhase('gameover'); phaseRef.current = 'gameover';
     setRevealed(true);
     if (sndRef.current) SFX.reveal();
-    setGS(g);
+    setGS({ ...g, phase: /** @type {Vaihe} */ ('gameover') });
     const scores = g.players.map(p => ({ ...p, total: p.unknown.v + p.row.reduce((s, c) => s + c.v, 0) }));
     const sortedSc = [...scores].sort((a, b) => a.total - b.total);
     const ranking  = sortedSc.map(p => ({
@@ -576,7 +563,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   const canDraw = curIdx === 0 && phase === 'drawing';
   const canSwapRow = curIdx === 0 && (phase === 'holding' || phase === 'swapping');
   // canDiscard: holding phase AND drew from deck (not discard)
-  const canDiscard = curIdx === 0 && phase === 'holding' && drawnFromRef.current !== 'discard';
+  const canDiscard = curIdx === 0 && phase === 'holding' && G?.drawnFrom !== 'discard';
   const canStop    = curIdx === 0 && !!held && (phase === 'swapping' || canDiscard);
 
   return (
