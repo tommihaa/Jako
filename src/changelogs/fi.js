@@ -9,6 +9,12 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '4.9.2026',
+    items: [
+      'Kasinossa vastustajien nimet pysyvät nyt samoina koko ottelun ajan. Aiemmin nimet arvottiin uudelleen jokaisen kierroksen alussa, joten sama pelaaja saattoi olla kierroksella eri niminen, vaikka hänen pisteensä seurasivat mukana.',
+    ],
+  },
+  {
     date: '3.9.2026',
     items: [
       'Bottien Taistelu noudattaa nyt valitsemaasi koneälyn tasoa kaikissa peleissä. Kasinossa, Koputuksessa ja Seiskassa katselutila pelasi aiemmin aina Mestarin tasolla, vaikka aloitusnäytön teksti lupasi valitsemasi tason.',

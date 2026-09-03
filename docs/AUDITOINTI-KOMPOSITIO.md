@@ -748,3 +748,55 @@ niiden merkityksestä.
 Tästä seuraa kaksi asiaa joita ei ole päätetty. Satunnaisasento on tasoitussääntö eikä pelkkä
 makuvaihtoehto, eikä aloitusnäytön ohjeteksti kerro sitä. Satunnaisasento myös poistaa
 ihmiseltä päätöksen kokonaan, koska vuoro ei enää pysähdy kortin valintaan.
+
+### Sivulöytö jatkuu: Kasino nimeää istuimet uudelleen joka kierros 4.9.2026
+
+Nimipoolin korjaus paljasti toisen vian saman tien. Kun nimet olivat eri, Kasinon tulos ei
+enää kartoittunut lainkaan (`unmapped` 5/5), vaikka kahdeksan muuta peliä kartoittui.
+
+Syy on `startNextRound`. Se kutsuu `initGame`ia, joka arpoo nimet uudelleen. Vanhasta tilasta se kantaa
+vain pisteet istuimen mukana. Todennettu ajamalla: ensimmäisen kierroksen
+istuinnimet olivat `Epsilon, Gamma, Delta, Alfa` ja viimeisen `Epsilon, Gamma, Alfa, Beeta`,
+kun tuloksessa oli `Alfa, Beeta, Epsilon, Gamma`. Kolmesta ajosta yhdessäkään ensimmäinen
+kehys ei kattanut tulosta. Kaikissa kolmessa viimeinen kehys kattoi.
+
+Vika ei siis vinouttanut Kasinon lukuja vaan teki niistä mielivaltaisia. Kolmen nimen
+listalla `indexOf` löysi aina jonkin osuman, joten mittari ei huomannut mitään ja
+`unmapped` pysyi nollassa. Kasinon julkaistut luvut (53,8 % / 48,9 % / 51,5 %) eivät
+mittaa tasoparia.
+
+**Kaksi korjausta.** Botbench lukee istuinnimet nyt **viimeisestä** kehyksestä eikä
+ensimmäisestä, koska se on ainoa kehys jonka nimet vastaavat tulosta. Kasino kantaa nyt
+nimen istuimen mukana pisteiden tavoin, joten uudelleennimeämistä ei enää tapahdu.
+
+Jälkimmäinen korjaus näkyy pelaajalle eikä vain mittarille. Vastustajat vaihtoivat nimeä
+kierrosten välissä myös tavallisessa ihmispelissä, vaikka pisteet seurasivat istuinta.
+Todennettu selaimessa kierroksen yli: `Nihilist, NPC, Influencer, AFK` pysyivät paikallaan
+pistein 0/2/7/2. Merkitty muutoslokiin, versio 1.2.220.
+
+### Mitä bottimittausten uudelleenajo vaatii
+
+Tommi päätti 4.9.2026 että bottien keskinäiset ajetaan uudelleen, mutta ei tässä sessiossa.
+Tähän on kirjattu se mitä seuraava sessio tarvitsee.
+
+**Mikä on pilalla.** `AI_NAMES` on ollut kolme nimeä ensimmäisestä commitista asti, ja
+Botbench on kytkenyt istuimen nimeen ensimmäisestä versiostaan (`311a9f0`, 18.7.2026).
+Jokainen julkaistu Botbench-luku on siis mitattu vialliselle kytkennälle, ei vain
+Ristiseiskan. Kahdeksassa pelissä vika vinouttaa tulosta kohti 50 prosenttia. Kasinossa
+se tekee tuloksesta mielivaltaisen. Tämä koskee myös `docs/BOTBENCH.md`:n päätelmiä, ja
+ainakin yksi niistä on suoraan uhattuna: *Moska ja Ristiseiska 21.7.2026: "terveet ladderit"
+oli otosharha*. Ristiseiskan osalta puhdas sauma sanoo päinvastaista.
+
+**Mitä ajo maksaa.** Yhdeksän peliä yhdellä tasoparilla ja N=5 vei 44 sekuntia. Kolme paria
+ja N=200 on siis suuruusluokaltaan 3 × 40 × 44 s eli noin 1,5 tuntia. Kasino on muita
+raskaampi. N=400 kaksinkertaistaa sen.
+
+**Mitä on tarkistettava ennen ajoa.** Nimipooli ja viimeinen kehys on nyt korjattu, mutta
+korjaus on todennettu vain sillä että `unmapped` on nolla ja Ristiseiskan komponenttisauma
+antoi 60 % (24/40) kun puhdas sauma antaa 66,1 %. Kahdeksan muuta peliä ei ole
+ristiintarkistettavissa, koska niillä ei ole puhdasta saumaa.
+
+**Mitä ajon jälkeen on päätettävä.** `App.jsx`:n kommenttilohko 164–182 ja muutoslokin
+merkinnät kertovat pelaajalle, ettei tason vaikutus näy Ristiseiskassa, Kasinossa eikä
+Paskahousussa. Nuo väitteet nojaavat vialliseen mittaukseen. Ne on joko päivitettävä uusilla
+luvuilla tai poistettava. Se on pelaajalle näkyvää tekstiä eli Tommin päätös.

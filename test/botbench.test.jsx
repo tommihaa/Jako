@@ -148,11 +148,20 @@ async function runBotBattle(Component, betweenRound, botLevels) {
   return { result, frames };
 }
 
-/** Yhdistä rankingin nimet istuimiin ensimmäisen pelaajia sisältävän framen kautta.
- *  Edellyttää eri nimiä joka istuimelle, ks. NIMET. */
+/** Yhdistä rankingin nimet istuimiin VIIMEISEN pelaajia sisältävän framen kautta.
+ *  Edellyttää eri nimiä joka istuimelle, ks. NIMET.
+ *
+ *  Viimeinen eikä ensimmäinen, koska Kasino alustaa pelaajat joka kierroksella ja
+ *  nimet arvotaan istuimille uudelleen. Taso seuraa istuinta, joten ainoa kehys josta
+ *  nimi ja istuin vastaavat tulosta on viimeinen. Ensimmäisellä kehyksellä Kasinon
+ *  tulos jäi tulkitsematta (unmapped), ja ennen nimipoolia se tulkittiin väärin.
+ *  Löytyi 4.9.2026. */
 function seatNamesFrom(frames) {
-  const f = frames.find(fr => Array.isArray(fr.players) && fr.players.length > 0);
-  return f ? f.players.map(p => p.name) : null;
+  for (let i = frames.length - 1; i >= 0; i--) {
+    const fr = frames[i];
+    if (Array.isArray(fr.players) && fr.players.length > 0) return fr.players.map(p => p.name);
+  }
+  return null;
 }
 
 const RESULTS = [];

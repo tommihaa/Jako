@@ -777,9 +777,16 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     const g = gRef.current;
     const finalPlayers = g.players;
     const newG = initGame(nP, playerNames, allBotsRef.current, rules);
+    // Nimi ja pisteet seuraavat istuinta. `initGame` arpoo nimet joka kutsulla, joten
+    // ilman tätä vastustajat vaihtoivat nimeä kierrosten välissä, vaikka pisteet
+    // seurasivat istuinta. Löytyi 4.9.2026 Botbenchin istuinkytkentää korjatessa.
     const withScores = {
       ...newG,
-      players: newG.players.map((p, i) => ({ ...p, score: finalPlayers[i]?.score || 0 })),
+      players: newG.players.map((p, i) => ({
+        ...p,
+        name: finalPlayers[i]?.name ?? p.name,
+        score: finalPlayers[i]?.score || 0,
+      })),
     };
     commit({ ...withScores, cur: 0, phase: /** @type {Vaihe} */ ('select_table') });
     setScores(null); setSelTable([]); setSelBuilds([]); setPakaAnim(false);
