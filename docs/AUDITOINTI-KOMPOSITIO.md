@@ -439,3 +439,54 @@ Kolme vaihtoehtoa eikä kahta:
   siirtyy puhtaalle saumalle määrää varten. Hinta on että kaksi saumaa pitää saada
   sanomaan samaa, mikä vaatii oman ristiintarkistustestin. Tämä vaihtoehto ei ollut
   raportin kysymyksessä.
+
+### H5 tilan sijainti, ensimmäinen erä 3.9.2026
+
+Tommin päätös oli tehdä H5 ensin ja H4 sen sisällä. Syy oli mittaus. Yhdeksässä
+pelissä on noin 186 `addLog`-kutsua. Niistä vain 39:llä on `setGS` kymmenen rivin
+sisällä perässä. Loput asuvat apufunktioissa jotka lokittavat ja palauttavat uuden
+`g`:n kutsujalle, joten raportin kotimuoto `commit(g, msg)` ei ollut niissä
+nimenvaihto vaan funktion muodon muutos. H4 ei siis ole itsenäinen nosto vaan H5:n
+häntä. Se on sama havainto jonka kysymys 4 teki yhtä kerrosta ylempänä.
+
+**Tehty.** `shared/useGameState.js` omistaa pelitilan ja sen ajastinpeilin, ja
+`useGameLog` sai `commit(g, msg)`:n joka kirjoittaa tilan ennen lokiriviä.
+Kahdeksasta pelistä poistui käsin kirjoitettu kirjoituspari tai oma `setGS`-apuri
+(Kasino 15 kappaletta, Koputus 17, Kultakala 10, Maija 4 ja neljässä oma apuri).
+Neljä peliä kantoi vaiheen ja vuoron `G`:n ulkopuolella. Kaikissa neljässä ne ovat
+nyt `G`:ssä:
+
+| Peli | Siirtyi G:hen | Poistuneet ref-kaksoset | getAdvice-ariteetti |
+|---|---|---|---|
+| Kultakala | phase, cur, held, swapIdx, drawnFrom | phaseRef, curRef, drawnFromRef | 5 → 1 |
+| Koputus | phase, cur, drawn, knockedBy, lastRound | curRef, knockRef, lrRef | 4 → 1 |
+| Maija | phase, table, finished | phaseRef, tableRef, finRef | 3 → 1 |
+| Kasino | phase, cur | phaseRef, curRef | ei muuttunut |
+
+Neuvon vanhenemisen riippuvuuslista on kaikissa neljässä `[G]`, joten uusi ulkokehän
+useState ei voi enää pudottaa vanhenemista hiljaa. Kultakalan `aiChainSwap` ei enää
+mutatoi pelaajaoliota paikallaan. Käyttämätön `drawnFromDeck` poistui samalla. Maijassa
+pöytä ja pudonneiden lista kulkivat erillisinä parametreina neljän funktion läpi.
+Nyt ne tulevat `g`:n mukana.
+
+**Kesken.** `commit` on käytössä Kultakalassa, Koputuksessa ja Maijassa sekä osittain
+Kasinossa. Moska, Paskahousu, Ristiseiska ja Seiska kantavat vaiheen jo valmiiksi
+`G`:ssä, mutta niiden lokituskohtia ei ole siirretty commitin taakse, joten H4 on
+niissä auki. Läpsyllä ei ole `G`:tä lainkaan. Se on oma kysymyksensä. Kysymys 4:n
+ristiintarkistustesti odottaa H4:n valmistumista.
+
+**Sivulöytö, joka ei ole kompositiota.** Kasinon todennus paljasti bugin joka on ollut
+koodissa 23.5.2026 alkaen (`c1b3fab`). Kolmen toimintonapin klikkikäsittelijässä
+`const h = ..., t = G.table` varjostaa käännösfunktion `t`. Jokainen niistä kutsuu
+alempana `addLog(t('...'))`. Napit heittivät TypeErrorin juuri siinä haarassa jossa
+niiden piti kertoa pelaajalle miksi toiminto ei onnistu: Jätä oli kuollut aina kun
+pelaajalla oli kaappaus tai rakennus tarjolla, Rakenna kun rakennusmahdollisuuksia ei
+ollut ja Kaappaa kun kaappausmahdollisuuksia ei ollut. Korjattu samassa erässä.
+Havainto kuuluu tähän tiedostoon siksi, että se kertoo saumasta eikä säännöstä.
+Testit eivät klikkaa nappeja ja `G.table` on `any`, joten kumpikaan portti ei voinut
+nähdä sitä. Se on H8:n audio-havainnon sukulainen.
+
+**Mitä ei todennettu selaimessa.** Koputuksen rouva ja kuningas eivät osuneet
+kolmessatoista nostossa, joten niiden vaiheensiirtymä jäi ajamatta; muutos on sama
+kuin jätkässä, joka ajettiin. Maijan ja Kasinon pelin päättyminen jäi selaimessa
+näkemättä ja nojaa `allbots-smoke`-testiin.
