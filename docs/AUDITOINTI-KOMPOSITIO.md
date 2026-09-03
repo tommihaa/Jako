@@ -469,11 +469,11 @@ mutatoi pelaajaoliota paikallaan. Käyttämätön `drawnFromDeck` poistui samall
 pöytä ja pudonneiden lista kulkivat erillisinä parametreina neljän funktion läpi.
 Nyt ne tulevat `g`:n mukana.
 
-**Kesken.** `commit` on käytössä Kultakalassa, Koputuksessa ja Maijassa sekä osittain
-Kasinossa. Moska, Paskahousu, Ristiseiska ja Seiska kantavat vaiheen jo valmiiksi
-`G`:ssä, mutta niiden lokituskohtia ei ole siirretty commitin taakse, joten H4 on
-niissä auki. Läpsyllä ei ole `G`:tä lainkaan. Se on oma kysymyksensä. Kysymys 4:n
-ristiintarkistustesti odottaa H4:n valmistumista.
+**Kesken erän lopussa.** `commit` oli käytössä Kultakalassa, Koputuksessa ja Maijassa
+sekä osittain Kasinossa. Moska, Paskahousu, Ristiseiska ja Seiska kantoivat vaiheen jo
+valmiiksi `G`:ssä, mutta niiden lokituskohtia ei ollut siirretty commitin taakse.
+Ne neljä on nyt tehty, ks. osio alla. Läpsyllä ei ole `G`:tä lainkaan. Se on oma
+kysymyksensä. Kysymys 4:n ristiintarkistustesti odottaa H4:n valmistumista.
 
 **Sivulöytö, joka ei ole kompositiota.** Kasinon todennus paljasti bugin joka on ollut
 koodissa 23.5.2026 alkaen (`c1b3fab`). Kolmen toimintonapin klikkikäsittelijässä
@@ -490,3 +490,46 @@ nähdä sitä. Se on H8:n audio-havainnon sukulainen.
 kolmessatoista nostossa, joten niiden vaiheensiirtymä jäi ajamatta; muutos on sama
 kuin jätkässä, joka ajettiin. Maijan ja Kasinon pelin päättyminen jäi selaimessa
 näkemättä ja nojaa `allbots-smoke`-testiin.
+
+### H4 lokitus commitin taakse, neljä viimeistä peliä 3.9.2026
+
+**Tehty Moskassa, Paskahousussa, Ristiseiskassa ja Seiskassa.** Näissä neljässä `setGS`
+on kadonnut kutsupaikoista kokonaan (0 osumaa kussakin). Jäljelle jääneet `addLog`-kutsut
+ovat rivejä jotka eivät kuvaa tilamuutosta (kelpaamaton kortti, vuoroilmoitus commitin
+jälkeen) tai jotka seuraavat välittömästi omaa commitiaan.
+
+Erä paljasti saman muodon kuin H5:n mittaus. Suurin osa lokiriveistä syntyy apufunktiossa
+joka rakentaa tilaa kutsujalle eikä committoi sitä itse, joten rivi ei ollut siirrettävissä
+commitin toiseksi parametriksi. Ratkaisu on kutsujan omistama `lines`-lista: apufunktio
+kirjoittaa rivinsä sinne ja kutsuja purkaa listan vasta commitin jälkeen. Kohteet olivat
+Seiskan `applyLappu` ja `applyAcePenalty`, Moskan `doBeat`, `resolveRound` ja
+`continueToNextRound` sekä Paskahousun `applyPlay`, `applyKnock`, `applySkip` ja
+`applySwap`. Lokirivien keskinäinen järjestys säilyi kaikissa.
+
+Kolme kohtaa vaati muutakin kuin siirron. Seiskan `doPlay` päivitti poistopakan kahdessa
+haarassa erikseen niin että lyönnin lokirivi jäi väliin, joten päivitys nostettiin haarojen
+edelle yhteen kohtaan (`hadReqSuit` säilyttää seiska seiskan päälle -ehdon, koska
+`reqSuit` nollataan nostossa). Ristiseiskan `doPlay` lokitti lyönnin ennen kuin uusi käsi
+oli laskettu. Moskan botti kaataa monta korttia peräkkäin yhden commitin alla, joten
+`doBeat`in rivit kertyvät listaan.
+
+`useGameLog.commit`in toinen parametri on nyt merkitty valinnaiseksi. Se oli
+dokumentoitu valinnaiseksi kommentissa mutta pakollinen tyypissä. Ilman viestiä tehtävä
+tilanmuutos on juuri se mitä `lines`-kuvio tarvitsee.
+
+**Todennettu selaimessa.** Katselutila ajettiin kaikissa neljässä pelissä ja ihmispeli
+kolmessa. Läpi menivät Seiskan seiska seiskan päälle, ässärangaistus (rivijärjestys
+ässä ensin, nostot perässä) ja ihmisen nosto, Moskan kaato, kasan otto ja
+sivustalyöntivaiheen ohitus, Paskahousun ihmisen lyönti ja täydennys sekä Ristiseiskan
+avaus ja botin passaus. Ei konsolivirheitä. Testit 132 läpi.
+
+**Mitä ei todennettu.** Paskahousun vaihtotarjous ei osunut kohdalle kummassakaan ajossa,
+eikä yhtäkkinen kuolema. Pelin päättyminen jäi näkemättä kaikissa neljässä ja nojaa
+`allbots-smoke`-testiin. Kasinon lokituskohdat ovat yhä valtaosin commitin ulkopuolella
+(26 `addLog`, 15 `setGS`), joten H4 on siltä osin auki, samoin Maijan loppuosa
+(9 `addLog`, 1 `setGS`) ja Läpsy kokonaan.
+
+**Sivuhavainto, ei tästä erästä.** Moskan katselutilassa `TurnPrompt` näyttää rivin
+"Sinun vuorosi", koska `myTurn` katsoo istuinta 0 eikä sitä onko istuin ihmisen. Bottien
+Taistelussa istuin 0 on botti. Sama kaava on muissakin peleissä ja kuuluu H8:n lajiin.
+Ei korjattu, koska se ei ole H4:ää eikä siitä ole päätöstä.
