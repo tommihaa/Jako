@@ -14,6 +14,7 @@ import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
+import { useGameState } from '../shared/useGameState.js';
 
 // ── Moska (Durak) ─────────────────────────────────────────────
 // A=14 kaikissa taisteluvertailuissa
@@ -279,7 +280,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const cardBack = 'ilves';
-  const [G, setG] = useState(/** @type {PeliTila|null} */ (null));  const [msg, setMsg_] = useState('');
+  const { G, gRef, setG, setGS } = useGameState(/** @type {PeliTila|null} */ (null));
+  const [msg, setMsg_] = useState('');
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
   // `seeAll` on App:n omistama asetus joka ei tallennu, ja `revealAll` on tämän pelin
@@ -305,8 +307,6 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   const [advice, setAdvice]               = useState(null); // { text, cardIds, targetId } | null
 
   const removedRef = useRef(new Set()); // korttien rs-avaimet ("A♠") jotka ovat poistuneet pelistä
-
-  const gRef    = useRef(null);
   const sndRef         = useRef(soundOn);
   const aiLevelRef     = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
@@ -318,8 +318,6 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   const showNextBtnRef = useRef(showNextBtn);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
-
-  useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { showNextBtnRef.current = showNextBtn; }, [showNextBtn]);
   useEffect(() => { setAdvice(null); }, [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
@@ -358,7 +356,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
 
   // Kielioppiapuri: Hero = 2. persoona, AI = nimi + 3. persoona
 
-  const { log, logRef, addLog, resetLog } = useGameLog({
+  const { log, logRef, addLog, commit, resetLog } = useGameLog({
+    setGS,
     onMessage: setMsg_, onSnapshot,
     isBotBattle: () => allBotsRef.current,
     snapshot: () => {
@@ -371,8 +370,6 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       };
     },
   });
-
-  function setGS(g) { setG(g); gRef.current = g; }
 
   const M = {
     gameStart:      (trump, att, def) => t('games.moska.msg.gameStart', { trump, att, def }),

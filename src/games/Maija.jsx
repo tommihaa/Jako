@@ -13,6 +13,7 @@ import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
+import { useGameState } from '../shared/useGameState.js';
 
 // A=14 for combat comparisons — different from shared helpers (A=1)
 const VAL = { A:14,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13 };
@@ -274,7 +275,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const cardBack = 'ilves';
-  const [G, setG] = useState(null);
+  const { G, gRef, setG, setGS } = useGameState();
   const [phase, setPhase] = useState(/** @type {Vaihe} */ ('idle'));
   const [table, setTable] = useState([]);
   const [selectedCards, setSel] = useState([]);
@@ -293,8 +294,6 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   const [lastPlay, setLastPlay] = useState(null);
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [advice, setAdvice]               = useState(null); // { text, cardIds, targetId } | null
-
-  const gRef = useRef(null);
   const phaseRef = useRef(/** @type {Vaihe} */ ('idle'));
   const prevDeckRef = useRef(null);
   const tableRef = useRef([]);
@@ -308,8 +307,6 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   const lastPlayTmr = useRef(null);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
-
-  useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { tableRef.current = table; }, [table]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
@@ -340,7 +337,8 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     prevDeckRef.current = cur;
   }, [G?.deck?.length]);
 
-  const { log, logRef, addLog, resetLog } = useGameLog({
+  const { log, logRef, addLog, commit, resetLog } = useGameLog({
+    setGS,
     onMessage: setMsg_, onSnapshot,
     isBotBattle: () => allBotsRef.current,
     snapshot: () => {
@@ -390,7 +388,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     clearTimeout(aiTmr.current);
     const count = forcedCount ?? nP;
     const g = initGame(count, playerNames, allBotsMode);
-    setG(g); gRef.current = g;
+    setGS(g);
     setPhase('attacking'); phaseRef.current = 'attacking';
     setTable([]); tableRef.current = [];
     setSel([]); setSelDefTargetIdx(null);
@@ -464,7 +462,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   function advanceRound(g, fin, skipDefender) {
     const { newAtt, newDef } = nextAttDef(g, skipDefender, fin);
     const g4 = { ...g, attackerIdx:newAtt, defenderIdx:newDef };
-    setG(g4); gRef.current = g4;
+    setGS(g4);
     setTable([]); tableRef.current = [];
     setSel([]); setSelDefTargetIdx(null);
     setPhase('attacking'); phaseRef.current = 'attacking';
@@ -546,7 +544,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     const tbl = cards.map(c => ({ att:c, def:null }));
     let g2 = { ...g, players };
     g2 = drawHand(g2, g.attackerIdx);
-    setG(g2); gRef.current = g2;
+    setGS(g2);
     setTable(tbl); tableRef.current = tbl;
     setSel([]);
     setPhase('defending'); phaseRef.current = 'defending';
@@ -645,7 +643,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     const newTbl = table.map((r, i) => i === selDefTargetIdx ? { ...r, def: card } : r);
     const players = g.players.map((p, i) => i === 0 ? { ...p, hand: p.hand.filter(c => c.id !== card.id) } : p);
     const g2 = { ...g, players };
-    setG(g2); gRef.current = g2;
+    setGS(g2);
     setTable(newTbl); tableRef.current = newTbl;
     setSelDefTargetIdx(null);
     if (newTbl.every(r => r.def)) {

@@ -14,6 +14,7 @@ import PakkaCount from '../shared/PakkaCount.jsx';
 import { useT, tr } from '../shared/i18n.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
+import { useGameState } from '../shared/useGameState.js';
 import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
 
@@ -205,7 +206,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   const [screen, setScreen]   = useState('select');
   const [nP, setNP]           = useState(playerCount);
   const cardBack = 'ilves';
-  const [G, setG]             = useState(null);
+  const { G, gRef, setG, setGS } = useGameState();
   const [phase, setPhase]     = useState(/** @type {Vaihe} */ ('idle'));
   const [curIdx, setCur]      = useState(0);
   const [held, setHeld]       = useState(null);
@@ -224,8 +225,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   const [kohahdus, setKohahdus] = useState(null);
   const [lastPlay, setLastPlay] = useState(null);
   const [advice, setAdvice]               = useState(null); // { text, target? } | null
-
-  const gRef        = useRef(null);
   const phaseRef    = useRef(/** @type {Vaihe} */ ('idle'));
   const curRef      = useRef(0);
   const sndRef      = useRef(soundOn);
@@ -238,8 +237,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   const lastPlayTmr  = useRef(null);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
-
-  useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
@@ -265,7 +262,8 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     tm(() => setKohahdus(null), 1800);
   }
 
-  const { log, logRef, addLog, resetLog } = useGameLog({
+  const { log, logRef, addLog, commit, resetLog } = useGameLog({
+    setGS,
     onMessage: setMsg_, onSnapshot,
     isBotBattle: () => allBotsRef.current,
     snapshot: () => {
@@ -293,7 +291,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     clearTimeout(aiTmr.current);
     const count = forcedCount ?? nP;
     const g = initGame(count, playerNames, allBotsMode);
-    setG(g); gRef.current = g;
+    setGS(g);
     setCur(0); curRef.current = 0;
     setPhase('drawing'); phaseRef.current = 'drawing';
     setHeld(null); setSwapIdx(null); setRevealed(false); drawnFromRef.current = null; setFromDeck(false);
@@ -365,7 +363,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       const discard = [...g.discard]; discard.pop();
       newG = { ...g, discard }; card = top;
       addLog(M.aiDrawDiscard(p));
-      setG(newG); gRef.current = newG;
+      setGS(newG);
       if (sndRef.current) SFX.flip();
       if (decision.mode === 'swapWorst') tm(() => aiDoSwap(idx, gRef.current, card, decision.worstKnownIdx), 1000);
       else tm(() => aiChainSwap(idx, gRef.current, card, true), 1000);
@@ -373,7 +371,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       if (!g.deck.length) { advance(g, idx); return; }
       card = g.deck[0]; newG = { ...g, deck: g.deck.slice(1) };
       addLog(M.aiDrawDeck(p));
-      setG(newG); gRef.current = newG;
+      setGS(newG);
       if (sndRef.current) SFX.flip();
       tm(() => {
         // Oppipoika: ketju jatkuu vain ilmiselvän hyvällä kortilla (A-3);
@@ -389,7 +387,11 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   // syrjäytetty kortti on ilmiselvän hyvä (arvo ≤ raja) — aloittelija tekee
   // ilmeisen jatkovaihdon (paljastunut ässä!) muttei suunnittele pidemmälle.
   function aiChainSwap(idx, g2, card, mustSwap, chainLimit = null) {
-    const p2 = g2.players[idx];
+    // Kopio, ei alkuperäinen: ketju kirjoittaa riviin ja known-joukkoon askel kerrallaan,
+    // ja aiemmin se mutatoi g2:n pelaajaoliota paikallaan. Se oli ainoa immutaabelin
+    // päivityksen poikkeus koko pelissä (kompositioauditointi H5).
+    const src = g2.players[idx];
+    const p2 = { ...src, row: [...src.row], known: new Set(src.known) };
     const playerCount = g2.players.length;
     const maxSwapValue = playerCount + 1;
     let held = card;
@@ -411,13 +413,11 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     if (swaps.length > 0) {
       const players = g2.players.map((pl, i) => i === idx ? p2 : pl);
       const newG = { ...g2, players, discard: [...g2.discard, held] };
-      setG(newG);
-      gRef.current = newG;
       if (sndRef.current) SFX.swap();
 
       // Logita ketjuvaihto - näytä kaikki välivaiheet väreillä
       const swapChain = swaps.map(s => t('games.kultakala.msg.slotItem', { pos: s.pos, card: lblColored(s.card) })).join(' → ');
-      addLog(t('games.kultakala.msg.aiSwapChain', { name: g2.players[idx].name, chain: swapChain, card: lblColored(held) }));
+      commit(newG, t('games.kultakala.msg.aiSwapChain', { name: g2.players[idx].name, chain: swapChain, card: lblColored(held) }));
 
       tm(() => advance(newG, idx), 700);
     } else if (mustSwap) {
@@ -438,7 +438,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     const known = new Set(p.known); known.add(rowIdx);
     const players = g.players.map((pl, i) => i === idx ? { ...pl, row: newRow, known } : pl);
     const newG = { ...g, players, discard: [...g.discard, old] };
-    setG(newG); gRef.current = newG;
+    setGS(newG);
     if (sndRef.current) SFX.swap();
     addLog(M.aiSwapRow(g.players[idx], rowIdx, card, old));
     if (rowIdx === 0 && old.v <= 2) triggerKohahdus(old);
@@ -447,7 +447,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
 
   function aiDoDiscard(idx, g, card) {
     const newG = { ...g, discard: [...g.discard, card] };
-    setG(newG); gRef.current = newG;
+    setGS(newG);
     addLog(M.aiDiscard(g.players[idx], card));
     flashLastPlay(g.players[idx].name, card, false);
     tm(() => advance(newG, idx), 600);
@@ -472,7 +472,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       addLog(M.humanDrawDeck(card, card.v));
     }
     if (sndRef.current) SFX.flip();
-    setG(newG); gRef.current = newG;
+    setGS(newG);
     drawnFromRef.current = fromDiscard ? 'discard' : 'deck';
     setHeld(card); setSwapIdx(4); setFromDeck(!fromDiscard);
     setPhase('holding'); phaseRef.current = 'holding';
@@ -499,7 +499,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     if (nextIdx < 0) {
       // Reached leftmost — displaced card forced to discard
       const finalG = { ...g, players, discard: [...g.discard, old] };
-      setG(finalG); gRef.current = finalG;
+      setGS(finalG);
       addLog(M.humanSwappedEnd(rowIdx, held, held.v, oldName));
       if (old.v <= 2) triggerKohahdus(old);
       setHeld(null); setSwapIdx(null);
@@ -508,7 +508,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     } else {
       // Displaced card goes to KÄDESSÄ for possible continued chain
       const newG = { ...g, players };
-      setG(newG); gRef.current = newG;
+      setGS(newG);
       addLog(M.humanSwappedContinue(rowIdx, held, held.v, oldName));
       setHeld(old);
       setSwapIdx(nextIdx);
@@ -521,7 +521,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     if (drawnFromRef.current === 'discard') return;
     const g = gRef.current;
     const newG = { ...g, discard: [...g.discard, held] };
-    setG(newG); gRef.current = newG;
+    setGS(newG);
     addLog(M.humanDiscard(held));
     flashLastPlay(g.players[0].name, held, true);
     setHeld(null); setSwapIdx(null); drawnFromRef.current = null; setFromDeck(false);
@@ -533,7 +533,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     setPhase('gameover'); phaseRef.current = 'gameover';
     setRevealed(true);
     if (sndRef.current) SFX.reveal();
-    setG(g); gRef.current = g;
+    setGS(g);
     const scores = g.players.map(p => ({ ...p, total: p.unknown.v + p.row.reduce((s, c) => s + c.v, 0) }));
     const sortedSc = [...scores].sort((a, b) => a.total - b.total);
     const ranking  = sortedSc.map(p => ({

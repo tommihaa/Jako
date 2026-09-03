@@ -9,6 +9,7 @@ import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
+import { useGameState } from '../shared/useGameState.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -317,7 +318,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
   const [nP,       setNP]      = useState(playerCount);
   const [rules,    setRules]   = useStickySetting('paskahousu:rules', DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä; muistetaan
   const cardBack = 'ilves';
-  const [G,        setG]       = useState(/** @type {PeliTila|null} */ (null));
+  const { G, gRef, setG, setGS } = useGameState(/** @type {PeliTila|null} */ (null));
   const [msg,      setMsg_]    = useState('');
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   const [jpIds,    setJP]      = useState(new Set());
@@ -336,8 +337,6 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [timerLeft,    setTimerLeft]     = useState(null); // yhtäkkinen kuolema -laskuri (sekunteina)
   const [advice, setAdvice]              = useState(null); // { text, cardIds } | null
-
-  const gRef    = useRef(null);
   const swapTmr = useRef(null);
   const sndRef     = useRef(soundOn);
   const aiLevelRef = useRef(aiLevel);
@@ -356,8 +355,6 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
   const suddenDeathStarted = useRef(false);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ jitter: 300, extraIntervalRefs: [swapTmr, suddenDeathTmr] });
-
-  useEffect(() => { gRef.current = G; },         [G]);
   useEffect(() => { setAdvice(null); },          [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
 
   function askAdvice() {
@@ -395,7 +392,8 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [G?.draw?.length, G?.finished?.length, G?.phase]);
 
-  const { log, logRef, addLog, resetLog } = useGameLog({
+  const { log, logRef, addLog, commit, resetLog } = useGameLog({
+    setGS,
     onMessage: setMsg_, onSnapshot,
     isBotBattle: () => allBotsRef.current,
     snapshot: () => {
@@ -406,8 +404,6 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       };
     },
   });
-
-  function setGS(g) { setG(g); gRef.current = g; }
 
   const M = {
     gameStart:    (isH, name, lowest) => t('games.paskahousu.msg.gameStart', { name, hint: isH ? t('games.paskahousu.msg.gameStartHint') : '' }),

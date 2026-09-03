@@ -14,6 +14,7 @@ import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
+import { useGameState } from '../shared/useGameState.js';
 
 // ── Ristiseiska ─────────────────────────────────────────────────
 // Järjestys per maa: 7 → 6 → 8 → ala-pino (5,4,3,2,A) + ylä-pino (9,T,J,Q,K)
@@ -392,7 +393,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
   const [nP,       setNP]      = useState(playerCount);
   const [rules,    setRules]   = useStickySetting('ristiseiska:rules', DEFAULT_RULES); // sääntövalinta muistetaan
   const cardBack = 'ilves';
-  const [G,        setG]       = useState(/** @type {PeliTila|null} */ (null));
+  const { G, gRef, setG, setGS } = useGameState(/** @type {PeliTila|null} */ (null));
   const [msg,      setMsg_]    = useState('');
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   const [selCard,  setSel]     = useState(null);
@@ -406,8 +407,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
   const [lastPlay, setLastPlay] = useState(null);
   const [intention, setIntention]         = useState(null); // { playerIdx, cards } | null
   const [advice, setAdvice]               = useState(null); // { text, cardIds } | null
-
-  const gRef       = useRef(null);
   const lastPlayTmr = useRef(null);
   const sndRef     = useRef(soundOn);
   const aiLevelRef = useRef(aiLevel);
@@ -417,8 +416,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
-
-  useEffect(() => { gRef.current = G; },        [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { setAdvice(null); },          [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
 
@@ -433,7 +430,8 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     });
   }
 
-  const { log, logRef, addLog, resetLog } = useGameLog({
+  const { log, logRef, addLog, commit, resetLog } = useGameLog({
+    setGS,
     onMessage: setMsg_, onSnapshot,
     isBotBattle: () => allBotsRef.current,
     snapshot: () => {
@@ -450,8 +448,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     clearTimeout(lastPlayTmr.current);
     lastPlayTmr.current = tm(() => setLastPlay(null), 2200);
   }
-
-  function setGS(g) { setG(g); gRef.current = g; }
 
   const M = {
     gameStart:  (starter, card) => t('games.ristiseiska.msg.gameStart', { starter, card }),
@@ -694,7 +690,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
 
   function humanPlay() {
     if (!selCard || !G) return;
-    const g = { ...gRef.current, bonusTurn: null };
+    const g = /** @type {PeliTila} */ ({ ...gRef.current, bonusTurn: null });
     if (!isPlayable(selCard, g.rows)) {
       addLog(M.badCard);
       return;

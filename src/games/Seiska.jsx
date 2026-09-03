@@ -14,6 +14,7 @@ import PakkaCount from '../shared/PakkaCount.jsx';
 import HandoffScreen from '../shared/HandoffScreen.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
+import { useGameState } from '../shared/useGameState.js';
 import PlayerSetup, { slotsToPlayers } from '../shared/PlayerSetup.jsx';
 
 // ── Seiska ─────────────────────────────────────────────────────
@@ -282,7 +283,8 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   const [nP, setNP] = useState(playerCount);
   const [handoff,     setHandoff] = useState(null); // null | { name }
   const cardBack = 'ilves';
-  const [G,           setG]       = useState(/** @type {PeliTila|null} */ (null));  const [msg,         setMsg_]    = useState('');
+  const { G, gRef, setG, setGS } = useGameState(/** @type {PeliTila|null} */ (null));
+  const [msg,         setMsg_]    = useState('');
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   const [selected,    setSel]     = useState([]);
   // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
@@ -299,8 +301,6 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   const [intention, setIntention] = useState(null); // { playerIdx, cards } | null
   const [pendingResult, setPendingResult] = useState(null); // { ranking } — odottaa käyttäjän "Tulokset →" -klikkiä
   const [advice, setAdvice] = useState(null); // { text, cardIds } | null
-
-  const gRef   = useRef(null);
   const sndRef = useRef(soundOn);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
@@ -334,8 +334,6 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     tmrs.current.add(id);
     return id;
   };
-
-  useEffect(() => { gRef.current = G; },        [G]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { setAdvice(null); },          [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
 
@@ -384,7 +382,8 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     return () => clearInterval(iv);
   }, [G?.pendingLappu]);
 
-  const { log, logRef, addLog, resetLog } = useGameLog({
+  const { log, logRef, addLog, commit, resetLog } = useGameLog({
+    setGS,
     onMessage: setMsg_, onSnapshot,
     isBotBattle: () => !!gRef.current?.players.every(p => !p.isHuman),
     snapshot: () => {
@@ -395,8 +394,6 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       };
     },
   });
-
-  function setGS(g) { setG(g); gRef.current = g; }
 
 
   function changeDelay(delta) {
@@ -885,7 +882,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     const idx = g.activePlayer;
     setSel([]);
     // Rangaistus jo jaettu ässän lyöntihetkellä — tässä vain suljetaan bonusvuoro.
-    const g2 = { ...g, aceBonus: null };
+    const g2 = /** @type {PeliTila} */ ({ ...g, aceBonus: null });
     const newHand = g2.players[idx].hand;
     if (newHand.length === 1 && !g2.lappuSaid.has(idx)) {
       setGS({ ...g2, pendingLappu: idx });
@@ -902,7 +899,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     addLog(M.suitSelected(suit));
     const newHand = g.players[idx].hand;
     if (newHand.length === 1 && !g.lappuSaid.has(idx)) {
-      const g2 = { ...g, reqSuit: suit, phase: 'play', pendingLappu: idx };
+      const g2 = /** @type {PeliTila} */ ({ ...g, reqSuit: suit, phase: 'play', pendingLappu: idx });
       setGS(g2);
       tm(() => advanceTurn(gRef.current, idx), 4000);
     } else {

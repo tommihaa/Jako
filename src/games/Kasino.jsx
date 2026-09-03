@@ -9,6 +9,7 @@ import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
+import { useGameState } from '../shared/useGameState.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
 import GameLog from '../shared/GameLog.jsx';
@@ -451,7 +452,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   const [rules, setRules] = useStickySetting('kasino:rules', KASINO_DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä; muistetaan
   const buildCap = rules.specialBuilds ? 16 : 13; // rakennelman max-arvo (13=K, 16=♦10 erikoissäännöllä)
   const cardBack = 'ilves';
-  const [G, setG] = useState(null);
+  const { G, gRef, setG, setGS } = useGameState();
   const [curIdx, setCur] = useState(0);
   const [phase, setPhase] = useState(/** @type {Vaihe} */ ('idle'));  const [selTable, setSelTable] = useState([]);
   const [selBuilds, setSelBuilds] = useState([]); // selected build IDs for capture
@@ -485,8 +486,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   }, [showOptions]);
   const [helpTerm, setHelpTerm] = useState(null); // 'kaappaus' | 'rakennus'
   const [advice, setAdvice] = useState(null); // { text, handCardId, tableCardIds, buildId } | null
-
-  const gRef    = useRef(null);
   const phaseRef = useRef(/** @type {Vaihe} */ ('idle'));
   const prevDeckRef = useRef(null);
   const curRef  = useRef(0);
@@ -502,8 +501,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   const lastPlayTmr = useRef(null);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
-
-  useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { curRef.current = curIdx; }, [curIdx]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
@@ -556,7 +553,8 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     return () => clearTimeout(tid);
   }, [scores]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const { log, logRef, addLog, resetLog } = useGameLog({
+  const { log, logRef, addLog, commit, resetLog } = useGameLog({
+    setGS,
     onMessage: setMsg_, onSnapshot,
     isBotBattle: () => allBotsRef.current,
     snapshot: () => {
@@ -583,7 +581,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     pausedRef.current = false; setPaused(false);
     const cnt = forcedCount || nP;
     const g = initGame(cnt, playerNames, allBotsMode, rules);
-    setG(g); gRef.current = g;
+    setGS(g);
     setCur(0); curRef.current = 0;
     setPhase('select_table'); phaseRef.current = 'select_table';
     setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false); setScores(null); setPakaAnim(false);
@@ -683,9 +681,9 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       setCur(0); curRef.current = 0;
       setPhase('idle'); phaseRef.current = 'idle';
       setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false);
-      setG(g2); gRef.current = g2;
+      setGS(g2);
       const g3 = doLeave(g2, 0, p.hand[0]);
-      setG(g3); gRef.current = g3;
+      setGS(g3);
       addLog(M.forcedLeave);
       aiTmr.current = tm(() => advance(g3, 0), 1200);
       return;
@@ -694,7 +692,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     setCur(next); curRef.current = next;
     setPhase('select_table'); phaseRef.current = 'select_table';
     setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false);
-    setG(g2); gRef.current = g2;
+    setGS(g2);
     if (p.isHuman) {
       const hint = getTurnHint(p.hand, g2.table, g2.builds);
       addLog(M.yourTurn(korttia(p.hand.length), hint));
@@ -768,7 +766,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     }
     const finalPlayers = g2.players.map((p, i) => ({ ...p, score: newScores[i].totalScore }));
     const g3 = { ...g2, players: finalPlayers };
-    setG(g3); gRef.current = g3;
+    setGS(g3);
     setScores(newScores);
     if (sndRef.current) SFX.score();
     addLog(M.endRound);
@@ -782,7 +780,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       ...newG,
       players: newG.players.map((p, i) => ({ ...p, score: finalPlayers[i]?.score || 0 })),
     };
-    setG(withScores); gRef.current = withScores;
+    setGS(withScores);
     setScores(null); setSelTable([]); setSelBuilds([]); setPakaAnim(false);
     setCur(0); curRef.current = 0;
     setPhase('select_table'); phaseRef.current = 'select_table';
@@ -956,7 +954,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       setPhase('idle'); phaseRef.current = 'idle';
       aiTmr.current = tm(() => {
         const g2 = doBuildCapture(gRef.current, 0, card, snapshotBuilds, snapshotTable);
-        setG(g2); gRef.current = g2;
+        setGS(g2);
         setPendingCapture({ g2, fromIdx: 0 });
       }, 1200);
       return;
@@ -968,7 +966,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       const buildVal = getBuildValue(card, selTable, g.players[0].hand);
       if (buildVal !== null) {
         const g2 = doBuild(g, 0, card, selTable, buildVal);
-        setG(g2); gRef.current = g2;
+        setGS(g2);
         setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false);
         setPhase('idle'); phaseRef.current = 'idle';
         tm(() => advance(g2, 0), 600);
@@ -986,7 +984,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       // leaveMode: jätä kortti pöytään
       phaseRef.current = 'idle'; setPhase('idle');
       const g2 = doLeave(g, 0, card);
-      setG(g2); gRef.current = g2;
+      setGS(g2);
       setSelTable([]); setSelBuilds([]); setLeaveMode(false);
       tm(() => advance(g2, 0), 600);
       return;
@@ -1000,7 +998,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       setPhase('idle'); phaseRef.current = 'idle';
       aiTmr.current = tm(() => {
         const g2 = doCapture(gRef.current, 0, card, captured);
-        setG(g2); gRef.current = g2;
+        setGS(g2);
         setPendingCapture({ g2, fromIdx: 0 });
       }, 1200);
       return;
@@ -1064,7 +1062,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
           aiTmr.current = tm(() => {
             const g2 = gRef.current;
             const g3 = doBuildCapture(g2, playerIdx, capturer, [build], bonus, true);
-            setG(g3); gRef.current = g3;
+            setGS(g3);
             setPendingCapture({ g2: g3, fromIdx: playerIdx });
           }, aDel);
           return;
@@ -1090,7 +1088,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
           aiTmr.current = tm(() => {
             const g2 = gRef.current;
             const g3 = doBuildCapture(g2, playerIdx, capturer, [build], bonus, true);
-            setG(g3); gRef.current = g3;
+            setGS(g3);
             setPendingCapture({ g2: g3, fromIdx: playerIdx });
           }, aDel);
           return;
@@ -1126,7 +1124,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
             const g2 = gRef.current;
             setAiSel({ handCard: null, tableCards: [] });
             const g3 = doBuild(g2, playerIdx, buildResult.handCard, buildResult.tableCards, buildResult.value);
-            setG(g3); gRef.current = g3;
+            setGS(g3);
             tm(() => advance(g3, playerIdx), 400);
           }, qDel + Math.random() * 200);
           return;
@@ -1146,7 +1144,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       aiTmr.current = tm(() => {
         const g2 = gRef.current;
         const g3 = doCapture(g2, playerIdx, captureToUse.handCard, captureToUse.tableCards, true);
-        setG(g3); gRef.current = g3;
+        setGS(g3);
         setPendingCapture({ g2: g3, fromIdx: playerIdx });
       }, aDel);
       return;
@@ -1181,7 +1179,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     aiTmr.current = tm(() => {
       const g2 = gRef.current;
       const g3 = doLeave(g2, playerIdx, toLeave);
-      setG(g3); gRef.current = g3;
+      setGS(g3);
       tm(() => advance(g3, playerIdx), 400);
     }, qDel + Math.random() * 200);
   }

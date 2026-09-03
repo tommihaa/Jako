@@ -14,6 +14,7 @@ import PakkaCount from '../shared/PakkaCount.jsx';
 import { useT, tr } from '../shared/i18n.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
+import { useGameState } from '../shared/useGameState.js';
 import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
 const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
@@ -217,7 +218,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   const t = useT();
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(playerCount);
-  const [G, setG]               = useState(null);
+  const { G, gRef, setG, setGS } = useGameState();
   const [phase, setPhase]       = useState(/** @type {Vaihe} */ ('idle'));
   const [curIdx, setCurIdx]     = useState(0);
   const [drawn, setDrawn]       = useState(null);
@@ -242,8 +243,6 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   const [shuffling, setShuffling] = useState(false);
   const [intention, setIntention] = useState(null); // { playerIdx, slotIdx } | null
   const [advice, setAdvice] = useState(null); // { text, slot?, target? } | null
-
-  const gRef       = useRef(null);
   const knockRef   = useRef(null);
   const prevDeckRef = useRef(null);
   const lrRef    = useRef(null);
@@ -260,7 +259,8 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraIntervalRefs: [reactInt] });
 
-  const { log, logRef, addLog: setMsg, resetLog } = useGameLog({
+  const { log, logRef, addLog: setMsg, commit, resetLog } = useGameLog({
+    setGS,
     onMessage: setMsg_, skipEmpty: true, onSnapshot,
     isBotBattle: () => allBotsRef.current,
     snapshot: () => {
@@ -271,8 +271,6 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       };
     },
   });
-
-  useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { setAdvice(null); }, [G, phase, drawn]); // neuvo vanhenee tilamuutoksista
   useEffect(() => { knockRef.current = knockedBy; }, [knockedBy]);
 
@@ -305,7 +303,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     pausedRef.current = false; setPaused(false);
     const cnt = forcedCount || nP;
     const g = initGame(cnt, playerNames, allBotsMode);
-    setG(g); gRef.current = g;
+    setGS(g);
     setDrawn(null); setKB(null); knockRef.current = null;
     setLR(null); lrRef.current = null; setSS(null); setRO(false);
     resetLog(); setPakaAnim(false);
@@ -338,7 +336,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     setPD(next);
     setTP(prev => new Set([...prev, idx]));
     const newG = { ...gRef.current, players: gRef.current.players.map((p, i) => i === 0 ? { ...p, known: new Set([...p.known, idx]) } : p) };
-    setG(newG); gRef.current = newG;
+    setGS(newG);
     tm(() => setTP(prev => { const n = new Set(prev); n.delete(idx); return n; }), 2500);
     if (next === 1) setMsg(M.peekOne);
     else {
@@ -389,14 +387,14 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     const g = gRef.current; if (!g || !g.deck.length) return;
     if (soundOn) SFX.flip();
     const deck = [...g.deck], card = deck.shift();
-    const newG = { ...g, deck }; setG(newG); gRef.current = newG;
+    const newG = { ...g, deck }; setGS(newG);
     setDrawn(card); setPhase('drawn'); setMsg(M.drawn(card));
   }
   function humanDrawDiscard() {
     const g = gRef.current; if (!g || !g.discard.length) return;
     if (soundOn) SFX.flip();
     const discard = [...g.discard], card = discard.pop();
-    const newG = { ...g, discard }; setG(newG); gRef.current = newG;
+    const newG = { ...g, discard }; setGS(newG);
     setDrawn(card); setPhase('drawn'); setMsg(M.drawnD(card));
   }
   function humanKnock() {
@@ -423,7 +421,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       return { ...p, cards, known: new Set([...p.known, cardIdx]) };
     });
     const newG = { ...g, players, discard: [...g.discard, oldCard] };
-    setG(newG); gRef.current = newG;
+    setGS(newG);
     setMsg(M.swapped(oldCard));
     stopReact.current = false;
     tm(() => openReaction(newG, oldCard, 0), 600);
@@ -432,7 +430,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     const g = gRef.current;
     if (soundOn) SFX.play();
     const newG = { ...g, discard: [...g.discard, drawn] };
-    setG(newG); gRef.current = newG; setMsg(M.discarded(drawn));
+    setGS(newG); setMsg(M.discarded(drawn));
     if (drawn.r === 'J') { setPhase('spec_j'); setMsg(M.jackMsg); return; }
     if (drawn.r === 'Q') { setPhase('spec_q_own'); setMsg(M.queenMsg); setSS({ type: 'Q', ownIdx: null }); return; }
     if (drawn.r === 'K') { setPhase('spec_k'); setMsg(M.kingMsg); setSS({ type: 'K', ownIdx: null }); return; }
@@ -443,7 +441,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     const g = gRef.current, card = g.players[0].cards[idx];
     setTP(new Set([idx])); tm(() => setTP(new Set()), 2500);
     const players = g.players.map((p, i) => i === 0 ? { ...p, known: new Set([...p.known, idx]) } : p);
-    const newG = { ...g, players }; setG(newG); gRef.current = newG;
+    const newG = { ...g, players }; setGS(newG);
     setMsg(t('games.koputus.msg.peekedCard', { card: lbl(card), v: card.v }));
     tm(() => openReaction(newG, drawn, 0), 2800);
   }
@@ -460,7 +458,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       if (i === pIdx) { const c = [...p.cards]; c[cIdx] = oc; return { ...p, cards: c }; }
       return p;
     });
-    const newG = { ...g, players }; setG(newG); gRef.current = newG; setSS(null);
+    const newG = { ...g, players }; setGS(newG); setSS(null);
     setMsg(t('games.koputus.msg.swapDoneHidden'));
     stopReact.current = false;
     tm(() => openReaction(newG, drawn, 0), 800);
@@ -470,7 +468,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     const g = gRef.current, card = g.players[0].cards[idx];
     setTP(new Set([idx]));
     const players = g.players.map((p, i) => i === 0 ? { ...p, known: new Set([...p.known, idx]) } : p);
-    const newG = { ...g, players }; setG(newG); gRef.current = newG;
+    const newG = { ...g, players }; setGS(newG);
     setMsg(t('games.koputus.msg.kingPeeked', { card: lbl(card), v: card.v }));
     setSS({ type: 'K', ownIdx: idx }); setPhase('spec_k_decide');
   }
@@ -490,7 +488,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       if (i === realPIdx) { const c = [...p.cards]; c[realCIdx] = oc; return { ...p, cards: c }; }
       return p;
     });
-    const newG = { ...g, players }; setG(newG); gRef.current = newG;
+    const newG = { ...g, players }; setGS(newG);
     setTP(new Set()); setSS(null); stopReact.current = false;
     setMsg(t('games.koputus.msg.swapDone'));
     tm(() => openReaction(newG, drawn, 0), 1200);
@@ -539,7 +537,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
             return { ...pl, cards, known: kn };
           });
           const newG = { ...cur, players, discard: reactedCard ? [...cur.discard, reactedCard] : cur.discard };
-          setG(newG); gRef.current = newG;
+          setGS(newG);
           tm(() => advance(newG, byIdx), 900);
         }, delay);
       } else if (Math.random() < wrongReactChance) {
@@ -565,7 +563,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
               return { ...pl, cards, known: kn };
             });
             const newG = { ...cur, players, discard: [...cur.discard, wrongCard] };
-            setG(newG); gRef.current = newG;
+            setGS(newG);
             tm(() => advance(newG, byIdx), 900);
           } else {
             // Väärä arvaus — rangaistus
@@ -581,7 +579,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
               return { ...pl, cards: withPenalty, known: kn };
             });
             const newG = { ...cur, players, deck: remainingDeck, discard: [...cur.discard, wrongCard] };
-            setG(newG); gRef.current = newG;
+            setGS(newG);
             tm(() => advance(newG, byIdx), 1200);
           }
         }, delay);
@@ -605,7 +603,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
         return { ...p, cards, known: kn };
       });
       const newG = { ...g, players, discard: reactedCard ? [...g.discard, reactedCard] : g.discard };
-      setG(newG); gRef.current = newG;
+      setGS(newG);
       if (isLastCard) {
         if (soundOn) SFX.lastCardWin();
         setMsg(t('games.koputus.msg.lastCardPlayed'));
@@ -626,7 +624,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       const newKn = new Set([...g.players[0].known].filter(k => k !== cardIdx));
       const players = g.players.map((p, i) => i === 0 ? { ...p, cards: withPenalty, known: newKn } : p);
       const newG = { ...g, players, deck: remainingDeck, discard: [...g.discard, lostCard] };
-      setG(newG); gRef.current = newG;
+      setGS(newG);
       tm(() => advance(newG, curRef.current), 2200);
     }
   }
@@ -679,7 +677,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
             return { ...pl, cards, known: new Set([...pl.known, target]) };
           });
           const updG = { ...gNow, players, deck, discard: [...discard, old] };
-          setG(updG); gRef.current = updG; setMsg(M.aiSwapped(p.name, old));
+          setGS(updG); setMsg(M.aiSwapped(p.name, old));
           if (sndRef.current) SFX.swap();
           flashSlot(playerIdx, target);
           tm(() => openReaction(updG, old, playerIdx), reactMs);
@@ -693,7 +691,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
         doSwap();
       } else {
         const updG = { ...gNow, deck, discard: [...discard, card] };
-        setG(updG); gRef.current = updG; setMsg(M.aiDiscard(p.name, card));
+        setGS(updG); setMsg(M.aiDiscard(p.name, card));
         if (sndRef.current) SFX.play();
         tm(() => openReaction(updG, card, playerIdx), reactMs);
       }
