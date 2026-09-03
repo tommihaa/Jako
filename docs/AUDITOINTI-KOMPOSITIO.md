@@ -691,3 +691,60 @@ eikä keskiarvo. Kasino (1794 riviä, 23 ajastinta) ja Koputus (919 riviä, 29 a
 eri kokoluokkaa. Botbench ei siirry puhtaalle saumalle ennen kuin peleillä on moottori, koska
 mittari ajaa kaikki yhdeksän samalla koneistolla. Päätös siitä tehdäänkö loput kahdeksan on
 auki. Se on nyt hinnoiteltu eikä arvattu.
+
+### Sivulöytö: Botbench luki istuimen nimestä ja nimiä oli kolme neljälle 4.9.2026
+
+Löytyi kun panttisäännön vaikutusta mitattiin puhtaalla saumalla. Havainto ei ole
+kompositiota vaan sauma, samaa lajia kuin Kasinon varjostusbugi ja H8:n audiotaulu.
+
+`AI_NAMES` on kolmen nimen varalista (`Fortuna`, `Loki`, `Tyche`) niitä tapauksia varten
+joissa App ei anna nimiryhmää. `initGame` antaa katselutilassa istuimelle 0 listan
+**viimeisen** nimen ja istuimille 1..n-1 nimet alusta, joten neljän pelaajan pelissä
+istuimet 0 ja 3 saavat saman nimen. Todennettu ajamalla: `Fortuna, Tyche, Loki, Fortuna`.
+Sama kaava on kuudessa pelissä.
+
+Botbench ei anna `playerNames`-poolia. Se yhdistää tuloksen istuimeen nimellä
+(`seatNames.indexOf(entryName)`). `indexOf` palauttaa ensimmäisen osuman, joten istuimen 3
+voitto kirjautui istuimen 0 tasolle. Istuinjärjestys on ABAB eli istuimilla 0 ja 3 on aina
+eri taso. Vika kääntää tason juuri niissä peleissä joissa se osuu. Vaikutus vetää
+mitattua voitto-osuutta kohti 50 prosenttia. Mittari ei huomannut mitään, koska nimi löytyi
+ja `unmapped` pysyi nollassa.
+
+**Korjattu** antamalla Botbenchille viiden erillisen nimen pooli. Korjaus on testissä eikä
+`AI_NAMES`issa, koska neljäs varanimi on makuvalinta eikä tämän työn päätös. Oikea pelaaminen
+ei ollut vialle altis, koska App välittää aina nimiryhmän ja pieninkin ryhmä on viisi nimeä.
+
+**Seuraus joka ei ole korjattu.** `App.jsx` kirjaa Ristiseiskan mittauksen 21.7.2026
+(53,3 % / 49,0 % / 51,3 %, N=400) ja muutosloki kertoo pelaajalle, että tason vaikutus jää
+tässä pelissä pieneksi. Se mittaus ajettiin vialliselle kytkennälle. Puhdas sauma antaa
+samalla säännöllä 66,1 % / 59,9 % / 56,9 % (N=2000 paria kohti, 95 %:n väli ±2,2), ja
+korjattu Botbench antoi komponenttisaumalla 60 % (24/40). Nimivika ei välttämättä selitä
+koko eroa, koska bottilogiikkaa muutettiin 18.8.2026 ja vanha N oli 400. Riittää silti että
+väitettä ei voi lukea sellaisenaan. Pelaajalle näkyvä teksti on Tommin päätös. Se odottaa
+uutta ajoa.
+
+### Panttisäännön mitattu vaikutus 4.9.2026
+
+Mittaus tehtiin siksi, että Tommi kysyi mitä eroa valitulla ja satunnaisella panttikortilla
+on. Se kuuluu tähän tiedostoon siksi, että se on ensimmäinen asia jonka puhdas sauma teki
+mahdolliseksi: 12 000 peliä ajoi alle sekunnissa, eikä sitä olisi tehty komponenttisaumalla.
+
+| Sääntö | Mestari vs Oppipoika | Mestari vs Kisälli | Kisälli vs Oppipoika |
+|---|---|---|---|
+| Valittu (vakio) | 66,1 % | 59,9 % | 56,9 % |
+| Satunnainen | 54,1 % | 53,1 % | 48,6 % |
+
+N=2000 paria kohti, istuinjärjestys ABAB, 95 %:n väli ±2,2 prosenttiyksikköä. Voittaja
+luetaan istuinindeksistä (`g.finished[0]`) eikä nimestä, ks. sivulöytö yllä.
+
+Valittu pantti on siis se paikka jossa pelin taito asuu. Passaaminen on ainoa kohta jossa
+pelaaja valitsee toisen kädestä. Valittavana on koko käsi, kun lyönnissä vaihtoehtoja on
+tyypillisesti yksi tai kaksi. Satunnaisasennossa katoaa `RISTISEISKA.md`:n kirjaaman
+porttipihtauksen jälkimmäinen puoli: lukko pakottaa vastustajan passaamaan, mutta lukitsija
+ei enää saa annettua pois juuri sitä korttia josta ei muuten pääsisi eroon. Passausten määrä
+ei juuri muutu (7,6 vastaan 8,2 peliä kohti), joten kyse ei ole tapahtumien määrästä vaan
+niiden merkityksestä.
+
+Tästä seuraa kaksi asiaa joita ei ole päätetty. Satunnaisasento on tasoitussääntö eikä pelkkä
+makuvaihtoehto, eikä aloitusnäytön ohjeteksti kerro sitä. Satunnaisasento myös poistaa
+ihmiseltä päätöksen kokonaan, koska vuoro ei enää pysähdy kortin valintaan.

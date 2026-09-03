@@ -35,6 +35,14 @@ import Kasino from '../src/games/Kasino.jsx';
 
 const MINIMAL_GAME = { id: 'kasino', minPlayers: 2 };
 
+// Nimipooli annetaan, koska istuin luetaan tuloksesta nimen kautta. Oletuslista
+// `AI_NAMES` on kolme nimeä pitkä, ja neljän pelaajan pelissä istuimet 0 ja 3 saavat
+// silloin saman nimen (initGame antaa istuimelle 0 listan viimeisen nimen). `indexOf`
+// osui tällöin aina istuimeen 0, eli istuimen 3 voitto kirjautui väärälle tasolle.
+// Löytyi 4.9.2026 kysymyksen 4 kokeen mittauksissa. Nimien on oltava eri, ja niitä
+// tarvitaan vähintään pelaajamäärän verran.
+const NIMET = ['Alfa', 'Beeta', 'Gamma', 'Delta', 'Epsilon'];
+
 // [nimi, komponentti, kierrosten välinen nappi (vain Kasino, ks. smoke-testi)]
 // Tupletyyppi merkitään, koska ilman sitä alkioiden tyypiksi tulee unioni
 // (string | komponentti | RegExp | null) ja purettu name ei kelpaa merkkijonoksi.
@@ -110,6 +118,7 @@ async function runBotBattle(Component, betweenRound, botLevels) {
     showIntention: false,
     isMobile: false,
     playerCount: botLevels.length,
+    playerNames: NIMET,
     aiLevel: 'normal',
     botLevels,
     onAiLevelChange: () => {},
@@ -139,7 +148,8 @@ async function runBotBattle(Component, betweenRound, botLevels) {
   return { result, frames };
 }
 
-/** Yhdistä rankingin nimet istuimiin ensimmäisen pelaajia sisältävän framen kautta. */
+/** Yhdistä rankingin nimet istuimiin ensimmäisen pelaajia sisältävän framen kautta.
+ *  Edellyttää eri nimiä joka istuimelle, ks. NIMET. */
 function seatNamesFrom(frames) {
   const f = frames.find(fr => Array.isArray(fr.players) && fr.players.length > 0);
   return f ? f.players.map(p => p.name) : null;
