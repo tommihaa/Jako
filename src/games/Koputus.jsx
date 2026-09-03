@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
-import GroupPicker from '../shared/GroupPicker.jsx';
+import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, shuffle, newDeck, shuffledAINames, lblColored, LOG_MAX, BOT_RESULT_DELAY } from '../shared/helpers.js';
+import { lbl, newDeck, shuffledAINames, lblColored, BOT_RESULT_DELAY } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -702,35 +702,21 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
 
   if (screen === 'select') return (
-    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28, paddingTop: isMobile ? 24 : 32, fontFamily: 'Georgia,serif' }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 48, marginBottom: 8 }}>🤜</div>
-        <h1 style={{ fontSize: isMobile ? 36 : 54, letterSpacing: isMobile ? 8 : 14, margin: 0, background: 'linear-gradient(135deg,#e8c96a,#c9a84c,#a07830)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>KOPUTUS</h1>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8 }}>
-          <span style={{ color: SUIT_COLOR['♠'] }}>♠</span>
-          <span style={{ color: SUIT_COLOR['♥'] }}>♥</span>
-          <span style={{ color: SUIT_COLOR['♦'] }}>♦</span>
-          <span style={{ color: SUIT_COLOR['♣'] }}>♣</span>
-        </div>
-      </div>
-      <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>{t('ui.start.players')}</p>
-        <div style={{ display: 'flex', gap: 10 }}>
-          {[2, 3, 4].map(n => (
-            <button key={n} onClick={() => setNP(n)} style={{ width: 52, height: 52, borderRadius: 10, cursor: 'pointer', fontSize: 19, fontWeight: 700, fontFamily: 'Georgia,serif', transition: 'all 0.2s', border: `2px solid ${nP === n ? C.gold : '#2a4a32'}`, background: nP === n ? C.gold + '18' : 'transparent', color: nP === n ? C.gold : C.dim }}>{n}</button>
-          ))}
-        </div>
-      </div>
-      <GroupPicker value={playerGroup} onChange={onPlayerGroupChange} />
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-        <button onClick={() => startGame()} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>{t('ui.start.beginGame')}</button>
-        <button onClick={startBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          {t('ui.start.botBattle')}
-          <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{t('ui.start.botBattleSub', { n: nP, level: t('ui.settings.ai.' + aiLevel + '.label') })}</span>
-        </button>
-      </div>
-      <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}`}</style>
-    </div>
+    <GameStartScreen
+      icon={'🤜'}
+      title="KOPUTUS"
+      titleSize={isMobile ? 36 : 54}
+      letterSpacing={isMobile ? 8 : 14}
+      counts={[2, 3, 4]}
+      value={nP}
+      onCountChange={setNP}
+      playerGroup={playerGroup}
+      onPlayerGroupChange={onPlayerGroupChange}
+      onStart={() => startGame()}
+      onBotBattle={startBotBattle}
+      botBattleSub={t('ui.start.botBattleSub', { n: nP, level: t('ui.settings.ai.' + aiLevel + '.label') })}
+      isMobile={isMobile}
+    />
   );
 
   if (!G) return null;

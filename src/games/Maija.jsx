@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
-import GroupPicker from '../shared/GroupPicker.jsx';
+import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
-import { SUITS, RANKS, isRed, lbl, korttia, kortin, shuffle, cardName, sortHand as sortHandBy, shuffledAINames, lblColored, LOG_MAX, BOT_RESULT_DELAY } from '../shared/helpers.js';
+import { SUITS, RANKS, lbl, korttia, kortin, shuffle, cardName, sortHand as sortHandBy, shuffledAINames, lblColored, BOT_RESULT_DELAY } from '../shared/helpers.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -663,34 +663,19 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
 
   if (screen === 'select') return (
-    <div style={{ background:C.bg, minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', gap:28, paddingTop:isMobile ? 24 : 32, fontFamily:'Georgia,serif' }}>
-      <div style={{ textAlign:'center' }}>
-        <div style={{ marginBottom:8 }}><QCard s={2} /></div>
-        <h1 style={{ fontSize:52, letterSpacing:12, margin:0, background:`linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>MAIJA</h1>
-        <div style={{ display:'flex', gap:10, justifyContent:'center', fontSize:16, marginTop:8 }}>
-          <span style={{ color:SUIT_COLOR['♠'] }}>♠</span>
-          <span style={{ color:SUIT_COLOR['♥'] }}>♥</span>
-          <span style={{ color:SUIT_COLOR['♦'] }}>♦</span>
-          <span style={{ color:SUIT_COLOR['♣'] }}>♣</span>
-        </div>
-      </div>
-      <div style={{ display:'flex', gap:16, alignItems:'center' }}>
-        <p style={{ color:C.dim, fontFamily:'sans-serif', fontSize:11, margin:0, letterSpacing:2 }}>{t('ui.start.players')}</p>
-        <div style={{ display:'flex', gap:10 }}>
-          {[2,3,4].map(n => (
-            <button key={n} onClick={() => setNP(n)} style={{ width:54, height:54, borderRadius:10, cursor:'pointer', fontSize:20, fontWeight:700, fontFamily:'Georgia,serif', border:`2px solid ${nP===n ? C.gold : '#2a4a32'}`, background:nP===n ? C.gold+'18' : 'transparent', color:nP===n ? C.gold : C.dim, transition:'all 0.2s' }}>{n}</button>
-          ))}
-        </div>
-      </div>
-      <GroupPicker value={playerGroup} onChange={onPlayerGroupChange} />
-      <div style={{ display:'flex', flexDirection:'column', gap:12, alignItems:'center' }}>
-        <button onClick={() => startGame()} style={{ background:`linear-gradient(135deg,${C.gold},#a07830)`, border:'none', borderRadius:14, padding:'14px 44px', color:'#0d2118', fontSize:16, fontWeight:700, cursor:'pointer', fontFamily:'Georgia,serif', letterSpacing:2 }}>{t('ui.start.begin')}</button>
-        <button onClick={startBotBattle} style={{ background:'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border:'none', borderRadius:14, padding:'10px 32px', color:'#f0e6ff', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'Georgia,serif', display:'flex', flexDirection:'column', alignItems:'center', gap:2 }}>
-          {t('ui.start.botBattle')}
-          <span style={{ fontSize:11, fontWeight:400, opacity:0.8 }}>{t('ui.start.botBattleSub', { n: nP, level: t('ui.settings.ai.' + aiLevel + '.label') })}</span>
-        </button>
-      </div>
-    </div>
+    <GameStartScreen
+      icon={<QCard s={2} />}
+      title="MAIJA"
+      counts={[2, 3, 4]}
+      value={nP}
+      onCountChange={setNP}
+      playerGroup={playerGroup}
+      onPlayerGroupChange={onPlayerGroupChange}
+      onStart={() => startGame()}
+      onBotBattle={startBotBattle}
+      botBattleSub={t('ui.start.botBattleSub', { n: nP, level: t('ui.settings.ai.' + aiLevel + '.label') })}
+      isMobile={isMobile}
+    />
   );
 
   // ── Peli päättyi ────────────────────────────────────────────────
