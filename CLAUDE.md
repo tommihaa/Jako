@@ -3,6 +3,14 @@
 ## Project
 Mobile-responsive card game app (React/JSX + Vite). Dark green (#1f5a3f) + gold (#c9a84c) aesthetic.
 Structure: `src/App.jsx` (entry), `src/games/*.jsx` (9 games), `src/shared/` (Card, FanStack, colors, helpers, audio, glossary).
+
+**Pelin elinkaaren runko asuu `shared/`:ssä (3.9.2026, kompositioauditointi H1).** Ennen se
+oli yhdeksänä kopiona. Uutta peliä lisätessä nämä otetaan käyttöön eikä kirjoiteta uusiksi:
+`useAIScheduler` (ajastimet, tauko, katselutilan aloitus), `useGameLog` (loki, aikaleima ja
+katselutilan snapshot), `GameStartScreen` (aloitusnäyttö), `GameStatusBar` (tilarivi) ja
+`GameLog` (lokipaneeli). Vakiot `BOT_RESULT_DELAY` ja `LOG_MAX` sekä `AI_NAMES`,
+`shuffledAINames` ja `lblColored` ovat `helpers.js`:ssä. `lastPlayFade` ja `button:active`
+ovat `index.html`:n globaalissa tyylissä.
 Sanasto-termit + `splitWithGlossary` ovat `src/shared/glossary.js`:ssä (Lahja-kokoelman jaettu termiskeema, speksi `Kaanon/TERMIMODUULI.md`; sisarkopio Itussa). MERKISTO on yhä App.jsx:ssä.
 Reference docs: `jako_projekti.md` (general), pelikohtaiset säännöt: `KOPUTUS.md`, `LAEPSY.md`, `KULTAKALA.md`, `MAIJA.md`, `KASINO.md`, `MOSKA.md`, `SEISKA.md`, `RISTISEISKA.md`, `PASKAHOUSU.md`. Dev server: `http://localhost:5173/`.
 Repo: `https://github.com/tommihaa/Korttipeli-kokoelma`

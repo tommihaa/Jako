@@ -295,6 +295,49 @@ Tommin vastaukset Kysymykset-osioon. Rivi kertoo päätöksen ja sen tilan koodi
    Päätöksestä seuraa yksi uusi vaatimus, eli ristiintarkistustesti joka pitää kaksi saumaa
    samaa mieltä. Ilman sitä päätös rappeutuu kahdeksi eri totuudeksi.
 
+### H1 elinkaaren runko yhtenäistetty 3.9.2026
+
+Yhdeksästä pelistä poistui 921 riviä ja tilalle tuli 501, ja `shared/` kasvoi 297
+rivillä. Nettona koodia on 118 riviä vähemmän ja runko asuu yhtenä rakenteena eikä
+yhdeksänä kopiona. Tehty neljässä osassa, jokainen erikseen todennettuna.
+
+**Osa 1, moduulitason kopiot ja taukotila.** `AI_NAMES` ja `shuffledAINames` (8 kopiota),
+`lblColored` (8) ja `mkDeck` (3 kappaletta jotka olivat merkki merkiltä sama kuin
+`helpers.newDeck`) siirtyivät helpersiin. Kasinon oma `lblColored` ei ollutkaan
+värillinen vaan sama kuin `helpers.lbl`, joten se vaihtui siihen; Kasinon loki on
+tekstiä eikä HTML:ää. Paskahousun `mkDeck` jäi omakseen, koska se ottaa
+`hardTwos`-parametrin. Parit `paused`, `allBots` ja `aiDelayMs` sekä `togglePause`
+siirtyivät `useAIScheduler`iin. Hookin oma kommentti perusteli niiden jäämistä
+"pelikohtaisella logiikalla", jota oli vain Seiskassa, ja se on nyt `onResume`-optio.
+Kolme ajautumaa sai yhden säännön: `BOT_RESULT_DELAY` (oli 600, 800, 1200 tai 1800),
+`LOG_MAX` (oli 40, 50 tai 60) ja `sndRef`in alkuarvo (oli `true`, `false` tai
+`soundOn`). Läpsyn ja Maijan pidempi ihmispolun viive jäi ja on nyt kommentoitu, koska
+se on eri asia kuin katselutilan viive.
+
+**Osa 2, loki ja snapshot.** `useGameLog`-hook korvasi yhdeksän `addLog`-kopiota, ja
+`GameLog`-komponentti yhdeksän lokipaneelin JSX-kopiota. Pelikohtaista jäi vain
+`snapshot`-optio joka lukee sen pelin oman tilan. `enterBotBattle` meni
+`useAIScheduler`iin, ja kolmesta pelistä poistui turha `allBotsRef`-asetus jonka
+`startGame` teki heti perään. `lastPlayFade` (7 kopiota) ja `button:active` (9)
+siirtyivät `index.html`:n globaaliin tyyliin; kopiot olivat ajautuneet, koska
+Paskahousu ja Ristiseiska sammuttivat 70 prosentissa muiden 85:n sijaan ja Läpsy
+skaalasi 0.96 muiden 0.97 sijaan.
+
+**Osa 3, aloitusnäyttö.** `GameStartScreen` korvasi yhdeksän kopiota. Propseiksi jäivät
+tunnus, nimi, otsikon koko pitkillä nimillä ja sallitut pelaajamäärät; pelikohtaiset
+sääntövalinnat tulevat lapsina ja `onStart` on propsi, koska Seiska rakentaa
+istuinlistan ennen aloitusta. Samalla poistuivat käyttämättömät importit, ja niiden
+joukossa `useLayoutEffect` joka oli 9/9 eikä sitä kutsuttu kertaakaan (H8).
+
+**Osa 4, tilarivi.** `GameStatusBar` korvasi yhdeksän kopiota. Kolme pitkää nappityyliä
+oli kirjoitettu auki jokaisessa pelissä ja on nyt yksi funktio jonka korostusväri tulee
+propsina. Nappien kääre, joka oli ennen vain kahdessa pelissä, on nyt kaikilla.
+
+**Mitä H1:stä jäi.** `startGame` itse jäi pelikohtaiseksi, koska sen sisältö on pelin
+alustus eikä runko. Lokiviestin kaksi renderöintitapaa jäivät, eli Kasinon
+tekstiviesti ja säännöllinen lauseke muiden HTML:n rinnalle; yhtenäistäminen koskisi
+jokaista viestiä yhdeksässä pelissä. Se on kirjattu `GameLog.jsx`:n kommenttiin.
+
 ### H3 kuollut kerros poistettu 3.9.2026
 
 Yhdeksän peliä siivottu, 441 riviä pois peleistä ja 92 riviä orpoja i18n-avaimia
