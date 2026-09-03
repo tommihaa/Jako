@@ -157,11 +157,9 @@ export const rom = {
       tableEmpty: 'Skafidi nango',
       wait: 'Aša...',
       firstOutWins: 'angluno bi kartengo nirisarel',
-      points: 'punkti',
       fieldLabel: 'POLE',
       discardLabel: 'KUPA ŠUDIMASKI',
       handLabel: 'ANDO VAST',
-      tie: 'JEKHIPE',
       spectatorEnded: 'MODO DIKHIMASKO AGORIME',
     },
 
@@ -244,11 +242,9 @@ export const rom = {
         humanSwappedContinue: 'Than {idx}: {card} ({v} p) andre, {oldName} ko vast.',
         humanDiscard: 'Čhudan {card} ki kupa šudimaski. O rindo agorisajlo.',
         gameOverScores: ({ scores }) => `Le naprinžarde sikadon! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-        tieBreaker: 'Jekhipe — fanfara le zarengi!',
       },
       ui: {
         goal: 'majcikne punkti kana nakhel i kupa',
-        showResults: 'Sikav le rezultatura →',
         swapTo: ({ card, n }) => `Paruv ${card} le kartasa le thanesko ${n}`,
         discard: ({ card }) => `Čhude ${card} ki kupa šudimaski`,
       },

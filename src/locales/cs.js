@@ -165,11 +165,9 @@ export const cs = {
       tableEmpty: 'Stůl prázdný',
       wait: 'Čekej...',
       firstOutWins: 'kdo první nemá karty, vyhrává',
-      points: 'bodů',
       fieldLabel: 'POLE',
       discardLabel: 'ODHAZOVACÍ BALÍČEK',
       handLabel: 'V RUCE',
-      tie: 'REMÍZA',
       spectatorEnded: 'REŽIM SLEDOVÁNÍ SKONČIL',
     },
 
@@ -252,11 +250,9 @@ export const cs = {
         humanSwappedContinue: 'Místo {idx}: {card} ({v} b) dovnitř, {oldName} do ruky.',
         humanDiscard: 'Odhodil jsi {card} do odhazovacího balíčku. Tah skončil.',
         gameOverScores: ({ scores }) => `Neznámé se odhalují! ${scores.map(s => `${s.name}: ${s.total} b`).join(', ')}`,
-        tieBreaker: 'Remíza — fanfára kostek!',
       },
       ui: {
         goal: 'nejméně bodů, když dojde balíček',
-        showResults: 'Zobrazit výsledky →',
         swapTo: ({ card, n }) => `Vyměnit ${card} za kartu na místě ${n}`,
         discard: ({ card }) => `Odhodit ${card} do odhazovacího balíčku`,
       },

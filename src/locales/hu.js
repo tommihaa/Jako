@@ -157,11 +157,9 @@ export const hu = {
       tableEmpty: 'Asztal üres',
       wait: 'Várj...',
       firstOutWins: 'aki először lap nélkül marad, nyer',
-      points: 'pont',
       fieldLabel: 'MEZŐ',
       discardLabel: 'DOBÓPAKLI',
       handLabel: 'KÉZBEN',
-      tie: 'DÖNTETLEN',
       spectatorEnded: 'NÉZŐ MÓD VÉGE',
     },
 
@@ -244,11 +242,9 @@ export const hu = {
         humanSwappedContinue: '{idx}. hely: {card} ({v} p) be, {oldName} a kézbe.',
         humanDiscard: 'A(z) {card} lapot a dobópakliba dobtad. Kör vége.',
         gameOverScores: ({ scores }) => `Az ismeretleneket felfedjük! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-        tieBreaker: 'Döntetlen — dobókocka-fanfár!',
       },
       ui: {
         goal: 'a legkevesebb pont, amikor elfogy a pakli',
-        showResults: 'Eredmények mutatása →',
         swapTo: ({ card, n }) => `${card} cseréje a(z) ${n}. hely lapjára`,
         discard: ({ card }) => `${card} dobása a dobópakliba`,
       },

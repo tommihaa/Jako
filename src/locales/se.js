@@ -156,11 +156,9 @@ export const se = {
       tableEmpty: 'Beavdi gures',
       wait: 'Vuordde...',
       firstOutWins: 'vuosttaš goartahis vuoitá',
-      points: 'čuoggá',
       fieldLabel: 'GIETTI',
       discardLabel: 'SIHKKUNSTOHKA',
       handLabel: 'GIEĐAS',
-      tie: 'DÁSSEDILLE',
       spectatorEnded: 'GEAHČČANDÁSSI NOGAI',
     },
 
@@ -243,11 +241,9 @@ export const se = {
         humanSwappedContinue: 'Báiki {idx}: {card} ({v} č) sisa, {oldName} gietii.',
         humanDiscard: 'Bálkiidet {card} sihkkunstohkii. Vuorru nogai.',
         gameOverScores: ({ scores }) => `Amas goarttat almmustahttojuvvojit! ${scores.map(s => `${s.name}: ${s.total} č`).join(', ')}`,
-        tieBreaker: 'Dássedille — károhpa-fanfára!',
       },
       ui: {
         goal: 'unnimus čuoggát go stohka nohká',
-        showResults: 'Čájet bohtosiid →',
         swapTo: ({ card, n }) => `Molsso ${card} báikki ${n} goartii`,
         discard: ({ card }) => `Bálká ${card} sihkkunstohkii`,
       },

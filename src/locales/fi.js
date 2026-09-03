@@ -197,11 +197,9 @@ export const fi = {
       tableEmpty: 'Pöytä tyhjä',
       wait: 'Odota…',
       firstOutWins: 'ensimmäinen kortiton voittaa',
-      points: 'pistettä',
       fieldLabel: 'KENTTÄ',
       discardLabel: 'POISTOPAKKA',
       handLabel: 'KÄDESSÄ',
-      tie: 'TASATILANNE',
       spectatorEnded: 'KATSOMOTILA PÄÄTTYI',
     },
 
@@ -289,11 +287,9 @@ export const fi = {
         humanSwappedContinue: 'Paikka {idx}: {card} ({v} p) sisään, {oldName} käteen.',
         humanDiscard: 'Heitit {card} poistopakkaan. Vuoro ohi.',
         gameOverScores: ({ scores }) => `Tuntemattomat paljastetaan! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-        tieBreaker: 'Tasatilanne, ratkaisu nopilla!',
       },
       ui: {
         goal: 'pienimmät pisteet kun pakka loppuu',
-        showResults: 'Näytä tulokset →',
         swapTo: ({ card, n }) => `Vaihda ${card} paikan ${n} korttiin`,
         discard: ({ card }) => `Heitä ${card} poistopakkaan`,
       },

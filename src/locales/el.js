@@ -154,11 +154,9 @@ export const el = {
       tableEmpty: 'Άδειο τραπέζι',
       wait: 'Περίμενε...',
       firstOutWins: 'ο πρώτος με άδειο χέρι κερδίζει',
-      points: 'πόντοι',
       fieldLabel: 'ΠΕΔΙΟ',
       discardLabel: 'ΑΠΟΡΡΙΨΗ',
       handLabel: 'ΣΤΟ ΧΕΡΙ',
-      tie: 'ΙΣΟΠΑΛΙΑ',
       spectatorEnded: 'Η ΛΕΙΤΟΥΡΓΙΑ ΘΕΑΤΗ ΤΕΛΕΙΩΣΕ',
     },
 
@@ -241,11 +239,9 @@ export const el = {
         humanSwappedContinue: 'Θέση {idx}: {card} ({v} π) μέσα, {oldName} στο χέρι.',
         humanDiscard: 'Απέρριψες το {card}. Η σειρά τελείωσε.',
         gameOverScores: ({ scores }) => `Τα άγνωστα αποκαλύπτονται! ${scores.map(s => `${s.name}: ${s.total} π`).join(', ')}`,
-        tieBreaker: 'Ισοπαλία — φανφάρα ζαριών!',
       },
       ui: {
         goal: 'ο μικρότερος σκορ όταν αδειάσει η τράπουλα',
-        showResults: 'Εμφάνιση αποτελεσμάτων →',
         swapTo: ({ card, n }) => `Άλλαξε το ${card} με το χαρτί της θέσης ${n}`,
         discard: ({ card }) => `Απόρριψε το ${card} στον σωρό απόρριψης`,
       },

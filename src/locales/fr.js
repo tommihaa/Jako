@@ -154,11 +154,9 @@ export const fr = {
       tableEmpty: 'Table vide',
       wait: 'Patiente...',
       firstOutWins: 'le premier à vider sa main gagne',
-      points: 'points',
       fieldLabel: 'TERRAIN',
       discardLabel: 'DÉFAUSSE',
       handLabel: 'EN MAIN',
-      tie: 'ÉGALITÉ',
       spectatorEnded: 'MODE SPECTATEUR TERMINÉ',
     },
 
@@ -241,11 +239,9 @@ export const fr = {
         humanSwappedContinue: 'Emplacement {idx} : {card} ({v} p) entre, {oldName} en main.',
         humanDiscard: 'Tu as défaussé {card}. Tour terminé.',
         gameOverScores: ({ scores }) => `Cartes inconnues révélées ! ${scores.map(s => `${s.name} : ${s.total} p`).join(', ')}`,
-        tieBreaker: 'Égalité — fanfare au dé !',
       },
       ui: {
         goal: 'le score le plus bas quand la pioche est épuisée',
-        showResults: 'Afficher les résultats →',
         swapTo: ({ card, n }) => `Échanger ${card} contre la carte de l'emplacement ${n}`,
         discard: ({ card }) => `Défausser ${card}`,
       },

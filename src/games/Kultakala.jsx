@@ -36,7 +36,6 @@ const M = {
   humanSwappedContinue: (idx, c, v, oldName) => tr('games.kultakala.msg.humanSwappedContinue', { idx: idx + 1, card: lblColored(c), v, oldName }),
   humanDiscard: (c) => tr('games.kultakala.msg.humanDiscard', { card: lblColored(c) }),
   gameOverScores: (scores) => tr('games.kultakala.msg.gameOverScores', { scores }),
-  get tieBreaker() { return tr('games.kultakala.msg.tieBreaker'); },
 };
 
 function initGame(nPlayers, pool, allBots = false) {
@@ -199,58 +198,7 @@ function KaCard({ card, faceUp, small, mini, tiny, highlight, dim, pulse, unknow
 }
 
 // Suljetut arvojoukot: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
-// Noppakomponentilla on oma vaihemuuttujansa, ja erillinen tyyppi pitää ne erillään.
 /** @typedef {'idle'|'drawing'|'holding'|'swapping'|'gameover'} Vaihe */
-/** @typedef {'rolling'|'result'} NoppaVaihe */
-
-function DiceRoll({ players, onDone, soundOn }) {
-  const t = useT();
-  const [phase, setPhase] = useState(/** @type {NoppaVaihe} */ ('rolling'));
-  const [rolls, setRolls] = useState({});
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const r = {};
-      players.forEach(p => { r[p.id] = Array.from({ length: 5 }, () => 1 + Math.floor(Math.random() * 6)); });
-      setRolls(r);
-    }, 120);
-    const timeout = setTimeout(() => {
-      clearInterval(interval);
-      const finalRolls = {};
-      players.forEach(p => { finalRolls[p.id] = Array.from({ length: 5 }, () => 1 + Math.floor(Math.random() * 6)); });
-      setRolls(finalRolls);
-      setPhase('result');
-      if (soundOn) SFX.fanfare();
-    }, 2200);
-    return () => { clearInterval(interval); clearTimeout(timeout); };
-  }, []);
-
-  const sums = Object.entries(rolls).map(([id, dice]) => ({ id: parseInt(id), sum: dice.reduce((a, b) => a + b, 0) }));
-  const winner = phase === 'result' ? [...sums].sort((a, b) => b.sum - a.sum)[0] : null;
-
-  return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, zIndex: 100 }}>
-      <div style={{ fontSize: 18, color: C.gold, fontFamily: 'Georgia,serif', letterSpacing: 4 }}>{t('ui.shared.tie')}</div>
-      {players.map(p => {
-        const dice = rolls[p.id] || [1, 1, 1, 1, 1];
-        const sum = dice.reduce((a, b) => a + b, 0);
-        const isWinner = phase === 'result' && winner && winner.id === p.id;
-        return (
-          <div key={p.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, background: isWinner ? C.gold + '18' : 'rgba(255,255,255,0.04)', border: `1px solid ${isWinner ? C.gold : C.panelBorder}`, borderRadius: 16, padding: '14px 20px', minWidth: 220, transition: 'all 0.4s' }}>
-            <div style={{ fontFamily: 'sans-serif', fontSize: 13, color: isWinner ? C.gold : C.dim }}>{p.name}{isWinner ? ' 🏆' : ''}</div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              {dice.map((d, i) => <div key={i} style={{ width: 38, height: 38, borderRadius: 8, background: isWinner ? C.gold + '22' : 'rgba(255,255,255,0.08)', border: `1px solid ${isWinner ? C.gold : C.panelBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, color: isWinner ? C.gold : C.text }}>{['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][d - 1]}</div>)}
-            </div>
-            <div style={{ fontFamily: 'monospace', fontSize: 16, color: isWinner ? C.gold : C.text, fontWeight: 700 }}>{sum}{phase !== 'rolling' ? ` ${t('ui.shared.points')}` : ''}</div>
-          </div>
-        );
-      })}
-      {phase === 'result' && (
-        <button onClick={onDone} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 12, padding: '12px 32px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', marginTop: 8 }}>{t('games.kultakala.ui.showResults')}</button>
-      )}
-    </div>
-  );
-}
 
 export default function Kultakala({ onResult, showLog = true, soundOn: initSoundOn = true, seeAll: initSeeAll = false, showCounts = true, showLastPlay = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, showAIKnown = true, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
@@ -270,8 +218,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
   const [drawnFromDeck, setFromDeck] = useState(false);
   const [debugOpen, setDebug] = useState(initSeeAll);
   const [shuffling, setShuffling] = useState(false);
-  const [showDice, setShowDice] = useState(false);
-  const [tiedPlayers, setTiedPlayers] = useState([]);
   const [kohahdus, setKohahdus] = useState(null);
   const [lastPlay, setLastPlay] = useState(null);
   const [allBots, setAllBots]             = useState(false);
@@ -353,7 +299,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     setG(g); gRef.current = g;
     setCur(0); curRef.current = 0;
     setPhase('drawing'); phaseRef.current = 'drawing';
-    setHeld(null); setSwapIdx(null); setRevealed(false); drawnFromRef.current = null; setFromDeck(false); setShowDice(false);
+    setHeld(null); setSwapIdx(null); setRevealed(false); drawnFromRef.current = null; setFromDeck(false);
     logRef.current = []; setLog([]);
     addLog(M.gameStart);
     setScreen('game');
@@ -600,7 +546,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     if (sndRef.current) SFX.reveal();
     setG(g); gRef.current = g;
     const scores = g.players.map(p => ({ ...p, total: p.unknown.v + p.row.reduce((s, c) => s + c.v, 0) }));
-    const minScore = Math.min(...scores.map(s => s.total));
     const sortedSc = [...scores].sort((a, b) => a.total - b.total);
     const ranking  = sortedSc.map(p => ({
       name: p.name, isHuman: p.isHuman, score: p.total,
@@ -609,15 +554,10 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     const revealCards = g.players.map(p => ({ name: p.name, cards: [p.unknown, ...p.row] }));
     if (allBotsRef.current) { tm(() => onResult?.({ ranking, revealCards }), 800); }
     else { onResult?.({ ranking, revealCards }); }
-    const tied = scores.filter(s => s.total === minScore);
+    // Tasapelissä samat pisteet jakavat sijan, ks. KULTAKALA.md > Tasapeli. Ranking laskee
+    // sen jo (place = count(total < oma) + 1), joten tasapeli ei tarvitse omaa haaraa.
     addLog(M.gameOverScores(scores));
-    tm(() => {
-      if (tied.length > 1) {
-        addLog(M.tieBreaker);
-        setTiedPlayers(tied); setShowDice(true);
-      }
-      setScreen('gameover');
-    }, 2000);
+    tm(() => setScreen('gameover'), 2000);
   }
 
   useEffect(() => { window.scrollTo(0, 0); }, [screen]);
@@ -657,7 +597,6 @@ export default function Kultakala({ onResult, showLog = true, soundOn: initSound
     const scores = G.players.map(p => ({ ...p, total: p.unknown.v + p.row.reduce((s, c) => s + c.v, 0) })).sort((a, b) => a.total - b.total);
     return (
       <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: isMobile ? '24px 12px' : 24, fontFamily: 'Georgia,serif', color: C.text }}>
-        {showDice && <DiceRoll players={tiedPlayers} onDone={() => setShowDice(false)} soundOn={soundOn} />}
         <h1 style={{ fontSize: 28, letterSpacing: 8, color: C.gold, margin: 0 }}>{t('ui.result.title')}</h1>
         <div style={{ width: '100%', maxWidth: 440, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {scores.map((p, i) => (

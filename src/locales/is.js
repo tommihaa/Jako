@@ -154,11 +154,9 @@ export const is = {
       tableEmpty: 'Borð tómt',
       wait: 'Bíddu...',
       firstOutWins: 'sá fyrsti með tóma hönd vinnur',
-      points: 'stig',
       fieldLabel: 'REITUR',
       discardLabel: 'KASTHAUGUR',
       handLabel: 'Á HENDI',
-      tie: 'JAFNTEFLI',
       spectatorEnded: 'ÁHORFSHAMUR LAUK',
     },
 
@@ -241,11 +239,9 @@ export const is = {
         humanSwappedContinue: 'Reitur {idx}: {card} ({v} st) inn, {oldName} á hönd.',
         humanDiscard: 'Þú kastaðir {card} í kasthaug. Umferð lokið.',
         gameOverScores: ({ scores }) => `Þau óþekktu afhjúpuð! ${scores.map(s => `${s.name}: ${s.total} st`).join(', ')}`,
-        tieBreaker: 'Jafntefli — teningalúðrar!',
       },
       ui: {
         goal: 'lægstu stig þegar stokkurinn klárast',
-        showResults: 'Sýna niðurstöður →',
         swapTo: ({ card, n }) => `Skipta ${card} fyrir spilið í reit ${n}`,
         discard: ({ card }) => `Kasta ${card} í kasthaug`,
       },

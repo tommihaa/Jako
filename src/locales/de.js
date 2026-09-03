@@ -154,11 +154,9 @@ export const de = {
       tableEmpty: 'Tisch leer',
       wait: 'Warte...',
       firstOutWins: 'wer zuerst die Hand leert, gewinnt',
-      points: 'Punkte',
       fieldLabel: 'FELD',
       discardLabel: 'ABLAGE',
       handLabel: 'AUF DER HAND',
-      tie: 'GLEICHSTAND',
       spectatorEnded: 'ZUSCHAUERMODUS BEENDET',
     },
 
@@ -241,11 +239,9 @@ export const de = {
         humanSwappedContinue: 'Platz {idx}: {card} ({v} P) rein, {oldName} auf die Hand.',
         humanDiscard: 'Du hast {card} auf den Ablagestapel geworfen. Zug vorbei.',
         gameOverScores: ({ scores }) => `Die Unbekannten werden aufgedeckt! ${scores.map(s => `${s.name}: ${s.total} P`).join(', ')}`,
-        tieBreaker: 'Gleichstand — Würfelfanfare!',
       },
       ui: {
         goal: 'niedrigste Punktzahl, wenn der Stapel leer ist',
-        showResults: 'Ergebnisse zeigen →',
         swapTo: ({ card, n }) => `${card} gegen die Karte auf Platz ${n} tauschen`,
         discard: ({ card }) => `${card} auf den Ablagestapel werfen`,
       },

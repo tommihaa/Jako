@@ -163,11 +163,9 @@ export const ru = {
       tableEmpty: 'Стол пуст',
       wait: 'Подождите...',
       firstOutWins: 'первый без карт побеждает',
-      points: 'очков',
       fieldLabel: 'ПОЛЕ',
       discardLabel: 'СБРОС',
       handLabel: 'В РУКЕ',
-      tie: 'НИЧЬЯ',
       spectatorEnded: 'РЕЖИМ ЗРИТЕЛЯ ЗАВЕРШЁН',
     },
 
@@ -250,11 +248,9 @@ export const ru = {
         humanSwappedContinue: 'Ячейка {idx}: {card} ({v} о) внутрь, {oldName} в руку.',
         humanDiscard: 'Вы сбросили {card}. Ход окончен.',
         gameOverScores: ({ scores }) => `Неизвестные открываются! ${scores.map(s => `${s.name}: ${s.total} о`).join(', ')}`,
-        tieBreaker: 'Ничья — бросок кубика!',
       },
       ui: {
         goal: 'наименьшее число очков, когда колода кончится',
-        showResults: 'Показать результаты →',
         swapTo: ({ card, n }) => `Поменять ${card} на карту в ячейке ${n}`,
         discard: ({ card }) => `Сбросить ${card} в сброс`,
       },

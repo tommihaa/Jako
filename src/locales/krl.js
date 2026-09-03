@@ -155,11 +155,9 @@ export const krl = {
       tableEmpty: 'Stola tyhjä',
       wait: 'Vuota...',
       firstOutWins: 'enžimmäini kortitoin voittau',
-      points: 'pisteidä',
       fieldLabel: 'KENDÄ',
       discardLabel: 'POISTOPAKKA',
       handLabel: 'KIÄSSÄ',
-      tie: 'TAZATILA',
       spectatorEnded: 'KAČČOMOTILA LOPPUI',
     },
 
@@ -242,11 +240,9 @@ export const krl = {
         humanSwappedContinue: 'Šija {idx}: {card} ({v} p) šiäh, {oldName} kiäteh.',
         humanDiscard: 'Viskuait {card} poistopakkah. Vuoro loppu.',
         gameOverScores: ({ scores }) => `Tundemattomat paljaštetah! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-        tieBreaker: 'Tazatila — noppafanaali!',
       },
       ui: {
         goal: 'pienimmät pisteet konža pakka loppou',
-        showResults: 'Ozuta tulokšet →',
         swapTo: ({ card, n }) => `Vaiha ${card} šijan ${n} korttih`,
         discard: ({ card }) => `Viskua ${card} poistopakkah`,
       },

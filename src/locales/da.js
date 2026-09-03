@@ -154,11 +154,9 @@ export const da = {
       tableEmpty: 'Bordet er tomt',
       wait: 'Vent...',
       firstOutWins: 'den første uden kort vinder',
-      points: 'point',
       fieldLabel: 'FELT',
       discardLabel: 'KASTEBUNKE',
       handLabel: 'PÅ HÅNDEN',
-      tie: 'UAFGJORT',
       spectatorEnded: 'SEERTILSTAND AFSLUTTET',
     },
 
@@ -241,11 +239,9 @@ export const da = {
         humanSwappedContinue: 'Plads {idx}: {card} ({v} p) ind, {oldName} på hånden.',
         humanDiscard: 'Du kastede {card} i kastebunken. Turen er slut.',
         gameOverScores: ({ scores }) => `De ukendte afsløres! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-        tieBreaker: 'Uafgjort — terningefanfare!',
       },
       ui: {
         goal: 'færrest point når bunken er tom',
-        showResults: 'Vis resultater →',
         swapTo: ({ card, n }) => `Byt ${card} med kortet på plads ${n}`,
         discard: ({ card }) => `Kast ${card} i kastebunken`,
       },

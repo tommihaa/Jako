@@ -154,11 +154,9 @@ export const it = {
       tableEmpty: 'Tavolo vuoto',
       wait: 'Attendi...',
       firstOutWins: 'il primo a restare senza carte vince',
-      points: 'punti',
       fieldLabel: 'CAMPO',
       discardLabel: 'SCARTI',
       handLabel: 'IN MANO',
-      tie: 'PARITÀ',
       spectatorEnded: 'MODALITÀ SPETTATORE TERMINATA',
     },
 
@@ -241,11 +239,9 @@ export const it = {
         humanSwappedContinue: 'Casella {idx}: {card} ({v} pti) dentro, {oldName} in mano.',
         humanDiscard: 'Hai scartato {card}. Turno finito.',
         gameOverScores: ({ scores }) => `Carte sconosciute scoperte! ${scores.map(s => `${s.name}: ${s.total} pti`).join(', ')}`,
-        tieBreaker: 'Parità — fanfara dei dadi!',
       },
       ui: {
         goal: 'punteggio più basso quando il mazzo si esaurisce',
-        showResults: 'Mostra i risultati →',
         swapTo: ({ card, n }) => `Scambia ${card} con la carta della casella ${n}`,
         discard: ({ card }) => `Scarta ${card} agli scarti`,
       },

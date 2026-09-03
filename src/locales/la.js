@@ -156,11 +156,9 @@ export const la = {
       tableEmpty: 'Mensa vacua',
       wait: 'Exspecta...',
       firstOutWins: 'primus sine chartis vincit',
-      points: 'puncta',
       fieldLabel: 'CAMPUS',
       discardLabel: 'CUMULUS DEIECTUS',
       handLabel: 'IN MANU',
-      tie: 'AEQUALITAS',
       spectatorEnded: 'MODUS SPECTANDI FINITUS',
     },
 
@@ -243,11 +241,9 @@ export const la = {
         humanSwappedContinue: 'Locus {idx}: {card} ({v} p) intro, {oldName} in manum.',
         humanDiscard: 'Iecisti {card} in cumulum deiectum. Vices finitae.',
         gameOverScores: ({ scores }) => `Ignota revelantur! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-        tieBreaker: 'Aequalitas — fanfara aleae!',
       },
       ui: {
         goal: 'minima puncta cum cumulus finitur',
-        showResults: 'Monstra eventus →',
         swapTo: ({ card, n }) => `Muta ${card} cum charta loci ${n}`,
         discard: ({ card }) => `Iace ${card} in cumulum deiectum`,
       },

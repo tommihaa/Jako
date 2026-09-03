@@ -265,14 +265,17 @@ Tommin vastaukset Kysymykset-osioon. Rivi kertoo päätöksen ja sen tilan koodi
    korkeimman tason mukaan ja perustelu on koodissa. Botbench ei muutu, koska se antaa
    `botLevels`in aina. `allbots-smoke` ajaa nyt kaikki yhdeksän Kisällillä. Testit 132
    läpi. `BOTBENCH.md` ei tarvitse merkintää, koska sääntö on nyt yksi eikä poikkeusta ole.
-2. **Asetuksen omistaja (H6): auki.** Tommi kysyi konflikteista, ne on kirjattu
-   Konfliktit-osioon alle.
-3. **Kultakalan tasapeli (H3): jaettu sija ilman arvontaa.** `DiceRoll` poistetaan.
-   Toteutus odottaa kaanonimerkintää `KULTAKALA.md`:hen, koska sopimusmuutos menee
-   kaanoni ensin. `doReveal`in `ranking` laskee jo jaetun sijan
-   (`place = count(total < oma) + 1`), joten `GameResult` näyttää oikean tuloksen ilman
-   muutosta. Poistuvat: `DiceRoll` (206–253), `showDice`, `tiedPlayers`, `M.tieBreaker`
-   ja sen i18n-avaimet.
+2. **Asetuksen omistaja (H6): App omistaa kaikki kolme.** Peli lukee propsin ja pelin nappi
+   kutsuu takaisin App:iin. `seeAll` pysyy tallentumattomana ja katselutilan paljastus
+   erotetaan omaksi käsitteekseen. Konfliktit jotka sulkivat vaihtoehdon "peli omistaa" ovat
+   Konfliktit-osiossa alla.
+3. **Kultakalan tasapeli (H3): jaettu sija ilman arvontaa, tehty.** Kaanoni ensin:
+   `KULTAKALA.md` sai Tasapeli-osion. Sen jälkeen koodista poistuivat `DiceRoll`,
+   `NoppaVaihe`-typedef, `showDice`, `tiedPlayers`, `M.tieBreaker` ja käyttämättä jäänyt
+   `minScore`. Orvot i18n-avaimet poistettiin 23 localesta
+   (`games.kultakala.msg.tieBreaker`, `games.kultakala.ui.showResults`, `ui.shared.tie`,
+   `ui.shared.points`). `doReveal`in `ranking` laski jaetun sijan jo ennestään
+   (`place = count(total < oma) + 1`), joten `GameResult` ei muuttunut.
 ### Kultakalan noppaväitteen todennus (kysymys 3)
 
 Väite tarkentui koodista eikä previewistä, ja se vahvistui. Raportti nojasi yhteen haaraan
@@ -283,7 +286,11 @@ nimenomaisesti suljettu pois. Molemmat polut ovat siis kiinni ja `DiceRoll` on
 saavuttamaton kaikissa tiloissa. Preview-ajo ei voi näyttää arvontaa eikä siten todistaa
 väitettä; se näyttäisi vain että `GameResult` tulee heti. Siksi todennus tehtiin koodista.
 
-4. **Testisauma: auki.** Kysymys avattu, ks. Testisauman vaihtoehdot alla.
+4. **Testisauma: molemmat saumat.** `allbots-smoke` jää komponenttisaumaksi
+   korrektiusverkoksi ja Botbench siirtyy puhtaalle saumalle määrää varten. Toteutus ei ole
+   oma projektinsa vaan H4:n ja H5:n hyväksymiskriteeri, ks. Testisauman vaihtoehdot alla.
+   Päätöksestä seuraa yksi uusi vaatimus: ristiintarkistustesti joka pitää kaksi saumaa
+   samaa mieltä. Ilman sitä päätös rappeutuu kahdeksi eri totuudeksi.
 
 ### Konfliktit asetuksen omistajuudessa (kysymys 2)
 

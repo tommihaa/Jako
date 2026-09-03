@@ -846,6 +846,29 @@ asiaa: luvut on tuotettu tällä mittarilla eikä kirjoitettu käsin, eivätkä 
 commitit ole liikuttaneet bottien käytöstä. Tilastollista lisävarmuutta se ei anna.
 Uudelleenajo on siis regressiotesti, ja lisävarmuus vaatisi eri siemenen.
 
+## Testisauma 3.9.2026: molemmat saumat, ja ristiintarkistus on sen ehto
+
+Kompositioauditoinnin kysymys 4 kysyi, onko `runAI`n irrottaminen komponentista puhtaaksi
+funktioksi tavoite vai hautakivi. Tommin päätös on molemmat, ja työnjako on tämä.
+
+`allbots-smoke` jää komponenttisaumaksi. Se testaa sitä ohjelmaa jota pelaaja ajaa,
+ajastimet ja Reactin tila mukaan lukien, ja on siksi korrektiusverkko.
+
+Botbench siirtyy puhtaalle saumalle, koska siellä nopeus on tarkkuutta: enemmän pelejä per
+pari kaventaa voittoprosentin luottamusväliä, ja jsdom, React ja fake-timerit ovat se katto
+joka nyt pitää N:n neljässäsadassa. Puhdas sauma tarkoittaa `chooseMove(G, level) → move` ja
+`applyMove(G, move) → G` sekä silmukkaa niiden päällä. Valitsija on jo olemassa
+moduulitason funktiona seitsemässä pelissä, joten puuttuva pala on soveltaja, ja se
+edellyttää että vaihe ja vuoro asuvat `G`:ssä. **Siirto ei ole oma projektinsa vaan
+kompositioauditoinnin H4- ja H5-nostojen hyväksymiskriteeri.** Jos ne tehdään kunnolla,
+sauma putoaa niistä ulos.
+
+**Päätöksen ehto on ristiintarkistustesti.** Kaksi saumaa jotka mittaavat samaa peliä
+ajautuvat erilleen samalla tavalla kuin yhdeksän kopiota elinkaaresta, ellei mikään pidä
+niitä yhdessä. Testin muoto: sama siemen, sama konfiguraatio, molemmat saumat, ja tuloksen
+`ranking` on identtinen. Ilman sitä päätös rappeutuu kahdeksi eri totuudeksi bottien
+voimasta, ja silloin kumpikaan luku ei kelpaa. Tämä on avoin kohta 3.9.2026.
+
 ## Avoimet AI-työt (per 26.7.2026)
 
 Kootut `JATKOPROMPTI_tasoporras.md`:stä, joka oli committaamaton työpuutiedosto ja

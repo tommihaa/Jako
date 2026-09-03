@@ -154,11 +154,9 @@ export const et = {
       tableEmpty: 'Laud tühi',
       wait: 'Oota...',
       firstOutWins: 'esimene kaartideta võidab',
-      points: 'punkti',
       fieldLabel: 'VÄLI',
       discardLabel: 'VISKEHUNNIK',
       handLabel: 'KÄES',
-      tie: 'VIIK',
       spectatorEnded: 'PEALTVAATAJAREŽIIM LÕPPES',
     },
 
@@ -241,11 +239,9 @@ export const et = {
         humanSwappedContinue: 'Koht {idx}: {card} ({v} p) sisse, {oldName} kätte.',
         humanDiscard: 'Viskasid {card} viskehunnikusse. Kord läbi.',
         gameOverScores: ({ scores }) => `Tundmatud paljastatakse! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-        tieBreaker: 'Viik — täringufanfaar!',
       },
       ui: {
         goal: 'väikseimad punktid, kui pakk saab otsa',
-        showResults: 'Näita tulemusi →',
         swapTo: ({ card, n }) => `Vaheta ${card} koha ${n} kaardiga`,
         discard: ({ card }) => `Viska ${card} viskehunnikusse`,
       },

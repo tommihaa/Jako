@@ -163,11 +163,9 @@ export const pl = {
       tableEmpty: 'Stół pusty',
       wait: 'Czekaj...',
       firstOutWins: 'pierwszy bez kart wygrywa',
-      points: 'punktów',
       fieldLabel: 'POLE',
       discardLabel: 'STOS ZRZUTÓW',
       handLabel: 'W RĘCE',
-      tie: 'REMIS',
       spectatorEnded: 'TRYB WIDZA ZAKOŃCZONY',
     },
 
@@ -250,11 +248,9 @@ export const pl = {
         humanSwappedContinue: 'Pole {idx}: {card} ({v} p) do środka, {oldName} do ręki.',
         humanDiscard: 'Zrzuciłeś {card} na stos zrzutów. Koniec tury.',
         gameOverScores: ({ scores }) => `Nieznane karty zostają odkryte! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-        tieBreaker: 'Remis — rzut kością!',
       },
       ui: {
         goal: 'najmniej punktów, gdy talia się skończy',
-        showResults: 'Pokaż wyniki →',
         swapTo: ({ card, n }) => `Zamień ${card} na kartę w polu ${n}`,
         discard: ({ card }) => `Zrzuć ${card} na stos zrzutów`,
       },

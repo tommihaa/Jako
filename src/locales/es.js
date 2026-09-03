@@ -154,11 +154,9 @@ export const es = {
       tableEmpty: 'Mesa vacía',
       wait: 'Espera...',
       firstOutWins: 'el primero sin cartas gana',
-      points: 'puntos',
       fieldLabel: 'CAMPO',
       discardLabel: 'DESCARTE',
       handLabel: 'EN MANO',
-      tie: 'EMPATE',
       spectatorEnded: 'MODO ESPECTADOR TERMINADO',
     },
 
@@ -241,11 +239,9 @@ export const es = {
         humanSwappedContinue: 'Posición {idx}: entra {card} ({v} p), {oldName} a la mano.',
         humanDiscard: 'Descartaste {card}. Turno terminado.',
         gameOverScores: ({ scores }) => `¡Desconocidas reveladas! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-        tieBreaker: '¡Empate: fanfarria de dados!',
       },
       ui: {
         goal: 'la menor puntuación cuando se agote el mazo',
-        showResults: 'Mostrar resultados →',
         swapTo: ({ card, n }) => `Cambiar ${card} por la carta de la posición ${n}`,
         discard: ({ card }) => `Descartar ${card} al descarte`,
       },

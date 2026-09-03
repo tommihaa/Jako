@@ -158,11 +158,9 @@ export const en = {
       tableEmpty: 'Table empty',
       wait: 'Wait…',
       firstOutWins: 'first to empty hand wins',
-      points: 'points',
       fieldLabel: 'FIELD',
       discardLabel: 'DISCARD',
       handLabel: 'IN HAND',
-      tie: 'TIE',
       spectatorEnded: 'SPECTATOR MODE ENDED',
     },
 
@@ -245,11 +243,9 @@ export const en = {
         humanSwappedContinue: 'Slot {idx}: {card} ({v} pts) in, {oldName} to hand.',
         humanDiscard: 'You discarded {card}. Turn over.',
         gameOverScores: ({ scores }) => `Unknowns revealed! ${scores.map(s => `${s.name}: ${s.total} pts`).join(', ')}`,
-        tieBreaker: 'Tie, the dice decide!',
       },
       ui: {
         goal: 'lowest score when the deck runs out',
-        showResults: 'Show results →',
         swapTo: ({ card, n }) => `Swap ${card} for the card in slot ${n}`,
         discard: ({ card }) => `Discard ${card} to the discard pile`,
       },

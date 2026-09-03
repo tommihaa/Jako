@@ -24,6 +24,15 @@ Nosta vuorollasi kortti pakasta tai poistopakasta. Voit vaihtaa sen paikalle 5 r
 
 Mitä vähemmän kierroksia, sitä kriittisempiä ovat päätökset.
 
+## Tasapeli
+
+Tasapelissä samat pisteet saaneet jakavat sijan. Arvontaa ei ole.
+
+Kirjattu 3.9.2026 Tommin päätöksellä. Koodissa oli tähän asti noppa-arvonta jota pelaaja
+ei nähnyt kertaakaan, koska se renderöityi vain saavuttamattomassa tulosruudussa
+(kompositioauditointi H3). Ranking laski jo jaetun sijan, joten kaanoni vahvistaa sen mitä
+pelaaja on aina nähnyt, ja arvonta poistetaan koodista.
+
 ## AI-strategia
 
 AI voi nähdä vain:

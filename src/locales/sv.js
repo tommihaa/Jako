@@ -154,11 +154,9 @@ export const sv = {
       tableEmpty: 'Bordet tomt',
       wait: 'Vänta...',
       firstOutWins: 'först med tom hand vinner',
-      points: 'poäng',
       fieldLabel: 'FÄLT',
       discardLabel: 'KASTHÖG',
       handLabel: 'PÅ HAND',
-      tie: 'OAVGJORT',
       spectatorEnded: 'ÅSKÅDARLÄGE AVSLUTAT',
     },
 
@@ -241,11 +239,9 @@ export const sv = {
         humanSwappedContinue: 'Plats {idx}: {card} ({v} p) in, {oldName} till handen.',
         humanDiscard: 'Du kastade {card} i kasthögen. Turen är slut.',
         gameOverScores: ({ scores }) => `De okända avslöjas! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-        tieBreaker: 'Oavgjort — tärningsfanfar!',
       },
       ui: {
         goal: 'lägst poäng när leken tar slut',
-        showResults: 'Visa resultat →',
         swapTo: ({ card, n }) => `Byt ${card} mot kortet på plats ${n}`,
         discard: ({ card }) => `Kasta ${card} i kasthögen`,
       },

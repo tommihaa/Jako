@@ -163,11 +163,9 @@ export const uk = {
       tableEmpty: 'Стіл порожній',
       wait: 'Зачекай...',
       firstOutWins: 'хто перший без карт — переміг',
-      points: 'очки',
       fieldLabel: 'ПОЛЕ',
       discardLabel: 'СКИДАННЯ',
       handLabel: 'У РУЦІ',
-      tie: 'НІЧИЯ',
       spectatorEnded: 'РЕЖИМ СПОСТЕРЕЖЕННЯ ЗАВЕРШЕНО',
     },
 
@@ -250,11 +248,9 @@ export const uk = {
         humanSwappedContinue: 'Позиція {idx}: {card} ({v} оч) всередину, {oldName} у руку.',
         humanDiscard: 'Ти скинув {card} у скидання. Хід завершено.',
         gameOverScores: ({ scores }) => `Невідомі відкрито! ${scores.map(s => `${s.name}: ${s.total} оч`).join(', ')}`,
-        tieBreaker: 'Нічия — кидаємо кубик!',
       },
       ui: {
         goal: 'найменше очок, коли колода скінчиться',
-        showResults: 'Показати результати →',
         swapTo: ({ card, n }) => `Обміняти ${card} на карту в позиції ${n}`,
         discard: ({ card }) => `Скинути ${card} у скидання`,
       },

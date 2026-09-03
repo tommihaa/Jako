@@ -154,11 +154,9 @@ export const no = {
       tableEmpty: 'Bordet er tomt',
       wait: 'Vent...',
       firstOutWins: 'først tomhendt vinner',
-      points: 'poeng',
       fieldLabel: 'FELT',
       discardLabel: 'KASTBUNKE',
       handLabel: 'PÅ HÅNDEN',
-      tie: 'UAVGJORT',
       spectatorEnded: 'SEMODUS AVSLUTTET',
     },
 
@@ -241,11 +239,9 @@ export const no = {
         humanSwappedContinue: 'Plass {idx}: {card} ({v} p) inn, {oldName} til hånden.',
         humanDiscard: 'Du kastet {card} i kastbunken. Turen er over.',
         gameOverScores: ({ scores }) => `De ukjente avdekkes! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-        tieBreaker: 'Uavgjort — terningfanfare!',
       },
       ui: {
         goal: 'lavest poeng når stokken er tom',
-        showResults: 'Vis resultater →',
         swapTo: ({ card, n }) => `Bytt ${card} mot kortet på plass ${n}`,
         discard: ({ card }) => `Kast ${card} i kastbunken`,
       },

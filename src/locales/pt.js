@@ -154,11 +154,9 @@ export const pt = {
       tableEmpty: 'Mesa vazia',
       wait: 'Espera...',
       firstOutWins: 'o primeiro sem cartas vence',
-      points: 'pontos',
       fieldLabel: 'CAMPO',
       discardLabel: 'DESCARTE',
       handLabel: 'NA MÃO',
-      tie: 'EMPATE',
       spectatorEnded: 'MODO DE ESPECTADOR TERMINADO',
     },
 
@@ -241,11 +239,9 @@ export const pt = {
         humanSwappedContinue: 'Posição {idx}: {card} ({v} p) entra, {oldName} para a mão.',
         humanDiscard: 'Descartaste {card}. Vez terminada.',
         gameOverScores: ({ scores }) => `As desconhecidas são reveladas! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-        tieBreaker: 'Empate — fanfarra dos dados!',
       },
       ui: {
         goal: 'menos pontos quando o baralho acabar',
-        showResults: 'Mostrar resultados →',
         swapTo: ({ card, n }) => `Trocar ${card} pela carta da posição ${n}`,
         discard: ({ card }) => `Descartar ${card} para o monte de descarte`,
       },

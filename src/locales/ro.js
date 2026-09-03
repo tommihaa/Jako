@@ -156,11 +156,9 @@ export const ro = {
       tableEmpty: 'Masă goală',
       wait: 'Așteaptă...',
       firstOutWins: 'primul fără cărți câștigă',
-      points: 'puncte',
       fieldLabel: 'CÂMP',
       discardLabel: 'PACHET DE ARUNCARE',
       handLabel: 'ÎN MÂNĂ',
-      tie: 'EGALITATE',
       spectatorEnded: 'MODUL SPECTATOR S-A TERMINAT',
     },
 
@@ -243,11 +241,9 @@ export const ro = {
         humanSwappedContinue: 'Locul {idx}: {card} ({v} p) înăuntru, {oldName} în mână.',
         humanDiscard: 'Ai aruncat {card} în pachetul de aruncare. Rândul s-a terminat.',
         gameOverScores: ({ scores }) => `Se dezvăluie cele necunoscute! ${scores.map(s => `${s.name}: ${s.total} p`).join(', ')}`,
-        tieBreaker: 'Egalitate — fanfară de zaruri!',
       },
       ui: {
         goal: 'cele mai puține puncte când se termină pachetul',
-        showResults: 'Arată rezultatele →',
         swapTo: ({ card, n }) => `Schimbă ${card} cu cartea de pe locul ${n}`,
         discard: ({ card }) => `Aruncă ${card} în pachetul de aruncare`,
       },
