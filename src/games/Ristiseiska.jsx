@@ -9,8 +9,10 @@ import { useStickySetting } from '../shared/storage.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import GameLog from '../shared/GameLog.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
+import { useGameLog } from '../shared/useGameLog.js';
 
 // ── Ristiseiska ─────────────────────────────────────────────────
 // Järjestys per maa: 7 → 6 → 8 → ala-pino (5,4,3,2,A) + ylä-pino (9,T,J,Q,K)
@@ -391,7 +393,6 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
   const cardBack = 'ilves';
   const [G,        setG]       = useState(/** @type {PeliTila|null} */ (null));
   const [msg,      setMsg_]    = useState('');
-  const [log,      setLog]     = useState([]);
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   const [selCard,  setSel]     = useState(null);
   // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
@@ -407,14 +408,13 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
 
   const gRef       = useRef(null);
   const lastPlayTmr = useRef(null);
-  const logRef     = useRef([]);
   const sndRef     = useRef(soundOn);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
   const botLevelsRef = useRef(botLevels);
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; },        [G]);
@@ -432,18 +432,17 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     });
   }
 
-  function addLog(m) {
-    setMsg_(m);
-    const e = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
-    logRef.current = [e, ...logRef.current].slice(0, LOG_MAX);
-    setLog([...logRef.current]);
-    if (allBotsRef.current && onSnapshot && gRef.current) {
-      const g = gRef.current;
-      onSnapshot({ step: logRef.current.length, logText: m,
+  const { log, logRef, addLog, resetLog } = useGameLog({
+    onMessage: setMsg_, onSnapshot,
+    isBotBattle: () => allBotsRef.current,
+    snapshot: () => {
+      const g = gRef.current; if (!g) return null;
+      return {
         players: g.players.map(p => ({ name: p.name, isHuman: p.isHuman, hand: p.hand ?? [], cardCount: p.hand?.length ?? 0, score: null })),
-        tableCards: [], extraText: null });
-    }
-  }
+        tableCards: [],
+      };
+    },
+  });
 
   function flashLastPlay(name, card, isHuman = false) {
     setLastPlay({ name, card, isHuman });
@@ -478,7 +477,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     clearTimeout(aiTmr.current);
     const count = forcedCount ?? nP;
     const g = initGame(count, playerNames, allBotsMode, rules);
-    logRef.current = []; setLog([]); setSel(null); setLastPlay(null);
+    resetLog(); setSel(null); setLastPlay(null);
     setGS(g);
     const s = g.players[g.activePlayer];
     addLog(M.gameStart(s.name, lblColored({ r: '7', s: '♣' })));
@@ -488,9 +487,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
   }
 
   function startBotBattle() {
-    aiLevelRef.current = aiLevel;
-    onAiLevelChange?.(aiLevel);
-    aiDelayRef.current = 2000; setAiDelayMs(2000);
+    enterBotBattle(aiLevel, onAiLevelChange, aiLevelRef);
     startGame(nP, true);
   }
 
@@ -991,32 +988,8 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
 
 
       {/* Loki */}
-      <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
-        <button onClick={() => onShowLogChange?.(!showLog)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
-          <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
-        </button>
-        {logOpen && (
-          <div>
-            {log.map((e, i) => (
-              <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: '1px solid rgba(42,74,50,0.4)', background: i === 0 ? 'rgba(201,168,76,0.04)' : 'transparent' }}>
-                <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-                <span style={{ fontSize: 12, color: i === 0 ? '#c8e0d0' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: e.m }}></span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <GameLog log={log} open={logOpen} onToggle={() => onShowLogChange?.(!showLog)} />
 
-      <style>{`
-        button:active { transform: scale(0.97); }
-        @keyframes lastPlayFade {
-          0%   { opacity: 0; transform: translateY(-4px); }
-          12%  { opacity: 1; transform: translateY(0); }
-          70%  { opacity: 1; }
-          100% { opacity: 0; }
-        }
-      `}</style>
     </div>
   );
 }

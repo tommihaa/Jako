@@ -7,9 +7,11 @@ import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import GameLog from '../shared/GameLog.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
+import { useGameLog } from '../shared/useGameLog.js';
 
 // A=14 for combat comparisons — different from shared helpers (A=1)
 const VAL = { A:14,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13 };
@@ -277,7 +279,6 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   const [selectedCards, setSel] = useState([]);
   const [selDefTargetIdx, setSelDefTargetIdx] = useState(null);
   const [msg, setMsg_] = useState('');
-  const [log, setLog] = useState([]);
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
   // `seeAll` on App:n omistama asetus joka ei tallennu, ja `revealAll` on tämän pelin
@@ -296,7 +297,6 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   const phaseRef = useRef(/** @type {Vaihe} */ ('idle'));
   const prevDeckRef = useRef(null);
   const tableRef = useRef([]);
-  const logRef = useRef([]);
   const sndRef     = useRef(soundOn);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
@@ -305,7 +305,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const finRef = useRef([]);
   const lastPlayTmr = useRef(null);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; }, [G]);
@@ -339,18 +339,19 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     prevDeckRef.current = cur;
   }, [G?.deck?.length]);
 
-  function addLog(m) {
-    setMsg_(m);
-    const e = { t:new Date().toLocaleTimeString('fi', { hour:'2-digit', minute:'2-digit', second:'2-digit' }), m };
-    logRef.current = [e, ...logRef.current].slice(0, LOG_MAX);
-    setLog([...logRef.current]);
-    if (allBotsRef.current && onSnapshot && gRef.current) {
-      const g = gRef.current;
-      onSnapshot({ step: logRef.current.length, logText: m,
+  const { log, logRef, addLog, resetLog } = useGameLog({
+    onMessage: setMsg_, onSnapshot,
+    isBotBattle: () => allBotsRef.current,
+    snapshot: () => {
+      const g = gRef.current; if (!g) return null;
+      return {
         players: g.players.map(p => ({ name: p.name, isHuman: p.isHuman, hand: p.hand ?? [], cardCount: p.hand?.length ?? 0, score: null })),
-        tableCards: (g.discard ?? []).slice(-3), extraText: g.trump ? `Valtti: ${g.trump}` : null });
-    }
-  }
+        tableCards: (g.discard ?? []).slice(-3),
+        // Kääntämätön suomi, kirjattu H4:ään; avainta ei lisätä tässä muutoksessa.
+        extraText: g.trump ? `Valtti: ${g.trump}` : null,
+      };
+    },
+  });
 
 
   const M = {
@@ -393,7 +394,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     setTable([]); tableRef.current = [];
     setSel([]); setSelDefTargetIdx(null);
     setFinished([]); finRef.current = [];
-    logRef.current = []; setLog([]); setPakaAnim(false);
+    resetLog(); setPakaAnim(false);
     addLog(M.gameStart(g.trumpCard, g.players[g.attackerIdx].name, g.players[g.defenderIdx].name));
     setScreen('game');
     setShuffling(true);
@@ -401,10 +402,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   }
 
   function startBotBattle() {
-    allBotsRef.current = true; setAllBots(true);
-    aiLevelRef.current = aiLevel;
-    onAiLevelChange?.(aiLevel);
-    aiDelayRef.current = 2000; setAiDelayMs(2000);
+    enterBotBattle(aiLevel, onAiLevelChange, aiLevelRef);
     startGame(nP, true);
   }
 
@@ -933,33 +931,8 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       {/* Katselutila: pending result overlay */}
 
       {/* Loki */}
-      <div style={{ border:`1px solid ${C.panelBorder}`, borderRadius:10, overflow:'hidden' }}>
-        <button onClick={() => onShowLogChange?.(!showLog)} style={{ width:'100%', background:'rgba(255,255,255,0.02)',
-          border:'none', padding:'6px 14px', display:'flex', alignItems:'center',
-          gap:8, cursor:'pointer', color:C.dim }}>
-          <span style={{ fontFamily:'sans-serif', fontSize:10, letterSpacing:1.5, flex:1, textAlign:'left' }}>
-            {t('ui.shared.logTitle')}
-          </span>
-          <span style={{ fontSize:12, transition:'transform 0.2s', transform:logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
-        </button>
-        {logOpen && (
-          <div>
-            {log.map((e, i) => (
-              <div key={i} style={{ display:'flex', gap:10, padding:'4px 14px',
-                borderTop:`1px solid rgba(42,74,50,0.4)`,
-                background:i===0 ? 'rgba(201,168,76,0.04)' : 'transparent' }}>
-                <span style={{ fontSize:10, color:C.dim, fontFamily:'monospace', flexShrink:0, marginTop:1 }}>{e.t}</span>
-                <span style={{ fontSize:12, color:i===0 ? '#c0d8c8' : '#8aaa90', fontFamily:'sans-serif', lineHeight:1.5 }} dangerouslySetInnerHTML={{ __html: e.m }}></span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <GameLog log={log} open={logOpen} onToggle={() => onShowLogChange?.(!showLog)} />
 
-      <style>{`
-        button:active{transform:scale(0.97)}
-        @keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}
-      `}</style>
     </div>
   );
 }

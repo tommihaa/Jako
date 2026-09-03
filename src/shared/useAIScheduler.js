@@ -66,6 +66,15 @@ export function useAIScheduler({
     aiTmr.current = tm(guard(fn), d + Math.random() * jitter);
   };
 
+  // Katselutilan aloitus: taso lukitaan ajoksi, ilmoitetaan App:lle (tilastot) ja viive
+  // hidastetaan katsottavaksi. Oli yhdeksänä kopiona, ja kolmessa oli lisäksi turha
+  // allBotsRef-asetus jonka startGame teki heti perään (kompositioauditointi H1).
+  const enterBotBattle = (level, onLevelChange, levelRef, delay = 2000) => {
+    if (levelRef) levelRef.current = level;
+    onLevelChange?.(level);
+    aiDelayRef.current = delay; setAiDelayMs(delay);
+  };
+
   // Pidä viimeisimmät lisärefit tallessa cleanupia varten (peli voi antaa uudet joka renderillä).
   const timerRefsRef    = useRef(extraTimerRefs);    timerRefsRef.current    = extraTimerRefs;
   const intervalRefsRef = useRef(extraIntervalRefs); intervalRefsRef.current = extraIntervalRefs;
@@ -78,5 +87,6 @@ export function useAIScheduler({
   }, []);
 
   return { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard,
-           paused, setPaused, allBots, setAllBots, aiDelayMs, setAiDelayMs, togglePause };
+           paused, setPaused, allBots, setAllBots, aiDelayMs, setAiDelayMs, togglePause,
+           enterBotBattle };
 }

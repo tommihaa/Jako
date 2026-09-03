@@ -8,8 +8,10 @@ import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, newDeck, sortHand as 
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
+import { useGameLog } from '../shared/useGameLog.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import GameLog from '../shared/GameLog.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 
@@ -456,7 +458,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   const [buildMode, setBuildMode] = useState(false); // rakennustila
   const [leaveMode, setLeaveMode] = useState(false); // jättämistila
   const [msg, setMsg_] = useState('');
-  const [log, setLog] = useState([]);
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
   // `seeAll` on App:n omistama asetus joka ei tallennu, ja `revealAll` on tämän pelin
@@ -488,7 +489,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   const phaseRef = useRef(/** @type {Vaihe} */ ('idle'));
   const prevDeckRef = useRef(null);
   const curRef  = useRef(0);
-  const logRef  = useRef([]);
   const cumulBdRef    = useRef(null); // kumulatiivinen pisteytysdata joka kierros
   const showNextBtnRef = useRef(showNextBtn);
   useEffect(() => { showNextBtnRef.current = showNextBtn; }, [showNextBtn]);
@@ -499,7 +499,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   const botLevelsRef = useRef(botLevels);
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const lastPlayTmr = useRef(null);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; }, [G]);
@@ -555,18 +555,17 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     return () => clearTimeout(tid);
   }, [scores]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function addLog(m) {
-    setMsg_(m);
-    const e = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
-    logRef.current = [e, ...logRef.current].slice(0, LOG_MAX);
-    setLog([...logRef.current]);
-    if (allBotsRef.current && onSnapshot && gRef.current) {
-      const g = gRef.current;
-      onSnapshot({ step: logRef.current.length, logText: m,
+  const { log, logRef, addLog, resetLog } = useGameLog({
+    onMessage: setMsg_, onSnapshot,
+    isBotBattle: () => allBotsRef.current,
+    snapshot: () => {
+      const g = gRef.current; if (!g) return null;
+      return {
         players: g.players.map(p => ({ name: p.name, isHuman: p.isHuman, hand: p.hand ?? [], cardCount: p.hand?.length ?? 0, score: p.score ?? 0 })),
-        tableCards: [...(g.table ?? []), ...(g.builds ?? []).flatMap(b => b.cards ?? [])], extraText: null });
-    }
-  }
+        tableCards: [...(g.table ?? []), ...(g.builds ?? []).flatMap(b => b.cards ?? [])],
+      };
+    },
+  });
 
 
   function flashLastPlay(name, card, isHuman = false) {
@@ -587,7 +586,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     setCur(0); curRef.current = 0;
     setPhase('select_table'); phaseRef.current = 'select_table';
     setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false); setScores(null); setPakaAnim(false);
-    logRef.current = []; setLog([]);
+    resetLog();
     cumulBdRef.current = null;
     if (allBotsMode) {
       addLog(t('games.kasino.msg.botBattleStart'));
@@ -601,9 +600,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   }
 
   function startBotBattle() {
-    aiLevelRef.current = aiLevel;
-    onAiLevelChange?.(aiLevel);
-    aiDelayRef.current = 2000; setAiDelayMs(2000);
+    enterBotBattle(aiLevel, onAiLevelChange, aiLevelRef);
     startGame(nP, true);
   }
 
@@ -1615,22 +1612,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       </div>
 
       {/* Loki */}
-      <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
-        <button onClick={() => onShowLogChange?.(!showLog)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
-          <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
-        </button>
-        {logOpen && (
-          <div>
-            {log.map((e, i) => (
-              <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: '1px solid rgba(42,74,50,0.4)', background: i === 0 ? 'rgba(201,168,76,0.04)' : 'transparent' }}>
-                <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-                <div style={{ fontSize: 12, color: i === 0 ? '#c0d8c8' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }}>{renderLogMessage(e.m)}</div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <GameLog log={log} open={logOpen} onToggle={() => onShowLogChange?.(!showLog)} renderMessage={renderLogMessage} />
 
 
       {/* Vaihtoehdot-modaali */}
@@ -1800,7 +1782,6 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
 
       {/* PendingResult overlay — allBots-tilan loppunäyttö */}
 
-      <style>{`button:active{transform:scale(0.97)}@keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}`}</style>
     </div>
   );
 }

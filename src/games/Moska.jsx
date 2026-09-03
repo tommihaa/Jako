@@ -8,9 +8,11 @@ import { lbl, korttia, kortin, shuffle, SUITS, RANKS, VAL, isRed, aiShouldFumble
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import GameLog from '../shared/GameLog.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
+import { useGameLog } from '../shared/useGameLog.js';
 
 // ── Moska (Durak) ─────────────────────────────────────────────
 // A=14 kaikissa taisteluvertailuissa
@@ -277,7 +279,6 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   const [nP, setNP] = useState(playerCount);
   const cardBack = 'ilves';
   const [G, setG] = useState(/** @type {PeliTila|null} */ (null));  const [msg, setMsg_] = useState('');
-  const [log, setLog] = useState([]);
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
   // `seeAll` on App:n omistama asetus joka ei tallennu, ja `revealAll` on tämän pelin
@@ -305,7 +306,6 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   const removedRef = useRef(new Set()); // korttien rs-avaimet ("A♠") jotka ovat poistuneet pelistä
 
   const gRef    = useRef(null);
-  const logRef  = useRef([]);
   const sndRef         = useRef(soundOn);
   const aiLevelRef     = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
@@ -315,7 +315,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   const prevDeckRef    = useRef(null);
   const lastPlayTmr    = useRef(null);
   const showNextBtnRef = useRef(showNextBtn);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
 
   useEffect(() => { gRef.current = G; }, [G]);
@@ -357,19 +357,19 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
 
   // Kielioppiapuri: Hero = 2. persoona, AI = nimi + 3. persoona
 
-  function addLog(m) {
-    setMsg_(m);
-    const e = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
-    logRef.current = [e, ...logRef.current].slice(0, LOG_MAX);
-    setLog([...logRef.current]);
-    if (allBotsRef.current && onSnapshot && gRef.current) {
-      const g = gRef.current;
-      onSnapshot({ step: logRef.current.length, logText: m,
+  const { log, logRef, addLog, resetLog } = useGameLog({
+    onMessage: setMsg_, onSnapshot,
+    isBotBattle: () => allBotsRef.current,
+    snapshot: () => {
+      const g = gRef.current; if (!g) return null;
+      return {
         players: g.players.map(p => ({ name: p.name, isHuman: p.isHuman, hand: p.hand ?? [], cardCount: p.hand?.length ?? 0, score: null })),
-        tableCards: (g.table ?? []).flatMap(t => [t.atk, t.def].filter(Boolean)),
-        extraText: g.ts ? `Valtti: ${g.ts}` : null });
-    }
-  }
+        tableCards: (g.table ?? []).flatMap(tt => [tt.atk, tt.def].filter(Boolean)),
+        // Kääntämätön suomi, kirjattu H4:ään; avainta ei lisätä tässä muutoksessa.
+        extraText: g.ts ? `Valtti: ${g.ts}` : null,
+      };
+    },
+  });
 
   function setGS(g) { setG(g); gRef.current = g; }
 
@@ -422,7 +422,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     const count = forcedCount ?? nP;
     removedRef.current = new Set();
     const g = initGame(count, playerNames, allBotsMode);
-    logRef.current = []; setLog([]);
+    resetLog();
     setSelAtk([]); setSelDefTarget(null); setSelPass([]); setSelAdd([]); setPakaAnim(false);
     setAwaitingPlayerContinue(false); setPendingDraw(null);
     setGS(g);
@@ -437,10 +437,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   }
 
   function startBotBattle() {
-    allBotsRef.current = true; setAllBots(true);
-    aiLevelRef.current = aiLevel;
-    onAiLevelChange?.(aiLevel);
-    aiDelayRef.current = 2000; setAiDelayMs(2000);
+    enterBotBattle(aiLevel, onAiLevelChange, aiLevelRef);
     startGame(nP, true);
   }
 
@@ -1375,26 +1372,10 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       </div>
 
       {/* Loki */}
-      <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
-        <button onClick={() => onShowLogChange?.(!showLog)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
-          <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
-        </button>
-        {logOpen && (
-          <div>
-            {log.map((e, i) => (
-              <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: '1px solid rgba(42,74,50,0.4)', background: i === 0 ? 'rgba(224,92,59,0.04)' : 'transparent' }}>
-                <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-                <span style={{ fontSize: 12, color: i === 0 ? '#e8d0c8' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: e.m }}></span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <GameLog log={log} open={logOpen} onToggle={() => onShowLogChange?.(!showLog)}
+        accentBg="rgba(224,92,59,0.04)" firstColor="#e8d0c8" />
       <style>{`
-        button:active{transform:scale(0.97)}
         @keyframes slotFlash{0%{box-shadow:0 0 0 3px rgba(201,168,76,0.9),0 0 20px rgba(201,168,76,0.6)}60%{box-shadow:0 0 0 2px rgba(201,168,76,0.5),0 0 10px rgba(201,168,76,0.3)}100%{box-shadow:0 2px 6px rgba(0,0,0,0.3)}}
-        @keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}
       `}</style>
     </div>
   );

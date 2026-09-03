@@ -8,9 +8,11 @@ import { lbl, korttia, shuffle, SUITS, RANKS, VAL, aiShouldFumble, truncName, so
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import GameLog from '../shared/GameLog.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import HandoffScreen from '../shared/HandoffScreen.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
+import { useGameLog } from '../shared/useGameLog.js';
 import PlayerSetup, { slotsToPlayers } from '../shared/PlayerSetup.jsx';
 
 // ── Seiska ─────────────────────────────────────────────────────
@@ -280,7 +282,6 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   const [handoff,     setHandoff] = useState(null); // null | { name }
   const cardBack = 'ilves';
   const [G,           setG]       = useState(/** @type {PeliTila|null} */ (null));  const [msg,         setMsg_]    = useState('');
-  const [log,         setLog]     = useState([]);
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   const [selected,    setSel]     = useState([]);
   // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
@@ -299,7 +300,6 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   const [advice, setAdvice] = useState(null); // { text, cardIds } | null
 
   const gRef   = useRef(null);
-  const logRef = useRef([]);
   const sndRef = useRef(soundOn);
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
@@ -310,7 +310,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   const prevRCRef    = useRef(0);
   const lastPlayTmr  = useRef(null);
   const pendingFnRef = useRef(null);
-  const { aiTmr, tmrs, pausedRef, aiDelayRef, tm, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause } =
+  const { aiTmr, tmrs, pausedRef, aiDelayRef, tm, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, enterBotBattle } =
     useAIScheduler({
       defaultDelay: 1200, extraTimerRefs: [lastPlayTmr],
       // Seiskan oma jatko: tauolla odottava siirto ajetaan kun tauko vapautetaan.
@@ -383,18 +383,17 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     return () => clearInterval(iv);
   }, [G?.pendingLappu]);
 
-  function addLog(m) {
-    setMsg_(m);
-    const e = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
-    logRef.current = [e, ...logRef.current].slice(0, LOG_MAX);
-    setLog([...logRef.current]);
-    if (onSnapshot && gRef.current?.players.every(p => !p.isHuman)) {
-      const g = gRef.current;
-      onSnapshot({ step: logRef.current.length, logText: m,
+  const { log, logRef, addLog, resetLog } = useGameLog({
+    onMessage: setMsg_, onSnapshot,
+    isBotBattle: () => !!gRef.current?.players.every(p => !p.isHuman),
+    snapshot: () => {
+      const g = gRef.current; if (!g) return null;
+      return {
         players: g.players.map(p => ({ name: p.name, isHuman: p.isHuman, hand: p.hand ?? [], cardCount: p.hand?.length ?? 0, score: null })),
-        tableCards: g.discardTop ? [g.discardTop] : [], extraText: null });
-    }
-  }
+        tableCards: g.discardTop ? [g.discardTop] : [],
+      };
+    },
+  });
 
   function setGS(g) { setG(g); gRef.current = g; }
 
@@ -446,7 +445,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     pausedRef.current = false; setPaused(false); pendingFnRef.current = null; setIntention(null);
     const playerDefs = slotsToPlayers(forcedSlots || playerSlots, playerNames);
     const g = mkInitState(playerDefs);
-    logRef.current = []; setLog([]); setSel([]); setPakaAnim(false); setHandoff(null);
+    resetLog(); setSel([]); setPakaAnim(false); setHandoff(null);
     setGS(g);
     setRevealAll(seeAll || g.players.every(p => !p.isHuman));
     addLog(M.gameStart(lblColored(g.discardTop)));
@@ -472,9 +471,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   }
 
   function startBotBattle() {
-    aiLevelRef.current = aiLevel;
-    onAiLevelChange?.(aiLevel);
-    aiDelayRef.current = 2000; setAiDelayMs(2000);
+    enterBotBattle(aiLevel, onAiLevelChange, aiLevelRef);
     const slots = Array(nP).fill(null).map((_, i) => ({ name: '', isHuman: false, active: true }));
     startGame(slots);
   }
@@ -1276,25 +1273,9 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       </div>
 
       {/* Loki */}
-      <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
-        <button onClick={() => onShowLogChange?.(!showLog)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
-          <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
-        </button>
-        {logOpen && (
-          <div>
-            {log.map((e, i) => (
-              <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: '1px solid rgba(42,74,50,0.4)', background: i === 0 ? 'rgba(201,168,76,0.04)' : 'transparent' }}>
-                <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-                <span style={{ fontSize: 12, color: i === 0 ? '#c8e0d0' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: e.m }}></span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <GameLog log={log} open={logOpen} onToggle={() => onShowLogChange?.(!showLog)} />
 
 
-      <style>{`button:active{transform:scale(0.97)}@keyframes lastPlayFade{0%{opacity:0;transform:translateY(-4px)}12%{opacity:1;transform:translateY(0)}85%{opacity:1}100%{opacity:0}}`}</style>
     </div>
   );
 }

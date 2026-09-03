@@ -8,9 +8,11 @@ import { isRed, lbl, shuffle, newDeck, shuffledAINames, lblColored, LOG_MAX, BOT
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import GameLog from '../shared/GameLog.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
 import { useT, tr } from '../shared/i18n.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
+import { useGameLog } from '../shared/useGameLog.js';
 import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 
 const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
@@ -219,7 +221,6 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   const [curIdx, setCurIdx]     = useState(0);
   const [drawn, setDrawn]       = useState(null);
   const [msg, setMsg_]          = useState('');
-  const [log, setLog]           = useState([]);
   // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
   // `seeAll` on App:n omistama asetus joka ei tallennu, ja `revealAll` on tämän pelin
   // näkymätila. Katselutila pakottaa paljastuksen päälle koskematta asetukseen, ja
@@ -241,7 +242,6 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   const [intention, setIntention] = useState(null); // { playerIdx, slotIdx } | null
   const [advice, setAdvice] = useState(null); // { text, slot?, target? } | null
 
-  const logRef     = useRef([]);
   const gRef       = useRef(null);
   const knockRef   = useRef(null);
   const prevDeckRef = useRef(null);
@@ -256,22 +256,20 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const sndRef     = useRef(soundOn);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraIntervalRefs: [reactInt] });
 
-  const setMsg = m => {
-    setMsg_(m);
-    if (!m) return;
-    const entry = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
-    logRef.current = [entry, ...logRef.current].slice(0, LOG_MAX);
-    setLog([...logRef.current]);
-    if (allBotsRef.current && onSnapshot && gRef.current) {
-      const g = gRef.current;
-      onSnapshot({ step: logRef.current.length, logText: m,
+  const { log, logRef, addLog: setMsg, resetLog } = useGameLog({
+    onMessage: setMsg_, skipEmpty: true, onSnapshot,
+    isBotBattle: () => allBotsRef.current,
+    snapshot: () => {
+      const g = gRef.current; if (!g) return null;
+      return {
         players: g.players.map(p => ({ name: p.name, isHuman: p.isHuman, hand: p.cards ?? [], cardCount: p.cards?.length ?? 0, score: null })),
-        tableCards: (g.discard ?? []).slice(-1), extraText: null });
-    }
-  };
+        tableCards: (g.discard ?? []).slice(-1),
+      };
+    },
+  });
 
   useEffect(() => { gRef.current = G; }, [G]);
   useEffect(() => { setAdvice(null); }, [G, phase, drawn]); // neuvo vanhenee tilamuutoksista
@@ -309,7 +307,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     setG(g); gRef.current = g;
     setDrawn(null); setKB(null); knockRef.current = null;
     setLR(null); lrRef.current = null; setSS(null); setRO(false);
-    logRef.current = []; setLog([]); setPakaAnim(false);
+    resetLog(); setPakaAnim(false);
     if (allBotsMode) {
       // Ohita kurkkausvaihe — kaikki botit tietävät jo 2 korttiaan
       const si = 1 % cnt;
@@ -328,9 +326,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   }
 
   function startBotBattle() {
-    aiLevelRef.current = aiLevel;
-    onAiLevelChange?.(aiLevel);
-    aiDelayRef.current = 2000; setAiDelayMs(2000);
+    enterBotBattle(aiLevel, onAiLevelChange, aiLevelRef);
     startGame(nP, true);
   }
 
@@ -923,22 +919,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
         <button onClick={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${revealAll ? C.gold + '55' : '#2a4a32'}`, background: 'transparent', color: revealAll ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{revealAll ? '🙈' : '🔍'} {t('ui.shared.openCards')}</button>
       </div>
 
-      <div style={{ marginTop: 14, border: '1px solid #1a3a22', borderRadius: 12, overflow: 'hidden' }}>
-        <button onClick={() => onShowLogChange?.(!showLog)} style={{ width: '100%', background: 'rgba(255,255,255,0.02)', border: 'none', borderBottom: logOpen ? '1px solid #1a3a22' : 'none', padding: '7px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
-          <span style={{ fontSize: 11, fontFamily: 'sans-serif', letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
-          <span style={{ fontSize: 14, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
-        </button>
-        {logOpen && (
-          <div>
-            {log.map((e, i) => (
-              <div key={i} style={{ display: 'flex', gap: 10, padding: '5px 14px', borderBottom: '1px solid rgba(42,74,50,0.3)', background: i === 0 ? 'rgba(201,168,76,0.04)' : 'transparent' }}>
-                <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-                <span style={{ fontSize: 12, color: i === 0 ? '#c0d8c8' : '#8aaa90', fontFamily: 'sans-serif', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: e.m }}></span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <GameLog log={log} open={logOpen} onToggle={() => onShowLogChange?.(!showLog)} />
 
       {/* PendingResult overlay — allBots-tilan loppunäyttö */}
 

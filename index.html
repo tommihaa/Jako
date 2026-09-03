@@ -23,6 +23,16 @@
         0%, 100% { box-shadow: 0 0 0 3px #c084fc, 0 0 22px 4px rgba(192,132,252,0.75); }
         50%      { box-shadow: 0 0 0 3px #c084fc, 0 0 34px 10px rgba(192,132,252,0.95); }
       }
+      /* Viimeisin siirto -indikaattori. Oli seitsemänä kopiona pelien omissa
+         style-lohkoissa; yhtenäistetty 3.9.2026 (kompositioauditointi H1). */
+      @keyframes lastPlayFade {
+        0%   { opacity: 0; transform: translateY(-4px); }
+        12%  { opacity: 1; transform: translateY(0); }
+        85%  { opacity: 1; }
+        100% { opacity: 0; }
+      }
+      /* Nappien painallustuntuma, oli myös yhdeksänä kopiona. */
+      button:active { transform: scale(0.97); }
       /* Kunnioita käyttäjän liikkeenvähennysasetusta: sammuta animaatiot */
       @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after {

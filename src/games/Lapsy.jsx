@@ -9,7 +9,9 @@ import FanStack from '../shared/FanStack.jsx';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import GameLog from '../shared/GameLog.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
+import { useGameLog } from '../shared/useGameLog.js';
 
 
 const SPEC   = { J: 1, Q: 2, K: 3, A: 4 };
@@ -56,7 +58,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   const [curTurn, setCur]   = useState(0);
   const [challenge, setCh]  = useState(null);
   const [msg, setMsg]       = useState('');
-  const [log, setLog]       = useState([]);
   const cardBack = 'ilves';
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
@@ -97,8 +98,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   const failTmr      = useRef(null);
   const duelTmr      = useRef(null);
   const halvePending = useRef(false);
-  const logRef       = useRef([]);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [failTmr] });
   const allBotNamesRef = useRef([]);
   const onSnapshotRef = useRef(onSnapshot);
@@ -112,19 +112,16 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   useEffect(() => { chRef.current = challenge; }, [challenge]);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
 
-  const addLog = useCallback(m => {
-    const entry = { t: new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' }), m };
-    logRef.current = [entry, ...logRef.current].slice(0, LOG_MAX);
-    setLog([...logRef.current]);
-    setMsg(m);
-    if (allBotsRef.current && onSnapshotRef.current) {
-      onSnapshotRef.current({ step: logRef.current.length, logText: m,
-        players: (pilesRef.current ?? []).map((pile, i) => ({
-          name: allBotNamesRef.current[i] ?? `Bot${i + 1}`,
-          isHuman: false, hand: pile ?? [], cardCount: pile?.length ?? 0, score: null })),
-        tableCards: (centerRef.current ?? []).slice(-5), extraText: null });
-    }
-  }, []);
+  const { log, logRef, addLog, resetLog } = useGameLog({
+    onMessage: setMsg, onSnapshot,
+    isBotBattle: () => allBotsRef.current,
+    snapshot: () => ({
+      players: (pilesRef.current ?? []).map((pile, i) => ({
+        name: allBotNamesRef.current[i] ?? `Bot${i + 1}`,
+        isHuman: false, hand: pile ?? [], cardCount: pile?.length ?? 0, score: null })),
+      tableCards: (centerRef.current ?? []).slice(-5),
+    }),
+  });
 
 
   const pName = i => allBotsRef.current ? (allBotNamesRef.current[i] ?? `Bot${i + 1}`) : (i === 0 ? 'Hero' : aiNames[i - 1]);
@@ -182,7 +179,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     setCh(null); chRef.current = null;
     setSR(null);
     finishOrderRef.current = []; // eliminointijärjestys, ensin poistunut ensin
-    logRef.current = []; setLog([]);
+    resetLog();
     memoryRef.current = { seenByRank: {}, knownBottoms: {} };
     predMatchRef.current = false;
     addLog(M.gameStart);
@@ -196,9 +193,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
 
   function startBotBattle() {
     allBotNamesRef.current = shuffledAINames(playerNames).slice(0, nP);
-    aiLevelRef.current = aiLevel;
-    onAiLevelChange?.(aiLevel);
-    aiDelayRef.current = 2000; setAiDelayMs(2000);
+    enterBotBattle(aiLevel, onAiLevelChange, aiLevelRef);
     startGame(nP, true);
   }
 
@@ -752,22 +747,9 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
       )}
 
 
-      <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
-        <button onClick={() => onShowLogChange?.(!showLog)} style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
-          <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: logOpen ? 'rotate(90deg)' : 'none' }}>›</span>
-        </button>
-        {logOpen && (
-          <div>
-            {log.map((e, i) => (
-              <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: '1px solid rgba(42,26,26,0.5)', background: i === 0 ? 'rgba(200,50,30,0.04)' : 'transparent' }}>
-                <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-                <span style={{ fontSize: 12, color: i === 0 ? '#dd9988' : C.dim, fontFamily: 'sans-serif', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: e.m }}></span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <GameLog log={log} open={logOpen} onToggle={() => onShowLogChange?.(!showLog)}
+        headerBg="rgba(255,255,255,0.03)" rowBorder="1px solid rgba(42,26,26,0.5)"
+        accentBg="rgba(200,50,30,0.04)" firstColor="#dd9988" restColor={C.dim} />
       <style>{`
         @keyframes slapPulse{0%,100%{box-shadow:0 0 32px ${C.red}88}50%{box-shadow:0 0 52px ${C.red}cc}}
         @keyframes cardMatch{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
@@ -784,7 +766,6 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
           72%{opacity:1;transform:translateX(-50%) translateY(0)}
           100%{opacity:0;transform:translateX(-50%) translateY(6px)}
         }
-        button:active{transform:scale(0.96)}
       `}</style>
 
     </div>
