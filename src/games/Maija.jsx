@@ -280,7 +280,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);
   const cardBack = 'ilves';
-  const { G, gRef, setG, setGS } = useGameState();
+  const { G, gRef, setGS } = useGameState();
   const [selectedCards, setSel] = useState([]);
   const [selDefTargetIdx, setSelDefTargetIdx] = useState(null);
   const [msg, setMsg_] = useState('');
@@ -413,12 +413,14 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
 
   // Palauttaa pelitilan johon uusi finished on kirjattu. Ennen se palautti pelkän
   // listan, ja kutsuja kuljetti sitä erikseen kolmen funktion läpi.
-  function checkWinners(g) {
+  // `lines` kerää lokirivit kutsujalle: tila kirjoitetaan ennen lokiriviä
+  // (kompositioauditointi H4), ja kierroksen tilan committoi vasta advanceRound.
+  function checkWinners(g, lines = /** @type {string[]} */ ([])) {
     const newFin = [...g.finished];
     g.players.forEach((p, i) => {
       if (!newFin.includes(i) && p.hand.length===0 && g.deck.length===0) {
         newFin.push(i);
-        addLog(M.finishedGame(p.name, newFin.length));
+        lines.push(M.finishedGame(p.name, newFin.length));
       }
     });
     const active = g.players.filter((_, i) => !newFin.includes(i));
@@ -427,13 +429,14 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
         const loser = active[0];
         const isMaijaPlayer = loser.hand.some(isMaija);
         if (sndRef.current) SFX.maija();
-        addLog(M.maija(loser.name, isMaijaPlayer));
+        lines.push(M.maija(loser.name, isMaijaPlayer));
       }
       const fullFin = [...newFin, ...active.map(p => p.id)];
       const ranking = fullFin.map((idx, pos) => ({
         name: g.players[idx].name, place: pos + 1, isHuman: g.players[idx].isHuman,
       }));
-      setGS({ ...g, finished: newFin, phase: /** @type {Vaihe} */ ('gameover') });
+      commit({ ...g, finished: newFin, phase: /** @type {Vaihe} */ ('gameover') });
+      lines.forEach(addLog);
       // Ihmispelissä pidempi viive kuin katselutilassa: viimeinen tikki jää näkyviin
       // ennen kuin App vaihtaa tulosruutuun.
       tm(() => onResult?.({ ranking }), allBotsRef.current ? BOT_RESULT_DELAY : 1800);
@@ -457,12 +460,14 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     return { newAtt, newDef };
   }
 
-  function advanceRound(g, skipDefender) {
+  function advanceRound(g, skipDefender, lines = /** @type {string[]} */ ([])) {
     const { newAtt, newDef } = nextAttDef(g, skipDefender, g.finished);
     const g4 = { ...g, attackerIdx:newAtt, defenderIdx:newDef, table: [],
                  phase: /** @type {Vaihe} */ ('attacking') };
     setSel([]); setSelDefTargetIdx(null);
-    commit(g4, M.newAttack(g4.players[newAtt].name, g4.players[newDef].name));
+    commit(g4);
+    lines.forEach(addLog);
+    addLog(M.newAttack(g4.players[newAtt].name, g4.players[newDef].name));
     aiTmr.current = tm(() => maybeAIAttack(g4), 1800);
   }
 
@@ -471,9 +476,10 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     let g2 = { ...g, discard:[...g.discard, ...allCards] };
     g2 = drawHand(g2, g.defenderIdx);
     g2 = drawHand(g2, g.attackerIdx);
-    const { done, g2:g3 } = checkWinners(g2);
+    const lines = /** @type {string[]} */ ([]);
+    const { done, g2:g3 } = checkWinners(g2, lines);
     if (done) return;
-    advanceRound(g3, false);
+    advanceRound(g3, false, lines);
   }
 
   function resolveDefenseLoss(g) {
@@ -483,11 +489,11 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     let g2 = { ...g, players, discard:[...g.discard, ...beaten] };
     if (sndRef.current) SFX.take();
     const detail = beaten.length > 0 ? t('games.maija.msg.beatDetail', { n: beaten.length >> 1 }) : '';
-    addLog(M.defendTake(g.players[g.defenderIdx].name, unbeaten.length, detail));
+    const lines = /** @type {string[]} */ ([M.defendTake(g.players[g.defenderIdx].name, unbeaten.length, detail)]);
     g2 = drawHand(g2, g2.attackerIdx);
-    const { done, g2:g3 } = checkWinners(g2);
+    const { done, g2:g3 } = checkWinners(g2, lines);
     if (done) return;
-    advanceRound(g3, true);
+    advanceRound(g3, true, lines);
   }
 
   function maybeAIAttack(g) {
