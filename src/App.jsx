@@ -1450,12 +1450,29 @@ export default function App() {
               {changelogData.map((entry, i) => (
                 <div key={i} style={{ marginBottom: 12 }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1, opacity: 0.8, marginBottom: 4, textTransform: 'uppercase' }}>{entry.date}</div>
-                  {entry.items.map((item, j) => (
-                    <div key={j} style={{ display: 'flex', gap: 6, marginBottom: 3 }}>
-                      <span style={{ color: C.gold, fontSize: 10, flexShrink: 0, marginTop: 3 }}>▸</span>
-                      <span style={{ fontSize: 11, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.55 }}>{item}</span>
-                    </div>
-                  ))}
+                  {entry.items.map((item, j) => {
+                    // Rivi on joko merkkijono tai { text, revoked }. Kumottu rivi jää paikalleen
+                    // ja luettavaksi, koska muutosloki on historiaa; himmennys ja merkki kertovat
+                    // ettei se kuvaa nykytilaa. Ks. src/changelogs/fi.js.
+                    const teksti  = typeof item === 'string' ? item : item.text;
+                    const kumottu = typeof item === 'string' ? null : item.revoked;
+                    return (
+                      <div key={j} style={{ display: 'flex', gap: 6, marginBottom: 3 }}>
+                        <span style={{ color: C.gold, fontSize: 10, flexShrink: 0, marginTop: 3 }}>▸</span>
+                        <span style={{ fontSize: 11, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.55, opacity: kumottu ? 0.5 : 1 }}>
+                          {kumottu && (
+                            <span style={{ fontSize: 9, letterSpacing: 1, textTransform: 'uppercase', color: C.gold, border: `1px solid ${C.panelBorder}`, borderRadius: 4, padding: '1px 5px', marginRight: 6, whiteSpace: 'nowrap' }}>
+                              Kumottu
+                            </span>
+                          )}
+                          {teksti}
+                          {kumottu && (
+                            <span style={{ display: 'block', marginTop: 3, fontStyle: 'italic', color: C.dim }}>{kumottu}</span>
+                          )}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               ))}
             </div>

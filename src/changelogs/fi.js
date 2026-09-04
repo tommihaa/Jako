@@ -4,6 +4,10 @@
 // saman käännöstyön joka deployssa ilman käännösmuistia. Selaimen oma Käännä-toiminto
 // kattaa muut kielet niille jotka haluavat lukea lokin.
 // Ladataan laiskana chunkkina vasta kun Info → Muutosloki avataan.
+// Rivi on yleensä merkkijono. Kumottu rivi on sen sijaan { text, revoked }, jossa `revoked`
+// on lyhyt selitys siitä milloin ja miksi rivi lakkasi pitämästä paikkaansa. App.jsx piirtää
+// sen himmennettynä ja Kumottu-merkin kanssa. **Älä muokkaa tai poista vanhaa riviä:**
+// muutosloki on historiaa eikä nykytilan kuvaus, ja korjaus kuuluu uuteen merkintään.
 // /deploy lisää uusimman merkinnän TÄHÄN tiedostoon, taulukon alkuun. Älä luo
 // kielikohtaisia tiedostoja: tämän ylätunnisteen aiempi versio ohjeisti niin vielä
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
@@ -11,6 +15,7 @@ export const CHANGELOG = [
   {
     date: '4.9.2026',
     items: [
+      'Muutosloki merkitsee nyt kumoutuneet rivit. Kaksi vanhaa merkintää kertoi tason vaikuttavan vähän Ristiseiskassa, Kasinossa ja Paskahousussa. Ne näkyvät yhä, koska loki on historiaa, mutta himmennettyinä ja Kumottu-merkillä varustettuina.',
       'Asetusten Koneäly-osiosta on poistettu merkintä, joka kertoi tason vaikuttavan vähän Ristiseiskassa, Kasinossa ja Paskahousussa. Merkintä oli väärin. Mittarissamme oli vika, joka sekoitti pelaajan paikan ja tason keskenään ja sai nämä kolme peliä näyttämään tasaisemmilta kuin ne ovat. Mittasimme vian korjattuamme kaikki yhdeksän peliä uudelleen 13 500 pelin sarjoilla, ja tasoero on todellinen jokaisessa niistä. Kasino oli pahiten väärin. Siellä Mestari voittaa Oppipojan kolme kertaa neljästä, ei puolet kuten vanha luku väitti.',
       'Kasinossa vastustajien nimet pysyvät nyt samoina koko ottelun ajan. Aiemmin nimet arvottiin uudelleen jokaisen kierroksen alussa, joten sama pelaaja saattoi olla kierroksella eri niminen, vaikka hänen pisteensä seurasivat mukana.',
     ],
@@ -42,7 +47,10 @@ export const CHANGELOG = [
     date: '20.8.2026',
     items: [
       'Moskan Mestari osaa nyt lyödä useamman samanarvoisen kortin kerralla, mutta vasta silloin kun nostopakka on tyhjä. Säännöt ovat sallineet sen alusta asti ja pelaaja on voinut tehdä niin, mutta botti löi aina vain yhden kortin. Pakan loputtua käsi ei enää täydenny, joten koko ryhmän lyöminen kerralla on silloin oikea siirto. Mittasimme muutoksen 400 pelin sarjalla eikä se muuttanut voitto-osuuksia, joten kyse on pelitavan uskottavuudesta eikä vaikeustason noususta. Kysy Mestalta kertoo saman perustelun kun tilanne osuu kohdalle.',
-      'Paskahousun Koneäly-asetus kertoo nyt suoraan, että vaikeustason vaikutus jää tässä pelissä pieneksi. Mittasimme kaikki kolme tasoparia 400 pelin sarjoilla, ja voitto-osuudet olivat noin 54, 50 ja 49 prosenttia eli käytännössä kolikonheittoja. Botit pelaavat yhä eri tavoin ja tasovalitsin toimii, mutta ero ei muutu voitoiksi, joten emme lupaa sitä asetuksissa. Sama merkintä on ennestään Ristiseiskassa ja Kasinossa.',
+      {
+        text: 'Paskahousun Koneäly-asetus kertoo nyt suoraan, että vaikeustason vaikutus jää tässä pelissä pieneksi. Mittasimme kaikki kolme tasoparia 400 pelin sarjoilla, ja voitto-osuudet olivat noin 54, 50 ja 49 prosenttia eli käytännössä kolikonheittoja. Botit pelaavat yhä eri tavoin ja tasovalitsin toimii, mutta ero ei muutu voitoiksi, joten emme lupaa sitä asetuksissa. Sama merkintä on ennestään Ristiseiskassa ja Kasinossa.',
+        revoked: 'Kumottu 4.9.2026. Mittaus oli viallinen, ja merkintä on poistettu.',
+      },
     ],
   },
   {
@@ -73,7 +81,10 @@ export const CHANGELOG = [
   {
     date: '21.7.2026',
     items: [
-      'Ristiseiskassa ja Kasinossa Koneälyn taso -asetus kertoo nyt suoraan, että näissä peleissä tason vaikutus lopputulokseen on pieni. Mittasimme bottien keskinäisiä otteluita 400 pelin sarjoilla, eivätkä tasot erottuneet toisistaan: jokainen tasopari voitti noin puolet peleistä. Ristiseiskassa kenelläkään ei ole etulyöntiasemaa eikä tietoa toisten korteista, joten pelissä on vaikea pelata pahasti väärin; Kasinossa taas jakotuuri ratkaisee kaappauspelin siinä määrin, että taito hukkuu siihen. Muissa peleissä tasoero on mitattu todelliseksi, joten merkintä näkyy vain näissä kahdessa.',
+      {
+        text: 'Ristiseiskassa ja Kasinossa Koneälyn taso -asetus kertoo nyt suoraan, että näissä peleissä tason vaikutus lopputulokseen on pieni. Mittasimme bottien keskinäisiä otteluita 400 pelin sarjoilla, eivätkä tasot erottuneet toisistaan: jokainen tasopari voitti noin puolet peleistä. Ristiseiskassa kenelläkään ei ole etulyöntiasemaa eikä tietoa toisten korteista, joten pelissä on vaikea pelata pahasti väärin; Kasinossa taas jakotuuri ratkaisee kaappauspelin siinä määrin, että taito hukkuu siihen. Muissa peleissä tasoero on mitattu todelliseksi, joten merkintä näkyy vain näissä kahdessa.',
+        revoked: 'Kumottu 4.9.2026. Mittaus oli viallinen, ja merkintä on poistettu.',
+      },
       'Info-paneelin versionumero näyttää nyt oikean version. Aiemmin tuotannossa näkyi väärä, liian pieni numero (esimerkiksi 1.2.010), koska numero laskettiin julkaisupalvelimella tavalla joka ei nähnyt kuin pienen osan projektin historiasta. Numero on nyt kiinteä osa julkaisua, joten se on sama kaikkialla. Buildin päiväys ja kellonaika ovat olleet koko ajan oikein.',
       'Mestarin neuvo erottuu nyt selvemmin: osoitettu kortti saa sykkivän purppurakehän ja nousee hieman ylös, ja muut kortit himmenevät neuvon ajaksi. Aiemmin korostus oli vaisu ja osoitettu kortti saattoi hukkua käteen. Koskee kaikkia pelejä.',
       'Seiska ja Paskahousu: näkymä ei enää nytkähdä ylöspäin kesken pelin, kun joku pääsee korteistaan eroon. Aiemmin pelaajan korttirivi kutistui tyhjäksi sillä hetkellä kun hän lopetti, jolloin kaikki sen alapuolella oleva hyppäsi ylös. Nyt rivi säilyttää korkeutensa loppuun asti.',
