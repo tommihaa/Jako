@@ -800,3 +800,22 @@ ristiintarkistettavissa, koska niillä ei ole puhdasta saumaa.
 merkinnät kertovat pelaajalle, ettei tason vaikutus näy Ristiseiskassa, Kasinossa eikä
 Paskahousussa. Nuo väitteet nojaavat vialliseen mittaukseen. Ne on joko päivitettävä uusilla
 luvuilla tai poistettava. Se on pelaajalle näkyvää tekstiä eli Tommin päätös.
+
+### Ajo tehtiin 4.9.2026, ja se kaatoi enemmän kuin oli tarkoitus
+
+Ajo on tehty kello 01:43–06:21, ja luvut asuvat `docs/BOTBENCH.md`:n osiossa "Koko kartta
+uudelleen 4.9.2026". Se on 13 500 peliä, `unmapped` nolla joka erässä. Kolme tämän osion
+ennakointia osui, ja yksi meni pieleen.
+
+Osui. Kasinon luvut olivat mielivaltaisia eivätkä litteitä, ja oikea tulos on
+76,0 / 61,8 / 79,4. Ristiseiskan puhdas sauma oli oikeassa, ja komponenttisauma antoi
+66,1 kun puhdas antoi 66,45. Ja `FLAT_AI_GAMES`in ehto ei enää täyty yhdessäkään
+kolmesta pelistä.
+
+Meni pieleen. Tämä osio odotti, että uhattuna on yksi päätelmä, eli 21.7.2026 kirjattu
+*terveet ladderit oli otosharha*. Uhattuna oli myös sen kumoaminen. Seiskalla, Moskalla ja
+Ristiseiskalla on nyt porras kaikissa kolmessa parissa, joten kumoamisen peruste oli itsekin
+mitattu vialliselle kytkennälle. Vika ei ollut otoskoossa vaan siinä että N=400 mittasi
+tarkasti väärää asiaa. **Oppi ei ole se että otos oli liian pieni.** Viallinen mittari ei
+tuota satunnaista kohinaa vaan systemaattisen harhan, ja iso otos vahvistaa sen harhan
+sen sijaan että poistaisi sen. Otoskoon kasvattaminen ei siis ole tarkistus.

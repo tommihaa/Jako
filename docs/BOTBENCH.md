@@ -831,6 +831,77 @@ tässä porras laski), ja työpuu todennettiin palautuksen jälkeen puhtaaksi `g
 kutoskiristys ja lukumääräsääntö on kaikki mitattu, eikä yksikään liikuttanut porrasta
 ylöspäin.
 
+## Koko kartta uudelleen 4.9.2026 (N=400, kolmelle pelille N=800)
+
+Botbench kytki tuloksen istuimeen nimen kautta, ja `AI_NAMES` oli kolme nimeä. Neljän
+pelaajan pelissä istuimet 0 ja 3 saivat siis saman nimen, ja `indexOf` osui aina
+istuimeen 0. Istumajärjestys on ABAB, joten vika käänsi tason ja veti voitto-osuutta
+kohti 50 prosenttia. Kasinossa vika oli toista lajia, koska se alustaa pelaajat joka
+kierroksella ja arpoi nimet uusiksi. Vika oli mittarissa sen ensimmäisestä versiosta
+(`311a9f0`, 18.7.2026), joten **jokainen tätä edeltävä tämän dokumentin luku on mitattu
+vialliselle kytkennälle.** Korjaus on versiossa 1.2.220.
+
+Tämä osio korvaa ne. Ajo tehtiin 4.9.2026 kello 01:43–06:21, ja se on 13 500 peliä.
+Kaikki yhdeksän peliä ja kaikki kolme paria N=400:lla, ja sen jälkeen N=800 niille
+kolmelle joista `FLAT_AI_GAMES`-merkintä riippuu. N=800 korvaa niiden N=400:n eikä
+täydennä sitä, koska siemen on kierrosindeksi ja isompi otos sisältää pienemmän
+sellaisenaan. `unmapped` oli nolla joka erässä. Kaksi peliä jäi pattiin
+(`stalled`), molemmat Paskahousussa parissa `hard vs normal`.
+
+Luku on ensin mainitun tason voitto-osuus, tasapelit puolikkaina. `z` on poikkeama
+50 prosentista keskivirheinä, ja hakasulkeissa on vanha viallinen luku.
+
+| Peli        |     N | hard vs beginner | hard vs normal | normal vs beginner |
+|-------------|------:|-----------------:|---------------:|-------------------:|
+| Koputus     |   400 | 96,0 % z 18,4 [69,9] | 67,9 % z 7,1 [61,6] | 84,6 % z 13,8 [66,9] |
+| Maija       |   400 | 95,0 % z 18,0 [57,8] | 59,6 % z 3,9 [52,9] | 92,8 % z 17,1 [51,3] |
+| Moska       |   400 | 91,8 % z 16,7 [71,8] | 57,2 % z 2,9 [53,5] | 90,0 % z 16,0 [65,8] |
+| Läpsy       |   400 | 90,0 % z 16,0 [91,8] | 87,0 % z 14,8 [85,8] | 83,0 % z 13,2 [80,5] |
+| Kasino      |   800 | 76,0 % z 14,7 [53,8] | 61,8 % z 6,7 [48,9] | 79,4 % z 16,7 [51,5] |
+| Seiska      |   400 | 73,8 % z 9,5 [78,5] | 58,0 % z 3,2 [58,0] | 66,0 % z 6,4 [69,5] |
+| Ristiseiska |   800 | 66,1 % z 9,1 [55,8] | 56,6 % z 3,7 [55,0] | 58,0 % z 4,5 [51,3] |
+| Kultakala   |   400 | 62,1 % z 4,8 [55,2] | 52,4 % z 1,0 [50,9] | 67,6 % z 7,1 [57,6] |
+| Paskahousu  |   800 | 56,5 % z 3,7 [53,6] | 49,7 % z -0,2 [49,5] | 56,5 % z 3,7 [49,0] |
+
+### Mitä muuttui
+
+**Mikään peli ei enää täytä `FLAT_AI_GAMES`in ehtoa.** Ehto on N≥400 ja kaikki kolme
+paria noin 50 prosenttia. Kasino ja Ristiseiska ovat merkitsevästi yli kaikissa
+kolmessa parissa, ja Paskahousukin kahdessa (z 3,7). Merkinnän kohtalo on Tommin päätös,
+koska se on pelaajalle näkyvää tekstiä; mittari sanoo vain, ettei sen oma ehto enää täyty
+yhdessäkään pelissä.
+
+**Kasinon vanhat luvut eivät olleet litteitä vaan mielivaltaisia.** Nimien uudelleenarvonta
+kierrosten välissä irrotti tuloksen istuimesta kokonaan, joten 53,8 / 48,9 / 51,5 ei mitannut
+tasoparia lainkaan. Oikea luku on 76,0 / 61,8 / 79,4. Kasino ei siis ole mittarin heikoin
+porras vaan sen viidenneksi vahvin, ja päätelmä *jakotuuri hukuttaa taidon* oli mittausvirhe.
+
+**"Terveet ladderit oli otosharha" oli itsekin väärä päätelmä.** 21.7.2026 kumottiin
+Seiskan, Moskan ja Ristiseiskan asema referenssipeleinä sillä perusteella, että N=30
+yliarvioi tasoeron. Kaikilla kolmella on nyt porras kaikissa kolmessa parissa. Otoskoko
+ei ollut se mikä oli vialla vaan istuinkytkentä, ja N=400 mittasi tarkasti väärää asiaa.
+Vanha varoitus pienestä otoksesta pysyy voimassa omana asianaan, mutta sitä ei tueta enää
+tällä tapauksella.
+
+**Ristiseiskan kaksi saumaa ovat samaa mieltä.** Komponenttisauma antoi 66,1 / 56,6 / 58,0
+ja puhdas sauma N=100000:lla 66,45 / 58,87 / 57,83 (`test/botbench-puhdas.test.js`). Erot
+ovat 0,35, 2,27 ja 0,17 prosenttiyksikköä eli z 0,21, 1,29 ja 0,10, joten yksikään ei ole
+merkitsevä. Tämä sulkee sen varauksen jonka puhtaan sauman otsikkokommentti nostaa:
+`ristiseiska-saumapari.test.jsx` pitää saumat samaa mieltä vain Mestari-tasolla, joten
+Oppipojan ja Kisällin virhearvonta olisi voinut haarauttaa ne. Se ei haarauttanut.
+Varaus on nyt mitattu eikä vain kirjattu, ja se koskee yhä muita pelejä, joilla puhdasta
+saumaa ei ole.
+
+**Ylin porras on ohut kaikkialla, ja se on rakenteellinen havainto.** `hard vs normal` on
+heikoin pari jokaisessa yhdeksässä pelissä poikkeuksetta, ja kahdessa sitä ei ole lainkaan:
+Kultakala z 1,0 ja Paskahousu z -0,2. Alaporras `normal vs beginner` on sen sijaan vahva
+kaikkialla. Kisälli on siis rakennettu, Mestarin lisäkyvyt eivät useimmissa peleissä
+realisoidu voitoiksi. Tämä on nyt ensimmäistä kertaa mitattu ilman istuinvikaa, ja se on
+sama kuvio jonka 17.7.2026 baseline näki mutta väärillä luvuilla.
+
+**Läpsy liikkui vähiten** (91,8 → 90,0 ja 85,8 → 87,0 ja 80,5 → 83,0). Syytä ei ole
+mitattu eikä sitä arvata tässä.
+
 ## Käyttö jatkossa
 
 Jokainen AI-muutos todennetaan ajamalla sama mittaus ja vertaamalla tähän
