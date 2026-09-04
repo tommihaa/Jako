@@ -160,31 +160,26 @@ const MERKISTO = [
 const loadChangelog = () =>
   import('./changelogs/fi.js').then(m => m.CHANGELOG);
 
-// ── Tulossa ───────────────────────────────────────────────────────────────────
-// Pelit joissa botbench EI löytänyt mitattavaa eroa AI-tasojen välillä, eli
-// tasovalitsin lupaisi eron jota ei ole. Näissä Koneäly-osio kertoo sen suoraan.
+// ── Hautakivi: "taso vaikuttaa vähän" -merkintä (17.7.2026–4.9.2026) ──────────
+// Tässä oli `FLAT_AI_GAMES` ja sen mukana Koneäly-osion merkintä kolmelle pelille
+// (Ristiseiska, Kasino, Paskahousu). Merkintä kertoi pelaajalle, ettei tasovalitsin
+// muuta lopputulosta näissä peleissä. **Se nojasi vialliseen mittaukseen.**
 //
-// EHTO LISÄÄMISELLE: N≥400 mittaus jossa KAIKKI kolme tasoparia ovat ~50 %.
-// Älä lisää peliä pienemmän otoksen perusteella: N=30/40 yliarvioi tasoeron
-// systemaattisesti, koska kohina näyttää signaalilta (docs/BOTBENCH.md 21.7.2026,
-// jossa kolme "tervettä ladderia" romahti otoskoon nelinkertaistuessa).
+// Botbench kytki tuloksen istuimeen nimen kautta, ja `AI_NAMES` oli kolme nimeä, joten
+// neljän pelaajan pelissä istuimet 0 ja 3 saivat saman nimen. Istumajärjestys on ABAB,
+// joten vika käänsi tason ja veti voitto-osuutta kohti 50 prosenttia. Juuri se sai nämä
+// kolme peliä näyttämään litteiltä. Kasinossa vika oli pahempi, koska se arpoi nimet
+// uusiksi joka kierroksella eikä tulos vastannut istuinta lainkaan.
 //
-// Ristiseiska 21.7.2026 (N=400): 53,3 % / 49,0 % / 51,3 %.
-// Kasino     21.7.2026 (N=400): 53,8 % / 48,9 % / 51,5 % (tasapelit puolikkaina).
-// Paskahousu 20.8.2026 (N=400): 53,6 % / 49,5 % / 49,0 %, suurin z on 1,45.
-//   Luku kuvaa tuotannossa ollutta koodia: `aiCards` ja `runAI` ovat bitilleen
-//   samat kuin botbenchin julkaisucommitissa 18.7.2026, ja koko sääntöalueen
-//   ainoa ero siihen on yksi JSDoc-tyyppimerkintä. Vanha N=30-baseline lupasi
-//   hard vs beginner 70 %, eikä se toistunut isolla otoksella.
+// Koko kartta mitattiin uudelleen 4.9.2026 korjatulla mittarilla (13 500 peliä).
+// Ristiseiska 66,1 / 56,6 / 58,0. Kasino 76,0 / 61,8 / 79,4. Paskahousu 56,5 / 49,7 / 56,5.
+// Ehto merkinnälle oli N≥400 ja kaikki kolme paria noin 50 prosenttia, eikä yksikään peli
+// täytä sitä enää. Tommin päätös 4.9.2026 oli poistaa merkintä kokonaan.
 //
-// EI listalla, vaikka porras on osin rikki (ylätasot samantasoiset, alaporras terve):
-// Maija (N=400) — Mestari voittaa Oppipojan todistetusti 57,8 % (z = 3,1), vaikka
-// Kisälli ei erotu Oppipojasta. Kultakala 24.7.2026 (N=400): 55,25 % / 50,9 % /
-// 57,6 % — Kisälli voittaa Oppipojan (z = 3,05), joten ehto ei täyty.
-// "Taso vaikuttaa vähän" olisi näissä väärä väite.
-// Kaikki 9 peliä on nyt mitattu tai kirjattu mittaamattomaksi, ks. docs/BOTBENCH.md
-// osio "Yhteenveto: mitkä pelit saavat merkinnän".
-const FLAT_AI_GAMES = ['ristiseiska', 'kasino', 'paskahousu'];
+// **Älä palauta tätä ilman uutta mittausta.** Jos jokin peli näyttää taas litteältä, luvut
+// ovat `docs/BOTBENCH.md` osiossa "Koko kartta uudelleen 4.9.2026" ja i18n-avain oli
+// `ui.settings.ai.flatNote` 23 lokaalissa. Ylin porras on ohut kaikkialla, mutta se on eri
+// väite kuin "taso ei vaikuta", eikä se yksin riitä merkinnän perusteeksi.
 
 const TODO = [
   { label: '"Kokeile ääniä" -esikuuntelu Asetuksissa + pikamykistys', status: 'done' },
@@ -1204,11 +1199,6 @@ export default function App() {
                   </button>
                 ))}
               </div>
-              {FLAT_AI_GAMES.includes(active) && (
-                <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, opacity: 0.75, lineHeight: 1.5 }}>
-                  {t('ui.settings.ai.flatNote')}
-                </div>
-              )}
             </div>
           )}
         </div>

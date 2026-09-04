@@ -11,6 +11,7 @@ export const CHANGELOG = [
   {
     date: '4.9.2026',
     items: [
+      'Asetusten Koneäly-osiosta on poistettu merkintä, joka kertoi tason vaikuttavan vähän Ristiseiskassa, Kasinossa ja Paskahousussa. Merkintä oli väärin. Mittarissamme oli vika, joka sekoitti pelaajan paikan ja tason keskenään ja sai nämä kolme peliä näyttämään tasaisemmilta kuin ne ovat. Mittasimme vian korjattuamme kaikki yhdeksän peliä uudelleen 13 500 pelin sarjoilla, ja tasoero on todellinen jokaisessa niistä. Kasino oli pahiten väärin. Siellä Mestari voittaa Oppipojan kolme kertaa neljästä, ei puolet kuten vanha luku väitti.',
       'Kasinossa vastustajien nimet pysyvät nyt samoina koko ottelun ajan. Aiemmin nimet arvottiin uudelleen jokaisen kierroksen alussa, joten sama pelaaja saattoi olla kierroksella eri niminen, vaikka hänen pisteensä seurasivat mukana.',
     ],
   },
