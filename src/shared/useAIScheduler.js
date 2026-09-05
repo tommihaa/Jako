@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 
 // Jaettu AI-vuoron ajastin-primitiivi kaikille peleille.
 // Kapseloi ajastimen tila + siivous yhteen paikkaan; peli saa kahvan sen
-// helpereihin (tm, schedAI) ja refeihin (pausedRef, allBotsRef, aiDelayRef).
+// helpereihin (schedMove, schedAI, tm) ja refeihin (pausedRef, allBotsRef, aiDelayRef).
 //
 // Refit palautetaan sellaisenaan, koska pelit kirjoittavat .current jatkuvasti
 // (pausedRef.current = next togglePausessa, allBotsRef.current = mode Replayssa).
@@ -36,35 +36,83 @@ export function useAIScheduler({
 
   // Renderiä ohjaavat parit. Refit yllä ovat ajastinlogiikan totuus, nämä ovat sama
   // tieto näytölle; pari pidetään synkassa kirjoittamalla molemmat samassa lauseessa.
-  const [paused, setPaused]       = useState(false);
+  const [paused, setPausedState]  = useState(false);
   const [allBots, setAllBots]     = useState(false);
   const [aiDelayMs, setAiDelayMs] = useState(defaultDelay);
+
+  // Tauolla lauenneet siirrot, ks. guard. Uusi peli nollaa jonon: startGame purkaa
+  // tauon suoraan (`pausedRef.current = false; setPaused(false)`) eikä togglePausen
+  // kautta, joten ilman tätä edellisen pelin siirto ajettaisiin seuraavassa tauossa.
+  const pendingMoves = useRef(/** @type {Array<() => void>} */ ([]));
+  const setPaused = value => { if (value === false) pendingMoves.current = []; setPausedState(value); };
+
+  // Tauolla vietetty aika yhteensä. Reaktioaikaa mittaava peli (Läpsy) vähentää tämän
+  // omasta mittauksestaan, koska seinäkello käy tauolla mutta pelaaja ei reagoi.
+  // Ilman vähennystä tauko keskellä täsmäystä kirjasi lokiin 49999 ms (mitattu 5.9.2026).
+  const pausedTotalMs = useRef(0);
+  const pauseStartedAt = useRef(0);
 
   const onResumeRef = useRef(onResume); onResumeRef.current = onResume;
   function togglePause() {
     const next = !pausedRef.current;
+    const odottavat = pendingMoves.current; // luettava ennen setPausedia, joka tyhjentää jonon
     pausedRef.current = next; setPaused(next);
-    if (!next) onResumeRef.current?.();
+    if (next) pauseStartedAt.current = performance.now();
+    else {
+      pausedTotalMs.current += performance.now() - pauseStartedAt.current;
+      odottavat.forEach(fn => fn());
+      onResumeRef.current?.();
+    }
   }
 
-  // Vahditon UI-ajastin — ei pysähdy Tauko-tilassa. Rekisteröi id:n siivousta varten.
+  // Vahditon ajastin VAIN UI:lle: animaatiot, viestikuplan häivytys, korostuksen
+  // nollaus. Ei pysähdy Tauko-tilassa, koska tauko pysäyttää pelin eikä ruudun.
+  // Bottisiirtoa ei ajasteta tällä vaan schedMovella tai schedAI:lla, jotka
+  // vievät invariantin "botti ei liiku tauolla" rakenteeseen (H7, 5.9.2026).
+  // Rekisteröi id:n siivousta varten.
   const tm = (fn, ms) => { const id = setTimeout(fn, ms); tmrs.current.add(id); return id; };
 
-  // Kietoo funktion pause-vahtiin: Tauko-tilassa odottaa (recursive wait) ja
-  // ajaa fn:n vasta kun tauko vapautetaan. Käytä kun kutsuja hoitaa itse viiveen
-  // (aiTmr.current = tm(guard(fn), <oma viive>)) — säilyttää tarkan ajoituksen,
-  // toisin kuin schedAI joka laskee viiveen + jitterin itse.
+  // Kietoo funktion pause-vahtiin. Tauolla lauennut siirto siirtyy jonoon ja ajetaan
+  // siinä järjestyksessä kun tauko vapautetaan, eli samassa järjestyksessä kuin ilman
+  // taukoa mutta yhteen hetkeen puristettuna.
+  //
+  // Kaksi hylättyä muotoa 5.9.2026, molemmat mitattuina. Polkeva odotus
+  // (`tm(w, 300)` kunnes tauko loppuu) päästi odottajat purkautumaan eri aikoina, ja
+  // Maija jumittui. Yksi odottava siirto Seiskan pendingFnRefin tapaan taas hukkasi
+  // askeleen aina kun toinen ehti tauolle ennen sitä, ja Kultakala jumittui.
+  // Askelta ei saa hukata, koska ketjun seuraava askel ajastetaan vasta edellisessä.
+  //
+  // Tauottomassa ajossa fn ajetaan heti kuten ennenkin, joten bottimittarit eivät muutu.
+  // Sisäinen; pelit saavat vahdin valmiina schedMoven ja schedAI:n kautta.
   const guard = fn => () => {
-    if (pausedRef.current) { const w = () => { if (!pausedRef.current) fn(); else tm(w, 300); }; w(); return; }
+    if (pausedRef.current) { pendingMoves.current.push(fn); return; }
     fn();
   };
+
+  // Bottisiirron ajastin kun kutsuja hoitaa itse viiveen (animaation kesto,
+  // vaihekohtainen tahti). Säilyttää tarkan ajoituksen, toisin kuin schedAI joka
+  // laskee viiveen + jitterin itse. Kirjoittaa aiTmr.currentin, joten siirto
+  // peruuntuu samalla tavalla kuin schedAI:lla.
+  const schedMove = (fn, ms) => { aiTmr.current = tm(guard(fn), ms); return aiTmr.current; };
 
   // AI-siirtoajastin — pysähtyy Tauko-tilassa ja skaalautuu bottikamppailun
   // (allBots) säädettävään viiveeseen. Laskee viiveen + jitterin itse.
   const schedAI = (fn, base) => {
     const d = allBotsRef.current ? aiDelayRef.current : base;
-    aiTmr.current = tm(guard(fn), d + Math.random() * jitter);
+    schedMove(fn, d + Math.random() * jitter);
   };
+
+  // Vahdittu intervalli. Tauolla tikki jätetään väliin kokonaan eikä jonoon, koska
+  // tikki mittaa kulunutta aikaa: jonottaminen purkaisi tauon ajan kertyneet tikit
+  // yhtenä ryöppynä ja ikkuna sulkeutuisi heti. Väliin jättäminen tarkoittaa että
+  // ajastettu ikkuna (Koputuksen reaktiolaskuri, Paskahousun äkkikuolema) jatkaa
+  // siitä mihin jäi.
+  //
+  // Tarpeen syy on mitattu 5.9.2026: pelkkä bottisiirron vahtiminen ei riitä, koska
+  // paljas setInterval sulki reaktioikkunan tauon aikana ja siirsi vuoron
+  // vanhentuneella pelitilalla. Koputus jumittui siitä. Palauttaa saman id:n kuin
+  // setInterval, joten clearInterval kutsupaikassa toimii ennallaan.
+  const schedTick = (fn, ms) => setInterval(() => { if (!pausedRef.current) fn(); }, ms);
 
   // Katselutilan aloitus: taso lukitaan ajoksi, ilmoitetaan App:lle (tilastot) ja viive
   // hidastetaan katsottavaksi. Oli yhdeksänä kopiona, ja kolmessa oli lisäksi turha
@@ -86,7 +134,7 @@ export function useAIScheduler({
     intervalRefsRef.current.forEach(r => r && clearInterval(r.current));
   }, []);
 
-  return { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard,
+  return { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, pausedTotalMs, tm, schedMove, schedAI, schedTick, guard,
            paused, setPaused, allBots, setAllBots, aiDelayMs, setAiDelayMs, togglePause,
            enterBotBattle };
 }

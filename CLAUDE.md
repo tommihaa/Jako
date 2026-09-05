@@ -6,7 +6,7 @@ Structure: `src/App.jsx` (entry), `src/games/*.jsx` (9 games), `src/shared/` (Ca
 
 **Pelin elinkaaren runko asuu `shared/`:ssä (3.9.2026, kompositioauditointi H1).** Ennen se
 oli yhdeksänä kopiona. Uutta peliä lisätessä nämä otetaan käyttöön eikä kirjoiteta uusiksi:
-`useAIScheduler` (ajastimet, tauko, katselutilan aloitus), `useGameLog` (loki, aikaleima ja
+`useAIScheduler` (ajastimet, tauko, katselutilan aloitus; bottisiirto ajastetaan `schedMovella` tai `schedAI`:lla ja ajastettu ikkuna `schedTickillä`, `tm` on vain UI:lle, ks. `docs/AUDITOINTI-KOMPOSITIO.md` H7), `useGameLog` (loki, aikaleima ja
 katselutilan snapshot), `GameStartScreen` (aloitusnäyttö), `GameStatusBar` (tilarivi) ja
 `GameLog` (lokipaneeli). Vakiot `BOT_RESULT_DELAY` ja `LOG_MAX` sekä `AI_NAMES`,
 `shuffledAINames` ja `lblColored` ovat `helpers.js`:ssä. `lastPlayFade` ja `button:active`

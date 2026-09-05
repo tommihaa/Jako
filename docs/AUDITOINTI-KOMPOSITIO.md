@@ -158,7 +158,8 @@ voi erottaa valinnasta ilman Tommia viitataan Kysymykset-osioon.
   `GameProps`-typedefin puuttumisen tietoiseksi lykkäykseksi. Hinta on yllä. **Kysymys 2.**
 
 - **H7 Botti ja Mestarin neuvo kutsuvat samaa funktiota 7/9 pelissä ja taukovahti on
-  valinnainen.** `MESTARIN_NEUVO.md` sanoo "jokaisen pelin getAdvice kutsuu samaa
+  valinnainen.** (Taukopuoli kiinni 5.9.2026, ks. osio alla. Kasinon ja Moskan puuttuva
+  `chooseMove` on yhä auki.) `MESTARIN_NEUVO.md` sanoo "jokaisen pelin getAdvice kutsuu samaa
   valintafunktiota". Se pitää seitsemässä. Kasinon `getAdvice` on 48 rivin peilikuva
   `runAI`n hard-haarasta omalla prioriteettijärjestyksellään ja sama kynnys `<= 0.5` on
   kirjoitettu kahdesti (286 ja 1130). Moskan puolustussilmukka on kopio `runAI`sta, ja
@@ -872,3 +873,65 @@ viisi näkyvyysavainta. Ei sovelluksen konsolivirheitä. Testit 140 läpi, typec
 
 Vanha `jako:showCounts` jää aiempien käyttäjien selaimeen orvoksi. Sitä ei siivota koodilla,
 koska lukijaa ei ole, ja se on kirjattu `SELAINTALLENNUS.md`:hen.
+
+### H7 taukovahti kiinni 5.9.2026, ja kaksi hylättyä muotoa matkalla
+
+Havainnon toinen puoli oli väite siitä että invariantti "botti ei liiku tauolla" on hookin
+kommentissa eikä rakenteessa. Väite piti, ja se on nyt mitattu molempiin suuntiin. Vanhalla
+koodilla Moskan bottiketju eteni tauolla neljästä pysäytyksestä neljässä, ja korjatulla
+nollassa. Moska oli pahin tapaus, koska siinä ei ollut yhtään taukotarkistusta.
+
+**Tehty.** Hook tarjoaa nyt bottisiirroille `schedMoven`, joka kirjoittaa `aiTmr.currentin` ja
+kietoo funktion vahtiin. `schedAI` rakentuu sen päälle. Vahditon `tm` on dokumentoitu
+UI-ajastimeksi, ja kaikki `aiTmr.current = tm(...)` -kirjoitukset yhdeksässä pelissä vaihtuivat
+`schedMoveksi`. Pelien omat käsin kirjoitetut odotussilmukat poistuivat kuudesta kohdasta
+viidessä pelissä. `test/taukovahti.test.js` estää paluun kolmella tavalla: vahditonta
+`aiTmr`-kirjoitusta ei saa olla, käsin kirjoitettua `pausedRef`-tarkistusta ei saa palata
+muihin kuin kahteen nimettyyn peliin, ja hookin oma muoto tarkistetaan.
+
+**Löydös joka selittää miksi invariantti oli kommentissa.** Pelkkä bottisiirron vahtiminen ei
+riitä, koska sama ketju etenee myös muilla ajastimilla. Puolittainen vahtiminen on huonompi
+kuin ei vahtia lainkaan. Vahdittu askel odottaa ja vahtimaton ajaa, joten tauon jälkeen odottava
+askel osuu tilaan jota ei enää ole. Jokainen näistä tuotti mitattavan seurauksen, ja jokainen
+korjattiin viemällä ketjun oma askel saman vahdin taakse.
+
+- Maija. Kierroksen ratkaisu (`resolveDefenseWin` ja `-Loss`) oli paljas `tm`.
+- Kasino. Vuoron siirto botin siirron jälkeen ja kaappauksen jatko olivat paljaita.
+- Koputus. Botin reaktioajastimet, niiden jatkot ja botin siirron jatko reaktioikkunaan.
+
+**Ajastettu ikkuna oli oma lajinsa.** Koputuksen 3,5 sekunnin reaktiolaskuri sekä Paskahousun
+äkkikuolema ja vaihtolaskuri olivat paljaita `setInterval`-kutsuja, jotka kävivät tauon läpi ja
+siirsivät vuoron vanhentuneella pelitilalla. Hookissa on nyt `schedTick`, joka jättää tikin
+väliin tauolla. Tikki mittaa kulunutta aikaa, joten sitä ei saa jonottaa. Jonotus purkaisi
+tauon tikit yhtenä ryöppynä ja ikkuna sulkeutuisi heti.
+
+**Kaksi hylättyä vahdin muotoa, molemmat mitattuina.** Ensimmäinen oli polkeva odotus, eli
+`tm(w, 300)` kunnes tauko loppuu. Se päästää odottajat purkautumaan eri aikoina, ja Maija
+jumittui. Toinen oli yksi odottava siirto Seiskan `pendingFnRefin` tapaan. Se hukkaa askeleen
+aina kun toinen ehtii tauolle ennen sitä, ja Kultakala jumittui. Kolmas ja käytössä oleva muoto
+on jono, joka ajaa odottaneet siirrot samassa järjestyksessä kuin ilman taukoa. Askelta ei saa
+hukata, koska ketjun seuraava askel ajastetaan vasta edellisessä.
+
+**Läpsyn läpsäysajastin jäi tarkoituksella vahdittomaksi, ja se on nimetty poikkeus.** Vahdin
+taakse vietynä täsmäys jäi kesken, eikä kukaan läpsännyt tauon jälkeenkään. Täsmäysikkuna on
+Läpsyn pelillinen ydin eikä siirtoketjun askel, ja tauko sen keskellä joko ratkaisee ikkunan tai
+rikkoo mittauksen. Mittaus korjattiin silti, koska tauko keskellä täsmäystä kirjasi lokiin
+49999 ms. Hook laskee nyt tauolla vietetyn ajan (`pausedTotalMs`) ja Läpsy vähentää sen omasta
+reaktioajastaan. Kasino ja Seiska ovat toiset nimetyt poikkeukset. Kasinon oma taukotarkistus
+koskee kierrosten välistä näkymänvaihtoa eikä bottisiirtoa, ja Seiskan `pendingFnRef` on sen oma
+pidempään käytössä ollut mekanismi.
+
+**Todennettu selaimessa.** Kaikki yhdeksän peliä ajettiin katselutilassa kolmella peräkkäisellä
+tauolla ja jatkolla. Yhdessäkään loki ei kasvanut tauon aikana, ja jokainen jatkoi jatkosta.
+Lisäksi Koputus pelattiin ihmispelinä reaktioikkunan läpi omaan vuoroon asti. Ei
+konsolivirheitä. Testit 144 läpi, typecheck puhdas.
+
+**Mitä mittauksesta pitää tietää.** Osa välivaiheen jumitushavainnoista tehtiin sivulla, jonka
+konsolissa oli HMR:n kaatumia kaksivaiheisten editien ajalta, eivätkä ne siksi kerro koodista
+vaan välitilasta. Lopputodennus tehtiin dev-palvelimen uudelleenkäynnistyksen jälkeen puhtaassa
+välilehdessä. Sama koskee lokin lukemista. Loki on uusin ensin, joten tekstin lopusta luettu
+"viimeinen rivi" on vanhin eikä uusin.
+
+**Mitä jäi auki.** H7:n ensimmäinen puoli eli Kasinon ja Moskan puuttuva `chooseMove` on
+koskematta, samoin H8:n loput. Ihmispolun ajastimet jäivät vahdittomiksi, koska tauko on
+katselutilan nappi eikä ihmispelissä ole taukoa.

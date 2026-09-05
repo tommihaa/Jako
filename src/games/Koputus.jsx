@@ -256,7 +256,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const sndRef     = useRef(soundOn);
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedMove, schedAI, schedTick, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraIntervalRefs: [reactInt] });
 
   const { log, logRef, addLog: setMsg, commit, resetLog } = useGameLog({
@@ -349,7 +349,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
         const si = 1 % nP;
         const g2 = { ...(gRef.current ?? newG), phase: /** @type {Vaihe} */ ('draw'), cur: si };
         if (g2.players[si].isHuman) commit(g2, M.yourTurn);
-        else { commit(g2, M.aiTurn(g2.players[si].name)); aiTmr.current = tm(guard(() => runAI(si, gRef.current)), 600); }
+        else { commit(g2, M.aiTurn(g2.players[si].name)); schedMove(() => runAI(si, gRef.current), 600); }
       }, 1600);
     }
   }
@@ -507,7 +507,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     commit({ ...(gRef.current ?? gState), phase: /** @type {Vaihe} */ ('reaction') }, M.reactQ(card));
     let t = 3.5;
     clearInterval(reactInt.current);
-    reactInt.current = setInterval(() => {
+    reactInt.current = schedTick(() => {
       t = Math.round((t - 0.5) * 10) / 10; setRS(t);
       if (t <= 0) {
         clearInterval(reactInt.current);
@@ -527,7 +527,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       if (mi !== undefined) {
         // Oikea reaktio
         const delay = 800 + Math.random() * 2400;
-        tm(() => {
+        schedMove(() => {
           if (stopReact.current) return;
           stopReact.current = true; clearInterval(reactInt.current); setRO(false);
           const cur = gRef.current;
@@ -540,7 +540,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
           });
           const newG = { ...cur, players, discard: reactedCard ? [...cur.discard, reactedCard] : cur.discard };
           commit(newG, M.aiReact(p.name, p.cards[mi]));
-          tm(() => advance(newG, byIdx), 900);
+          schedMove(() => advance(newG, byIdx), 900);
         }, delay);
       } else if (Math.random() < wrongReactChance) {
         // Aloittelija-virhe: arvaa tuntemattomalla kortilla
@@ -548,7 +548,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
         if (!unknownIdxs.length) return;
         const wrongIdx = unknownIdxs[Math.floor(Math.random() * unknownIdxs.length)];
         const delay = 1200 + Math.random() * 1600;
-        tm(() => {
+        schedMove(() => {
           if (stopReact.current) return;
           stopReact.current = true; clearInterval(reactInt.current); setRO(false);
           const cur = gRef.current;
@@ -565,7 +565,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
             });
             const newG = { ...cur, players, discard: [...cur.discard, wrongCard] };
             commit(newG, M.aiReact(p.name, wrongCard));
-            tm(() => advance(newG, byIdx), 900);
+            schedMove(() => advance(newG, byIdx), 900);
           } else {
             // Väärä arvaus — rangaistus
             if (sndRef.current) SFX.reactWrong();
@@ -580,7 +580,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
             });
             const newG = { ...cur, players, deck: remainingDeck, discard: [...cur.discard, wrongCard] };
             commit(newG, M.aiWrongReact(p.name));
-            tm(() => advance(newG, byIdx), 1200);
+            schedMove(() => advance(newG, byIdx), 1200);
           }
         }, delay);
       }
@@ -678,12 +678,12 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
           commit(updG, M.aiSwapped(p.name, old));
           if (sndRef.current) SFX.swap();
           flashSlot(playerIdx, target);
-          tm(() => openReaction(updG, old, playerIdx), reactMs);
+          schedMove(() => openReaction(updG, old, playerIdx), reactMs);
         };
         if (initShowIntention) {
           const intentionMs = Math.min(1200, Math.max(400, aiDelayRef.current * 0.3));
           setIntention({ playerIdx, slotIdx: target });
-          tm(() => { setIntention(null); doSwap(); }, intentionMs);
+          schedMove(() => { setIntention(null); doSwap(); }, intentionMs);
           return;
         }
         doSwap();
@@ -691,7 +691,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
         const updG = { ...gNow, deck, discard: [...discard, card] };
         commit(updG, M.aiDiscard(p.name, card));
         if (sndRef.current) SFX.play();
-        tm(() => openReaction(updG, card, playerIdx), reactMs);
+        schedMove(() => openReaction(updG, card, playerIdx), reactMs);
       }
     }, 3600);
   }

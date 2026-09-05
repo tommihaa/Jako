@@ -353,7 +353,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     : aiLevelRef.current === 'hard';
   const suddenDeathTmr     = useRef(null);
   const suddenDeathStarted = useRef(false);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedMove, schedAI, schedTick, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ jitter: 300, extraIntervalRefs: [swapTmr, suddenDeathTmr] });
   useEffect(() => { setAdvice(null); },          [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
 
@@ -379,7 +379,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       suddenDeathStarted.current = true;
       setTimerLeft(150);
       addLog(t('games.paskahousu.msg.suddenDeathStart'));
-      const id = setInterval(() => {
+      const id = schedTick(() => {
         if (gRef.current?.phase === 'gameover') { clearInterval(id); setTimerLeft(null); return; }
         setTimerLeft(prev => {
           if (prev === null) { clearInterval(id); return null; }
@@ -590,7 +590,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         commit(g2); setSel([]);
         lines.forEach(addLog);
         if (players[pidx].isHuman) startSwapCountdown(g2);
-        else aiTmr.current = tm(guard(() => doAISwap(g2, pidx)), 900);
+        else schedMove(() => doAISwap(g2, pidx), 900);
         return;
       }
     }
@@ -756,7 +756,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     let remaining = 3;
     setSCD(remaining);
     clearInterval(swapTmr.current);
-    swapTmr.current = setInterval(() => {
+    swapTmr.current = schedTick(() => {
       remaining--;
       setSCD(remaining);
       if (remaining <= 0) { clearInterval(swapTmr.current); skipSwap(gRef.current); }
@@ -871,7 +871,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       if (initShowIntention) {
         const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
         setIntention({ playerIdx: turn, cards });
-        aiTmr.current = tm(() => { setIntention(null); applyPlay(gRef.current, turn, cards); }, intentionMs);
+        schedMove(() => { setIntention(null); applyPlay(gRef.current, turn, cards); }, intentionMs);
         return;
       }
       applyPlay(gRef.current, turn, cards); return;

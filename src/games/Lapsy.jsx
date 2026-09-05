@@ -94,12 +94,15 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   const memoryRef    = useRef({ seenByRank: {}, knownBottoms: {} });
   const predMatchRef = useRef(false); // tosilaskija: true when the next flip was predicted
   const matchTimeRef = useRef(null);
+  // Taukokello täsmäyksen alussa. Reaktioaika mitataan seinäkellosta, joten tauon
+  // kesto vähennetään siitä; muuten tauko keskellä täsmäystä kirjaa mielettömän luvun.
+  const matchPauseBase = useRef(0);
   const recentMatch  = useRef(false);
   const aiSlapTmrs   = useRef([]);
   const failTmr      = useRef(null);
   const duelTmr      = useRef(null);
   const halvePending = useRef(false);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, pausedTotalMs, tm, schedMove, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [failTmr] });
   const allBotNamesRef = useRef([]);
   const onSnapshotRef = useRef(onSnapshot);
@@ -243,11 +246,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     if (piles[idx].length === 0) { nextTurn(idx, piles, center, chRef.current); return; }
     const baseDelay = allBotsRef.current ? aiDelayRef.current : 800 + Math.random() * 100;
     const delay = ch ? Math.min(1000, baseDelay * 0.6) : baseDelay + Math.random() * 200;
-    const schedFlip = () => {
-      if (pausedRef.current) { tm(schedFlip, 300); return; }
-      doFlip(idx, piles, center);
-    };
-    tm(schedFlip, delay);
+    schedMove(() => doFlip(idx, piles, center), delay);
   }
 
   function doFlip(playerIdx, curPiles, curCenter) {
@@ -343,6 +342,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     setPhase('match'); phaseRef.current = 'match';
     setCh(null); chRef.current = null;
     matchTimeRef.current = performance.now();
+    matchPauseBase.current = pausedTotalMs.current;
     addLog(M.match(center[0].r));
 
     const matchRank = center[0].r;
@@ -381,9 +381,14 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
       const predictBonus      = predicted ? 150 : 0;
       const effectiveMin = Math.max(60, minDelay - anticipationBonus - predictBonus);
       const delay = effectiveMin + Math.random() * spread;
+      // Läpsäysajastin jää tarkoituksella vahdittomaksi. Vahdin taakse vietynä
+      // täsmäys jäi kesken: kukaan ei läpsännyt tauon jälkeenkään (mitattu 5.9.2026).
+      // Täsmäysikkuna on Läpsyn pelillinen ydin eikä siirtoketjun askel, ja tauko
+      // sen keskellä joko ratkaisee ikkunan tai rikkoo mittauksen. Kirjattu
+      // avoimeksi kohdaksi docs/AUDITOINTI-KOMPOSITIO.md:hen.
       return tm(() => {
         if (phaseRef.current !== 'match') return;
-        const ms = Math.round(performance.now() - matchTimeRef.current);
+        const ms = Math.round(performance.now() - matchTimeRef.current - (pausedTotalMs.current - matchPauseBase.current));
         doSlap(i, pilesRef.current, centerRef.current, ms);
       }, delay);
     }).filter(Boolean);
@@ -442,7 +447,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
       }
       return;
     }
-    const ms = Math.round(performance.now() - matchTimeRef.current);
+    const ms = Math.round(performance.now() - matchTimeRef.current - (pausedTotalMs.current - matchPauseBase.current));
     doSlap(0, pilesRef.current, centerRef.current, ms);
   }
 

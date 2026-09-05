@@ -255,7 +255,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
   const botLevelsRef = useRef(botLevels);
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedMove, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { setAdvice(null); },          [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
@@ -320,7 +320,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     commit(g, M.gameStart(s.name, lblColored({ r: '7', s: '♣' })));
     setScreen('game');
     setShuffling(true);
-    if (!s.isHuman) aiTmr.current = tm(guard(() => runAI(g)), 3100);
+    if (!s.isHuman) schedMove(() => runAI(g), 3100);
   }
 
   function startBotBattle() {
@@ -422,14 +422,11 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     if (!p || p.isHuman) return;
 
     if (g.bonusTurn === g.activePlayer) {
-      aiTmr.current = tm(guard(() => runAI(gRef.current)), 900);
+      schedMove(() => runAI(gRef.current), 900);
       return;
     }
     const d = (allBotsRef.current ? aiDelayRef.current : 1100) + Math.random() * 400;
-    aiTmr.current = tm(() => {
-      if (pausedRef.current) { const w = () => { if (!pausedRef.current) runAI(gRef.current); else tm(w, 300); }; w(); return; }
-      runAI(gRef.current);
-    }, d);
+    schedMove(() => runAI(gRef.current), d);
   }
 
   // ── AI ──────────────────────────────────────────────────────
@@ -446,7 +443,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     if (move.t === 'play' && initShowIntention) {
       const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
       setIntention({ playerIdx: idx, cards: [move.card] });
-      aiTmr.current = tm(() => { setIntention(null); playSteps(applyMove(gRef.current, idx, move, levelOf)); }, intentionMs);
+      schedMove(() => { setIntention(null); playSteps(applyMove(gRef.current, idx, move, levelOf)); }, intentionMs);
       return;
     }
     playSteps(applyMove(g, idx, move, levelOf));

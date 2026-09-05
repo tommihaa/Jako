@@ -236,7 +236,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   const botLevelsRef = useRef(botLevels);
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const lastPlayTmr  = useRef(null);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, guard, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedMove, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   // Neuvo vanhenee jokaisesta tilamuutoksesta. Riippuvuuslista on yksi, koska vuoron
@@ -304,7 +304,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     addLog(M.gameStart);
     setScreen('game');
     setShuffling(true);
-    tm(guard(() => maybeAI(0, g)), 2500);
+    schedMove(() => maybeAI(0, g), 2500);
   }
 
   function startBotBattle() {
@@ -325,18 +325,14 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
                  held: null, swapIdx: null, drawnFrom: null };
     const p = g2.players[next];
     commit(g2, p.isHuman ? M.yourTurn : M.aiThinking(p));
-    aiTmr.current = tm(guard(() => maybeAI(next, g2)), 600);
+    schedMove(() => maybeAI(next, g2), 600);
   }
 
   function maybeAI(idx, g) {
     if (gRef.current?.phase === 'gameover') return;
     if (idx === 0 && !allBotsRef.current) return;
     const baseDelay = allBotsRef.current ? aiDelayRef.current : 900;
-    const schedFlip = () => {
-      if (pausedRef.current) { tm(schedFlip, 300); return; }
-      aiTurn(idx, gRef.current);
-    };
-    tm(schedFlip, baseDelay + Math.random() * 600);
+    schedMove(() => aiTurn(idx, gRef.current), baseDelay + Math.random() * 600);
   }
 
   function aiTurn(idx, g) {

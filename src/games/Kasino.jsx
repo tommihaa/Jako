@@ -500,7 +500,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   const botLevelsRef = useRef(botLevels);
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const lastPlayTmr = useRef(null);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedMove, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { setAdvice(null); }, [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
@@ -530,7 +530,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   useEffect(() => {
     if (pendingCapture && (!showNextBtnRef.current || allBotsRef.current)) {
       const delay = allBotsRef.current ? 400 : 600;
-      const id = tm(() => continueAfterCapture(), delay);
+      const id = schedMove(() => continueAfterCapture(), delay);
       return () => clearTimeout(id);
     }
   }, [pendingCapture]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -687,7 +687,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       commit(g3);
       lines.forEach(addLog);
       addLog(M.forcedLeave);
-      aiTmr.current = tm(() => advance(g3, 0), 1200);
+      schedMove(() => advance(g3, 0), 1200);
       return;
     }
 
@@ -968,7 +968,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       setCaptureAnim({ handCard: card, tableCards: animCards });
       setSelTable([]); setSelBuilds([]);
       commit({ ...g, phase: /** @type {Vaihe} */ ('idle') });
-      aiTmr.current = tm(() => {
+      schedMove(() => {
         const lines = /** @type {string[]} */ ([]);
         const g2 = doBuildCapture(gRef.current, 0, card, snapshotBuilds, snapshotTable, false, lines);
         commit(g2);
@@ -1016,7 +1016,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       setCaptureAnim({ handCard: card, tableCards: captured });
       setSelTable([]); setSelBuilds([]);
       commit({ ...g, phase: /** @type {Vaihe} */ ('idle') });
-      aiTmr.current = tm(() => {
+      schedMove(() => {
         const lines = /** @type {string[]} */ ([]);
         const g2 = doCapture(gRef.current, 0, card, captured, false, lines);
         commit(g2);
@@ -1083,7 +1083,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
           const takeLine = t('games.kasino.msg.takeBuild', { name: p.name, val: build.value, bonus: bonus.length > 0 ? ' + ' + bonus.map(lbl).join('+') : '', mokki: isMokkiBuild ? t('games.kasino.msg.mokkiSuffix') : '' });
           setCaptureAnim({ handCard: capturer, tableCards: animCards });
           setAiSel({ handCard: capturer, tableCards: animCards });
-          aiTmr.current = tm(() => {
+          schedMove(() => {
             const g2 = gRef.current;
             const g3 = doBuildCapture(g2, playerIdx, capturer, [build], bonus, true);
             commit(g3, takeLine);
@@ -1109,7 +1109,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
           const stealLine = t('games.kasino.msg.stealBuild', { name: p.name, val: build.value, bonus: bonus.length > 0 ? ' + ' + bonus.map(lbl).join('+') : '', mokki: isMokkiSteal ? t('games.kasino.msg.mokkiSuffix') : '' });
           setCaptureAnim({ handCard: capturer, tableCards: animCards });
           setAiSel({ handCard: capturer, tableCards: animCards });
-          aiTmr.current = tm(() => {
+          schedMove(() => {
             const g2 = gRef.current;
             const g3 = doBuildCapture(g2, playerIdx, capturer, [build], bonus, true);
             commit(g3, stealLine);
@@ -1144,14 +1144,14 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
         }
         if (doBuildAction) {
           if (initShowIntention) setAiSel({ handCard: buildResult.handCard, tableCards: buildResult.tableCards });
-          aiTmr.current = tm(() => {
+          schedMove(() => {
             const g2 = gRef.current;
             setAiSel({ handCard: null, tableCards: [] });
             const lines = /** @type {string[]} */ ([]);
             const g3 = doBuild(g2, playerIdx, buildResult.handCard, buildResult.tableCards, buildResult.value, lines);
             commit(g3);
             lines.forEach(addLog);
-            tm(() => advance(g3, playerIdx), 400);
+            schedMove(() => advance(g3, playerIdx), 400);
           }, qDel + Math.random() * 200);
           return;
         }
@@ -1167,7 +1167,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       const captureLine = M.aiCapture(p.name, lbl(captureToUse.handCard), captureStr, captureToUse.isMokki);
       setCaptureAnim({ handCard: captureToUse.handCard, tableCards: captureToUse.tableCards });
       setAiSel({ handCard: captureToUse.handCard, tableCards: captureToUse.tableCards });
-      aiTmr.current = tm(() => {
+      schedMove(() => {
         const g2 = gRef.current;
         const g3 = doCapture(g2, playerIdx, captureToUse.handCard, captureToUse.tableCards, true);
         commit(g3, captureLine);
@@ -1202,13 +1202,13 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
         return da !== db ? da - db : tableVal(a) - tableVal(b);
       })[0];
     }
-    aiTmr.current = tm(() => {
+    schedMove(() => {
       const g2 = gRef.current;
       const lines = /** @type {string[]} */ ([]);
       const g3 = doLeave(g2, playerIdx, toLeave, lines);
       commit(g3);
       lines.forEach(addLog);
-      tm(() => advance(g3, playerIdx), 400);
+      schedMove(() => advance(g3, playerIdx), 400);
     }, qDel + Math.random() * 200);
   }
 

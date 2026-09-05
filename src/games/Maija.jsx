@@ -304,7 +304,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   const botLevelsRef = useRef(botLevels);
   useEffect(() => { botLevelsRef.current = botLevels; }, [botLevels]);
   const lastPlayTmr = useRef(null);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedMove, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   // Neuvo vanhenee jokaisesta tilamuutoksesta. Yksi riippuvuus riittää, koska vaihe
@@ -394,7 +394,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     commit(g, M.gameStart(g.trumpCard, g.players[g.attackerIdx].name, g.players[g.defenderIdx].name));
     setScreen('game');
     setShuffling(true);
-    aiTmr.current = tm(() => maybeAIAttack(g), 3100 + Math.random() * 400);
+    schedMove(() => maybeAIAttack(g), 3100 + Math.random() * 400);
   }
 
   function startBotBattle() {
@@ -468,7 +468,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     commit(g4);
     lines.forEach(addLog);
     addLog(M.newAttack(g4.players[newAtt].name, g4.players[newDef].name));
-    aiTmr.current = tm(() => maybeAIAttack(g4), 1800);
+    schedMove(() => maybeAIAttack(g4), 1800);
   }
 
   function resolveDefenseWin(g) {
@@ -501,12 +501,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     if (!g || (gRef.current?.phase ?? g.phase) !== 'attacking') return;
     if (g.players[g.attackerIdx].isHuman) return;
     const baseDelay = allBotsRef.current ? aiDelayRef.current : 1200;
-    const schedAttack = () => {
-      if (pausedRef.current) { tm(schedAttack, 300); return; }
-      const g2 = gRef.current;
-      runAIAttack(g2);
-    };
-    aiTmr.current = tm(schedAttack, baseDelay + Math.random() * 400);
+    schedMove(() => runAIAttack(gRef.current), baseDelay + Math.random() * 400);
   }
 
   function runAIAttack(g2) {
@@ -527,7 +522,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       if (initShowIntention) {
         const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
         setIntention({ playerIdx: g2.attackerIdx, cards: toPlay });
-        aiTmr.current = tm(() => { setIntention(null); doAttack(g2, toPlay); }, intentionMs);
+        schedMove(() => { setIntention(null); doAttack(g2, toPlay); }, intentionMs);
         return;
       }
       doAttack(g2, toPlay);
@@ -552,7 +547,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     if (tbl.some(r => isMaija(r.att))) {
       addLog(M.maijaWarning);
     }
-    aiTmr.current = tm(() => maybeAIDefend(g2), 1000 + Math.random() * 400);
+    schedMove(() => maybeAIDefend(g2), 1000 + Math.random() * 400);
   }
 
   function maybeAIDefend(g) {
@@ -560,11 +555,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     if (!g || (gRef.current?.phase ?? g.phase) !== 'defending') return;
     if (g.players[g.defenderIdx].isHuman) return;
     const baseDelay = allBotsRef.current ? aiDelayRef.current : 1000;
-    const schedDefend = () => {
-      if (pausedRef.current) { tm(schedDefend, 300); return; }
-      runAIDefend(gRef.current);
-    };
-    aiTmr.current = tm(schedDefend, baseDelay + Math.random() * 400);
+    schedMove(() => runAIDefend(gRef.current), baseDelay + Math.random() * 400);
   }
 
   function runAIDefend(g2) {
@@ -588,11 +579,11 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
         const defName = g2.players[g2.defenderIdx];
         commit(g3, M.defenderWinRound(defName.name));
         if (sndRef.current) SFX.fanfare();
-        tm(() => resolveDefenseWin(g3), 2200);
+        schedMove(() => resolveDefenseWin(g3), 2200);
       } else {
         const n = g2.players[g2.defenderIdx];
         commit(g3, t('games.maija.msg.aiPartialBeat', { name: n.name, beat: newTbl.length - unbeaten.length, total: newTbl.length, cards: kortin(unbeaten.length) }));
-        tm(() => resolveDefenseLoss(g3), 1500);
+        schedMove(() => resolveDefenseLoss(g3), 1500);
       }
   }
 

@@ -316,7 +316,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   const prevDeckRef    = useRef(null);
   const lastPlayTmr    = useRef(null);
   const showNextBtnRef = useRef(showNextBtn);
-  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
+  const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedMove, schedAI, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { showNextBtnRef.current = showNextBtn; }, [showNextBtn]);
@@ -662,7 +662,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     };
     commit(g2, M.add(p.name, cards.map(lblColored).join(', ')));
     // Jatka lisäysvaiheen jonoa seuraavalle pelaajalle (phase pysyy 'add')
-    aiTmr.current = tm(() => processAddQueue(gRef.current), 600);
+    schedMove(() => processAddQueue(gRef.current), 600);
   }
 
   // ── Puolustuskierros ──────────────────────────────────────
@@ -734,7 +734,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       const rest = g.addQueue.slice(1);
       const g2 = { ...g, addQueue: rest };
       commit(g2);
-      aiTmr.current = tm(() => processAddQueue(g2), 200);
+      schedMove(() => processAddQueue(g2), 200);
       return;
     }
     if (p.isHuman) {
@@ -755,15 +755,15 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         if (initShowIntention) {
           const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
           setIntention({ playerIdx: next, cards: [card] });
-          aiTmr.current = tm(() => { setIntention(null); doAdd(gRef.current, next, [card]); }, intentionMs);
+          schedMove(() => { setIntention(null); doAdd(gRef.current, next, [card]); }, intentionMs);
         } else {
-          aiTmr.current = tm(() => { doAdd(gRef.current, next, [card]); }, 900 + Math.random() * 300);
+          schedMove(() => { doAdd(gRef.current, next, [card]); }, 900 + Math.random() * 300);
         }
       } else {
         const rest = g.addQueue.slice(1);
         const g2 = { ...g, addQueue: rest };
         commit(g2, M.aiSkips(p.name));
-        aiTmr.current = tm(() => processAddQueue(g2), 600);
+        schedMove(() => processAddQueue(g2), 600);
       }
     }
   }
@@ -797,7 +797,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       if (initShowIntention) {
         const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
         setIntention({ playerIdx: primaryAtk, cards });
-        aiTmr.current = tm(() => { setIntention(null); doAttack(gRef.current, primaryAtk, cards); }, intentionMs);
+        schedMove(() => { setIntention(null); doAttack(gRef.current, primaryAtk, cards); }, intentionMs);
         return;
       }
       doAttack(g, primaryAtk, cards);
@@ -814,7 +814,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         // Pienin sopiva kortti, valttia säästäen
         const passCard = aiPickPass(table, p.hand, ts);
         if (passCard) {
-          aiTmr.current = tm(() => {
+          schedMove(() => {
             doPass(gRef.current, [passCard]);
           }, 1000);
           return;
@@ -841,7 +841,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
 
       const isSN = (botLevelsRef.current?.[defender] ?? aiLevelRef.current) === 'hard';
       if (canBeatAll) {
-        aiTmr.current = tm(() => {
+        schedMove(() => {
           let cur = gRef.current;
           const beatLines = /** @type {string[]} */ ([]);
           for (const { atkId, defCard } of beats) {
@@ -849,11 +849,11 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
           }
           commit(cur);
           beatLines.forEach(addLog);
-          aiTmr.current = tm(() => startAddPhase(cur), isSN ? 400 : 700);
+          schedMove(() => startAddPhase(cur), isSN ? 400 : 700);
         }, isSN ? 450 : 900);
       } else {
         // Ei pysty täydelliseen puolustukseen — ottaa heti ilman osittaisia paljastuksia
-        aiTmr.current = tm(() => {
+        schedMove(() => {
           resolveRound(gRef.current, false);
         }, isSN ? 300 : 900 + Math.random() * 300);
       }
@@ -910,7 +910,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     commit(g2);
     beatLines.forEach(addLog);
     if (stillUnbeaten === 0) {
-      aiTmr.current = tm(() => startAddPhase(gRef.current), 500);
+      schedMove(() => startAddPhase(gRef.current), 500);
     }
   }
 
