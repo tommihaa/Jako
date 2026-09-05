@@ -1,15 +1,15 @@
 ---
 name: deploy
-description: Julkaise Jako-pelini täysimääräisesti niin että SEKÄ GitHub ETTÄ Vercel-tuotanto sisältävät kaiken: päivitä CHANGELOG + TODO, buildaa, committaa ja PUSHAA GitHubiin, deployaa Verceliin ja varmista. Käytä kun käyttäjä haluaa viedä muutokset liveen ("deploy", "julkaise", "vie tuotantoon").
+description: Julkaise Jako täysimääräisesti niin että SEKÄ GitHub ETTÄ Vercel-tuotanto sisältävät kaiken: päivitä CHANGELOG + TODO, buildaa, committaa ja PUSHAA GitHubiin, deployaa Verceliin ja varmista. Käytä kun käyttäjä haluaa viedä muutokset liveen ("deploy", "julkaise", "vie tuotantoon").
 ---
 
-# Deploy: Jako-pelini
+# Deploy: Jako
 
-**Periaate:** Vercelin git-integraatio on kytketty (todennettu 25.6.2026) → **`git -C Jako-pelini push origin main` ON julkaisu**: se vie commitin GitHubiin JA laukaisee tuotantodeployn molempiin domaineihin. Erillinen `npm run deploy` olisi redundantti tupladeploy, se on vain hätävara (ks. loppu).
+**Periaate:** Vercelin git-integraatio on kytketty (todennettu 25.6.2026) → **`git -C Jako push origin main` ON julkaisu**: se vie commitin GitHubiin JA laukaisee tuotantodeployn molempiin domaineihin. Erillinen `npm run deploy` olisi redundantti tupladeploy, se on vain hätävara (ks. loppu).
 
 ## Vaiheet
 
-1. **Esiehto.** `git -C Jako-pelini status`: olet `main`issa ja työpuu on juuri siinä tilassa jonka haluat julkaista.
+1. **Esiehto.** `git -C Jako status`: olet `main`issa ja työpuu on juuri siinä tilassa jonka haluat julkaista.
 
    **Polku on osa komentoa, ei koristetta.** Bash-työkalun työhakemisto palautuu Projects-juureen vuorojen välissä, ja juuri on itsekin validi repo. Juuresta ajettu `git push` vastaa siis "Everything up-to-date" ja jättää Jakon commitit lähettämättä, eli komento onnistuu ja raportoi oikean näköisesti väärästä reposta. `cd`-ketju toimii vain kyseisen vuoron loppuun, `-C` ei vanhene. Branchia ei sen sijaan tarvitse lukea komennolla: `main` on tässä skillissä oikein, koska projektikohtainen skilli saa nimetä oman haaransa (kokoelmassa on kaksi branch-nimeä, ks. universaali `julkaise`-skill).
 
@@ -23,7 +23,7 @@ description: Julkaise Jako-pelini täysimääräisesti niin että SEKÄ GitHub E
 
 4. **Verifioi UI-muutos previewissä** (rakenteellinen DOM-tarkistus; äänet pois ellet testaa niitä). Jos todennus vaatisi ei-deterministisen pelitilan, jätä se käyttäjän testattavaksi.
 
-5. **Commit + push = julkaisu.** Stage `git -C Jako-pelini add src CLAUDE.md package.json` + muuttuneet pelikohtaiset `*.md` (ei `node_modules/`, `dist/`, `package-lock.json`). Commit-viesti: `$ARGUMENTS` jos annettu, muuten lyhyt suomenkielinen `feat:`/`fix:`. Viesti kulkee `commit-msg`-koukun läpi, joka hylkää sen jos ääkkösiä puuttuu; jos koukku laukeaa, korjaa viesti äläkä ohita porttia. Sitten `git -C Jako-pelini push origin main`, tämä vie GitHubin JA tuotannon kerralla. **Älä ohita pushia.**
+5. **Commit + push = julkaisu.** Stage `git -C Jako add src CLAUDE.md package.json` + muuttuneet pelikohtaiset `*.md` (ei `node_modules/`, `dist/`, `package-lock.json`). Commit-viesti: `$ARGUMENTS` jos annettu, muuten lyhyt suomenkielinen `feat:`/`fix:`. Viesti kulkee `commit-msg`-koukun läpi, joka hylkää sen jos ääkkösiä puuttuu; jos koukku laukeaa, korjaa viesti äläkä ohita porttia. Sitten `git -C Jako push origin main`, tämä vie GitHubin JA tuotannon kerralla. **Älä ohita pushia.**
 
 6. **Varmista tuotanto, odota ensin ~30–60 s.** Git-build + CDN-propagaatio; välitön tarkistus näyttää vanhan bundlen → väärä "ei mennyt perille" -tulkinta. Deterministinen todennus: hae live-sivulta `assets/index-*.js` ja vertaa vaiheen 3 `dist`-buildiin.
 
@@ -36,7 +36,7 @@ hakemaan `script[src]` ja `fetch`aamaan chunkit samasta originista, mikä kiert�
 koska selain on jo läpäissyt sen), tai (b) `npx vercel inspect <deployment-url>` joka kertoo
 tilan ja aliakset ilman sivun latausta.
 
-Vaihtoehto: `npx vercel ls jako-pelini` → uusin `● Ready` ja syntyi pushistasi. Molemmat tuotantodomainit päivittyvät: https://tommi-jako.vercel.app (ensisijainen) + https://tommi-jako52.vercel.app.
+Vaihtoehto: `npx vercel ls jako` → uusin `● Ready` ja syntyi pushistasi. Molemmat tuotantodomainit päivittyvät: https://tommi-jako.vercel.app (ensisijainen) + https://tommi-jako52.vercel.app.
 
 7. **Raportoi.** `APP_VERSION` + commit-hash + live-URL. Vahvista erikseen että SEKÄ GitHub ETTÄ Vercel-tuotanto ovat ajan tasalla, se on tämän skillin koko pointti.
 

@@ -13,7 +13,7 @@ katselutilan snapshot), `GameStartScreen` (aloitusnäyttö), `GameStatusBar` (ti
 ovat `index.html`:n globaalissa tyylissä.
 Sanasto-termit + `splitWithGlossary` ovat `src/shared/glossary.js`:ssä (Lahja-kokoelman jaettu termiskeema, speksi `Kaanon/TERMIMODUULI.md`; sisarkopio Itussa). MERKISTO on yhä App.jsx:ssä.
 Reference docs: `jako_projekti.md` (general), pelikohtaiset säännöt: `KOPUTUS.md`, `LAEPSY.md`, `KULTAKALA.md`, `MAIJA.md`, `KASINO.md`, `MOSKA.md`, `SEISKA.md`, `RISTISEISKA.md`, `PASKAHOUSU.md`. Dev server: `http://localhost:5173/`.
-Repo: `https://github.com/tommihaa/Korttipeli-kokoelma`
+Repo: `https://github.com/tommihaa/Jako` (nimetty 5.9.2026, oli Korttipeli-kokoelma; GitHub ohjaa vanhan nimen uuteen)
 Responsive: Portrait phone (~375px) + tablet landscape (~768px+)
 
 ## Sääntölogiikan muokkaus
