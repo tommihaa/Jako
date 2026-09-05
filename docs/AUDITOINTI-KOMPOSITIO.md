@@ -819,3 +819,42 @@ mitattu vialliselle kytkennälle. Vika ei ollut otoskoossa vaan siinä että N=4
 tarkasti väärää asiaa. **Oppi ei ole se että otos oli liian pieni.** Viallinen mittari ei
 tuota satunnaista kohinaa vaan systemaattisen harhan, ja iso otos vahvistaa sen harhan
 sen sijaan että poistaisi sen. Otoskoon kasvattaminen ei siis ole tarkistus.
+
+### H8 kuollut PlayerSetup poistettu 5.9.2026, ja yksi löydös jäi kysymykseksi
+
+Sessio tilattiin H3:n siivouksena, ja koodi kaatoi tilauksen heti: H3 suljettiin jo 3.9.2026.
+Sen sijaan H3:n oma jälkiosio nimeää kaksi kohtaa jotka näyttävät samalta mutta kuuluvat muihin
+havaintoihin, ja toinen niistä oli yhä auki. Kultakalan `drawnFromDeck` oli poistunut H5:n
+ensimmäisessä erässä, Seiskan `PlayerSetup` ei.
+
+**Tehty.** `shared/PlayerSetup.jsx` (153 riviä) poistettiin. Komponenttia ei ole renderöity
+koskaan, ei nyt eikä historiassa (`git log -S "<PlayerSetup"` on tyhjä koko repossa), joten se
+ei ole edellisen arkkitehtuurin jäänne vaan syntymästään kuollut. `slotsToPlayers` oli sen ainoa
+elävä osa ja sitä käytti vain Seiska, joten apuri siirtyi Seiskaan `initSlots`in viereen. Kuusi
+i18n-avainta (`ui.setup.remove`, `add`, `human`, `bot`, `playerN`, `botN`) poistettiin 23
+localesta orpoina. Seiskan `setPlayerSlots` oli kutsumaton ja setter irrotettiin.
+
+Todennettu previewissä. Seiskan aloitusnäyttö renderöityi, neljän pelaajan peli käynnistyi ja
+botit saivat nimensä siirretystä apurista. Ei konsolivirheitä. Testit 140 läpi, typecheck
+puhdas.
+
+**Kaksi H8:n kohtaa tarkistettiin samalla ja ne olivat jo kunnossa.** `useLayoutEffect`
+importattiin auditointihetkellä 9/9 pelissä ja käytettiin 0 kertaa; nyt sitä ei ole
+yhdessäkään. `botLevels` destrukturoidaan yhä 9/9 pelissä eikä App välitä sitä koskaan, mutta se
+ei ole kuollutta koodia vaan Botbenchin sauma, joten se jää.
+
+**Löydös joka ei ole kuollutta koodia vaan rikkinäinen lupaus.** `showCounts` on Asetusten
+näkyvä kytkin, jonka teksti lupaa `Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)`.
+Sillä on sticky-avain, se on kahdessa esiasetuksessa (`beginner` ja `experienced`), App välittää
+sen propsina ja kaikki yhdeksän peliä destrukturoivat sen. Yksikään peli ei lue sitä kertaakaan,
+eivätkä ole koskaan lukeneet (`git log -S` peleistä on tyhjä molemmilla lukumuodoilla). Pakkojen
+koot piirtyvät ehdoitta, esimerkiksi Seiskan `PakkaCount` rivillä 1068. Kytkin ei siis tee
+mitään.
+
+Tämä on eri laji kuin muut H8:n kohdat, koska se näkyy pelaajalle. Vaihtoehtoja on kaksi ja ne
+ovat eri työtä. Koodin korjaus tarkoittaa kytkennän tekemistä yhdeksään peliin, eli luvatun
+ominaisuuden toteuttamista. Kaanonin korjaus tarkoittaa kytkimen, esiasetuskentän, sticky-avaimen
+ja 23 localen avaimen poistoa, eli lupauksen perumista. **Päätös on Tommin eikä sitä tehty
+tässä.** Muut viisi näkyvyysasetusta tarkistettiin samalla ja ne luetaan peleissä
+(`showAIKnown` kahdessa jotka sen saavat, `showLastPlay`, `showNextBtn`, `showLog` ja
+`showIntention` nimellä `initShowIntention`).
