@@ -40,8 +40,16 @@ välisessä mittakaavassa jota yhden pelin kokoinen työyksikkö ei tuota itsest
 
 ## Havainnot ja niiden tila
 
-Kahdeksan havaintoa tärkein ensin. Kaikki ovat auki 3.9.2026 ja kohtiin joissa puutetta ei
+Kahdeksan havaintoa tärkein ensin. Kaikki olivat auki 3.9.2026 ja kohtiin joissa puutetta ei
 voi erottaa valinnasta ilman Tommia viitataan Kysymykset-osioon.
+
+**Tila 5.9.2026: kaikki kahdeksan ovat kiinni.** H1, H3, H4, H5 ja H6 sekä H2 3.9.2026,
+H7 ja H8 5.9.2026 kahdessa erässä. Alla olevat kappaleet ovat auditointihetken analyysi
+eivätkä tilatietoa: ne kuvaavat vian sellaisena kuin se mitattiin 3.9.2026, ja mitä sille
+tehtiin lukee kunkin havainnon omassa osiossa alempana. **Ero on maksanut kahdesti:**
+analyysikappale on luettu tilaksi ja johtanut suositukseen jo suljetusta kohdasta
+(5.9.2026, H3 ja ajastettujen tehtävien loki). Auki jääneet kohdat ovat nimettyinä osioiden
+lopussa, eivät tässä luettelossa.
 
 - **H1 Pelin elinkaaren runko on yhdeksän kopiota ja kopiot ovat ajautuneet.** `addLog`
   aikaleimalla ja snapshotilla on 9 pelissä, `startBotBattle` 9, `togglePause` 9,
