@@ -1249,7 +1249,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   if (!G) return null;
 
   const human = G.players[0];
-  const isMyTurn = curIdx === 0 && phase === 'select_table';
+  const isMyTurn = curIdx === 0 && phase === 'select_table' && !allBots;
   const selSum = selTable.reduce((s, c) => s + tableVal(c), 0);
 
   // "Paras" kaappaus vasemmalle: omalla vuorolla siirrä eniten pisteitä kaappaava

@@ -540,6 +540,8 @@ seuraavaksi, ks. osio alla.
 "Sinun vuorosi", koska `myTurn` katsoo istuinta 0 eikä sitä onko istuin ihmisen. Bottien
 Taistelussa istuin 0 on botti. Sama kaava on muissakin peleissä ja kuuluu H8:n lajiin.
 Ei korjattu, koska se ei ole H4:ää eikä siitä ole päätöstä.
+**Korjattu 5.9.2026** yhdessä Läpsyn saman löydöksen kanssa, ks. osion
+"Sivulöydös joka ei ole kompositiota" jatko alempana.
 
 ### H4 Kasino ja Maija 3.9.2026
 
@@ -1030,8 +1032,6 @@ Osumia on kolmessatoista kohdassa yhdeksässä tiedostossa, `FanStack.jsx` mukaa
 ole H8 vaan oma havaintonsa, ja se koskee kaikkien yhdeksän pelin renderöityvää pintaa, joten
 sitä ei tehty tässä sivussa.
 
-**Mitä H8:sta jää.** `botLevels` jää 9/9 destrukturoiduksi Botbenchin saumana (päätetty
-5.9.2026 aiemmin). App.jsx:n loput vastuut ovat sen omaa kerrosta.
 **Kiinni 5.9.2026.** Kolmetoista lukua vaihdettiin `C.card`-viittaukseksi. Tiedostoja oli
 kymmenen eikä yhdeksää, kuten havainto sanoi: yhdeksän peliä ja `FanStack.jsx`. `C` oli jo
 importattu jokaisessa yhdeksässä pelitiedostossa, joten uusi import tuli vain `FanStack.jsx`:ään.
@@ -1047,6 +1047,8 @@ Koputuksen poistopakan ei-tyhjä haara jäi selaimessa ajamatta, koska pakkaan e
 korttia. Sen kattaa tyyppitarkistus: `checkJs` on päällä koko projektissa, joten sitomaton `C`
 kaatuisi `tsc`:hen missä tahansa kolmestatoista kohdasta.
 
+**Mitä H8:sta jää.** `botLevels` jää 9/9 destrukturoiduksi Botbenchin saumana (päätetty
+5.9.2026 aiemmin). App.jsx:n loput vastuut ovat sen omaa kerrosta.
 
 ### H5 kiinni kaikissa yhdeksässä 5.9.2026: Läpsyn `G`
 
@@ -1090,3 +1092,21 @@ näkyy pelaajalle ohje *Sinun vuorosi: käännä kortti keskelle* aina kun istui
 vuorossa. Ehto on ollut sama ensimmäisestä commitista alkaen eikä se liity `G`:hen.
 Korjaus olisi yksi ehto lisää, mutta se näkyy pelaajalle, joten se jää Tommin päätökseksi
 eikä sitä tehty tämän muutoksen sivussa.
+
+**Korjattu 5.9.2026, versio 1.2.224.** Muut kahdeksan peliä käytiin ensin läpi. Viisi
+niistä portittaa `TurnPrompt`in samalla muodolla eli lisäämällä `&& !allBots`
+vuoromuuttujaan (Koputus, Maija, Paskahousu, Ristiseiska) tai lukemalla istuimen
+`isHuman`-lippua, joka on katselutilassa kaikilla epätosi (Seiska). Läpsy sai saman
+muodon, ei uutta.
+
+Sama vika löytyi kolmesta muusta pelistä. Kasinon `isMyTurn`, Kultakalan `canDraw`,
+`canSwapRow`, `canDiscard` ja `canStop` sekä Moskan `isMyAtk`, `isMyDef` ja `isMyAdd`
+katsoivat istuinta 0 eivätkä sitä onko istuin ihmisen. Kultakalassa seuraus ei ollut
+vain teksti: katselutilassa nosto- ja poistopakka olivat klikattavia, koska niiden
+`onClick` luki näitä samoja muuttujia. Kaikki neljä peliä saivat `&& !allBots`
+vuoromuuttujaan.
+
+Todennettu previewissä. Läpsy ajettiin molemmissa tiloissa, eli katselutilassa kehote
+ei enää näy ja ihmispelissä näkyy. Kasino, Kultakala ja Moska ajettiin katselutilassa
+ilman kehotetta, ja Kultakala lisäksi ihmispelissä, jossa pakka on yhä korostettu ja
+klikattava.

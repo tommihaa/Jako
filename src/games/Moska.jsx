@@ -1089,9 +1089,9 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   if (!G) return null;
 
   const human = G.players[0];
-  const isMyAtk  = G.phase === 'attack'  && G.primaryAtk === 0;
-  const isMyDef  = G.phase === 'defend'  && G.defender === 0;
-  const isMyAdd  = G.phase === 'add'     && G.addQueue?.[0] === 0;
+  const isMyAtk  = G.phase === 'attack'  && G.primaryAtk === 0 && !allBots;
+  const isMyDef  = G.phase === 'defend'  && G.defender === 0 && !allBots;
+  const isMyAdd  = G.phase === 'add'     && G.addQueue?.[0] === 0 && !allBots;
   const myTurn   = isMyAtk || isMyDef || isMyAdd;
 
   const unbeatenSlots = G.table.filter(t => !t.def);

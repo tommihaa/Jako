@@ -557,11 +557,11 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   const human = G.players[0];
   const ais = allBots ? G.players : G.players.slice(1);
   const discardTop = G.discard[G.discard.length - 1];
-  const canDraw = curIdx === 0 && phase === 'drawing';
-  const canSwapRow = curIdx === 0 && (phase === 'holding' || phase === 'swapping');
+  const canDraw = curIdx === 0 && phase === 'drawing' && !allBots;
+  const canSwapRow = curIdx === 0 && (phase === 'holding' || phase === 'swapping') && !allBots;
   // canDiscard: holding phase AND drew from deck (not discard)
-  const canDiscard = curIdx === 0 && phase === 'holding' && G?.drawnFrom !== 'discard';
-  const canStop    = curIdx === 0 && !!held && (phase === 'swapping' || canDiscard);
+  const canDiscard = curIdx === 0 && phase === 'holding' && G?.drawnFrom !== 'discard' && !allBots;
+  const canStop    = curIdx === 0 && !!held && (phase === 'swapping' || canDiscard) && !allBots;
 
   return (
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>

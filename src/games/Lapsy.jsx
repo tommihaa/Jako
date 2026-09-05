@@ -558,7 +558,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   const top2 = center.slice(0, 2);
   const isMatch = top2.length === 2 && top2[0].r === top2[1].r;
   const humanPile = piles[0] || [];
-  const humanTurn = curTurn === 0 && phase === 'idle' && humanPile.length > 0;
+  const humanTurn = curTurn === 0 && phase === 'idle' && humanPile.length > 0 && !allBots;
   const ch = challenge;
 
   return (

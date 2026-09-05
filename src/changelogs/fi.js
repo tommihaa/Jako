@@ -18,6 +18,7 @@ export const CHANGELOG = [
       'Bottien Taistelun Tauko pysäyttää nyt oikeasti kaikki yhdeksän peliä. Aiemmin botit jatkoivat siirtojaan tauon aikana, ja Moskassa peli eteni tauolla joka kerta. Myös ajastetut ikkunat pysähtyvät, eli Koputuksen reaktiolaskuri ja Paskahousun äkkikuoleman kello odottavat jatkoa sen sijaan että kuluisivat loppuun taustalla.',
       'Läpsyssä läpsäysaika mitataan nyt ilman tauolla vietettyä aikaa. Aiemmin tauko kesken täsmäyksen saattoi kirjata lokiin mielettömän hitaan ajan.',
       'Asetuksista poistui Korttimäärät näkyvillä -kytkin. Se lupasi piilottaa nosto-, kaato- ja poistopakan koot, mutta yksikään peli ei lukenut sitä, eli pakkojen koot näkyivät aina. Lupaus peruttiin, ja pakkojen koot näkyvät kuten ennenkin.',
+      'Bottien Taistelussa ruudun ylälaidassa ei enää lue "Sinun vuorosi", kun vuorossa on botti. Kehote näkyi Läpsyssä, Kasinossa, Kultakalassa ja Moskassa, vaikka katselutilassa kaikkia pelaajia pelaa kone. Kultakalassa korjaus koskee myös klikkauksia, sillä katselutilassa nosto- ja poistopakka reagoivat hiireen, vaikka niiden ei pitänyt.',
     ],
   },
   {
