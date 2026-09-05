@@ -119,7 +119,7 @@ voi erottaa valinnasta ilman Tommia viitataan Kysymykset-osioon.
   `addLog` ja snapshot yhdessä tässä järjestyksessä.
 
 - **H5 Tilan sijaintia ei ole sovittu ja siitä seuraa ref-kaksosia ja puuttuvia
-  vartijoita.** Vaihe ja vuoro asuvat `G`:ssä neljässä pelissä (Ristiseiska, Moska,
+  vartijoita.** (**Kiinni kaikissa yhdeksässä 5.9.2026**, Läpsy viimeisenä, ks. osio alla.) Vaihe ja vuoro asuvat `G`:ssä neljässä pelissä (Ristiseiska, Moska,
   Paskahousu, Seiska), `G`:n vieressä erillisinä useStateina neljässä (Kasino, Maija,
   Koputus, Kultakala) ja Läpsyllä ei ole `G`:tä lainkaan. Seuraukset:
 
@@ -1024,3 +1024,46 @@ sitä ei tehty tässä sivussa.
 
 **Mitä H8:sta jää.** `botLevels` jää 9/9 destrukturoiduksi Botbenchin saumana (päätetty
 5.9.2026 aiemmin). App.jsx:n loput vastuut ovat sen omaa kerrosta.
+
+### H5 kiinni kaikissa yhdeksässä 5.9.2026: Läpsyn `G`
+
+Havainto jätti Läpsyn omaksi kysymyksekseen sillä perusteella ettei siellä ole `G`:tä
+lainkaan. Kysymys osoittautui suljetuksi jo ennen kuin siihen tartuttiin: `useGameState`
+syntyi ensimmäisessä erässä 3.9.2026, ja se on juuri se muoto jota Läpsy kirjoitti käsin.
+Auki oli enää se, mitkä kentät kuuluvat `G`:hen.
+
+**Tehty.** `G` on `{ phase, center, piles, cur, challenge }`. Viisi useStatea, viisi käsin
+ylläpidettyä peilirefiä ja niiden viisi synkkaavaa effektiä korvautuivat yhdellä
+`useGameStatella`. Kirjoituspareja (`setPhase(x); phaseRef.current = x`) oli
+kolmessatoista kohdassa, ja peräkkäiset parit yhdistyivät samalla yhdeksi kirjoitukseksi:
+`startGame` kirjoitti viisi kenttää neljällä lauseella, nyt yhdellä. Neuvon vanhenemisen
+riippuvuuslista lyheni muodosta `[center, curTurn, phase]` muotoon `[G]`, eli se ei enää
+voi jäädä jälkeen kentästä joka lisätään myöhemmin. `giveCenter`in puolitusrivi kulkee nyt
+`commitin` kautta, joten H4:n järjestys on rakenteessa eikä kutsujärjestyksessä.
+
+**Mikä ei siirtynyt `G`:hen, ja miksi.** Läpsyn muut yksitoista refiä eivät ole tilan
+peilejä vaan ajastimia (`aiSlapTmrs`, `failTmr`, `duelTmr`), mittauskelloja
+(`matchTimeRef`, `matchPauseBase`) ja bottien jaettua muistia (`memoryRef`,
+`predMatchRef`). Ne eivät kuvaa pelitilannetta vaan sitä miten siihen ollaan tulossa, eikä
+niiden kirjoittaminen saa aiheuttaa renderiä. Näkymätila (`slapResult`, `failReveal`,
+`flipAnim`, `bestMs`, `shuffling`, `advice`) jäi omiksi useStateikseen samasta syystä kuin
+muissa kahdeksassa pelissä: se katoaa pelin mukana eikä ole osa sääntötilaa.
+
+**`isHuman` ei silti tule kentästä.** `G.piles` on korttipinoja eikä pelaajia, joten nimi
+ja ihmisyys johdetaan yhä istuinindeksistä. `pName` ja `pIsHuman` ovat se paikka jossa se
+tehdään, eikä `G` muuta sitä. Tämä on Läpsyn oma piirre eikä H8:n kolmas laskutapa.
+
+**Todennettu selaimessa.** Katselutila ajettiin läpi kääntöineen, haasteineen,
+haasteketjuineen, epäonnistuneine vastauksineen, täsmäyksineen ja putoamisineen. Läpsäys
+kirjasi järkevän reaktioajan (1 386 ms), eli 5.9.2026 korjattu taukokello kesti muutoksen.
+Tauko pysäytti ajon kahdeksaksitoista sekunniksi eikä loki kasvanut, ja jatko jatkui
+jatkosta. Ihmispelissä tehtiin käännös, neuvon kysely ja tahallinen hutiläpsäisy, joka vei
+päällimmäisen kortin oikein (12 → 11 korttia, kasa 2 → 3) ja kirjoitti rivin vasta sen
+jälkeen. Ei konsolivirheitä. Testit 149 läpi, typecheck puhdas.
+
+**Sivulöydös joka ei ole kompositiota.** `humanTurn` ei sulje pois katselutilaa
+(`curTurn === 0 && phase === 'idle' && humanPile.length > 0`), joten Bottien Taistelussa
+näkyy pelaajalle ohje *Sinun vuorosi: käännä kortti keskelle* aina kun istuin 0 on
+vuorossa. Ehto on ollut sama ensimmäisestä commitista alkaen eikä se liity `G`:hen.
+Korjaus olisi yksi ehto lisää, mutta se näkyy pelaajalle, joten se jää Tommin päätökseksi
+eikä sitä tehty tämän muutoksen sivussa.

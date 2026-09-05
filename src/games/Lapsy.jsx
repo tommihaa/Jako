@@ -13,6 +13,7 @@ import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
+import { useGameState } from '../shared/useGameState.js';
 
 
 const SPEC   = { J: 1, Q: 2, K: 3, A: 4 };
@@ -53,11 +54,14 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP]         = useState(playerCount);
-  const [phase, setPhase]   = useState(/** @type {Vaihe} */ ('idle'));
-  const [center, setCenter] = useState([]);
-  const [piles, setPiles]   = useState([]);
-  const [curTurn, setCur]   = useState(0);
-  const [challenge, setCh]  = useState(null);
+  // Pelitila yhtenä oliona muiden kahdeksan pelin tapaan (kompositioauditointi H5,
+  // 5.9.2026). Ennen tätä Läpsyllä oli viisi useStatea ja viisi käsin ylläpidettyä
+  // peilirefiä synkkaavine effekteineen, ja peili oli kirjoitettava auki jokaisessa
+  // kutsupaikassa. `gRef` on olemassa siksi että ajastimesta herännyt läpsäisy lukee
+  // tilan ennen renderiä, joten kirjoitus menee `setGS`:n kautta eikä effektissä.
+  /** @typedef {{phase: Vaihe, center: any[], piles: any[][], cur: number, challenge: any}} PeliTila */
+  const { G, gRef, setGS } = useGameState(/** @type {PeliTila} */
+    ({ phase: 'idle', center: [], piles: [], cur: 0, challenge: null }));
   const [msg, setMsg]       = useState('');
   const cardBack = 'ilves';
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
@@ -73,15 +77,9 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   const [bestMs, setBestMs]   = useState(null);
   const [failReveal, setFR]  = useState(null);
   const [flipAnim,  setFA]   = useState(null); // { playerIdx, card }
-  const [cardBackState]      = [cardBack];
   const [aiNames]            = useState(() => shuffledAINames(playerNames));
 
-  const pilesRef       = useRef([]);
   const finishOrderRef = useRef([]);
-  const centerRef    = useRef([]);
-  const phaseRef     = useRef(/** @type {Vaihe} */ ('idle'));
-  const curRef       = useRef(0);
-  const chRef        = useRef(null);
   const sndRef       = useRef(soundOn);
   const aiLevelRef   = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
@@ -108,22 +106,17 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   const onSnapshotRef = useRef(onSnapshot);
   useEffect(() => { onSnapshotRef.current = onSnapshot; }, [onSnapshot]);
 
-  useEffect(() => { pilesRef.current = piles; }, [piles]);
-  useEffect(() => { centerRef.current = center; }, [center]);
-  useEffect(() => { setAdvice(null); }, [center, curTurn, phase]); // neuvo vanhenee tilamuutoksista
-  useEffect(() => { phaseRef.current = phase; }, [phase]);
-  useEffect(() => { curRef.current = curTurn; }, [curTurn]);
-  useEffect(() => { chRef.current = challenge; }, [challenge]);
+  useEffect(() => { setAdvice(null); }, [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
 
-  const { log, logRef, addLog, resetLog } = useGameLog({
-    onMessage: setMsg, onSnapshot,
+  const { log, logRef, addLog, commit, resetLog } = useGameLog({
+    onMessage: setMsg, onSnapshot, setGS,
     isBotBattle: () => allBotsRef.current,
     snapshot: () => ({
-      players: (pilesRef.current ?? []).map((pile, i) => ({
+      players: (gRef.current.piles ?? []).map((pile, i) => ({
         name: allBotNamesRef.current[i] ?? `Bot${i + 1}`,
         isHuman: false, hand: pile ?? [], cardCount: pile?.length ?? 0, score: null })),
-      tableCards: (centerRef.current ?? []).slice(-5),
+      tableCards: (gRef.current.center ?? []).slice(-5),
     }),
   });
 
@@ -132,8 +125,9 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   // Läpsyllä ei ole pelaajaolioita vaan istuinindeksit, joten `isHuman` ei tule kentästä
   // vaan lasketaan tässä. Nimetty `pName`in pariksi 5.9.2026 (kompositioauditointi H8):
   // ehto oli kirjoitettu auki tulostaulukon kohdalle, jolloin se näytti kolmannelta
-  // laskutavalta muiden pelien `p.isHuman`in rinnalla. Kotinsa se saa vasta kun Läpsyn
-  // tila kootaan yhdeksi olioksi (H5, auki).
+  // laskutavalta muiden pelien `p.isHuman`in rinnalla. `G` ei ratkaise tätä, koska
+  // Läpsyn `G.piles` on korttipinoja eikä pelaajia; nimi ja ihmisyys johdetaan
+  // istuimesta, ja nämä kaksi funktiota ovat se paikka jossa se tehdään.
   const pIsHuman = i => i === 0 && !allBotsRef.current;
 
   const M = {
@@ -156,13 +150,11 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     duelHalved: (counts) => t('games.lapsy.msg.duelHalved', { counts }),
   };
 
-  // Läpsyn pöytä on kaksi useStatea ja niiden ajastinpeilit, ei yhtä G-oliota. Peili
-  // kirjoitetaan samassa lauseessa kuin state, koska ajastimesta herännyt läpsäisy lukee
-  // sen ennen renderiä. Pari on nimetty tähän, koska katselutilan snapshot lukee juuri
-  // näitä refejä: tila on kirjoitettava ennen lokiriviä (kompositioauditointi H4).
+  // Pöytä on kaksi G:n kenttää ja ne muuttuvat aina yhdessä, joten apuri jäi nimeksi.
+  // Katselutilan snapshot lukee juuri näitä, eli tila on kirjoitettava ennen lokiriviä
+  // (kompositioauditointi H4).
   function setBoard(newPiles, newCenter) {
-    setPiles(newPiles);   pilesRef.current  = newPiles;
-    setCenter(newCenter); centerRef.current = newCenter;
+    setGS({ ...gRef.current, piles: newPiles, center: newCenter });
   }
 
   function updateDuelTimer(currentPiles) {
@@ -191,10 +183,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     clearTimeout(duelTmr.current); duelTmr.current = null; halvePending.current = false;
     const count = forcedCount ?? nP;
     const initPiles = deal(count);
-    setBoard(initPiles, []);
-    setCur(0); curRef.current = 0;
-    setPhase('idle'); phaseRef.current = 'idle';
-    setCh(null); chRef.current = null;
+    setGS({ phase: 'idle', center: [], piles: initPiles, cur: 0, challenge: null });
     setSR(null);
     finishOrderRef.current = []; // eliminointijärjestys, ensin poistunut ensin
     resetLog();
@@ -234,7 +223,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
         giveCenter(ch.byIdx, newPiles, newCenter);
         return;
       }
-      setCur(target); curRef.current = target;
+      setGS({ ...gRef.current, cur: target });
       tm(() => maybeAIFlip(target, newPiles, newCenter, ch), 100 + Math.random() * 80);
       return;
     }
@@ -242,23 +231,23 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     let next = (fromIdx + 1) % n, tries = 0;
     while (newPiles[next].length === 0 && tries < n) { next = (next + 1) % n; tries++; }
     if (tries >= n) { checkGameOver(newPiles); return; }
-    setCur(next); curRef.current = next;
+    setGS({ ...gRef.current, cur: next });
     tm(() => maybeAIFlip(next, newPiles, newCenter, null), 500);
   }
 
   function maybeAIFlip(idx, piles, center, ch) {
-    if (phaseRef.current === 'gameover') return;
+    if (gRef.current.phase === 'gameover') return;
     if (idx === 0 && !allBotsRef.current) return;
-    if (piles[idx].length === 0) { nextTurn(idx, piles, center, chRef.current); return; }
+    if (piles[idx].length === 0) { nextTurn(idx, piles, center, gRef.current.challenge); return; }
     const baseDelay = allBotsRef.current ? aiDelayRef.current : 800 + Math.random() * 100;
     const delay = ch ? Math.min(1000, baseDelay * 0.6) : baseDelay + Math.random() * 200;
     schedMove(() => doFlip(idx, piles, center), delay);
   }
 
   function doFlip(playerIdx, curPiles, curCenter) {
-    if (phaseRef.current === 'gameover') return;
+    if (gRef.current.phase === 'gameover') return;
     const pile = [...curPiles[playerIdx]];
-    if (pile.length === 0) { nextTurn(playerIdx, curPiles, curCenter, chRef.current); return; }
+    if (pile.length === 0) { nextTurn(playerIdx, curPiles, curCenter, gRef.current.challenge); return; }
     const card = pile.shift();
     const newCenter = [card, ...curCenter];
     const newPiles = curPiles.map((p, i) => i === playerIdx ? pile : p);
@@ -291,7 +280,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     if (curCenter.length > 0 && curCenter[0].r === card.r) {
       handleMatch(newPiles, newCenter, playerIdx); return;
     }
-    const ch = chRef.current;
+    const ch = gRef.current.challenge;
     if (ch) {
       if (isSpec(card.r)) {
         if (sndRef.current) SFX.challenge();
@@ -303,7 +292,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
           giveCenter(playerIdx, newPiles, newCenter); return;
         }
         const newCh = { byIdx: playerIdx, targetIdx: target2, cardsLeft: SPEC[card.r], specRank: card.r };
-        setCh(newCh); chRef.current = newCh;
+        setGS({ ...gRef.current, challenge: newCh });
         const count = SPEC[card.r];
         addLog(M.respondedSpecial(pName(playerIdx), lblColored(card), pName(target2), count));
         nextTurn(playerIdx, newPiles, newCenter, newCh);
@@ -311,13 +300,13 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
         const left = ch.cardsLeft - 1;
         if (left <= 0) {
           addLog(M.failedResponse(pName(playerIdx), pName(ch.byIdx), newCenter.length));
-          setCh(null); chRef.current = null;
+          setGS({ ...gRef.current, challenge: null });
           setFR({ card, winner: ch.byIdx, n: newCenter.length });
           clearTimeout(failTmr.current);
           failTmr.current = tm(() => { setFR(null); giveCenter(ch.byIdx, newPiles, newCenter); }, 1600);
         } else {
           const newCh = { ...ch, cardsLeft: left };
-          setCh(newCh); chRef.current = newCh;
+          setGS({ ...gRef.current, challenge: newCh });
           addLog(M.noResponse(pName(playerIdx), left));
           nextTurn(playerIdx, newPiles, newCenter, newCh);
         }
@@ -334,7 +323,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
         giveCenter(playerIdx, newPiles, newCenter); return;
       }
       const newCh = { byIdx: playerIdx, targetIdx: target, cardsLeft: SPEC[card.r], specRank: card.r };
-      setCh(newCh); chRef.current = newCh;
+      setGS({ ...gRef.current, challenge: newCh });
       const count2 = SPEC[card.r];
       addLog(M.challenged(pName(playerIdx), lblColored(card), pName(target), count2));
       nextTurn(playerIdx, newPiles, newCenter, newCh);
@@ -345,8 +334,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   }
 
   function handleMatch(piles, center, flippedBy) {
-    setPhase('match'); phaseRef.current = 'match';
-    setCh(null); chRef.current = null;
+    setGS({ ...gRef.current, phase: 'match', challenge: null });
     matchTimeRef.current = performance.now();
     matchPauseBase.current = pausedTotalMs.current;
     addLog(M.match(center[0].r));
@@ -393,22 +381,22 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
       // sen keskellä joko ratkaisee ikkunan tai rikkoo mittauksen. Kirjattu
       // avoimeksi kohdaksi docs/AUDITOINTI-KOMPOSITIO.md:hen.
       return tm(() => {
-        if (phaseRef.current !== 'match') return;
+        if (gRef.current.phase !== 'match') return;
         const ms = Math.round(performance.now() - matchTimeRef.current - (pausedTotalMs.current - matchPauseBase.current));
-        doSlap(i, pilesRef.current, centerRef.current, ms);
+        doSlap(i, gRef.current.piles, gRef.current.center, ms);
       }, delay);
     }).filter(Boolean);
   }
 
   function doSlap(playerIdx, curPiles, curCenter, ms) {
-    if (phaseRef.current !== 'match') return;
-    setPhase('idle'); phaseRef.current = 'idle';
+    if (gRef.current.phase !== 'match') return;
+    setGS({ ...gRef.current, phase: 'idle' });
     aiSlapTmrs.current.forEach(clearTimeout);
     if (curCenter.length < 2 || curCenter[0].r !== curCenter[1].r) {
       if (sndRef.current) SFX.wrongSlap();
       if (curPiles[playerIdx].length === 0) {
         addLog(M.wrongSlap(pName(playerIdx)));
-        nextTurn(playerIdx, curPiles, curCenter, chRef.current);
+        nextTurn(playerIdx, curPiles, curCenter, gRef.current.challenge);
         return;
       }
       const lostCard = curPiles[playerIdx][0];
@@ -421,7 +409,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
       if (newCenter.length >= 2 && newCenter[0].r === newCenter[1].r) {
         handleMatch(newPiles, newCenter, playerIdx);
       } else {
-        nextTurn(playerIdx, newPiles, newCenter, chRef.current);
+        nextTurn(playerIdx, newPiles, newCenter, gRef.current.challenge);
       }
       return;
     }
@@ -437,14 +425,14 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
 
   function humanSlap() {
     if (allBotsRef.current) return;
-    if (phaseRef.current !== 'match') {
+    if (gRef.current.phase !== 'match') {
       if (recentMatch.current) { return; }
       if (sndRef.current) SFX.wrongSlap();
-      if (pilesRef.current[0].length === 0) { addLog(M.heroSlapNoMatch); return; }
-      setPhase('idle'); phaseRef.current = 'idle';
-      const lostCard = pilesRef.current[0][0];
-      const newPiles = pilesRef.current.map((p, i) => i === 0 ? p.slice(1) : p);
-      const newCenter = [lostCard, ...centerRef.current];
+      if (gRef.current.piles[0].length === 0) { addLog(M.heroSlapNoMatch); return; }
+      setGS({ ...gRef.current, phase: 'idle' });
+      const lostCard = gRef.current.piles[0][0];
+      const newPiles = gRef.current.piles.map((p, i) => i === 0 ? p.slice(1) : p);
+      const newCenter = [lostCard, ...gRef.current.center];
       setBoard(newPiles, newCenter);
       addLog(M.heroSlapNoMatch);
       // Sakkokortti voi muodostaa uuden parin keskelle — sama korjaus kuin doSlapissa
@@ -454,18 +442,18 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
       return;
     }
     const ms = Math.round(performance.now() - matchTimeRef.current - (pausedTotalMs.current - matchPauseBase.current));
-    doSlap(0, pilesRef.current, centerRef.current, ms);
+    doSlap(0, gRef.current.piles, gRef.current.center, ms);
   }
 
   function humanFlip() {
     if (allBotsRef.current) return;
-    if (curRef.current !== 0 || phaseRef.current !== 'idle') return;
-    if (pilesRef.current[0].length === 0) return;
-    doFlip(0, pilesRef.current, centerRef.current);
+    if (gRef.current.cur !== 0 || gRef.current.phase !== 'idle') return;
+    if (gRef.current.piles[0].length === 0) return;
+    doFlip(0, gRef.current.piles, gRef.current.center);
   }
 
   function askAdvice() {
-    const a = lapsyAdvice(memoryRef.current, centerRef.current, 0);
+    const a = lapsyAdvice(memoryRef.current, gRef.current.center, 0);
     setAdvice({
       text: t('games.lapsy.advice.' + a.type, {
         card: a.card ? lbl(a.card) : undefined, rank: a.rank, n: a.n,
@@ -512,21 +500,21 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     }
 
     recordEliminated(finalPiles);
-    setBoard(finalPiles, []);
     // Puolituksen rivi kertoo uudet pinot, joten se kirjoitetaan vasta tilan jälkeen (H4).
-    if (halvedCounts !== null) addLog(M.duelHalved(halvedCounts));
-    setCh(null); chRef.current = null;
-    setPhase('idle'); phaseRef.current = 'idle';
+    // Ilman puolitusta viestiä ei ole, jolloin `commit` tekee saman kuin `setBoard`.
+    commit({ ...gRef.current, piles: finalPiles, center: [] },
+      halvedCounts !== null ? M.duelHalved(halvedCounts) : undefined);
+    setGS({ ...gRef.current, challenge: null, phase: 'idle' });
     if (checkGameOver(finalPiles)) return;
     updateDuelTimer(finalPiles);
-    setCur(winnerIdx); curRef.current = winnerIdx;
+    setGS({ ...gRef.current, cur: winnerIdx });
     tm(() => maybeAIFlip(winnerIdx, finalPiles, [], null), 800);
   }
 
   function checkGameOver(piles) {
     const active = piles.filter(p => p.length > 0);
     if (active.length <= 1) {
-      setPhase('gameover'); phaseRef.current = 'gameover';
+      setGS({ ...gRef.current, phase: 'gameover' });
       const winner = piles.findIndex(p => p.length > 0);
       addLog(M.gameOver(winner >= 0 ? pName(winner) : null));
       const eliminated = finishOrderRef.current;
@@ -562,6 +550,9 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     />
   );
 
+  // Renderin lukemat luetaan G:stä. Nimet ovat samat kuin ennen, joten alla oleva JSX
+  // ei tunne muutosta; vaihe ja vuoro eivät enää asu rinnakkaisissa useStateissa.
+  const { phase, center, piles, cur: curTurn, challenge } = G;
   if (!piles.length) return null;
 
   const top2 = center.slice(0, 2);
