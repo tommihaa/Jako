@@ -837,7 +837,7 @@ export const no = {
       'Poissa': { term: 'Ute av spillet', selitys: 'Slåtte kort vender ikke tilbake til spillet.' },
     },
 
-    // Nøkkel er den finske etiketten (App.jsx sin MERKISTO.label).
+    // Nøkkel er den finske etiketten (shared/glossary.js MERKISTO.label).
     merkisto: {
       'Kaappaustila': { label: 'Fangstmodus', selitys: 'Velg bordkortene, deretter et håndkort — fang.' },
       'Rakennustila': { label: 'Byggemodus', selitys: 'Velg bordkort + et håndkort → et byggverk du fanger senere.' },

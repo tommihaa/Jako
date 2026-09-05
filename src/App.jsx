@@ -7,9 +7,12 @@ import Announcer from './shared/Announcer.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
 import { loadPref, savePref, useStickySetting } from './shared/storage.js';
 import { KANSA, NAME_GROUPS, POOL_BY_GROUP } from './shared/playerGroups.js';
-import { SANASTO, splitWithGlossary } from './shared/glossary.js';
+import { SANASTO, MERKISTO, MERKISTO_KATEGORIAT, splitWithGlossary } from './shared/glossary.js';
 import { SFX, setTheme as setSfxTheme } from './shared/audio.js';
 import { SFX_CATALOG } from './shared/sfxCatalog.js';
+import Flag from './shared/Flag.jsx';
+import ReplayView from './shared/ReplayView.jsx';
+import { TODO } from './todo.js';
 
 /* eslint-disable no-undef */
 const APP_VERSION = __APP_VERSION__;
@@ -128,31 +131,6 @@ const GAMES = [
   },
 ];
 
-// ── Merkistö ─────────────────────────────────────────────────────────────────
-const MERKISTO = [
-  // ─ Pelitoiminnot ─────────────────────────────────────────────────────────
-  { kategoria: 'toiminnot', icon: '🎯', label: 'Kaappaustila',     selitys: 'Valitse pöytäkortit, sitten käsikortti → kaappaa.', peli: 'Kasino' },
-  { kategoria: 'toiminnot', icon: '🔨', label: 'Rakennustila',     selitys: 'Valitse pöytäkortteja + käsikortti → rakennelma, jonka kaappaat myöhemmin.', peli: 'Kasino' },
-  { kategoria: 'toiminnot', icon: '📤', label: 'Jättämistila',     selitys: 'Valitse käsikortti → se menee pöytään muiden käytettäväksi.', peli: 'Kasino' },
-  { kategoria: 'toiminnot', icon: '🏠', label: 'Mökki',            selitys: 'Kaappasit koko pöydän yhdellä siirrolla: +1 lisäpiste.', peli: 'Kasino' },
-  { kategoria: 'toiminnot', icon: '⚔',  label: 'Hyökkäys',         selitys: 'Hyökkääjä lyö kortit pöytään puolustajan kaadettavaksi.', peli: 'Moska · Maija' },
-  { kategoria: 'toiminnot', icon: '🛡',  label: 'Puolustus',        selitys: 'Puolustaja torjuu hyökkäyskorteilla tai valttimaan kortilla.', peli: 'Moska · Maija' },
-  // ─ Viestit ───────────────────────────────────────────────────────────────
-  { kategoria: 'viestit',   icon: '⚠',  label: 'Varoitus',         selitys: 'Huomasit jättää mahdollisuuden käyttämättä, tai olet siirtymässä riskialttiiseen tilaan.' },
-  { kategoria: 'viestit',   icon: '💡', label: 'Vinkki',           selitys: 'Strategiaehdotus koneälypelaajan siirrosta opetustilassa.' },
-  { kategoria: 'viestit',   icon: '●',  label: 'Vuoro',            selitys: 'Piste pisteindikaattorin ja nimen perässä: tällä pelaajalla on vuoro.' },
-  // ─ Pelaajat ──────────────────────────────────────────────────────────────
-  { kategoria: 'pelaajat',  icon: '👤', label: 'Ihmispelaaja',     selitys: 'Hero: sinä pelaat tätä pelaajaa.' },
-  { kategoria: 'pelaajat',  icon: '🤖', label: 'Koneäly',          selitys: 'Tietokoneen ohjaama vastustaja. Nimi arvotaan valitusta ryhmästä.' },
-  // ─ Käyttöliittymä ────────────────────────────────────────────────────────
-  { kategoria: 'ui',        icon: '⚙',  label: 'Asetukset',        selitys: 'Avaa asetukset, peliohjeet, sanaston ja merkistön.' },
-  { kategoria: 'ui',        icon: 'ℹ',  label: 'Info',             selitys: 'Tarkempi selite, esim. pisteytyssäännöt Kasinossa.' },
-  { kategoria: 'ui',        icon: '🔊', label: 'Ääni päällä',      selitys: 'Korttitehosteet ja fanfaarit kuuluvat.' },
-  { kategoria: 'ui',        icon: '🔇', label: 'Ääni pois',        selitys: 'Kaikki äänet mykistetty.' },
-  { kategoria: 'ui',        icon: '🔍', label: 'Avoimet kortit pois',  selitys: 'Normaali tila: näet vain omat kortit.' },
-  { kategoria: 'ui',        icon: '🙈', label: 'Avoimet kortit päällä',selitys: 'Näet kaikkien pelaajien käsikortit ja piilotetut kentän kortit.' },
-  { kategoria: 'ui',        icon: '🔮', label: 'Mestari',          selitys: 'Koneälyn korkein taso: muistaa pakan menot ja optimoi täydellisesti.' },
-];
 
 // ── Muutosloki: ks. src/changelogs/fi.js. Vain suomeksi (kääntäminen 22 kielelle
 // paisutti tiedostomäärää ja julkaisukustannusta ilman hyötyä — selain kääntää
@@ -181,21 +159,6 @@ const loadChangelog = () =>
 // `ui.settings.ai.flatNote` 23 lokaalissa. Ylin porras on ohut kaikkialla, mutta se on eri
 // väite kuin "taso ei vaikuta", eikä se yksin riitä merkinnän perusteeksi.
 
-const TODO = [
-  { label: '"Kokeile ääniä" -esikuuntelu Asetuksissa + pikamykistys', status: 'done' },
-  { label: 'Ääniteema: Torvi & kantele (valittavissa Asetuksista, äänet päällä)', status: 'done' },
-  { label: 'Kaksivärinen korttipakka nelivärisen ohella (valittavissa Asetuksista)', status: 'done' },
-  { label: 'Kieliversiointi (23 kieltä)', status: 'done' },
-  { label: 'Replay: shakki-symbolit siirtomerkintöihin (! !! ? ?? !? ?!)', status: 'deferred' },
-  // UKK herää palautteen mukana — lokalisoitu fi+en, muut kielet putoavat tähän labeliin
-  { label: 'Usein kysytyt kysymykset (UKK)', status: 'deferred' },
-  { label: 'Jaa peli kaverille (linkki tai QR-koodi)', status: 'done' },
-  { label: 'Ohje: sovelluksen lisääminen puhelimen aloitusnäytölle', status: 'done' },
-  { label: 'Tekoälyn vaikeustasojen hionta (uskottavammat aloittelijan virheet)', status: 'done' },
-  { label: 'Kysy Mestarilta neuvoa -nappi viiteen peliin (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)', status: 'done' },
-  { label: 'Mestarin neuvo monivaiheisiin peleihin (Moska, Paskahousu, Kasino, Maija)', status: 'done' },
-  { label: 'Mestarin luento: 🧙-neuvon rinnalle selitys MIKSI Mestari suosittelee juuri tätä siirtoa', status: 'open' },
-];
 
 // Tyhjä per-peli-tilastorakenne. places = sijoitusjakauma (1.–4.), byLevel = erittely AI-tasoittain.
 const mkGameStat = () => ({
@@ -322,119 +285,6 @@ function StatBadge({ s }) {
   );
 }
 
-// Inline-SVG-liput kielivalintaan. Emojiliput eivät renderöidy Windowsilla (näkyvät
-// maakoodina "GB"/"FI"), joten piirretään liput SVG:nä → näkyvät kaikilla alustoilla.
-function Flag({ code }) {
-  const c = { width: 18, height: 12, viewBox: '0 0 18 12', 'aria-hidden': true,
-    style: { borderRadius: 2, display: 'block', flexShrink: 0, boxShadow: '0 0 0 0.5px rgba(0,0,0,0.25)' } };
-  if (code === 'fi') return (
-    <svg {...c}><rect width="18" height="12" fill="#fff"/><rect x="5" width="3" height="12" fill="#003580"/><rect y="4.5" width="18" height="3" fill="#003580"/></svg>
-  );
-  if (code === 'sv') return (
-    <svg {...c}><rect width="18" height="12" fill="#006aa7"/><rect x="5" width="3" height="12" fill="#fecc00"/><rect y="4.5" width="18" height="3" fill="#fecc00"/></svg>
-  );
-  if (code === 'de') return (
-    <svg {...c}><rect width="18" height="4" fill="#000"/><rect y="4" width="18" height="4" fill="#dd0000"/><rect y="8" width="18" height="4" fill="#ffce00"/></svg>
-  );
-  if (code === 'en') return (
-    <svg {...c}>
-      <clipPath id="ukclip"><rect width="18" height="12"/></clipPath>
-      <g clipPath="url(#ukclip)">
-        <rect width="18" height="12" fill="#012169"/>
-        <path d="M0,0 L18,12 M18,0 L0,12" stroke="#fff" strokeWidth="2.4"/>
-        <path d="M0,0 L18,12 M18,0 L0,12" stroke="#c8102e" strokeWidth="1"/>
-        <rect x="7" width="4" height="12" fill="#fff"/><rect y="4" width="18" height="4" fill="#fff"/>
-        <rect x="7.6" width="2.8" height="12" fill="#c8102e"/><rect y="4.6" width="18" height="2.8" fill="#c8102e"/>
-      </g>
-    </svg>
-  );
-  // Norja: punainen, valkoreunainen sininen pohjoismaaristi
-  if (code === 'no') return (
-    <svg {...c}><rect width="18" height="12" fill="#ba0c2f"/><rect x="4" width="5" height="12" fill="#fff"/><rect y="3.5" width="18" height="5" fill="#fff"/><rect x="5" width="3" height="12" fill="#00205b"/><rect y="4.5" width="18" height="3" fill="#00205b"/></svg>
-  );
-  // Tanska: punainen, valkoinen pohjoismaaristi
-  if (code === 'da') return (
-    <svg {...c}><rect width="18" height="12" fill="#c8102e"/><rect x="5" width="3" height="12" fill="#fff"/><rect y="4.5" width="18" height="3" fill="#fff"/></svg>
-  );
-  // Islanti: sininen, valkoreunainen punainen pohjoismaaristi
-  if (code === 'is') return (
-    <svg {...c}><rect width="18" height="12" fill="#02529c"/><rect x="4" width="5" height="12" fill="#fff"/><rect y="3.5" width="18" height="5" fill="#fff"/><rect x="5" width="3" height="12" fill="#dc1e35"/><rect y="4.5" width="18" height="3" fill="#dc1e35"/></svg>
-  );
-  // Ranska: pysty sininen/valkoinen/punainen
-  if (code === 'fr') return (
-    <svg {...c}><rect width="6" height="12" fill="#0055a4"/><rect x="6" width="6" height="12" fill="#fff"/><rect x="12" width="6" height="12" fill="#ef4135"/></svg>
-  );
-  // Italia: pysty vihreä/valkoinen/punainen
-  if (code === 'it') return (
-    <svg {...c}><rect width="6" height="12" fill="#009246"/><rect x="6" width="6" height="12" fill="#fff"/><rect x="12" width="6" height="12" fill="#ce2b37"/></svg>
-  );
-  // Espanja: vaaka punainen/keltainen(tuplakorkeus)/punainen
-  if (code === 'es') return (
-    <svg {...c}><rect width="18" height="12" fill="#aa151b"/><rect y="3" width="18" height="6" fill="#f1bf00"/></svg>
-  );
-  // Ukraina: sininen yläpuolisko, keltainen alapuolisko
-  if (code === 'uk') return (
-    <svg {...c}><rect width="18" height="6" fill="#0057b7"/><rect y="6" width="18" height="6" fill="#ffd700"/></svg>
-  );
-  // Venäjä: vaaka valkoinen/sininen/punainen
-  if (code === 'ru') return (
-    <svg {...c}><rect width="18" height="4" fill="#fff"/><rect y="4" width="18" height="4" fill="#0039a6"/><rect y="8" width="18" height="4" fill="#d52b1e"/></svg>
-  );
-  // Kreikka: sini-valkoraidat + kantonissa valkoinen risti
-  if (code === 'el') return (
-    <svg {...c}>
-      <rect width="18" height="12" fill="#0d5eaf"/>
-      <rect y="1.333" width="18" height="1.333" fill="#fff"/>
-      <rect y="4" width="18" height="1.333" fill="#fff"/>
-      <rect y="6.667" width="18" height="1.333" fill="#fff"/>
-      <rect y="9.333" width="18" height="1.333" fill="#fff"/>
-      <rect width="6.667" height="6.667" fill="#0d5eaf"/>
-      <rect x="2.667" width="1.333" height="6.667" fill="#fff"/>
-      <rect y="2.667" width="6.667" height="1.333" fill="#fff"/>
-    </svg>
-  );
-  // Puola: valkoinen ylä, punainen ala
-  if (code === 'pl') return (
-    <svg {...c}><rect width="18" height="6" fill="#fff"/><rect y="6" width="18" height="6" fill="#dc143c"/></svg>
-  );
-  // Viro: vaaka sininen/musta/valkoinen
-  if (code === 'et') return (
-    <svg {...c}><rect width="18" height="4" fill="#0072ce"/><rect y="4" width="18" height="4" fill="#000"/><rect y="8" width="18" height="4" fill="#fff"/></svg>
-  );
-  // Portugali: vihreä/punainen pysty + keltainen pallo rajalla
-  if (code === 'pt') return (
-    <svg {...c}><rect width="18" height="12" fill="#da291c"/><rect width="7.2" height="12" fill="#046a38"/><circle cx="7.2" cy="6" r="2.1" fill="#ffe000" stroke="#fff" strokeWidth="0.4"/></svg>
-  );
-  // Karjala: vihreä pohja, musta pohjoismaaristi punaisin reunoin (Gallen-Kallela 1920)
-  if (code === 'krl') return (
-    <svg {...c}><rect width="18" height="12" fill="#159b3b"/><rect x="4" width="5" height="12" fill="#d2222d"/><rect y="3.5" width="18" height="5" fill="#d2222d"/><rect x="5" width="3" height="12" fill="#000"/><rect y="4.5" width="18" height="3" fill="#000"/></svg>
-  );
-  // Pohjoissaame: punainen + sininen kenttä, kapeat keltainen/vihreä raidat, náži-rengas
-  if (code === 'se') return (
-    <svg {...c}><rect width="18" height="12" fill="#0e3692"/><rect width="7.6" height="12" fill="#d72727"/><rect x="7.6" width="0.7" height="12" fill="#e6c200"/><rect x="8.3" width="0.7" height="12" fill="#0a7d2c"/><path d="M9 3 A3 3 0 0 0 9 9" fill="none" stroke="#0e3692" strokeWidth="1.1"/><path d="M9 3 A3 3 0 0 1 9 9" fill="none" stroke="#d72727" strokeWidth="1.1"/></svg>
-  );
-  // Romani: sininen yläosa, vihreä alaosa, punainen chakra-pyörä keskellä
-  if (code === 'rom') return (
-    <svg {...c}><rect width="18" height="6" fill="#0a4ea2"/><rect y="6" width="18" height="6" fill="#1c7c34"/><g stroke="#c81d25" strokeWidth="0.5"><line x1="6.6" y1="6" x2="11.4" y2="6"/><line x1="9" y1="3.6" x2="9" y2="8.4"/><line x1="7.3" y1="4.3" x2="10.7" y2="7.7"/><line x1="7.3" y1="7.7" x2="10.7" y2="4.3"/></g><circle cx="9" cy="6" r="2.4" fill="none" stroke="#c81d25" strokeWidth="0.6"/></svg>
-  );
-  // Latina: SPQR-viiri (Rooman punainen + kultainen teksti) — latinalla ei ole maalippua
-  if (code === 'la') return (
-    <svg {...c}><rect width="18" height="12" fill="#7c1419"/><text x="9" y="8.3" textAnchor="middle" fontSize="4.8" fontWeight="700" fill="#e8c24a" fontFamily="Georgia, 'Times New Roman', serif">SPQR</text></svg>
-  );
-  // Tšekki: valkoinen/punainen + sininen kiila vasemmalta
-  if (code === 'cs') return (
-    <svg {...c}><rect width="18" height="6" fill="#fff"/><rect y="6" width="18" height="6" fill="#d7141a"/><path d="M0 0 L9 6 L0 12 Z" fill="#11457e"/></svg>
-  );
-  // Unkari: vaakaraidat punainen/valkoinen/vihreä
-  if (code === 'hu') return (
-    <svg {...c}><rect width="18" height="4" fill="#ce2939"/><rect y="4" width="18" height="4" fill="#fff"/><rect y="8" width="18" height="4" fill="#477050"/></svg>
-  );
-  // Romania: pystyraidat sininen/keltainen/punainen
-  if (code === 'ro') return (
-    <svg {...c}><rect width="6" height="12" fill="#002b7f"/><rect x="6" width="6" height="12" fill="#fcd116"/><rect x="12" width="6" height="12" fill="#ce1126"/></svg>
-  );
-  return null;
-}
 
 function GameBtn({ g, stats, onSelect, onOpenGlossary }) {
   const t = useT();
@@ -623,117 +473,6 @@ function GameHeader({ title, onBack, gearBtn, isMobile }) {
           {title}
         </div>
         <div style={{ position: 'absolute', right: 8 }}>{gearBtn}</div>
-      </div>
-    </div>
-  );
-}
-
-// ── Replay: mini-kortti ──────────────────────────────────────────────────────
-function MiniCard({ card }) {
-  if (!card) return (
-    <span style={{ display:'inline-block', background:'rgba(255,255,255,0.15)', borderRadius:3, padding:'0 3px', fontSize:11, fontFamily:'sans-serif', fontWeight:700, margin:1, border:'1px solid rgba(255,255,255,0.2)', lineHeight:'18px', minWidth:20, textAlign:'center', color:'#888' }}>?</span>
-  );
-  const color = SUIT_COLOR[card.s] ?? '#ccc';
-  return (
-    <span style={{ display:'inline-block', background:'rgba(255,255,255,0.9)', color, borderRadius:3, padding:'0 4px', fontSize:11, fontFamily:'sans-serif', fontWeight:700, margin:1, border:'1px solid rgba(0,0,0,0.15)', lineHeight:'18px', minWidth:20, textAlign:'center' }}>
-      {card.r}{card.s}
-    </span>
-  );
-}
-
-// ── Replay: askelnavigointinäkymä ────────────────────────────────────────────
-function ReplayView({ frames, onClose, isMobile }) {
-  const t = useT();
-  const [idx, setIdx] = useState(frames.length - 1);
-  const safeIdx = Math.min(Math.max(idx, 0), frames.length - 1);
-  const frame   = frames[safeIdx];
-
-  useEffect(() => {
-    const h = e => {
-      if (e.key === 'ArrowLeft')  setIdx(i => Math.max(0, i - 1));
-      if (e.key === 'ArrowRight') setIdx(i => Math.min(frames.length - 1, i + 1));
-      if (e.key === 'Escape')     onClose();
-    };
-    window.addEventListener('keydown', h);
-    return () => window.removeEventListener('keydown', h);
-  }, [frames.length, onClose]);
-
-  if (!frame) return null;
-
-  const navBtn = disabled => ({
-    background: disabled ? 'transparent' : `${C.gold}22`,
-    border: `1px solid ${disabled ? C.panelBorder : C.gold}`,
-    color: disabled ? C.panelBorder : C.gold,
-    borderRadius: 8, padding: '7px 16px',
-    cursor: disabled ? 'default' : 'pointer',
-    fontFamily: 'sans-serif', fontSize: 16, fontWeight: 700,
-  });
-
-  return (
-    <div style={{ position:'fixed', inset:0, zIndex:800, background:C.bg, display:'flex', flexDirection:'column', overflowY:'auto' }}>
-      {/* Navigaatiopalkki */}
-      <div style={{
-        position:'sticky', top:0, zIndex:10, background:'rgba(13,33,24,0.97)',
-        borderBottom:`1px solid ${C.panelBorder}`,
-        padding: isMobile ? '8px 10px' : '10px 16px',
-        display:'flex', alignItems:'center', gap:8,
-      }}>
-        <button onClick={() => setIdx(i => Math.max(0, i - 1))} disabled={safeIdx === 0} style={navBtn(safeIdx === 0)}>←</button>
-        <div style={{ flex:1, display:'flex', flexDirection:'column', gap:3 }}>
-          <div style={{ textAlign:'center', fontFamily:'sans-serif', fontSize:11, color:C.dim }}>
-            {safeIdx + 1} / {frames.length}
-          </div>
-          <input type="range" min={0} max={frames.length - 1} value={safeIdx}
-            onChange={e => setIdx(Number(e.target.value))}
-            style={{ width:'100%', cursor:'pointer', accentColor:C.gold }}
-          />
-        </div>
-        <button onClick={() => setIdx(i => Math.min(frames.length - 1, i + 1))} disabled={safeIdx === frames.length - 1} style={navBtn(safeIdx === frames.length - 1)}>→</button>
-        <button onClick={onClose} style={{ background:'transparent', border:`1px solid ${C.panelBorder}`, color:C.dim, borderRadius:8, padding:'7px 12px', cursor:'pointer', fontFamily:'sans-serif', fontSize:13 }}>✕</button>
-      </div>
-
-      {/* Sisältö */}
-      <div style={{ padding: isMobile ? '12px 10px' : '16px 20px', display:'flex', flexDirection:'column', gap:10 }}>
-        {/* Lokiteksti — logText voi olla HTML-string tai React-node */}
-        {typeof frame.logText === 'string'
-          ? <div style={{ background:'rgba(255,255,255,0.04)', border:`1px solid ${C.panelBorder}`, borderRadius:10, padding:'12px 14px', fontFamily:'sans-serif', fontSize: isMobile ? 13 : 14, color:C.text, lineHeight:1.5 }}
-              dangerouslySetInnerHTML={{ __html: frame.logText }} />
-          : <div style={{ background:'rgba(255,255,255,0.04)', border:`1px solid ${C.panelBorder}`, borderRadius:10, padding:'12px 14px', fontFamily:'sans-serif', fontSize: isMobile ? 13 : 14, color:C.text, lineHeight:1.5 }}>
-              {frame.logText}
-            </div>
-        }
-
-        {/* Pelaajat + käsikortit */}
-        {frame.players.map(p => (
-          <div key={p.name} style={{ background:'rgba(255,255,255,0.03)', border:`1px solid ${C.panelBorder}`, borderRadius:8, padding:'8px 12px', display:'flex', alignItems:'flex-start', gap:10, flexWrap:'wrap' }}>
-            <div style={{ minWidth:72, flexShrink:0 }}>
-              <div style={{ fontFamily:'sans-serif', fontSize:12, color: p.isHuman ? C.gold : C.dim, fontWeight: p.isHuman ? 700 : 400 }}>{p.name}</div>
-              {p.score !== null && <div style={{ fontFamily:'sans-serif', fontSize:10, color:C.dim, opacity:0.8 }}>{p.score} {t('ui.replay.pts')}</div>}
-              <div style={{ fontFamily:'sans-serif', fontSize:10, color:C.dim, opacity:0.5 }}>({p.cardCount}k)</div>
-            </div>
-            <div style={{ display:'flex', flexWrap:'wrap', gap:2, flex:1, alignContent:'flex-start' }}>
-              {p.hand.length > 0
-                ? p.hand.map((c, ci) => <MiniCard key={ci} card={c} />)
-                : <span style={{ color:C.dim, fontSize:11, fontFamily:'sans-serif', opacity:0.4 }}>—</span>
-              }
-            </div>
-          </div>
-        ))}
-
-        {/* Pöytäkortit */}
-        {frame.tableCards?.length > 0 && (
-          <div style={{ background:'rgba(255,255,255,0.03)', border:`1px solid ${C.panelBorder}`, borderRadius:8, padding:'8px 12px' }}>
-            <div style={{ fontFamily:'sans-serif', fontSize:10, color:C.gold, letterSpacing:1.5, opacity:0.8, marginBottom:6, textTransform:'uppercase' }}>{t('ui.replay.table')}</div>
-            <div style={{ display:'flex', flexWrap:'wrap', gap:2 }}>
-              {frame.tableCards.map((c, ci) => <MiniCard key={ci} card={c} />)}
-            </div>
-          </div>
-        )}
-
-        {/* Extrateksti */}
-        {frame.extraText && (
-          <div style={{ textAlign:'center', fontFamily:'sans-serif', fontSize:12, color:C.dim, opacity:0.7 }}>{frame.extraText}</div>
-        )}
       </div>
     </div>
   );
@@ -1014,12 +753,7 @@ export default function App() {
           <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 12, lineHeight: 1.5 }}>
             {t('glossary.merkistoIntro')}
           </div>
-          {[
-            { key: 'toiminnot', label: 'Pelitoiminnot' },
-            { key: 'viestit',   label: 'Viestit' },
-            { key: 'pelaajat',  label: 'Pelaajat' },
-            { key: 'ui',        label: 'Käyttöliittymä' },
-          ].map(({ key, label }) => (
+          {MERKISTO_KATEGORIAT.map((key) => (
             <div key={key} style={{ marginBottom: 10 }}>
               <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7, marginBottom: 4, textTransform: 'uppercase' }}>{t('glossary.cat.' + key)}</div>
               {MERKISTO.filter(m => m.kategoria === key).map(m => (

@@ -55,7 +55,7 @@ const CODES = Object.keys(LOCALES).filter((c) => c !== 'fi');
 // Käännöskohtaiset nimiavaruudet joita fi-locale EI tarkoituksella sisällä, joten
 // niitä ei lasketa "kuolleiksi avaimiksi" (fi ei ole niiden totuuden lähde):
 //   - glossary.sanasto.* : suomen termit ovat src/shared/glossary.js:ssä
-//   - glossary.merkisto.* : suomen merkistö on App.jsx:ssä
+//   - glossary.merkisto.* : suomen merkistö on src/shared/glossary.js:ssä
 //   - games.*.altName     : pelien erisnimet ovat suomea → fi ei tarvitse altNamea
 const isLocaleOnlyByDesign = (key) =>
   key.startsWith('glossary.sanasto.') ||

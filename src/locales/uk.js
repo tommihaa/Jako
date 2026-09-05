@@ -845,7 +845,7 @@ export const uk = {
       'Poissa': { term: 'Поза грою', selitys: 'Відбиті карти не повертаються в гру.' },
     },
 
-    // Ключем є фінський label (App.jsx MERKISTO.label).
+    // Ключем є фінський label (shared/glossary.js MERKISTO.label).
     merkisto: {
       'Kaappaustila': { label: 'Режим захоплення', selitys: 'Обери карти на столі, потім карту з руки — захопи.' },
       'Rakennustila': { label: 'Режим будування', selitys: 'Обери карти зі столу + карту з руки → конструкція, яку захопиш пізніше.' },

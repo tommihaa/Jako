@@ -836,7 +836,7 @@ export const is = {
       'Poissa': { term: 'Úr leik', selitys: 'Felld spil snúa ekki aftur í leik.' },
     },
 
-    // Lykillinn er finnskt label (MERKISTO.label í App.jsx).
+    // Lykillinn er finnskt label (MERKISTO.label í shared/glossary.js).
     merkisto: {
       'Kaappaustila': { label: 'Hremmihamur', selitys: 'Veldu borðspilin, svo handspil — hremmdu.' },
       'Rakennustila': { label: 'Byggingarhamur', selitys: 'Veldu borðspil + handspil → byggingu sem þú hremmir síðar.' },

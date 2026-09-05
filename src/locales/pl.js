@@ -845,7 +845,7 @@ export const pl = {
       'Poissa': { term: 'Poza grą', selitys: 'Zbite karty nie wracają do gry.' },
     },
 
-    // Klucz — label fiński (App.jsx MERKISTO.label).
+    // Klucz — label fiński (shared/glossary.js MERKISTO.label).
     merkisto: {
       'Kaappaustila': { label: 'Tryb zgarniania', selitys: 'Wybierz karty stołu, potem kartę z ręki — zgarnięcie.' },
       'Rakennustila': { label: 'Tryb budowania', selitys: 'Wybierz karty stołu + kartę z ręki → budowla, którą zgarniesz później.' },

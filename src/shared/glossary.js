@@ -62,6 +62,51 @@ export const SANASTO = [
   { kategoria: 'alue',   term: 'Poissa',        match: ['pois pelistä'],                                                    emoji: '❌', selitys: 'Kaadetut kortit eivät palaa peliin.',                                                                                                      pelitLabel: 'useimmat'                  },
 ];
 
+// ── Merkistö ───────────────────────────────────────────────────────
+// Sovelluksen ikonit ja niiden merkitykset. Sama kerros kuin SANASTO ja sama
+// käännössääntö: fi on totuuden lähde tässä, muut 22 kieltä locales/*.js avaimilla
+// glossary.merkisto.<label>.{label,selitys}, eli label on myös käännösavain.
+// Siirretty App.jsx:stä 5.9.2026 (kompositioauditointi H8): se asui siellä sijainnin
+// eikä rakenteen takia, ja SANASTO oli jo täällä.
+/**
+ * @typedef {object} MerkistoEntry
+ * @property {string} kategoria  yksi MERKISTO_KATEGORIAT-arvoista
+ * @property {string} icon
+ * @property {string} label      myös käännösavain, ks. yllä
+ * @property {string} selitys
+ * @property {string} [peli]
+ */
+
+// Näyttöjärjestys. Otsikot tulevat avaimista (glossary.cat.<kategoria>), joten
+// suomenkielistä otsikkoa ei kirjoiteta tähän toiseen kertaan.
+export const MERKISTO_KATEGORIAT = ['toiminnot', 'viestit', 'pelaajat', 'ui'];
+
+/** @type {MerkistoEntry[]} */
+export const MERKISTO = [
+  // ─ Pelitoiminnot ─────────────────────────────────────────────────────────
+  { kategoria: 'toiminnot', icon: '🎯', label: 'Kaappaustila',     selitys: 'Valitse pöytäkortit, sitten käsikortti → kaappaa.', peli: 'Kasino' },
+  { kategoria: 'toiminnot', icon: '🔨', label: 'Rakennustila',     selitys: 'Valitse pöytäkortteja + käsikortti → rakennelma, jonka kaappaat myöhemmin.', peli: 'Kasino' },
+  { kategoria: 'toiminnot', icon: '📤', label: 'Jättämistila',     selitys: 'Valitse käsikortti → se menee pöytään muiden käytettäväksi.', peli: 'Kasino' },
+  { kategoria: 'toiminnot', icon: '🏠', label: 'Mökki',            selitys: 'Kaappasit koko pöydän yhdellä siirrolla: +1 lisäpiste.', peli: 'Kasino' },
+  { kategoria: 'toiminnot', icon: '⚔',  label: 'Hyökkäys',         selitys: 'Hyökkääjä lyö kortit pöytään puolustajan kaadettavaksi.', peli: 'Moska · Maija' },
+  { kategoria: 'toiminnot', icon: '🛡',  label: 'Puolustus',        selitys: 'Puolustaja torjuu hyökkäyskorteilla tai valttimaan kortilla.', peli: 'Moska · Maija' },
+  // ─ Viestit ───────────────────────────────────────────────────────────────
+  { kategoria: 'viestit',   icon: '⚠',  label: 'Varoitus',         selitys: 'Huomasit jättää mahdollisuuden käyttämättä, tai olet siirtymässä riskialttiiseen tilaan.' },
+  { kategoria: 'viestit',   icon: '💡', label: 'Vinkki',           selitys: 'Strategiaehdotus koneälypelaajan siirrosta opetustilassa.' },
+  { kategoria: 'viestit',   icon: '●',  label: 'Vuoro',            selitys: 'Piste pisteindikaattorin ja nimen perässä: tällä pelaajalla on vuoro.' },
+  // ─ Pelaajat ──────────────────────────────────────────────────────────────
+  { kategoria: 'pelaajat',  icon: '👤', label: 'Ihmispelaaja',     selitys: 'Hero: sinä pelaat tätä pelaajaa.' },
+  { kategoria: 'pelaajat',  icon: '🤖', label: 'Koneäly',          selitys: 'Tietokoneen ohjaama vastustaja. Nimi arvotaan valitusta ryhmästä.' },
+  // ─ Käyttöliittymä ────────────────────────────────────────────────────────
+  { kategoria: 'ui',        icon: '⚙',  label: 'Asetukset',        selitys: 'Avaa asetukset, peliohjeet, sanaston ja merkistön.' },
+  { kategoria: 'ui',        icon: 'ℹ',  label: 'Info',             selitys: 'Tarkempi selite, esim. pisteytyssäännöt Kasinossa.' },
+  { kategoria: 'ui',        icon: '🔊', label: 'Ääni päällä',      selitys: 'Korttitehosteet ja fanfaarit kuuluvat.' },
+  { kategoria: 'ui',        icon: '🔇', label: 'Ääni pois',        selitys: 'Kaikki äänet mykistetty.' },
+  { kategoria: 'ui',        icon: '🔍', label: 'Avoimet kortit pois',  selitys: 'Normaali tila: näet vain omat kortit.' },
+  { kategoria: 'ui',        icon: '🙈', label: 'Avoimet kortit päällä',selitys: 'Näet kaikkien pelaajien käsikortit ja piilotetut kentän kortit.' },
+  { kategoria: 'ui',        icon: '🔮', label: 'Mestari',          selitys: 'Koneälyn korkein taso: muistaa pakan menot ja optimoi täydellisesti.' },
+];
+
 // ── Moottori (jaettu kontrakti, ks. TERMIMODUULI.md) ─────────────────────────
 
 /**

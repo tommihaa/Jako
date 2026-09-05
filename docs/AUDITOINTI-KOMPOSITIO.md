@@ -158,8 +158,7 @@ voi erottaa valinnasta ilman Tommia viitataan Kysymykset-osioon.
   `GameProps`-typedefin puuttumisen tietoiseksi lykkäykseksi. Hinta on yllä. **Kysymys 2.**
 
 - **H7 Botti ja Mestarin neuvo kutsuvat samaa funktiota 7/9 pelissä ja taukovahti on
-  valinnainen.** (Taukopuoli kiinni 5.9.2026, ks. osio alla. Kasinon ja Moskan puuttuva
-  `chooseMove` on yhä auki.) `MESTARIN_NEUVO.md` sanoo "jokaisen pelin getAdvice kutsuu samaa
+  valinnainen.** (**Kiinni kokonaan 5.9.2026**, molemmat puolet, ks. kaksi osiota alla.) `MESTARIN_NEUVO.md` sanoo "jokaisen pelin getAdvice kutsuu samaa
   valintafunktiota". Se pitää seitsemässä. Kasinon `getAdvice` on 48 rivin peilikuva
   `runAI`n hard-haarasta omalla prioriteettijärjestyksellään ja sama kynnys `<= 0.5` on
   kirjoitettu kahdesti (286 ja 1130). Moskan puolustussilmukka on kopio `runAI`sta, ja
@@ -175,7 +174,7 @@ voi erottaa valinnasta ilman Tommia viitataan Kysymykset-osioon.
   ei liiku tauolla" on hookin kommentissa eikä rakenteessa. Kotimuoto olisi että hook palauttaa
   bottisiirroille vain vahditun ajastimen ja UI-animaatioille eri nimisen.
 
-- **H8 Pienemmät saman lajin kohdat.** App.jsx kantaa noin 17 vastuuta joista vain
+- **H8 Pienemmät saman lajin kohdat.** (**Kiinni 5.9.2026**, ks. osiot alla; poistopakan JSX suljettiin mitattuna tekemättömänä ja `#f8f2e6`-kovakoodaus jäi omaksi havainnokseen.) App.jsx kantaa noin 17 vastuuta joista vain
   `GAMES`-rekisteri on aito solmu; `MERKISTO`, `TODO`, 23 inline-SVG-lippua ja Replay ovat
   samassa tiedostossa sijainnin eikä rakenteen takia. `SANASTO` on siirretty `glossary.js`:ään
   mutta `MERKISTO` ei ja pariteettitesti tuntee poikkeuksen nimeltä. Audion sääntö "uusi ääni
@@ -935,3 +934,93 @@ välilehdessä. Sama koskee lokin lukemista. Loki on uusin ensin, joten tekstin 
 **Mitä jäi auki.** H7:n ensimmäinen puoli eli Kasinon ja Moskan puuttuva `chooseMove` on
 koskematta, samoin H8:n loput. Ihmispolun ajastimet jäivät vahdittomiksi, koska tauko on
 katselutilan nappi eikä ihmispelissä ole taukoa.
+
+### H7 kiinni kokonaan 5.9.2026: Kasinon ja Moskan yhteinen valintafunktio
+
+Havainnon ensimmäinen puoli oli väite siitä että `MESTARIN_NEUVO.md`:n lupaus *jokaisen pelin
+getAdvice kutsuu samaa valintafunktiota* pitää seitsemässä yhdeksästä. Väite piti.
+
+**Kasino.** `getAdvice` oli 48 rivin peilikuva `runAI`n Mestari-haarasta, ja rakennuskynnys 0.5
+oli kirjoitettu kahdesti. Nyt `kasinoChooseMove(g, playerIdx, buildCap, level)` on moduulitason
+funktio joka kantaa koko kyvykkyysportaan ja palauttaa siirto-olion (`takeOwnBuild`,
+`stealBuild`, `build`, `capture`, `trail`). `runAI` on sen kuljettaja, eli animaatio, viive,
+lokirivi ja tilan kirjoitus. `getAdvice` kutsuu samaa funktiota tasolla `hard` ja kääntää siirron
+neuvotyypiksi. Käännöskerros jäi olemaan, koska neuvo erottaa kaksi asiaa joita botti ei erota:
+kiireellinen oman rakennelman kaappaus turvallisesta (`takeOwnBuild` vs `takeOwnBuildSafe`) ja
+mökki tavallisesta kaappauksesta. Neuvon i18n-avaimet eivät muuttuneet. Samalla
+`findNaiveCapture` nousi komponentin sisältä moduulitasolle, koska se oli jo puhdas.
+
+**Moska.** Puolustussilmukka oli kopio ja lisäyskynnys kovakoodattu kahdesti. Nyt
+`moskaPlanPass`, `moskaPlanBeats` ja `moskaShouldAdd` ovat moduulitasolla, ja
+`moskaPlanDefense` kokoaa kaksi ensimmäistä yhdeksi kutsuksi neuvoa varten.
+
+**Miksi Moskassa on kaksi funktiota eikä yksi.** Yhtenä funktiona Aloittelijan virhearpa
+(`aiShouldFumble`) olisi kulunut myös siirtopolulla, jolta vanha koodi palasi ennen arvan
+nostoa. Siemennetty ajo olisi eriytynyt vanhasta ilman että yksikään päätös muuttuu, eli
+Botbenchin luku olisi liikkunut rakenneuudistuksesta. Jako on siis mittausvaatimus eikä makuasia.
+
+**Testi.** `test/neuvo-sauma.test.js` lukee lähdetekstiä samasta syystä kuin taukovahti. Kopio ei
+ole väärä vastaus vaan sama vastaus kahdesta paikasta, joten ajamalla sen näkisi vasta kun kopiot
+ovat jo eriytyneet, ja silloin havainto olisi bugi eikä rakennevirhe. Testi vaatii että neuvo
+kutsuu valintafunktiota, ettei valinnan osia (`findBestCapture`, `findAIBuild`, `aiPickDefense`,
+`moskaCanPass`) esiinny neuvossa, että kumpikin kynnysluku esiintyy koodissa tasan kerran ja että
+botti kutsuu samaa funktiota.
+
+**Mitä ei muuttunut.** Läpsy on yhä eri laji perustellusti. Neuvon perusteluteksti on yhä sidottu
+valintaan vain merkkijonolla `'games.X.advice.' + type`, eikä mikään testi tarkista että
+perustelu vastaa valintaa. Se on `MESTARIN_NEUVO.md`:n oma pinta eikä tämä havainto.
+
+### H8 loput 5.9.2026, ja yksi kohta jää tekemättä mitattuna
+
+Viisi kohtaa kiinni, yksi suljetaan mitattuna tekemättömänä ja yksi paljasti erillisen
+löydöksen.
+
+**Audiotaulu on nyt rakenne eikä mittaus.** Sääntö *uusi ääni lisätään molempiin tauluihin* oli
+puoliksi rakenne: `SFX` oli tyypitetty `oletusSfx`ista mutta `hornKanteleSfx` ei mistään, joten
+puuttuva avain torvi-kannel-teemassa oli ajonaikainen TypeError eikä käännösvirhe. Kommentti
+sanoi *20 ja 20 (mitattu 17.8.2026)*, eli mitattu kerran eikä valvottu. Taulu on nyt merkitty
+`@type {typeof oletusSfx}`:lla, mikä on merkintä eikä cast, joten puuttuva avain kaatuu
+tarkistuksessa. **Todennettu poistamalla `slap` väliaikaisesti:** typecheck kaatui virheeseen
+TS2741 ja avain palautettiin. Ilman tätä koetta merkintä olisi voinut olla cast joka vaimentaa.
+
+**MERKISTO muutti `glossary.js`:ään.** Se asui App.jsx:ssä sijainnin eikä rakenteen takia, ja
+`SANASTO` oli jo siellä. Samalla löytyi pieni kuollut kohta: näyttöjärjestyksen taulukko kantoi
+suomenkielisiä otsikoita (`label: 'Pelitoiminnot'`) joita ei luettu kertaakaan, koska otsikko
+tulee avaimesta `glossary.cat.<kategoria>`. Tilalle tuli `MERKISTO_KATEGORIAT`. Pariteettitestin
+poikkeuskommentti ja seitsemäntoista localen osoitin App.jsx:ään korjattiin samalla, koska
+kuollut osoitin ei ole historiaa.
+
+**App.jsx: kolme vastuuta ulos, 1 715 rivistä 1 479.** `Flag` (23 inline-SVG:tä), `MiniCard` ja
+`ReplayView` sekä `TODO` saivat omat tiedostonsa (`shared/Flag.jsx`, `shared/ReplayView.jsx`,
+`todo.js`). Kaikki kolme lukevat App:n tilasta nolla asiaa. `GAMES`-rekisteri jää, koska se on
+aito solmu.
+
+**`UNKNOWN_EV` yhdestä paikasta.** Koputus ja Kultakala ovat sisarpelejä: molemmissa botti
+vertaa varmaa hyötyä odotusarvohyötyyn, ja vertailun toinen puoli lepäsi luvulla 7 joka oli
+kirjoitettu kahdesti. Luku on nyt `helpers.js`:ssä. Koputuksen koputusarvion oma luku (Mestari 6,
+muut 5) jää erilleen ja se on kirjattu vakion viereen, koska se arvioi koko käden summaa eikä
+yksittäistä paikkaa. Ilman merkintää seuraava lukija yhtenäistäisi ne.
+
+**`isHuman` kolmesta laskutavasta yhteen.** Paskahousun `p.isHuman && !allBotsRef.current` oli
+kaksinkertainen vartio. `mkGame` asettaa `isHuman: allBots ? false : i === 0`, ja `allBotsRef`
+kirjoitetaan samassa `startGamessa` joka kutsuu `mkGamen`, joten jälkimmäinen ehto ei voi erota
+ensimmäisestä. Kolme kutsupaikkaa lukevat nyt pelkkää `p.isHuman`ia. Läpsyllä ei ole
+pelaajaolioita lainkaan, joten sen ehto on määritelmä eikä kolmas laskutapa; se on nimetty
+`pIsHuman`iksi `pName`in pariksi ja saa kotinsa vasta Läpsyn `G`:n mukana.
+
+**Poistopakan JSX ei ole enää identtinen, ja siksi sitä ei yhtenäistetty.** Auditointi kirjasi
+3.9.2026 Koputuksen ja Kultakalan poistopakan JSX:n identtiseksi. Rinnakkain luettuna se ei ole:
+korttikoko (62 × 88 vs 58 × 72 mobiilissa), tyhjän paikan reunus, fonttikoot ja klikkiehto ovat
+eri, ja Koputuksella on oma näppäimistöreitti (`role="button"` sekä Enter ja välilyönti) jota
+Kultakalalla ei ole. Jaettu komponentti vaatisi noin kahdeksan propsia pelkkien erojen
+välittämiseen, eli se tekisi lukemisesta vaikeampaa eikä helpompaa. **Kohta suljetaan mitattuna
+eikä tehtynä.**
+
+**Sivulöydös jää auki omana kohtanaan: `#f8f2e6` on kovakoodattu kolmetoista kertaa.** `C.card`
+on `colors.js`:ssä juuri se arvo, ja Kultakala lukee tokenin mutta Koputus kirjoittaa luvun.
+Osumia on kolmessatoista kohdassa yhdeksässä tiedostossa, `FanStack.jsx` mukaan lukien. Tämä ei
+ole H8 vaan oma havaintonsa, ja se koskee kaikkien yhdeksän pelin renderöityvää pintaa, joten
+sitä ei tehty tässä sivussa.
+
+**Mitä H8:sta jää.** `botLevels` jää 9/9 destrukturoiduksi Botbenchin saumana (päätetty
+5.9.2026 aiemmin). App.jsx:n loput vastuut ovat sen omaa kerrosta.

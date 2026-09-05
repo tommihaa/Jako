@@ -129,6 +129,12 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
 
 
   const pName = i => allBotsRef.current ? (allBotNamesRef.current[i] ?? `Bot${i + 1}`) : (i === 0 ? 'Hero' : aiNames[i - 1]);
+  // Läpsyllä ei ole pelaajaolioita vaan istuinindeksit, joten `isHuman` ei tule kentästä
+  // vaan lasketaan tässä. Nimetty `pName`in pariksi 5.9.2026 (kompositioauditointi H8):
+  // ehto oli kirjoitettu auki tulostaulukon kohdalle, jolloin se näytti kolmannelta
+  // laskutavalta muiden pelien `p.isHuman`in rinnalla. Kotinsa se saa vasta kun Läpsyn
+  // tila kootaan yhdeksi olioksi (H5, auki).
+  const pIsHuman = i => i === 0 && !allBotsRef.current;
 
   const M = {
     gameStart: t('games.lapsy.msg.gameStart'),
@@ -528,7 +534,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
         ? [winner, ...[...eliminated].reverse()]
         : [...eliminated].reverse();
       const ranking = fullOrder.map((idx, pos) => ({
-        name: pName(idx), place: pos + 1, isHuman: idx === 0 && !allBotsRef.current,
+        name: pName(idx), place: pos + 1, isHuman: pIsHuman(idx),
       }));
       // Ihmispelissä pidempi viive kuin katselutilassa: viimeinen läpsy ja sen ääni
       // ehtivät soida ennen kuin App vaihtaa tulosruutuun.

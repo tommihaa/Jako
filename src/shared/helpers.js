@@ -161,3 +161,14 @@ export function aiNoise(aiLevel) {
 export function aiShouldFumble(aiLevel) {
   return Math.random() < aiNoise(aiLevel);
 }
+
+// Tuntemattoman paikan odotusarvo pienimmän summan muistipeleissä. Koputus ja Kultakala
+// ovat sisarpelejä: molemmissa botti vertaa varmaa hyötyä (huonoimman tunnetun korvaus)
+// odotusarvohyötyyn (tuntemattoman täyttö), ja vertailun toinen puoli lepää tämän luvun
+// varassa. Se oli kirjoitettu kahdesti (kompositioauditointi H8, yhtenäistetty 5.9.2026).
+// Luku on kortin arvon odotusarvo kun paikasta ei tiedetä mitään.
+//
+// Koputuksen koputusarvio käyttää eri lukua (hard 6, muut 5) tarkoituksella, eikä sitä saa
+// yhtenäistää tähän: se arvioi koko käden summaa koputuspäätöstä varten ja on
+// tarkoituksella varovaisempi kuin yksittäisen paikan odotusarvo.
+export const UNKNOWN_EV = 7;

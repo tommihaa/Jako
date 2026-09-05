@@ -4,7 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, truncName, newDeck, cardName, shuffledAINames, lblColored, BOT_RESULT_DELAY } from '../shared/helpers.js';
+import { isRed, lbl, truncName, newDeck, cardName, shuffledAINames, lblColored, BOT_RESULT_DELAY, UNKNOWN_EV } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -61,7 +61,8 @@ function initGame(nPlayers, pool, allBots = false) {
 // Irrotettu aiTurn/aiChainSwap:sta, jotta sama logiikka ajaa botit ja Heron
 // Mestari-neuvon. Käyttävät vain pelaajan omaa known-joukkoa + julkista tietoa.
 
-const UNKNOWN_EV = 7; // tuntemattoman paikan odotusarvo
+// UNKNOWN_EV (tuntemattoman paikan odotusarvo) on helpers.js:ssä, koska Koputus käyttää
+// samaa lukua samaan vertailuun.
 
 // Kierroksia jäljellä: pelin päättää nostopakan tyhjeneminen, joten jako pakan
 // koosta pelaajamäärällä. Julkista tietoa (pakan koko näkyy PakkaCountissa).

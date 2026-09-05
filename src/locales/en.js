@@ -844,7 +844,7 @@ export const en = {
       'Poissa': { term: 'Out of play', selitys: 'Beaten cards do not return to play.' },
     },
 
-    // Avaimena suomenkielinen label (App.jsx:n MERKISTO.label).
+    // Avaimena suomenkielinen label (shared/glossary.js MERKISTO.label).
     merkisto: {
       'Kaappaustila': { label: 'Capture mode', selitys: 'Pick the table cards, then a hand card to capture with.' },
       'Rakennustila': { label: 'Build mode', selitys: 'Pick table cards + a hand card → a build you capture later.' },

@@ -4,7 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, newDeck, shuffledAINames, lblColored, BOT_RESULT_DELAY } from '../shared/helpers.js';
+import { lbl, newDeck, shuffledAINames, lblColored, BOT_RESULT_DELAY, UNKNOWN_EV } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -77,8 +77,8 @@ const M = {
 // Irrotettu runAI:sta, jotta sama logiikka ajaa botit ja Heron Mestari-neuvon.
 // Käyttävät vain pelaajan omaa known-joukkoa + julkista tietoa (ei kurkkimista).
 
-// Tuntemattoman paikan odotusarvo (vaihto- ja nostopäätöksiin)
-const UNKNOWN_EV = 7;
+// UNKNOWN_EV (tuntemattoman paikan odotusarvo) on helpers.js:ssä, koska Kultakala käyttää
+// samaa lukua samaan vertailuun.
 
 // Koputusarvio: tunnettujen summa + tuntemattomien EV vs. kynnys
 function koKnockEstimate(player, level) {

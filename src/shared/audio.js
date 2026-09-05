@@ -163,7 +163,13 @@ const oletusSfx = {
 
 /** Torvi & kantele -teema: korttitoiminnot ja pienet reaktiot ovat kantele-
  *  nypäisyjä, harvinaiset isot voitot torvifanfaareja. Virhetilanteet (wrongSlap/
- *  reactWrong) pysyvät matalina kantele-nypäisyinä — torvi on juhlaa varten. */
+ *  reactWrong) pysyvät matalina kantele-nypäisyinä — torvi on juhlaa varten.
+ *
+ *  Tyyppi otetaan oletustaulusta merkintänä eikä castina, joten puuttuva avain kaatuu
+ *  tyyppitarkistuksessa (kompositioauditointi H8, 5.9.2026). Ennen tätä sääntö "uusi ääni
+ *  lisätään molempiin tauluihin" oli puoliksi rakenne: `SFX` oli tyypitetty oletustaulusta
+ *  mutta tämä taulu ei mistään, joten puuttuva avain tässä oli ajonaikainen TypeError.
+ * @type {typeof oletusSfx} */
 const hornKanteleSfx = {
   flip:        () => kantele(880, 0.35, 0.16),
   play:        () => kantele(660, 0.4, 0.18),
@@ -189,8 +195,8 @@ const hornKanteleSfx = {
 
 // Proxyn kohde on tyhjä objekti, joten ilman merkintää SFX on tyypiltään {} ja jokainen
 // SFX.flip() on virhe. Tyyppi otetaan oletustaulusta eikä Record<string, any>:sta, jolloin
-// tarkistus myös hylkää äänen jota ei ole olemassa. Taulujen avaimet ovat samat, 20 ja 20,
-// eli lupaus pitää molemmilla teemoilla (mitattu 17.8.2026).
+// tarkistus myös hylkää äänen jota ei ole olemassa. Taulujen avainten yhtäläisyyttä ei
+// enää mitata erikseen, koska `hornKanteleSfx` on merkitty samalla tyypillä.
 export const SFX = /** @type {typeof oletusSfx} */ (new Proxy({}, {
   get(_target, name) {
     return (_theme === 'torvi-kannel' ? hornKanteleSfx : oletusSfx)[name];

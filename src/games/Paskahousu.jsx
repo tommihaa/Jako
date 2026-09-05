@@ -447,7 +447,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     if (sndRef.current) SFX.capture();
     const newFinished = [...g.finished, winner.id, loser.id];
     const ranking = newFinished.map((idx, pos) => ({
-      name: g.players[idx].name, place: pos + 1, isHuman: g.players[idx].isHuman && !allBotsRef.current,
+      name: g.players[idx].name, place: pos + 1, isHuman: g.players[idx].isHuman,
     }));
     setTimerLeft(null);
     commit({ ...g, finished: newFinished, phase: 'gameover' }, sdLine);
@@ -531,7 +531,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       const loser = players[f[f.length - 1]];
       lines.push(M.loser(loser.name));
       const ranking = f.map((idx, pos) => ({
-        name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
+        name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman,
       }));
       commit({ ...g, players, draw, pile, top: newTop, finished: f, phase: 'gameover' });
       lines.forEach(addLog);
@@ -646,7 +646,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         const loserK = players[f[f.length - 1]];
         kLines.push(M.loser(loserK.name));
         const ranking = f.map((idx, pos) => ({
-          name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman && !allBotsRef.current,
+          name: players[idx].name, place: pos + 1, isHuman: players[idx].isHuman,
         }));
         commit({ ...g, players, draw, pile, top: knocked, finished: f, phase: 'gameover' });
         kLines.forEach(addLog);

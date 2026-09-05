@@ -837,7 +837,7 @@ export const krl = {
       'Poissa': { term: 'Poikeš', selitys: 'Kuatetut kortit ei tulla järelläh kizah.' },
     },
 
-    // Avaimena suomenkielinen label (App.jsx:n MERKISTO.label).
+    // Avaimena suomenkielinen label (shared/glossary.js MERKISTO.label).
     merkisto: {
       'Kaappaustila': { label: 'Kuapauštila', selitys: 'Valiče stolakortit, šiidä käzikortti — kuapua.' },
       'Rakennustila': { label: 'Luadimistila', selitys: 'Valiče stolakortit + käzikortti → raknelma kuduan kuappuat myöhembä.' },

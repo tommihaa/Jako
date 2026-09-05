@@ -836,7 +836,7 @@ export const et = {
       'Poissa': { term: 'Mängust väljas', selitys: 'Maha löödud kaardid ei naase mängu.' },
     },
 
-    // Võtmeks soomekeelne label (App.jsx MERKISTO.label).
+    // Võtmeks soomekeelne label (shared/glossary.js MERKISTO.label).
     merkisto: {
       'Kaappaustila': { label: 'Haaramisrežiim', selitys: 'Vali lauakaardid, siis käekaart — haara.' },
       'Rakennustila': { label: 'Ehitusrežiim', selitys: 'Vali lauakaarte + käekaart → ehitis, mille haarad hiljem.' },

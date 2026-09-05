@@ -836,7 +836,7 @@ export const el = {
       'Poissa': { term: 'Εκτός παιχνιδιού', selitys: 'Τα καλυμμένα χαρτιά δεν επιστρέφουν στο παιχνίδι.' },
     },
 
-    // Avaimena suomenkielinen label (App.jsx:n MERKISTO.label).
+    // Avaimena suomenkielinen label (shared/glossary.js MERKISTO.label).
     merkisto: {
       'Kaappaustila': { label: 'Λειτουργία κατάκτησης', selitys: 'Διάλεξε τα χαρτιά του τραπεζιού, μετά ένα χαρτί χεριού — κατάκτηση.' },
       'Rakennustila': { label: 'Λειτουργία χτισίματος', selitys: 'Διάλεξε χαρτιά τραπεζιού + ένα χαρτί χεριού → ένα κτίσμα που κατακτάς αργότερα.' },

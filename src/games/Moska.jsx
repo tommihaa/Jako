@@ -215,12 +215,63 @@ function aiPickPass(table, hand, ts) {
   return nonTrump[0] || byValue(same)[0] || null;
 }
 
+// Puolustajan siirtosuunnitelma yhdessä paikassa: sama funktio ajaa botin ja Mestarin
+// neuvon (kompositioauditointi H7, 5.9.2026). Ennen tätä ahne kaatosilmukka oli
+// kirjoitettu kahdesti eikä mikään sitonut versioita toisiinsa. Tasoporras on tässä
+// eikä säännössä: `moskaCanPass` on kaikille sama, ja Aloittelija vain jättää sen väliin.
+// `fumble` on Aloittelijan virhe (valtti vaikka ei-valtti riittäisi); neuvo kutsuu ilman.
+// Palauttaa { kind: 'pass', card } | { kind: 'beat', beats } | { kind: 'take' }.
+// Siirtokortti tai null. Aloittelija ei siirrä, muut siirtävät aina kun sääntö sallii.
+function moskaPlanPass(g, playerIdx, level) {
+  if (level === 'beginner' || !moskaCanPass(g, playerIdx)) return null;
+  // Pienin sopiva kortti, valttia säästäen
+  return aiPickPass(g.table, g.players[playerIdx].hand, g.ts);
+}
+
+// Ahne kaatosuunnitelma: pienin voittava per pöytäkortti, tai otto jos yksikin jää.
+// Kaksi funktiota yhden sijaan, jotta Aloittelijan virhearpa nostetaan vasta kun siirto on
+// pois laskuista; yhtenä funktiona arpa kuluisi myös siirtopolulla ja siemennetty ajo
+// eriytyisi. Palauttaa { kind: 'beat', beats } | { kind: 'take' }.
+function moskaPlanBeats(g, playerIdx, fumble = false) {
+  const { players, ts, table } = g;
+  let hand = [...players[playerIdx].hand];
+  const beats = [];
+  for (const slot of table.filter(t => !t.def)) {
+    let dc = aiPickDefense(slot.atk, hand, ts);
+    // Ei pysty täydelliseen puolustukseen — ottaa ilman osittaisia paljastuksia
+    if (!dc) return { kind: 'take', beats: [] };
+    if (fumble && dc.s !== ts) {
+      const trumpBeaters = hand.filter(c => c.s === ts && canBeat(slot.atk, c, ts));
+      if (trumpBeaters.length) dc = trumpBeaters.sort((a, b) => MV(a) - MV(b))[0];
+    }
+    beats.push({ slot, card: dc });
+    hand = hand.filter(c => c.id !== dc.id);
+  }
+  return { kind: 'beat', beats };
+}
+
+// Koko puolustussuunnitelma yhtenä kutsuna: siirto ensin, sitten kaato tai otto.
+function moskaPlanDefense(g, playerIdx, level, fumble = false) {
+  const passCard = moskaPlanPass(g, playerIdx, level);
+  if (passCard) return { kind: 'pass', card: passCard, beats: [] };
+  return moskaPlanBeats(g, playerIdx, fumble);
+}
+
+// Lisäysvaiheen kynnys tasoittain, yhdessä paikassa samasta syystä kuin yllä: kynnys
+// `def.hand.length >= 2 && table.length < 5` oli kovakoodattuna sekä botissa että neuvossa.
+function moskaShouldAdd(g, level) {
+  const def = g.players[g.defender];
+  if (level === 'beginner') return g.table.length <= 1 && def.hand.length >= 5;
+  if (level === 'hard') return def.hand.length >= 2 && g.table.length < 5;
+  return def.hand.length >= 3 || g.table.length <= 2;
+}
+
 // Mestarin neuvo Herolle (pelaaja 0): sama hard-tason logiikka kuin botilla, vain
 // julkista tietoa (oma käsi, pöytä, poistuneet kortit removed). Palauttaa
 // { type, cards?/card?, target? } — type vastaa games.moska.advice.* -avainta.
 export function getAdvice(g, removed) {
   if (!g) return null;
-  const { phase, primaryAtk, defender, players, ts, table } = g;
+  const { phase, primaryAtk, defender, players, ts } = g;
 
   if (phase === 'attack' && primaryAtk === 0) {
     const cards = aiPickAttackSN(players[0], ts, removed || new Set(), {
@@ -233,34 +284,20 @@ export function getAdvice(g, removed) {
   }
 
   if (phase === 'defend' && defender === 0) {
-    const p = players[0];
-    // Passaus ensin — sama ehto kuin UI:n napilla ja botilla (moskaCanPass)
-    if (moskaCanPass(g, 0)) {
-      const passCard = aiPickPass(table, p.hand, ts);
-      if (passCard) return { type: 'pass', cards: [passCard] };
-    }
-    // Yritä kaataa kaikki (hard-botin ahne jako, pienin voittava per pöytäkortti)
-    const unbeaten = table.filter(t => !t.def);
-    let hand = [...p.hand];
-    const beats = [];
-    for (const slot of unbeaten) {
-      const dc = aiPickDefense(slot.atk, hand, ts);
-      if (!dc) return { type: 'take' };
-      beats.push({ slot, dc });
-      hand = hand.filter(c => c.id !== dc.id);
-    }
-    if (!beats.length) return null;
-    const first = beats[0];
-    return { type: 'beat', card: first.dc, target: first.slot.atk };
+    // Sama suunnitelma kuin Mestari-botilla: siirto ensin, sitten ahne kaato, muuten otto
+    const plan = moskaPlanDefense(g, 0, 'hard');
+    if (plan.kind === 'pass') return { type: 'pass', cards: [plan.card] };
+    if (plan.kind === 'take') return { type: 'take' };
+    if (!plan.beats.length) return null;
+    const first = plan.beats[0];
+    return { type: 'beat', card: first.card, target: first.slot.atk };
   }
 
   if (phase === 'add' && g.addQueue?.[0] === 0) {
     const addable = getAddable(g, 0);
     // Ei lyötävää lainkaan ≠ päätös säästää kortteja: eri neuvo.
     if (!addable.length) return { type: 'noAdd' };
-    const def = players[defender];
-    // Hard-lisäyskynnys (runAI: def.hand.length >= 2 && table.length < 5)
-    if (!(def.hand.length >= 2 && table.length < 5)) return { type: 'skipAdd' };
+    if (!moskaShouldAdd(g, 'hard')) return { type: 'skipAdd' };
     return { type: 'add', card: aiPickAddCard(addable, players[0].hand, ts) };
   }
 
@@ -742,14 +779,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       setSelAdd([]);
     } else {
       // AI lisää sivusta — aggressiivisuus riippuu tasosta, korttivalinta suosii pieniä parittomia
-      const def = g.players[g.defender];
       const lvl = botLevelsRef.current?.[next] ?? aiLevelRef.current;
-      const shouldAdd = lvl === 'beginner'
-        ? g.table.length <= 1 && def.hand.length >= 5
-        : lvl === 'hard'
-          ? def.hand.length >= 2 && g.table.length < 5
-          : def.hand.length >= 3 || g.table.length <= 2;
-      if (shouldAdd) {
+      if (moskaShouldAdd(g, lvl)) {
         const card = aiPickAddCard(addable, p.hand, g.ts);
         addLog(M.aiCanAdd(p.name, addable.map(lblColored).join(', ')));
         if (initShowIntention) {
@@ -772,7 +803,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   function runAI(g) {
     if (!g) g = gRef.current;
     if (!g || g.phase === 'gameover') return;
-    const { phase, primaryAtk, defender, players, ts, table } = g;
+    const { phase, primaryAtk, defender, players, ts } = g;
 
     if (phase === 'attack') {
       const p = players[primaryAtk];
@@ -807,45 +838,25 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       const p = players[defender];
       if (p.isHuman) return;
 
-      // Kokeile siirtoa ensin — Aloittelija ei siirrä. Ehto on sama kuin ihmisellä;
-      // tasoporras on kutsupaikassa eikä säännössä.
+      // Suunnitelma tulee samasta funktiosta kuin Mestarin neuvo (kompositioauditointi H7).
+      // Aloittelija-virhe (valtti vaikka ei-valtti riittäisi) annetaan sille parametrina.
       const lvl = botLevelsRef.current?.[defender] ?? aiLevelRef.current;
-      if (lvl !== 'beginner' && moskaCanPass(g, defender)) {
-        // Pienin sopiva kortti, valttia säästäen
-        const passCard = aiPickPass(table, p.hand, ts);
-        if (passCard) {
-          schedMove(() => {
-            doPass(gRef.current, [passCard]);
-          }, 1000);
-          return;
-        }
-      }
+      const isSN = lvl === 'hard';
 
-      // Kokeile kaataa kaikki
-      const unbeaten = table.filter(t => !t.def);
-      let hand = [...p.hand];
-      const beats = [];
-      let canBeatAll = true;
-      const shouldFumbleDefense = aiShouldFumble(botLevelsRef.current?.[defender] ?? aiLevelRef.current);
-      for (const slot of unbeaten) {
-        let dc = aiPickDefense(slot.atk, hand, ts);
-        if (!dc) { canBeatAll = false; break; }
-        // Aloittelija-virhe: käyttää valttia kun ei-valtilla tulisi toimeen
-        if (shouldFumbleDefense && dc.s !== ts) {
-          const trumpBeaters = hand.filter(c => c.s === ts && canBeat(slot.atk, c, ts));
-          if (trumpBeaters.length) dc = trumpBeaters.sort((a, b) => MV(a) - MV(b))[0];
-        }
-        beats.push({ atkId: slot.atk.id, defCard: dc });
-        hand = hand.filter(c => c.id !== dc.id);
+      const passCard = moskaPlanPass(g, defender, lvl);
+      if (passCard) {
+        schedMove(() => {
+          doPass(gRef.current, [passCard]);
+        }, 1000);
+        return;
       }
-
-      const isSN = (botLevelsRef.current?.[defender] ?? aiLevelRef.current) === 'hard';
-      if (canBeatAll) {
+      const plan = moskaPlanBeats(g, defender, aiShouldFumble(lvl));
+      if (plan.kind === 'beat') {
         schedMove(() => {
           let cur = gRef.current;
           const beatLines = /** @type {string[]} */ ([]);
-          for (const { atkId, defCard } of beats) {
-            cur = doBeat(cur, atkId, defCard, beatLines);
+          for (const { slot, card } of plan.beats) {
+            cur = doBeat(cur, slot.atk.id, card, beatLines);
           }
           commit(cur);
           beatLines.forEach(addLog);

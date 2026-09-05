@@ -836,7 +836,7 @@ export const de = {
       'Poissa': { term: 'Aus dem Spiel', selitys: 'Geschlagene Karten kehren nicht ins Spiel zurück.' },
     },
 
-    // Schlüssel ist die finnische Bezeichnung (MERKISTO.label in App.jsx).
+    // Schlüssel ist die finnische Bezeichnung (MERKISTO.label in shared/glossary.js).
     merkisto: {
       'Kaappaustila': { label: 'Eroberungsmodus', selitys: 'Wähle die Tischkarten, dann eine Handkarte — erobern.' },
       'Rakennustila': { label: 'Baumodus', selitys: 'Wähle Tischkarten + eine Handkarte → ein Aufbau, den du später eroberst.' },

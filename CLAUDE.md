@@ -11,7 +11,7 @@ katselutilan snapshot), `GameStartScreen` (aloitusnäyttö), `GameStatusBar` (ti
 `GameLog` (lokipaneeli). Vakiot `BOT_RESULT_DELAY` ja `LOG_MAX` sekä `AI_NAMES`,
 `shuffledAINames` ja `lblColored` ovat `helpers.js`:ssä. `lastPlayFade` ja `button:active`
 ovat `index.html`:n globaalissa tyylissä.
-Sanasto-termit + `splitWithGlossary` ovat `src/shared/glossary.js`:ssä (Lahja-kokoelman jaettu termiskeema, speksi `Kaanon/TERMIMODUULI.md`; sisarkopio Itussa). MERKISTO on yhä App.jsx:ssä.
+Sanasto-termit + `splitWithGlossary` ovat `src/shared/glossary.js`:ssä (Lahja-kokoelman jaettu termiskeema, speksi `Kaanon/TERMIMODUULI.md`; sisarkopio Itussa). MERKISTO siirtyi samaan tiedostoon 5.9.2026 (kompositioauditointi H8).
 Reference docs: `jako_projekti.md` (general), pelikohtaiset säännöt: `KOPUTUS.md`, `LAEPSY.md`, `KULTAKALA.md`, `MAIJA.md`, `KASINO.md`, `MOSKA.md`, `SEISKA.md`, `RISTISEISKA.md`, `PASKAHOUSU.md`. Dev server: `http://localhost:5173/`.
 Repo: `https://github.com/tommihaa/Jako` (nimetty 5.9.2026, oli Korttipeli-kokoelma; GitHub ohjaa vanhan nimen uuteen)
 Responsive: Portrait phone (~375px) + tablet landscape (~768px+)

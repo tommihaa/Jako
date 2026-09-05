@@ -836,7 +836,7 @@ export const es = {
       'Poissa': { term: 'Fuera de juego', selitys: 'Las cartas vencidas no vuelven al juego.' },
     },
 
-    // La clave es el label en finés (App.jsx MERKISTO.label).
+    // La clave es el label en finés (shared/glossary.js MERKISTO.label).
     merkisto: {
       'Kaappaustila': { label: 'Modo captura', selitys: 'Elige las cartas de la mesa, luego una de la mano — captura.' },
       'Rakennustila': { label: 'Modo construcción', selitys: 'Elige cartas de la mesa + una de la mano → una construcción que capturas después.' },

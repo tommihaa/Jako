@@ -250,57 +250,141 @@ function findAIBuild(p, table, buildCap) {
   return best;
 }
 
-// Mestarin neuvo Herolle: peilaa runAI:n hard-prioriteettia (1 kaappaa oma rakennelma,
-// 2 varasta vastustajan, 3 laske paras pöytäkaappaus, 4 rakenna jos varastoriski <= 0.5,
-// 5 suorita kaappaus, 6 jätä turvallisin kortti). Vain julkista tietoa. Palauttaa
-// { type, handCard, tableCards?, buildId?, value? } — type vastaa games.kasino.advice.* -avainta.
-export function getAdvice(g, playerIdx, buildCap) {
+// Oppipojan naiivi kaappaus: maksimoi korttien MÄÄRÄ, ei pistearvoa —
+// ohittaa ässät/pistekortit jos isompi kasa on tarjolla. (Kokeiltu myös
+// "näkee vain parit" -versiota: se oli mitatusti VAHVEMPI kuin Kisälli,
+// joten heikkous toteutetaan pisteiden, ei kombonäön, kautta.)
+function findNaiveCapture(p, table) {
+  let best = null;
+  for (const handCard of p.hand) {
+    const hv = handVal(handCard);
+    const n = table.length;
+    for (let mask = 1; mask < (1 << n); mask++) {
+      const sel = table.filter((_, i) => (mask >> i) & 1);
+      if (canPartition(sel, hv)) {
+        const isMokki = sel.length === table.length;
+        if (!best || sel.length > best.tableCards.length) best = { handCard, tableCards: sel, score: aiCardScore([handCard, ...sel], isMokki), isMokki };
+      }
+    }
+  }
+  return best;
+}
+
+// Jätettävä kortti tasoittain. Oppipoika ei arvioi vaaraa lainkaan, Kisälli käyttää
+// heuristiikkaa ja Mestari hypergeometrista inferenssiä. Ässän suojaus on vain Mestarilla.
+function pickTrail(g, playerIdx, level) {
+  const p = g.players[playerIdx];
+  if (level === 'beginner') {
+    // Oppipoika: "pienin" kortti pöytään NUMEROARVON mukaan (A=1) ilman
+    // vaara-arviota — kohtelee ässää pikkukorttina vaikka Kasinossa se on 14,
+    // eikä suojaa pistekortteja (♠2 lähtee herkästi)
+    return [...p.hand].sort((a, b) => a.v - b.v)[0];
+  }
+  if (level === 'hard') {
+    // Mestari: minimoi probabilistinen varastusriski, suojele pistekortit
+    const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c) && c.r !== 'A');
+    const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
+    return [...leavePool].sort((a, b) => {
+      const da = pWeightedLeaveDanger(a, g, playerIdx);
+      const db = pWeightedLeaveDanger(b, g, playerIdx);
+      return da !== db ? da - db : tableVal(a) - tableVal(b);
+    })[0];
+  }
+  // Kisälli: heuristinen varastusriski
+  const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c));
+  const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
+  return [...leavePool].sort((a, b) => {
+    const da = leaveDanger(a, g.table);
+    const db = leaveDanger(b, g.table);
+    return da !== db ? da - db : tableVal(a) - tableVal(b);
+  })[0];
+}
+
+// Kasinon siirtovalinta puhtaana funktiona: sama prioriteettijärjestys ajaa botin ja
+// Mestarin neuvon (kompositioauditointi H7, 5.9.2026). Ennen tätä `getAdvice` oli 48 rivin
+// peilikuva `runAI`n hard-haarasta ja rakennuskynnys 0.5 oli kirjoitettu kahdesti.
+// Prioriteetti: 1 kaappaa oma rakennelma, 2 varasta vastustajan (ei Oppipoika), 3 laske
+// paras pöytäkaappaus, 4 rakenna (ei Oppipoika, Mestari vain jos varastusriski <= 0.5),
+// 5 suorita kaappaus, 6 jätä kortti. Palauttaa siirto-olion tai null.
+// @returns {{type: 'takeOwnBuild'|'stealBuild'|'build'|'capture'|'trail', handCard: any,
+//   tableCards?: any[], build?: any, bonus?: any[], value?: number, isMokki?: boolean,
+//   stealRisk?: number} | null}
+export function kasinoChooseMove(g, playerIdx, buildCap, level) {
   if (!g) return null;
   const p = g.players[playerIdx];
   if (!p || !p.hand.length) return null;
+  const isBeginner = level === 'beginner';
 
+  // 1. Kaappaa oma rakennelma (kaikki tasot). Oppipoika ei näe pöytäbonusta.
   const ownBuilds = g.builds.filter(b => b.ownerIdx === playerIdx);
   for (const build of ownBuilds) {
     const capturer = p.hand.find(hc => handVal(hc) === build.value);
     if (capturer) {
       // Kiirettä ei luvata ilman laskettua riskiä: onko kenelläkään vastustajalla
       // mahdollisesti kortti jolla rakennelman voi varastaa (julkinen tieto).
-      const stealRisk = pAnyOpponentHas(g, playerIdx, build.value);
-      return { type: stealRisk > 0 ? 'takeOwnBuild' : 'takeOwnBuildSafe', handCard: capturer, buildId: build.id,
-        tableCards: findTableBonus(g.table, build.value), value: build.value };
-    }
-  }
-  for (const build of g.builds.filter(b => b.ownerIdx !== playerIdx)) {
-    const capturer = p.hand.find(hc => handVal(hc) === build.value);
-    if (capturer) {
-      return { type: 'stealBuild', handCard: capturer, buildId: build.id,
-        tableCards: findTableBonus(g.table, build.value), value: build.value };
+      const bonus = isBeginner ? [] : findTableBonus(g.table, build.value);
+      return { type: 'takeOwnBuild', handCard: capturer, build, bonus, tableCards: bonus,
+        value: build.value, stealRisk: pAnyOpponentHas(g, playerIdx, build.value) };
     }
   }
 
-  const capture = findBestCapture(p, g.table, g.builds);
+  // 2. Varasta vastustajan rakennelma (Kisälli ja Mestari)
+  if (!isBeginner) {
+    for (const build of g.builds.filter(b => b.ownerIdx !== playerIdx)) {
+      const capturer = p.hand.find(hc => handVal(hc) === build.value);
+      if (capturer) {
+        const bonus = findTableBonus(g.table, build.value);
+        return { type: 'stealBuild', handCard: capturer, build, bonus, tableCards: bonus,
+          value: build.value };
+      }
+    }
+  }
 
-  if (ownBuilds.length === 0) {
+  // 3. Laske paras pöytäkaappaus. Oppipoika kaappaa naiivisti (korttimäärä).
+  const capture = isBeginner ? findNaiveCapture(p, g.table) : findBestCapture(p, g.table, g.builds);
+
+  // 4. Harkitse rakentamista (ei Oppipoika, ei jos oma rakennelma jo pöydässä)
+  if (!isBeginner && ownBuilds.length === 0) {
     const buildResult = findAIBuild(p, g.table, buildCap);
-    if (buildResult && pAnyOpponentHas(g, playerIdx, buildResult.value) <= 0.5) {
+    // Kisälli rakentaa aina kun voi. Mestari rakentaa samoin, mutta inferenssi estää
+    // korkean varastusriskin rakennukset. (Aiempi EV-portti "rakennus vain jos arvo
+    // > 1.5 × kaappaus" esti rakentamisen lähes aina ja HÄVISI mitatusti Kisällille —
+    // rakentaminen on Kasinossa vahva siirto.)
+    if (buildResult && (level !== 'hard' || pAnyOpponentHas(g, playerIdx, buildResult.value) <= 0.5)) {
       return { type: 'build', handCard: buildResult.handCard,
         tableCards: buildResult.tableCards, value: buildResult.value };
     }
   }
 
+  // 5. Suorita kaappaus
   if (capture) {
-    return { type: capture.isMokki ? 'captureMokki' : 'capture',
-      handCard: capture.handCard, tableCards: capture.tableCards };
+    return { type: 'capture', handCard: capture.handCard, tableCards: capture.tableCards,
+      isMokki: capture.isMokki };
   }
 
-  const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c) && c.r !== 'A');
-  const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
-  const toLeave = [...leavePool].sort((a, b) => {
-    const da = pWeightedLeaveDanger(a, g, playerIdx);
-    const db = pWeightedLeaveDanger(b, g, playerIdx);
-    return da !== db ? da - db : tableVal(a) - tableVal(b);
-  })[0];
-  return { type: 'trail', handCard: toLeave };
+  // 6. Jätä kortti pöytään
+  return { type: 'trail', handCard: pickTrail(g, playerIdx, level) };
+}
+
+// Mestarin neuvo Herolle: sama valintafunktio kuin botilla, Mestari-tasolla ja vain
+// julkisesta tiedosta. Tämä kerros kääntää siirron neuvotyypiksi, koska neuvo erottaa
+// kaksi asiaa joita botti ei erota: kiireellinen oman rakennelman kaappaus turvallisesta
+// ja mökki tavallisesta kaappauksesta. Palauttaa
+// { type, handCard, tableCards?, buildId?, value? } — type vastaa games.kasino.advice.* -avainta.
+export function getAdvice(g, playerIdx, buildCap) {
+  const move = kasinoChooseMove(g, playerIdx, buildCap, 'hard');
+  if (!move) return null;
+  const base = { handCard: move.handCard, tableCards: move.tableCards, value: move.value, buildId: /** @type {any} */ (null) };
+  switch (move.type) {
+    case 'takeOwnBuild':
+      return { ...base, type: move.stealRisk > 0 ? 'takeOwnBuild' : 'takeOwnBuildSafe', buildId: move.build.id };
+    case 'stealBuild':
+      return { ...base, type: 'stealBuild', buildId: move.build.id };
+    case 'capture':
+      return { ...base, type: move.isMokki ? 'captureMokki' : 'capture' };
+    default:
+      return { ...base, type: move.type };
+  }
 }
 
 // ── Multi-capture: voidaanko valitut pöytäkortit jakaa ryhmiin,
@@ -1029,183 +1113,84 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     addLog(M.invalidMove(lbl(card)));
   }
 
-  // Oppipojan naiivi kaappaus: maksimoi korttien MÄÄRÄ, ei pistearvoa —
-  // ohittaa ässät/pistekortit jos isompi kasa on tarjolla. (Kokeiltu myös
-  // "näkee vain parit" -versiota: se oli mitatusti VAHVEMPI kuin Kisälli,
-  // joten heikkous toteutetaan pisteiden, ei kombonäön, kautta.)
-  function findNaiveCapture(p, table) {
-    let best = null;
-    for (const handCard of p.hand) {
-      const hv = handVal(handCard);
-      const n = table.length;
-      for (let mask = 1; mask < (1 << n); mask++) {
-        const sel = table.filter((_, i) => (mask >> i) & 1);
-        if (canPartition(sel, hv)) {
-          const isMokki = sel.length === table.length;
-          if (!best || sel.length > best.tableCards.length) best = { handCard, tableCards: sel, score: aiCardScore([handCard, ...sel], isMokki), isMokki };
-        }
-      }
-    }
-    return best;
-  }
-
   function runAI(playerIdx, g) {
     if (!g) g = gRef.current;
     if (!g || (gRef.current?.phase ?? g.phase) === 'idle') return;
     const p = g.players[playerIdx];
     if (!p.hand.length) { advance(g, playerIdx); return; }
     const level = botLevelsRef.current?.[playerIdx] ?? aiLevelRef.current;
-    // Kyvykkyysporras (ei satunnaiskohinaa):
+    // Kyvykkyysporras (ei satunnaiskohinaa) asuu `kasinoChooseMove`ssa, jonka myös
+    // Mestarin neuvo kutsuu (kompositioauditointi H7):
     //   Oppipoika: naiivi kaappaus (korttimäärä, ei pisteet), ei rakenna, ei
     //              varasta, ei bonuksia; jättökortti ilman vaara-arviota
     //   Kisälli:   pistekaappaus + rakentaminen + varastus + bonukset,
     //              heuristinen jättövaara
     //   Mestari:   + hypergeometrinen inferenssi (rakennus-EV, jättövaara, A-suoja)
-    const isBeginner = level === 'beginner';
-    const isHard = level === 'hard';
+    // Tämä funktio on siirron kuljettaja: animaatio, viive, lokirivi ja tilan kirjoitus.
+    const move = kasinoChooseMove(g, playerIdx, buildCap, level);
+    if (!move) { advance(g, playerIdx); return; }
     const aDel = allBotsRef.current ? 400 : 1200; // animation delay
     const qDel = allBotsRef.current ? 200 : 700;  // quick action delay
 
-    // ─── 1. Kaappaa oma rakennelma (kaikki tasot) ────────────────────────────
-    const ownBuilds = g.builds.filter(b => b.ownerIdx === playerIdx);
-    if (ownBuilds.length > 0) {
-      for (const build of ownBuilds) {
-        const capturer = p.hand.find(hc => handVal(hc) === build.value);
-        if (capturer) {
-          // Kisälli ja Mestari poimivat myös pöytäkortit jotka summautuvat samaan arvoon
-          const seesBonus = !isBeginner;
-          const bonus = seesBonus ? findTableBonus(g.table, build.value) : [];
-          const animCards = [...build.cards, ...bonus];
-          const isMokkiBuild = g.builds.filter(b => b.id !== build.id).length === 0
-            && g.table.filter(c => !bonus.find(b2 => b2.id === c.id)).length === 0;
-          // Rivi kirjoitetaan vasta animaation jälkeen yhdessä tilan kanssa
-          // (kompositioauditointi H4): se kertoo tapahtuneesta eikä aikeesta.
-          const takeLine = t('games.kasino.msg.takeBuild', { name: p.name, val: build.value, bonus: bonus.length > 0 ? ' + ' + bonus.map(lbl).join('+') : '', mokki: isMokkiBuild ? t('games.kasino.msg.mokkiSuffix') : '' });
-          setCaptureAnim({ handCard: capturer, tableCards: animCards });
-          setAiSel({ handCard: capturer, tableCards: animCards });
-          schedMove(() => {
-            const g2 = gRef.current;
-            const g3 = doBuildCapture(g2, playerIdx, capturer, [build], bonus, true);
-            commit(g3, takeLine);
-            setPendingCapture({ g2: g3, fromIdx: playerIdx });
-          }, aDel);
-          return;
-        }
-      }
-    }
-
-    // ─── 2. Varasta vastustajan rakennelma (normal+) ──────────────────────────
-    if (!isBeginner) {
-      const opponentBuilds = g.builds.filter(b => b.ownerIdx !== playerIdx);
-      for (const build of opponentBuilds) {
-        const capturer = p.hand.find(hc => handVal(hc) === build.value);
-        if (capturer) {
-          // Poimi myös pöytäkortit jotka summautuvat samaan arvoon
-          const seesBonus = true;
-          const bonus = seesBonus ? findTableBonus(g.table, build.value) : [];
-          const animCards = [...build.cards, ...bonus];
-          const isMokkiSteal = g.builds.filter(b => b.id !== build.id).length === 0
-            && g.table.filter(c => !bonus.find(b2 => b2.id === c.id)).length === 0;
-          const stealLine = t('games.kasino.msg.stealBuild', { name: p.name, val: build.value, bonus: bonus.length > 0 ? ' + ' + bonus.map(lbl).join('+') : '', mokki: isMokkiSteal ? t('games.kasino.msg.mokkiSuffix') : '' });
-          setCaptureAnim({ handCard: capturer, tableCards: animCards });
-          setAiSel({ handCard: capturer, tableCards: animCards });
-          schedMove(() => {
-            const g2 = gRef.current;
-            const g3 = doBuildCapture(g2, playerIdx, capturer, [build], bonus, true);
-            commit(g3, stealLine);
-            setPendingCapture({ g2: g3, fromIdx: playerIdx });
-          }, aDel);
-          return;
-        }
-      }
-    }
-
-    // ─── 3. Kaappaa pöydältä ────────────────────────────────────────────────
-    // Oppipoika kaappaa naiivisti (korttimäärä), muut pistearvon mukaan
-    const captureToUse = isBeginner
-      ? findNaiveCapture(p, g.table)
-      : findBestCapture(p, g.table, g.builds);
-
-    // ─── 4. Harkitse rakentamista (normal+, ei omaa rakennelmaa jo) ──────────
-    if (!isBeginner && ownBuilds.length === 0) {
-      const buildResult = findAIBuild(p, g.table, buildCap);
-      if (buildResult) {
-        let doBuildAction = false;
-        if (level === 'normal') {
-          // Kisälli: rakenna aina kun voi
-          doBuildAction = true;
-        } else {
-          // Mestari (hard): rakenna kuten Kisälli, mutta inferenssi estää
-          // korkean varastusriskin rakennukset. (Aiempi EV-portti "rakennus vain
-          // jos arvo > 1.5 × kaappaus" esti rakentamisen lähes aina ja HÄVISI
-          // mitatusti Kisällille — rakentaminen on Kasinossa vahva siirto.)
-          const stealRisk = pAnyOpponentHas(g, playerIdx, buildResult.value);
-          doBuildAction = stealRisk <= 0.5;
-        }
-        if (doBuildAction) {
-          if (initShowIntention) setAiSel({ handCard: buildResult.handCard, tableCards: buildResult.tableCards });
-          schedMove(() => {
-            const g2 = gRef.current;
-            setAiSel({ handCard: null, tableCards: [] });
-            const lines = /** @type {string[]} */ ([]);
-            const g3 = doBuild(g2, playerIdx, buildResult.handCard, buildResult.tableCards, buildResult.value, lines);
-            commit(g3);
-            lines.forEach(addLog);
-            schedMove(() => advance(g3, playerIdx), 400);
-          }, qDel + Math.random() * 200);
-          return;
-        }
-      }
-    }
-
-    // ─── 3b. Suorita kaappaus (jos löytyi) ──────────────────────────────────
-    if (captureToUse) {
-      const groups = findGroups(captureToUse.tableCards, handVal(captureToUse.handCard));
-      const captureStr = groups.length > 1
-        ? groups.map(grp => grp.map(id => lbl(captureToUse.tableCards.find(c => c.id === id))).join('+')).join(' ja ')
-        : captureToUse.tableCards.map(lbl).join('+');
-      const captureLine = M.aiCapture(p.name, lbl(captureToUse.handCard), captureStr, captureToUse.isMokki);
-      setCaptureAnim({ handCard: captureToUse.handCard, tableCards: captureToUse.tableCards });
-      setAiSel({ handCard: captureToUse.handCard, tableCards: captureToUse.tableCards });
+    // ─── Rakennelman kaappaus: oma tai varastettu ────────────────────────────
+    if (move.type === 'takeOwnBuild' || move.type === 'stealBuild') {
+      const { handCard: capturer, build, bonus } = move;
+      const animCards = [...build.cards, ...bonus];
+      const isMokkiTake = g.builds.filter(b => b.id !== build.id).length === 0
+        && g.table.filter(c => !bonus.find(b2 => b2.id === c.id)).length === 0;
+      // Rivi kirjoitetaan vasta animaation jälkeen yhdessä tilan kanssa
+      // (kompositioauditointi H4): se kertoo tapahtuneesta eikä aikeesta.
+      const key = move.type === 'takeOwnBuild' ? 'games.kasino.msg.takeBuild' : 'games.kasino.msg.stealBuild';
+      const takeLine = t(key, { name: p.name, val: build.value, bonus: bonus.length > 0 ? ' + ' + bonus.map(lbl).join('+') : '', mokki: isMokkiTake ? t('games.kasino.msg.mokkiSuffix') : '' });
+      setCaptureAnim({ handCard: capturer, tableCards: animCards });
+      setAiSel({ handCard: capturer, tableCards: animCards });
       schedMove(() => {
         const g2 = gRef.current;
-        const g3 = doCapture(g2, playerIdx, captureToUse.handCard, captureToUse.tableCards, true);
+        const g3 = doBuildCapture(g2, playerIdx, capturer, [build], bonus, true);
+        commit(g3, takeLine);
+        setPendingCapture({ g2: g3, fromIdx: playerIdx });
+      }, aDel);
+      return;
+    }
+
+    // ─── Rakenna ─────────────────────────────────────────────────────────────
+    if (move.type === 'build') {
+      if (initShowIntention) setAiSel({ handCard: move.handCard, tableCards: move.tableCards });
+      schedMove(() => {
+        const g2 = gRef.current;
+        setAiSel({ handCard: null, tableCards: [] });
+        const lines = /** @type {string[]} */ ([]);
+        const g3 = doBuild(g2, playerIdx, move.handCard, move.tableCards, move.value, lines);
+        commit(g3);
+        lines.forEach(addLog);
+        schedMove(() => advance(g3, playerIdx), 400);
+      }, qDel + Math.random() * 200);
+      return;
+    }
+
+    // ─── Kaappaa pöydältä ────────────────────────────────────────────────────
+    if (move.type === 'capture') {
+      const groups = findGroups(move.tableCards, handVal(move.handCard));
+      const captureStr = groups.length > 1
+        ? groups.map(grp => grp.map(id => lbl(move.tableCards.find(c => c.id === id))).join('+')).join(' ja ')
+        : move.tableCards.map(lbl).join('+');
+      const captureLine = M.aiCapture(p.name, lbl(move.handCard), captureStr, move.isMokki);
+      setCaptureAnim({ handCard: move.handCard, tableCards: move.tableCards });
+      setAiSel({ handCard: move.handCard, tableCards: move.tableCards });
+      schedMove(() => {
+        const g2 = gRef.current;
+        const g3 = doCapture(g2, playerIdx, move.handCard, move.tableCards, true);
         commit(g3, captureLine);
         setPendingCapture({ g2: g3, fromIdx: playerIdx });
       }, aDel);
       return;
     }
 
-    // ─── 5. Jätä kortti pöytään ──────────────────────────────────────────────
-    let toLeave;
-    if (isBeginner) {
-      // Oppipoika: "pienin" kortti pöytään NUMEROARVON mukaan (A=1) ilman
-      // vaara-arviota — kohtelee ässää pikkukorttina vaikka Kasinossa se on 14,
-      // eikä suojaa pistekortteja (♠2 lähtee herkästi)
-      toLeave = [...p.hand].sort((a, b) => a.v - b.v)[0];
-    } else if (isHard) {
-      // Mestari (hard): minimoi probabilistinen varastusriski, suojele pistekortit
-      const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c) && c.r !== 'A');
-      const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
-      toLeave = [...leavePool].sort((a, b) => {
-        const da = pWeightedLeaveDanger(a, g, playerIdx);
-        const db = pWeightedLeaveDanger(b, g, playerIdx);
-        return da !== db ? da - db : tableVal(a) - tableVal(b);
-      })[0];
-    } else {
-      // Kisälli: heuristinen varastusriski
-      const nonSpecial = p.hand.filter(c => !isPataKakkonen(c) && !isRuutuKymppi(c));
-      const leavePool = nonSpecial.length > 0 ? nonSpecial : p.hand;
-      toLeave = [...leavePool].sort((a, b) => {
-        const da = leaveDanger(a, g.table);
-        const db = leaveDanger(b, g.table);
-        return da !== db ? da - db : tableVal(a) - tableVal(b);
-      })[0];
-    }
+    // ─── Jätä kortti pöytään ─────────────────────────────────────────────────
     schedMove(() => {
       const g2 = gRef.current;
       const lines = /** @type {string[]} */ ([]);
-      const g3 = doLeave(g2, playerIdx, toLeave, lines);
+      const g3 = doLeave(g2, playerIdx, move.handCard, lines);
       commit(g3);
       lines.forEach(addLog);
       schedMove(() => advance(g3, playerIdx), 400);

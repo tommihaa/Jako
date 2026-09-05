@@ -836,7 +836,7 @@ export const fr = {
       'Poissa': { term: 'Hors jeu', selitys: 'Les cartes coupées ne reviennent pas en jeu.' },
     },
 
-    // Clé = label finnois (App.jsx MERKISTO.label).
+    // Clé = label finnois (shared/glossary.js MERKISTO.label).
     merkisto: {
       'Kaappaustila': { label: 'Mode capture', selitys: 'Choisis les cartes de la table, puis une carte en main — capture.' },
       'Rakennustila': { label: 'Mode construction', selitys: 'Choisis des cartes de la table + une carte en main → une construction que tu captures plus tard.' },
