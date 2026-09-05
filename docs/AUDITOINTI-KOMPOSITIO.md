@@ -1032,6 +1032,21 @@ sitä ei tehty tässä sivussa.
 
 **Mitä H8:sta jää.** `botLevels` jää 9/9 destrukturoiduksi Botbenchin saumana (päätetty
 5.9.2026 aiemmin). App.jsx:n loput vastuut ovat sen omaa kerrosta.
+**Kiinni 5.9.2026.** Kolmetoista lukua vaihdettiin `C.card`-viittaukseksi. Tiedostoja oli
+kymmenen eikä yhdeksää, kuten havainto sanoi: yhdeksän peliä ja `FanStack.jsx`. `C` oli jo
+importattu jokaisessa yhdeksässä pelitiedostossa, joten uusi import tuli vain `FanStack.jsx`:ään.
+Arvo pysyi samana, joten muutos ei näy pelaajalle eikä muutoslokimerkintää tullut.
+
+`npm run typecheck` on puhdas, `npx vitest run` antaa 149 läpi ja 28 ohitettua, ja
+`scripts/verify.py` päättyy nollaan. Preview kävi kaikki yhdeksän peliä jaon jälkeisessä tilassa.
+Korttipinnat piirtyivät ennallaan eikä konsoliin tullut yhtään virhettä. Selaimessa laskettujen
+elementtien määrä taustavärillä `rgb(248, 242, 230)`: Ristiseiska 52, Seiska 29, Moska 25,
+Paskahousu 24, Kultakala 23, Maija 21, Kasino 20, Läpsy 18, Koputus 16.
+
+Koputuksen poistopakan ei-tyhjä haara jäi selaimessa ajamatta, koska pakkaan ei ehtinyt kertyä
+korttia. Sen kattaa tyyppitarkistus: `checkJs` on päällä koko projektissa, joten sitomaton `C`
+kaatuisi `tsc`:hen missä tahansa kolmestatoista kohdasta.
+
 
 ### H5 kiinni kaikissa yhdeksässä 5.9.2026: Läpsyn `G`
 

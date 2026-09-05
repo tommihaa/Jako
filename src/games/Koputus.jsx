@@ -846,7 +846,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
             style={{ cursor: isHuman && phase === 'draw' && discardTop ? 'pointer' : 'default', position: 'relative', width: cw, height: ch }}>
             {!discardTop
               ? <div style={{ width: cw, height: ch, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.25 }} />
-              : <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: '#f8f2e6', border: `2px solid ${advice?.target === 'discard' ? C.botMode : isHuman && phase === 'draw' ? C.gold : '#aaa'}`, boxShadow: advice?.target === 'discard' ? '0 0 18px rgba(192,132,252,0.65)' : isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              : <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: C.card, border: `2px solid ${advice?.target === 'discard' ? C.botMode : isHuman && phase === 'draw' ? C.gold : '#aaa'}`, boxShadow: advice?.target === 'discard' ? '0 0 18px rgba(192,132,252,0.65)' : isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ color: SUIT_COLOR[discardTop.s], fontFamily: 'Georgia,serif', textAlign: 'center', lineHeight: 1.1, pointerEvents: 'none' }}>
                   <div style={{ fontSize: isMobile ? 17 : 22, fontWeight: 700 }}>{discardTop.r}</div>
                   <div style={{ fontSize: isMobile ? 20 : 26 }}>{discardTop.s}</div>

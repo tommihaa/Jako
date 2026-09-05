@@ -641,7 +641,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
         {failReveal && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 14px', background: 'rgba(224,92,59,0.08)', border: `1px solid ${C.red}44`, borderRadius: 10, animation: 'fadeIn 0.25s ease' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.red, flexShrink: 0 }}>{t('games.lapsy.ui.wonChallenge', { winner: pName(failReveal.winner), cards: korttia(failReveal.n) })}</span>
-            <span style={{ background: '#f8f2e6', borderRadius: 5, padding: '2px 8px', fontFamily: 'Georgia,serif', fontWeight: 700, fontSize: 16, color: SUIT_COLOR[failReveal.card.s] }}>{failReveal.card.r}{failReveal.card.s}</span>
+            <span style={{ background: C.card, borderRadius: 5, padding: '2px 8px', fontFamily: 'Georgia,serif', fontWeight: 700, fontSize: 16, color: SUIT_COLOR[failReveal.card.s] }}>{failReveal.card.r}{failReveal.card.s}</span>
           </div>
         )}
       </div>
@@ -667,7 +667,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
                 pointerEvents: 'none',
               }}>
                 <span style={{
-                  background: '#f8f2e6', borderRadius: 4, padding: '1px 4px',
+                  background: C.card, borderRadius: 4, padding: '1px 4px',
                   fontSize: 11, fontWeight: 700, lineHeight: 1.3,
                   color: SUIT_COLOR[flipAnim.card.s],
                 }}>

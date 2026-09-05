@@ -75,7 +75,7 @@ function StackRow({ suit, G, isMobile, cardBack, t }) {
       {/* Pino näkyy pinnalla olevana korttina */}
       <div style={{
         position: 'absolute', width: cW, height: cH, borderRadius: 6,
-        background: lowerComplete ? BACKS[cardBack].bg : '#f8f2e6',
+        background: lowerComplete ? BACKS[cardBack].bg : C.card,
         border: `2px solid ${lowerComplete ? BACKS[cardBack].border : tc}`,
         left: 0, top: 0,
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -101,7 +101,7 @@ function StackRow({ suit, G, isMobile, cardBack, t }) {
     <div style={{ position: 'relative', width: cW, height: cH, flexShrink: 0 }}>
       <div style={{
         position: 'absolute', width: cW, height: cH, borderRadius: 6,
-        background: upperComplete ? BACKS[cardBack].bg : '#f8f2e6',
+        background: upperComplete ? BACKS[cardBack].bg : C.card,
         border: `2px solid ${upperComplete ? BACKS[cardBack].border : tc}`,
         left: 0, top: 0,
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -181,7 +181,7 @@ function StackRow({ suit, G, isMobile, cardBack, t }) {
         {row.active ? (
           <div style={{
             width: cW, height: cH, flexShrink: 0, borderRadius: 6,
-            background: '#f8f2e6',
+            background: C.card,
             border: `2px solid ${tc}`,
             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
             fontFamily: 'Georgia,serif', fontWeight: 700,
@@ -633,7 +633,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
               {lastPlay.name}
             </span>
             <span style={{
-              background: '#f8f2e6', borderRadius: 4, padding: '1px 6px',
+              background: C.card, borderRadius: 4, padding: '1px 6px',
               fontSize: 13, fontWeight: 700, fontFamily: 'Georgia,serif',
               color: suitColor(lastPlay.card.s),
             }}>

@@ -1113,7 +1113,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
           }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
             {lastPlay.cards.map(c => (
-              <span key={c.id} style={{ background: '#f8f2e6', borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: suitColor(c.s) }}>
+              <span key={c.id} style={{ background: C.card, borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: suitColor(c.s) }}>
                 {c.r}{c.s}
               </span>
             ))}

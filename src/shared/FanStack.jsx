@@ -11,6 +11,8 @@
 //   empty      — jos true, näytetään tyhjä paikka (optional)
 //   glowColor  — CSS-väri hehkulle (optional)
 
+import { C } from './colors.js';
+
 /**
  * Yllä oleva kommentti merkitsee neljä propsia valinnaiseksi; typedef sanoo saman
  * niin että tyyppitarkistus lukee sen.
@@ -74,7 +76,7 @@ export default function FanStack({ count, w, h, backStyle, borderColor, topCard,
       <div style={{
         position: 'absolute', top: 0, left: 0, width: w, height: h,
         borderRadius: br, overflow: 'hidden',
-        background: topCard ? '#f8f2e6' : (backStyle?.bg || '#0d2810'),
+        background: topCard ? C.card : (backStyle?.bg || '#0d2810'),
         border: `2px solid ${bc}`,
         boxShadow: glowColor
           ? `0 0 14px ${glowColor}88, 0 2px 8px rgba(0,0,0,0.35)`
