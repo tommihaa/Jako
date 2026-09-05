@@ -199,14 +199,6 @@ export const hu = {
       cards: ({ n }) => `${n} kártya`,
     },
 
-    setup: {
-      remove: 'Eltávolítás a játékból',
-      add: 'Hozzáadás a játékhoz',
-      human: 'Ember',
-      bot: 'Bot',
-      playerN: ({ n }) => `${n}. játékos`,
-      botN: ({ n }) => `${n}. bot`,
-    },
   },
 
   games: {

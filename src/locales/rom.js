@@ -199,14 +199,6 @@ export const rom = {
       cards: ({ n }) => `${n} karti`,
     },
 
-    setup: {
-      remove: 'Ankalav andai khelipe',
-      add: 'Tho ki khelipe',
-      human: 'Manuš',
-      bot: 'Boto',
-      playerN: ({ n }) => `Khelutno ${n}`,
-      botN: ({ n }) => `Boto ${n}`,
-    },
   },
 
   games: {

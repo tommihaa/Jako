@@ -198,14 +198,6 @@ export const se = {
       cards: ({ n }) => `${n} goartta`,
     },
 
-    setup: {
-      remove: 'Váldde eret spealus',
-      add: 'Lasit spellui',
-      human: 'Olmmoš',
-      bot: 'Bohto',
-      playerN: ({ n }) => `Spealár ${n}`,
-      botN: ({ n }) => `Bohto ${n}`,
-    },
   },
 
   games: {

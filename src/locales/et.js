@@ -196,14 +196,6 @@ export const et = {
       cards: ({ n }) => `${n} kaarti`,
     },
 
-    setup: {
-      remove: 'Eemalda mängust',
-      add: 'Lisa mängu',
-      human: 'Inimene',
-      bot: 'Bott',
-      playerN: ({ n }) => `Mängija ${n}`,
-      botN: ({ n }) => `Bott ${n}`,
-    },
   },
 
   games: {

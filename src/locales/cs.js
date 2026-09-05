@@ -207,14 +207,6 @@ export const cs = {
       cards: ({ n }) => `${n} ${n === 1 ? 'karta' : n >= 2 && n <= 4 ? 'karty' : 'karet'}`,
     },
 
-    setup: {
-      remove: 'Odebrat ze hry',
-      add: 'Přidat do hry',
-      human: 'Člověk',
-      bot: 'Bot',
-      playerN: ({ n }) => `Hráč ${n}`,
-      botN: ({ n }) => `Bot ${n}`,
-    },
   },
 
   games: {

@@ -245,14 +245,6 @@ export const fi = {
       from: 'Mestari:',
     },
 
-    setup: {
-      remove: 'Poista pelistä',
-      add: 'Lisää peliin',
-      human: 'Ihminen',
-      bot: 'Botti',
-      playerN: ({ n }) => `Pelaaja ${n}`,
-      botN: ({ n }) => `Botti ${n}`,
-    },
   },
 
   games: {

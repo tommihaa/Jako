@@ -196,14 +196,6 @@ export const sv = {
       cards: ({ n }) => `${n} kort`,
     },
 
-    setup: {
-      remove: 'Ta bort från spelet',
-      add: 'Lägg till i spelet',
-      human: 'Människa',
-      bot: 'Bott',
-      playerN: ({ n }) => `Spelare ${n}`,
-      botN: ({ n }) => `Bott ${n}`,
-    },
   },
 
   games: {

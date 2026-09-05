@@ -197,14 +197,6 @@ export const krl = {
       cards: ({ n }) => `${n} korttie`,
     },
 
-    setup: {
-      remove: 'Poista kizasta',
-      add: 'Liženä kizah',
-      human: 'Ristikanža',
-      bot: 'Botti',
-      playerN: ({ n }) => `Kizuaja ${n}`,
-      botN: ({ n }) => `Botti ${n}`,
-    },
   },
 
   games: {

@@ -15,7 +15,6 @@ import HandoffScreen from '../shared/HandoffScreen.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
 import { useGameState } from '../shared/useGameState.js';
-import PlayerSetup, { slotsToPlayers } from '../shared/PlayerSetup.jsx';
 
 // ── Seiska ─────────────────────────────────────────────────────
 const coloredSuit = s => `<span style="color:${SUIT_COLOR[s]}">${s}</span>`;
@@ -265,6 +264,26 @@ function initSlots(count) {
   ];
 }
 
+/** Muodosta pelaajarakenne initSlots-sloteista.
+ *  Asui `shared/PlayerSetup.jsx`:ssa siihen asti kunnes komponentti poistettiin
+ *  kuolleena 5.9.2026 (kompositioauditointi H8); vain tämä peli käytti sitä. */
+function slotsToPlayers(slots, playerNames = []) {
+  const pool = [...playerNames];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  let botIdx = 0;
+  return slots
+    .filter(s => s.active)
+    .map((s, i) => ({
+      name: s.isHuman
+        ? (s.name.trim() || `Pelaaja ${i + 1}`)
+        : (pool[botIdx++ % Math.max(pool.length, 1)] || `Botti ${i + 1}`),
+      isHuman: s.isHuman,
+    }));
+}
+
 // ── Komponentti ─────────────────────────────────────────────────
 import { useT } from '../shared/i18n.jsx';
 import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
@@ -279,7 +298,7 @@ import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 export default function Seiska({ onResult, showLog = true, soundOn = false, seeAll = false, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen,      setScreen]  = useState('select');
-  const [playerSlots, setPlayerSlots] = useState(() => initSlots(playerCount));
+  const [playerSlots] = useState(() => initSlots(playerCount));
   const [nP, setNP] = useState(playerCount);
   const [handoff,     setHandoff] = useState(null); // null | { name }
   const cardBack = 'ilves';

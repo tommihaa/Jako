@@ -205,14 +205,6 @@ export const pl = {
       cards: ({ n }) => `${n} ${plural(n, 'karta', 'karty', 'kart')}`,
     },
 
-    setup: {
-      remove: 'Usuń z gry',
-      add: 'Dodaj do gry',
-      human: 'Człowiek',
-      bot: 'Bot',
-      playerN: ({ n }) => `Gracz ${n}`,
-      botN: ({ n }) => `Bot ${n}`,
-    },
   },
 
   games: {

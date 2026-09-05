@@ -196,14 +196,6 @@ export const is = {
       cards: ({ n }) => `${n} spil`,
     },
 
-    setup: {
-      remove: 'Fjarlægja úr leik',
-      add: 'Bæta við leik',
-      human: 'Maður',
-      bot: 'Boti',
-      playerN: ({ n }) => `Leikmaður ${n}`,
-      botN: ({ n }) => `Boti ${n}`,
-    },
   },
 
   games: {

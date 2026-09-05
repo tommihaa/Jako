@@ -198,14 +198,6 @@ export const ro = {
       cards: ({ n }) => `${n === 1 ? '1 carte' : `${n} cărți`}`,
     },
 
-    setup: {
-      remove: 'Scoate din joc',
-      add: 'Adaugă în joc',
-      human: 'Om',
-      bot: 'Bot',
-      playerN: ({ n }) => `Jucătorul ${n}`,
-      botN: ({ n }) => `Botul ${n}`,
-    },
   },
 
   games: {

@@ -200,14 +200,6 @@ export const en = {
       cards: ({ n }) => `${n} cards`,
     },
 
-    setup: {
-      remove: 'Remove from game',
-      add: 'Add to game',
-      human: 'Human',
-      bot: 'Bot',
-      playerN: ({ n }) => `Player ${n}`,
-      botN: ({ n }) => `Bot ${n}`,
-    },
   },
 
   games: {

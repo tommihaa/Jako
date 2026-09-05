@@ -196,14 +196,6 @@ export const it = {
       cards: ({ n }) => `${n} carte`,
     },
 
-    setup: {
-      remove: 'Rimuovi dalla partita',
-      add: 'Aggiungi alla partita',
-      human: 'Umano',
-      bot: 'Bot',
-      playerN: ({ n }) => `Giocatore ${n}`,
-      botN: ({ n }) => `Bot ${n}`,
-    },
   },
 
   games: {

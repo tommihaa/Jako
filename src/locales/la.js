@@ -198,14 +198,6 @@ export const la = {
       cards: ({ n }) => `${n} chartae`,
     },
 
-    setup: {
-      remove: 'Remove e lusu',
-      add: 'Adde ad lusum',
-      human: 'Homo',
-      bot: 'Machina',
-      playerN: ({ n }) => `Lusor ${n}`,
-      botN: ({ n }) => `Machina ${n}`,
-    },
   },
 
   games: {
