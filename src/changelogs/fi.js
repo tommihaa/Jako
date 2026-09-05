@@ -13,6 +13,14 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '5.9.2026',
+    items: [
+      'Bottien Taistelun Tauko pysäyttää nyt oikeasti kaikki yhdeksän peliä. Aiemmin botit jatkoivat siirtojaan tauon aikana, ja Moskassa peli eteni tauolla joka kerta. Myös ajastetut ikkunat pysähtyvät, eli Koputuksen reaktiolaskuri ja Paskahousun äkkikuoleman kello odottavat jatkoa sen sijaan että kuluisivat loppuun taustalla.',
+      'Läpsyssä läpsäysaika mitataan nyt ilman tauolla vietettyä aikaa. Aiemmin tauko kesken täsmäyksen saattoi kirjata lokiin mielettömän hitaan ajan.',
+      'Asetuksista poistui Korttimäärät näkyvillä -kytkin. Se lupasi piilottaa nosto-, kaato- ja poistopakan koot, mutta yksikään peli ei lukenut sitä, eli pakkojen koot näkyivät aina. Lupaus peruttiin, ja pakkojen koot näkyvät kuten ennenkin.',
+    ],
+  },
+  {
     date: '4.9.2026',
     items: [
       'Muutosloki merkitsee nyt kumoutuneet rivit. Kaksi vanhaa merkintää kertoi tason vaikuttavan vähän Ristiseiskassa, Kasinossa ja Paskahousussa. Ne näkyvät yhä, koska loki on historiaa, mutta himmennettyinä ja Kumottu-merkillä varustettuina.',
