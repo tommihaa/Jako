@@ -449,7 +449,7 @@ import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 // Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 /** @typedef {'idle'|'select_table'} Vaihe */
 
-export default function Kasino({ game, onResult, showLog = true, soundOn = false, seeAll = false, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Kasino({ game, onResult, showLog = true, soundOn = false, seeAll = false, onSoundOnChange, onSeeAllChange, onShowLogChange, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);

@@ -27,7 +27,6 @@ export const krl = {
       gameSettings: 'Kizan šiännöt',
       seeAll: '👁 Ozuta kaikki kortit',
       godMode: '🔒 God Mode (manifestoi tulijat kortit)',
-      showCounts: 'Korttilugut nägyvissä (noston, kuaton da poistopakan šuuruot)',
       showAIKnown: 'Muistikizoissa nävä vastuštajien kaččomat korttišijat korostettuna',
       showLastPlay: 'Ozuta jälgimmäini šiirto (kelluja korttinägymä)',
       showIntention: 'Lyöndi- da nostoaigomus — botti ozuttau ielläpäi mitä korttie še kizuau šeuruavakši (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

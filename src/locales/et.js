@@ -26,7 +26,6 @@ export const et = {
       gameSettings: 'Mängu seaded',
       seeAll: '👁 Näita kõiki kaarte',
       godMode: '🔒 God Mode (manifesteeri tulevased kaardid)',
-      showCounts: 'Näita kaartide arvu (võtu-, viske- ja löödud hunniku suurused)',
       showAIKnown: 'Näita mälumängudes vastaste piilutud kaardikohti esiletõstetuna',
       showLastPlay: 'Näita viimast käiku (hõljuv kaardiindikaator)',
       showIntention: 'Löögi- ja võtukavatsus — bott näitab ette, millise kaardi ta järgmisena mängib (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

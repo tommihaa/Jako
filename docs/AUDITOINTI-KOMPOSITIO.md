@@ -858,3 +858,17 @@ ja 23 localen avaimen poistoa, eli lupauksen perumista. **Päätös on Tommin ei
 tässä.** Muut viisi näkyvyysasetusta tarkistettiin samalla ja ne luetaan peleissä
 (`showAIKnown` kahdessa jotka sen saavat, `showLastPlay`, `showNextBtn`, `showLog` ja
 `showIntention` nimellä `initShowIntention`).
+
+**Päätös 5.9.2026, Tommin: kytkin poistetaan.** Kaanoni korjattiin ensin (`CLAUDE.md`
+asetustaulukko, kaksi propsilistaa ja localStorage-luettelo sekä `docs/SELAINTALLENNUS.md`),
+sitten koodi. Poistuivat sticky-avain, kenttä molemmista esiasetuksista, `applyPreset`in kutsu,
+Lisäasetusten kytkinrivi, propsin välitys ja yhdeksän signatuurin destrukturointi sekä avain
+`ui.settings.showCounts` 23 localesta. Esiasetusten merkitys ei muuttunut, koska kenttä oli
+`true` molemmissa; se on itsessään merkki siitä ettei valinta koskaan erotellut mitään.
+
+Todennettu previewissä. Lisäasetuksissa on nyt kahdeksan kytkintä eikä yhdeksää, korttimäärät
+piirtyvät ennallaan ja esiasetuksen vaihto Aloittelijaan kirjoitti `jako:uiPreset`-arvon ja
+viisi näkyvyysavainta. Ei sovelluksen konsolivirheitä. Testit 140 läpi, typecheck puhdas.
+
+Vanha `jako:showCounts` jää aiempien käyttäjien selaimeen orvoksi. Sitä ei siivota koodilla,
+koska lukijaa ei ole, ja se on kirjattu `SELAINTALLENNUS.md`:hen.

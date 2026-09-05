@@ -26,7 +26,6 @@ export const es = {
       gameSettings: 'Ajustes del juego',
       seeAll: '👁 Mostrar todas las cartas',
       godMode: '🔒 Modo Dios (manifiesta las cartas futuras)',
-      showCounts: 'Mostrar el número de cartas (mazo, descarte y montón de vencidas)',
       showAIKnown: 'En los juegos de memoria, resalta las posiciones de carta que los rivales han mirado',
       showLastPlay: 'Mostrar la última jugada (indicador de carta flotante)',
       showIntention: 'Intención de jugar y robar — el bot muestra de antemano qué carta jugará a continuación (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

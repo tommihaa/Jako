@@ -45,7 +45,6 @@ export const fi = {
       },
       seeAll: '👁 Näytä kaikki kortit',
       godMode: '🔒 God Mode (manifestoi tulevat kortit)',
-      showCounts: 'Korttimäärät näkyvillä (nosto-, kaato-, poistopakan koot)',
       showAIKnown: 'Korosta muistipeleissä korttipaikat, jotka vastustajat ovat katsoneet',
       showLastPlay: 'Näytä viimeisin siirto (kelluva kortti-indikaattori)',
       showIntention: 'Lyönti- ja nostoaikomus: botti näyttää etukäteen, minkä kortin se pelaa seuraavaksi (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

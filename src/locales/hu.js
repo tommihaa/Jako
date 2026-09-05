@@ -25,7 +25,6 @@ export const hu = {
       gameSettings: 'Játékbeállítások',
       seeAll: '👁 Minden lap mutatása',
       godMode: '🔒 God Mode (jövőbeli lapok megjelenítése)',
-      showCounts: 'Lapszámok láthatók (húzó-, dobó-, kivett pakli mérete)',
       showAIKnown: 'A memóriajátékokban kiemelve látod, mely lapokat nézték meg az ellenfelek',
       showLastPlay: 'Utolsó húzás megjelenítése (lebegő lapjelző)',
       showIntention: 'Támadási és húzási szándék — a bot előre megmutatja, melyik lapot játssza ki legközelebb (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

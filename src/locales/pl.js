@@ -35,7 +35,6 @@ export const pl = {
       gameSettings: 'Ustawienia gry',
       seeAll: '👁 Pokaż wszystkie karty',
       godMode: '🔒 God Mode (przewiduj przyszłe karty)',
-      showCounts: 'Pokaż liczbę kart (talia, stos zrzutów, rozmiary bitych stosów)',
       showAIKnown: 'W grach pamięciowych podświetlaj pola kart, w które zaglądali przeciwnicy',
       showLastPlay: 'Pokaż ostatni ruch (pływający wskaźnik karty)',
       showIntention: 'Zamiar zagrania i dobrania — bot wcześniej pokazuje, którą kartę zagra następną (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

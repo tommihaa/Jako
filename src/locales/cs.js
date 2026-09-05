@@ -33,7 +33,6 @@ export const cs = {
       gameSettings: 'Nastavení hry',
       seeAll: '👁 Zobrazit všechny karty',
       godMode: '🔒 God Mode (manifestace budoucích karet)',
-      showCounts: 'Počty karet viditelné (dobírací, odhazovací, vyřazený balíček)',
       showAIKnown: 'V paměťových hrách vidíš zvýrazněné karty, na které se podívali soupeři',
       showLastPlay: 'Zobrazit poslední tah (plovoucí indikátor karty)',
       showIntention: 'Záměr útoku a dobírání — bot předem ukáže, kterou kartu zahraje příště (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

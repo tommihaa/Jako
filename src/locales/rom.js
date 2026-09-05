@@ -25,7 +25,6 @@ export const rom = {
       gameSettings: 'Khelimasko lačharimo',
       seeAll: '👁 Sikav sa le karti',
       godMode: '🔒 God Mode (sikav le karti so aven)',
-      showCounts: 'Le numerope karten dikhline (kupa cirdimaski, šudimaski, limaski)',
       showAIKnown: 'Ande khelimata godjake dikhes le thana so dikhline le riventa, lprofile',
       showLastPlay: 'Sikav o paluno khelipe (karta so phirel)',
       showIntention: 'Maripe thaj cirdipe — o boto sikavel anglal savi karta khelela palal (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

@@ -762,7 +762,6 @@ export default function App() {
   const [twoColorDeck, setTwoColorDeckPref] = useStickySetting('twoColorDeck', false); // ♠♣ musta + ♥♦ punainen; muistetaan kuten kieli ja äänet
   useEffect(() => { setTwoColorDeck(twoColorDeck); }, [twoColorDeck]); // mutatoi SUIT_COLOR-paletit (colors.js) — re-render hoitaa loput
   const [seeAll, setSeeAll]         = useState(false);  // POIKKEUS: cheat-tila EI tallennu — nollautuu joka latauksessa (ks. storage.js)
-  const [showCounts, setShowCounts] = useStickySetting('showCounts', true);
   const [showLastPlay, setShowLastPlay] = useStickySetting('showLastPlay', true);
   const [showIntention, setShowIntention] = useStickySetting('showIntention', true);
   const [showNextBtn, setShowNextBtn]   = useStickySetting('showNextBtn', true);
@@ -771,14 +770,14 @@ export default function App() {
   // 'beginner' = täysi opastus, 'experienced' = vähemmän kohinaa, 'custom' = käyttäjä on säätänyt
   // yksittäisiä toggleja Lisäasetuksista. Yksittäiset togglet persistoituvat edelleen erikseen.
   const UI_PRESETS = {
-    beginner:    { showCounts: true, showAIKnown: true,  showLastPlay: true, showIntention: true,  showNextBtn: true,  showLog: true  },
-    experienced: { showCounts: true, showAIKnown: false, showLastPlay: true, showIntention: false, showNextBtn: false, showLog: false },
+    beginner:    { showAIKnown: true,  showLastPlay: true, showIntention: true,  showNextBtn: true,  showLog: true  },
+    experienced: { showAIKnown: false, showLastPlay: true, showIntention: false, showNextBtn: false, showLog: false },
   };
   const [uiPreset, setUiPreset] = useStickySetting('uiPreset', 'beginner');
   const applyPreset = (p) => {
     const v = UI_PRESETS[p];
     if (!v) return;
-    setShowCounts(v.showCounts); setShowAIKnown(v.showAIKnown); setShowLastPlay(v.showLastPlay);
+    setShowAIKnown(v.showAIKnown); setShowLastPlay(v.showLastPlay);
     setShowIntention(v.showIntention); setShowNextBtn(v.showNextBtn); setShowLog(v.showLog);
     setUiPreset(p);
   };
@@ -1116,7 +1115,6 @@ export default function App() {
                 return [
                   !isAllBots && { label: t('ui.settings.seeAll'),       val: seeAll,        set: setSeeAll        },
                   { label: t('ui.settings.godMode'),                    disabled: true                          },
-                  { label: t('ui.settings.showCounts'),                 val: showCounts,    set: setShowCounts,    preset: true },
                   !isAllBots && { label: t('ui.settings.showAIKnown'),  val: showAIKnown,   set: setShowAIKnown,   preset: true },
                   { label: t('ui.settings.showLastPlay'),               val: showLastPlay,  set: setShowLastPlay,  preset: true },
                   { label: t('ui.settings.showIntention'),              val: showIntention, set: setShowIntention, preset: true },
@@ -1646,7 +1644,6 @@ export default function App() {
           onSoundOnChange={setSoundOn}
           onSeeAllChange={setSeeAll}
           onShowLogChange={(v) => { setShowLog(v); setUiPreset('custom'); }}
-          showCounts={showCounts}
           showLastPlay={showLastPlay}
           showIntention={showIntention}
           isMobile={isMobile}

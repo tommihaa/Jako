@@ -26,7 +26,6 @@ export const is = {
       gameSettings: 'Leikjastillingar',
       seeAll: '👁 Sýna öll spil',
       godMode: '🔒 God Mode (birta komandi spil)',
-      showCounts: 'Sýna spilafjölda (stærð dráttarbunka, kasthaugs og slegins bunka)',
       showAIKnown: 'Í minnisleikjum, auðkenna spilareiti sem andstæðingar hafa kíkt á',
       showLastPlay: 'Sýna síðasta leik (fljótandi spilavísir)',
       showIntention: 'Spila- og dráttaráform — botinn sýnir fyrirfram hvaða spil hann spilar næst (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

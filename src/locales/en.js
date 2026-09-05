@@ -26,7 +26,6 @@ export const en = {
       gameSettings: 'Game settings',
       seeAll: '👁 Show all cards',
       godMode: '🔒 God Mode (manifest upcoming cards)',
-      showCounts: 'Show card counts (draw, discard and beaten pile sizes)',
       showAIKnown: 'In memory games, highlight the card slots opponents have peeked at',
       showLastPlay: 'Show last move (floating card indicator)',
       showIntention: 'Play & draw intent: the bot shows in advance which card it plays next (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

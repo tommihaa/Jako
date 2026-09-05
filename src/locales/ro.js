@@ -24,7 +24,6 @@ export const ro = {
       gameSettings: 'Setări joc',
       seeAll: '👁 Arată toate cărțile',
       godMode: '🔒 God Mode (manifestă cărțile viitoare)',
-      showCounts: 'Numărul de cărți vizibil (pachet de tras, de aruncat, scos)',
       showAIKnown: 'În jocurile de memorie vezi evidențiate cărțile pe care le-au văzut adversarii',
       showLastPlay: 'Arată ultima mutare (indicator de carte plutitor)',
       showIntention: 'Intenția de atac și tragere — botul arată dinainte ce carte va juca în continuare (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

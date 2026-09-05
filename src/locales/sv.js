@@ -26,7 +26,6 @@ export const sv = {
       gameSettings: 'Spelinställningar',
       seeAll: '👁 Visa alla kort',
       godMode: '🔒 God Mode (manifestera kommande kort)',
-      showCounts: 'Visa kortantal (drag-, kast- och slänghögens storlek)',
       showAIKnown: 'Markera i minnesspel de kortplatser som motståndarna har tittat på',
       showLastPlay: 'Visa senaste draget (flytande kortindikator)',
       showIntention: 'Slag- och dragavsikt — botten visar i förväg vilket kort den spelar härnäst (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

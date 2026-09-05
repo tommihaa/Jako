@@ -26,7 +26,6 @@ export const no = {
       gameSettings: 'Spillinnstillinger',
       seeAll: '👁 Vis alle kort',
       godMode: '🔒 God Mode (manifester kommende kort)',
-      showCounts: 'Vis korttall (trekk-, kast- og slåttbunkestørrelser)',
       showAIKnown: 'I huskespill, fremhev kortplassene motstanderne har kikket på',
       showLastPlay: 'Vis siste trekk (flytende kortindikator)',
       showIntention: 'Spille- og trekkintensjon — boten viser på forhånd hvilket kort den spiller neste (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

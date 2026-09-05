@@ -26,7 +26,6 @@ export const de = {
       gameSettings: 'Spieleinstellungen',
       seeAll: '👁 Alle Karten zeigen',
       godMode: '🔒 God Mode (kommende Karten manifestieren)',
-      showCounts: 'Kartenzahlen anzeigen (Größe von Nachzieh-, Ablage- und Schlagstapel)',
       showAIKnown: 'In Memory-Spielen die Kartenplätze hervorheben, die die Gegner angesehen haben',
       showLastPlay: 'Letzten Zug anzeigen (schwebende Kartenanzeige)',
       showIntention: 'Schlag- und Ziehabsicht — der Bot zeigt vorab, welche Karte er als Nächstes spielt (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

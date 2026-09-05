@@ -24,7 +24,6 @@ export const la = {
       gameSettings: 'Optiones lusus',
       seeAll: '👁 Monstra omnes chartas',
       godMode: '🔒 God Mode (manifesta chartas futuras)',
-      showCounts: 'Numeri chartarum conspicui (cumulus tractus, deiectus, remotus)',
       showAIKnown: 'In lusibus memoriae vide loca chartarum quae adversarii viderunt, illustrata',
       showLastPlay: 'Monstra ultimum factum (index chartae natans)',
       showIntention: 'Consilium feriendi et trahendi — machina ante monstrat quam chartam mox ludat (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

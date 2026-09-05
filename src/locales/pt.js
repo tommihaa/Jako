@@ -26,7 +26,6 @@ export const pt = {
       gameSettings: 'Definições do jogo',
       seeAll: '👁 Mostrar todas as cartas',
       godMode: '🔒 God Mode (manifestar as cartas futuras)',
-      showCounts: 'Mostrar contagem de cartas (tamanho dos montes de compra, descarte e batidas)',
       showAIKnown: 'Nos jogos de memória, destacar as posições de carta que os adversários espreitaram',
       showLastPlay: 'Mostrar a última jogada (indicador de carta flutuante)',
       showIntention: 'Intenção de jogar e comprar — o bot mostra antecipadamente que carta vai jogar a seguir (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

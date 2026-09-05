@@ -222,7 +222,7 @@ function Btn({ label, onClick, color, outline, small: sm }) {
 // Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 /** @typedef {'idle'|'peeking'|'draw'|'drawn'|'spec_j'|'spec_q_own'|'spec_q_tgt'|'spec_k'|'spec_k_decide'|'spec_k_confirm'|'reaction'|'gameover'} Vaihe */
 
-export default function Koputus({ onResult, showLog = true, soundOn = false, seeAll = false, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts = true, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, showAIKnown = true, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Koputus({ onResult, showLog = true, soundOn = false, seeAll = false, onSoundOnChange, onSeeAllChange, onShowLogChange, showLastPlay = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, showAIKnown = true, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen]     = useState('select');
   const [nP, setNP]             = useState(playerCount);

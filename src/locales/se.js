@@ -24,7 +24,6 @@ export const se = {
       gameSettings: 'Spealloheivehusat',
       seeAll: '👁 Čájet buot goarttaid',
       godMode: '🔒 God Mode (manifestere boahttevaš goarttaid)',
-      showCounts: 'Goartameriid oainnus (geassin-, gahččan-, sihkkunstohka sturrodat)',
       showAIKnown: 'Muitospealuin oainnát vuostebeali oaidnán goartabáikkiid čuvgejuvvon',
       showLastPlay: 'Čájet maŋimuš sirdima (johtti goartačujuhus)',
       showIntention: 'Čuohppan- ja geassináigumuš — bohtosat čájehit ovddalgihtii guđe goartta speala boahtte (Seiska, Ristiseiska, Maija, Paskahousu, Moska)',

@@ -58,7 +58,6 @@ Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
 | `showLog` | true | Tapahtumaloki auki |
 | `soundOn` | false | Äänet (oletuksena pois) |
 | `seeAll` | false | Cheat Mode: Hero näkee kaikki kortit |
-| `showCounts` | true | Korttimäärät näkyvillä |
 | `showLastPlay` | true | Kelluva viimeisin siirto -indikaattori |
 
 Asetukset persistoidaan `useStickySetting`-hookilla (ks. Tech-osio). Poikkeus: `seeAll` ei tallennu (nollautuu joka latauksessa).
@@ -79,9 +78,9 @@ pelin nappi ei tallentunut eikä Asetusten muutos kuulunut peliin.
 **Intuitiivisuus-UI (kesäkuu 2026):** Päävalikon pelikorteissa suosikit (`g.suosikki`) merkitään ★:llä + ensikäynnin "aloita tästä" -vyö (näkyy kun yhtään peliä ei pelattu, `stats`-summasta). Säännöt avautuvat selkeästä "Säännöt"-pillistä (ei enää matalakontrastinen ℹ, sillä ℹ tarkoittaa nyt vain yläpalkin sovellus-Infoa); laajennuksessa linkki Sanastoon. Jaetut komponentit: `shared/GroupPicker.jsx` (vastustajaryhmän valinta jokaisen pelin aloitusnäytöllä, data `shared/playerGroups.js` = `NAME_GROUPS`/`POOL_BY_GROUP`; App välittää `playerGroup`+`onPlayerGroupChange` kaikille peleille) ja `shared/TurnPrompt.jsx` (pysyvä "👉 Sinun vuorosi: <toiminto>" -banneri pelinäkymän yläosassa, kytketty kunkin pelin ihmisvuoro-ehtoon; tekstit `ui.turn.*`).
 
 ## Component props (kaikki 9 peliä)
-App.jsx välittää saman propsijoukon kaikille peleille, mutta **jokainen peli destrukturoi vain tarvitsemansa**, yhtä kanonista signatuuria ei ole. Kaikille välitetään: `onResult, onSnapshot, game, showLog, soundOn, seeAll, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts, showLastPlay, showIntention, showNextBtn, showAIKnown, isMobile, playerCount, playerNames, playerGroup, onPlayerGroupChange, aiLevel, onAiLevelChange`. `hints` on ollut listalla mutta sitä ei välitetä eikä lueta missään (kompositioauditointi H6).
+App.jsx välittää saman propsijoukon kaikille peleille, mutta **jokainen peli destrukturoi vain tarvitsemansa**, yhtä kanonista signatuuria ei ole. Kaikille välitetään: `onResult, onSnapshot, game, showLog, soundOn, seeAll, onSoundOnChange, onSeeAllChange, onShowLogChange, showLastPlay, showIntention, showNextBtn, showAIKnown, isMobile, playerCount, playerNames, playerGroup, onPlayerGroupChange, aiLevel, onAiLevelChange`. `hints` on ollut listalla mutta sitä ei välitetä eikä lueta missään (kompositioauditointi H6).
 
-Yhteiset (kaikki destrukturoivat): `onResult, showLog, soundOn, seeAll, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts, showLastPlay, isMobile, playerCount, playerNames, aiLevel, onAiLevelChange, onSnapshot`.
+Yhteiset (kaikki destrukturoivat): `onResult, showLog, soundOn, seeAll, onSoundOnChange, onSeeAllChange, onShowLogChange, showLastPlay, isMobile, playerCount, playerNames, aiLevel, onAiLevelChange, onSnapshot`.
 
 Pelikohtaiset (vain osa ottaa):
 - `game`: vain Kasino
@@ -211,7 +210,7 @@ Virstanpylväät:
 ## Tech
 - React functional components + hooks only (no class components)
 - Tailwind core utilities only (no custom compiler)
-- localStorage asetuksille (lupa laajentaa 2026-06-19, kumoaa aiemman "preferenssit-vain"-linjan): kaikki Asetukset-paneelin togglet (`jako:showLog`, `jako:soundOn`, `jako:twoColorDeck`, `jako:showCounts`, `jako:showLastPlay`, `jako:showIntention`, `jako:showNextBtn`, `jako:showAIKnown`), näkyvyysesiasetus (`jako:uiPreset` = `beginner`|`experienced`|`custom`, ks. Global settings), AI-taso (`jako:aiLevel`), nimiryhmä (`jako:playerGroup`) sekä pelikohtaiset sääntövalinnat (`jako:paskahousu:rules`, `jako:ristiseiska:rules`, `jako:kasino:rules`) persistoidaan `useStickySetting`-hookilla (`src/shared/storage.js`, `loadPref`/`savePref`, try/catch-suojattu). Lisäksi **pelikohtaiset tilastot** (`jako:stats`: pelatut/voitot/sijoitusjakauma/vaikeustaso-erittely per peli) persistoidaan suoraan `loadPref`/`savePref`-parilla (`useStickySetting` ei sovi, koska tallenne pitää yhdistää oletuksiin `normalizeStats`-migraatiolla; ks. `StatsPanel.jsx` ja 📊-nappi). **POIKKEUKSET (eivät tallennu):** `seeAll` (cheat, nollautuu joka latauksessa tahallaan) ja `godMode` (disabloitu placeholder).
+- localStorage asetuksille (lupa laajentaa 2026-06-19, kumoaa aiemman "preferenssit-vain"-linjan): kaikki Asetukset-paneelin togglet (`jako:showLog`, `jako:soundOn`, `jako:twoColorDeck`, `jako:showLastPlay`, `jako:showIntention`, `jako:showNextBtn`, `jako:showAIKnown`), näkyvyysesiasetus (`jako:uiPreset` = `beginner`|`experienced`|`custom`, ks. Global settings), AI-taso (`jako:aiLevel`), nimiryhmä (`jako:playerGroup`) sekä pelikohtaiset sääntövalinnat (`jako:paskahousu:rules`, `jako:ristiseiska:rules`, `jako:kasino:rules`) persistoidaan `useStickySetting`-hookilla (`src/shared/storage.js`, `loadPref`/`savePref`, try/catch-suojattu). Lisäksi **pelikohtaiset tilastot** (`jako:stats`: pelatut/voitot/sijoitusjakauma/vaikeustaso-erittely per peli) persistoidaan suoraan `loadPref`/`savePref`-parilla (`useStickySetting` ei sovi, koska tallenne pitää yhdistää oletuksiin `normalizeStats`-migraatiolla; ks. `StatsPanel.jsx` ja 📊-nappi). **POIKKEUKSET (eivät tallennu):** `seeAll` (cheat, nollautuu joka latauksessa tahallaan) ja `godMode` (disabloitu placeholder).
 - Single-file artifacts (.jsx): no separate CSS/JS files
 - Touch + stylus primary input (phone + tablet), no hover-dependent interactions
 - Responsive: `window.innerWidth < 600` = mobile, else tablet

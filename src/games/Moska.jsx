@@ -275,7 +275,7 @@ import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
 /** @typedef {'attack'|'defend'|'add'|'gameover'} Vaihe */
 /** @typedef {{phase: Vaihe, [k: string]: any}} PeliTila Vain vaihe on kiinnitetty; muut kentät vapaita. */
 
-export default function Moska({ onResult, showLog = true, soundOn = false, seeAll = false, onSoundOnChange, onSeeAllChange, onShowLogChange, showCounts = true, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
+export default function Moska({ onResult, showLog = true, soundOn = false, seeAll = false, onSoundOnChange, onSeeAllChange, onShowLogChange, showLastPlay = true, showNextBtn = true, showIntention: initShowIntention = true, isMobile = false, playerCount = 4, playerNames, aiLevel = 'normal', botLevels = null, onAiLevelChange, onSnapshot, playerGroup, onPlayerGroupChange }) {
   const t = useT();
   const [screen, setScreen] = useState('select');
   const [nP, setNP] = useState(playerCount);

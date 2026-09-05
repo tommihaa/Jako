@@ -12,14 +12,14 @@ saaja ei voi tietää mitä sovellus tekee hänen laitteellaan, eikä sitä tien
 tekijäkään. Vastaus on nyt mitattu, ja se on lyhyt: sovellus tallentaa asetuksia ja tilastoja
 selaimeen, eikä lähetä mitään minnekään.
 
-## 1. `localStorage`, etuliite `jako:` (19 avainta)
+## 1. `localStorage`, etuliite `jako:` (18 avainta)
 
 | Avain | Mitä |
 |---|---|
 | `lang` | valittu kieli |
 | `soundOn`, `soundTheme` | äänet päällä tai pois, äänipankki |
 | `twoColorDeck` | korttipakan väritila |
-| `showLog`, `showCounts`, `showLastPlay`, `showIntention`, `showNextBtn`, `showAIKnown` | kuusi näkyvyysvalintaa |
+| `showLog`, `showLastPlay`, `showIntention`, `showNextBtn`, `showAIKnown` | viisi näkyvyysvalintaa |
 | `uiPreset` | käyttöliittymän esiasetus |
 | `aiLevel` | vastustajan taso |
 | `playerGroup` | vastustajien nimiryhmä |
@@ -61,6 +61,13 @@ varten. Lähdekarttoja ei tallenneta.
 Pelitila ei tallennukaan, mutta `stats` ja `sessions` kirjoitetaan `localStorage`en
 (`App.jsx`), ja `StatsPanel.jsx`:n kommentti sanoi tämän oikein. Väärässä oli siis juuri se
 rivi joka kuvaa yksityisyyttä. Korjattu 19.8.2026.
+
+### Yksi avain voi olla tallessa vanhoista versioista
+
+`jako:showCounts` kirjoitettiin selaimeen 5.9.2026 asti. Kytkin poistettiin sinä päivänä,
+koska se ei ollut koskaan tehnyt mitään: yksikään yhdeksästä pelistä ei lukenut arvoa, ja
+pakkojen koot piirtyivät ehdoitta. Vanha arvo jää aiempien käyttäjien selaimeen orvoksi eikä
+sitä siivota koodilla, koska lukijaa ei ole. Ks. `AUDITOINTI-KOMPOSITIO.md` › H8.
 
 ## Mikä jää auki
 
