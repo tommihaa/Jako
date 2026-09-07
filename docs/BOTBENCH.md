@@ -939,6 +939,33 @@ olemassa, ja peleistä joissa sitä ei ole jäljelle jää Paskahousu (z -0,2).
 mittari näkee vain voitto-osuuden. Kolme Mestarin ketjua luettiin selaimesta ja ne olivat
 järkeviä, mutta se on havainto eikä mittaus.
 
+### Kaksi jatkokoetta samana päivänä, molemmat nollatuloksia
+
+Kummankin lähtökohta oli sama: ketju osaa nyt laskea arvon, joten sen viereiset päätökset
+näyttivät karkeilta. Kumpikaan ei kaatunut teoriaan vaan mittaukseen.
+
+**Koe A: kierrostietoinen kynnys pois.** Mestarin kynnys (tuntemattoman täytön vaatimus laskee
+kolmesta yhteen kahdella viimeisellä kierroksella) mitattiin nollatulokseksi jo 18.8.2026, mutta
+se mitattiin vanhan ketjun kanssa. Kysymys oli kestääkö nollatulos kun ympäristö vaihtui.
+Kestää: kynnys pois antoi `hard vs normal` 62,9 % (muutoksen z 0,64) ja `hard vs beginner`
+70,0 % (z -0,25), N=400. Kynnys palautettiin, koska poisto olisi kanonimuutos ilman näyttöä.
+
+**Koe B: nostopäätös samalla ketjufunktiolla.** Mestari ottaa poistopakasta aina kun hyöty on
+yksikin piste, vertaamatta sitä pakasta noston odotusarvoon, vaikka pakasta nostetun kortin saa
+heittää pois. Kokeessa poistopakan arvo oli `kkChainGain` sen omalla arvolla (pakollinen vaihto
+huomioiden) ja pakan arvo saman funktion keskiarvo yli korttiarvojen 1-13. N=400 antoi
+`hard vs normal` 63,4 % eli +2,8 %-yks., mutta muutoksen z oli 0,78.
+
+**Otos kasvatettiin ennen päätöstä, ja se kaatoi tuloksen.** N=1600 samalle parille antoi
+baseline 60,00 % ja koe 60,38 %, eli ero +0,38 %-yks. ja z 0,21. N=400:n nousu oli kohinaa.
+Koe B peruttiin.
+
+**Tämä on kirjaamisen arvoinen kolmesta syystä.** Kaksi peräkkäistä koetta antoi saman
+suuntaisen nousun samalle parille (+2,3 ja +2,8 %-yks.), ja kumpikin osoittautui kohinaksi, eli
+samansuuntaisuus ei ole näyttöä. `N≥150`-ohje riittää portaan olemassaolon toteamiseen muttei
+kahden lähekkäisen version erotteluun, ja siihen tarvittiin N=1600. Ja teoriassa oikea muutos
+voi olla mitatusti arvoton, mikä on sama tulos kuin Kultakalan kynnyksellä 18.8.2026.
+
 ## Paskahousu 7.9.2026 (N=400): ryhmän säästäminen mitattiin ja peruttiin
 
 Kokeen kohde oli sama muoto joka juuri korjattiin Kultakalassa, eli kohta jossa kaikki kolme
