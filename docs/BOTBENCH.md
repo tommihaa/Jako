@@ -939,6 +939,36 @@ olemassa, ja peleistä joissa sitä ei ole jäljelle jää Paskahousu (z -0,2).
 mittari näkee vain voitto-osuuden. Kolme Mestarin ketjua luettiin selaimesta ja ne olivat
 järkeviä, mutta se on havainto eikä mittaus.
 
+## Paskahousu 7.9.2026 (N=400): ryhmän säästäminen mitattiin ja peruttiin
+
+Kokeen kohde oli sama muoto joka juuri korjattiin Kultakalassa, eli kohta jossa kaikki kolme
+tasoa ajavat samaa säännöstöä. Paskahoususta se löytyi normaalipelin säännöstä *pelaa kaikki
+samanarvoiset kerralla*. Mestari sai kokeeksi säännön lyödä ryhmästä vain yksi kortti niin
+kauan kuin nostopakassa on kortteja. Perustelu oli tämä: käsi täydennetään lyönnin jälkeen
+kuuteen korttiin, joten useamman lyöminen ei vähennä kättä, vaan vaihtaa tunnetusti pienet
+kortit tuntemattomiin ja hukkaa ne joilla nelosen kaato voisi täydentyä.
+
+| pari | ennen | jälkeen | muutoksen z |
+|------|------:|--------:|------------:|
+| hard vs beginner | 58,0 % | 52,8 % | -1,48 |
+| hard vs normal | 50,9 % | 47,2 % | -1,03 |
+| normal vs beginner | 58,0 % | 58,0 % | 0,00 |
+
+**Muutos peruttiin** (`git checkout`), koska kumpikin Mestarin pari liikkui alaspäin. Kumpikaan
+yksinään ei ole merkitsevä, mutta ne ovat kaksi riippumatonta paria samaan suuntaan, ja verrokki
+on bitilleen sama, joten suunta on Mestarin eikä kohinan.
+
+**Perustelu oli väärä yhdestä kohdasta, ja se on kokeen tuotos.** Käsi täydentyy kuuteen vain
+niin kauan kuin pakassa riittää kortteja. Pakan ehtyessä ryhmälyönti ottaa viimeiset kortit
+pois nopeammin ja jättää pelaajan pienemmällä kädellä siihen hetkeen jossa peli ratkeaa, koska
+voittaa voi vasta pakan tyhjennyttyä. Ryhmälyönti ei siis ole laiskuutta vaan tempoa, ja
+Paskahousun kaikki kolme tasoa hyötyvät siitä samasta syystä.
+
+**Mitä tästä seuraa kohdalle 4.** Paskahousun ylin porras on yhä auki, ja hylättyjä kanavia on
+nyt kolme (kutonen ja lukumääräsääntö 20.8.2026, ryhmän säästäminen 7.9.2026). Kultakalan
+7.9.2026 löydös ei siis yleisty: taso-sokea säännöstö ei ole automaattisesti puute, vaan se voi
+olla oikea sääntö kaikille tasoille.
+
 ## Käyttö jatkossa
 
 Jokainen AI-muutos todennetaan ajamalla sama mittaus ja vertaamalla tähän
@@ -1007,7 +1037,7 @@ kuin valitsee mistä aloittaa:
 | ~~Moska~~ | ~~uusi kanava, nyt diagnosoitu~~ | ✅ mitattu 20.8.2026: nollatulos, kanava suljettu |
 | Ristiseiska | **uusi kanava**, vanha todettu umpikujaksi | vasta kun kanava löytyy |
 | ~~Paskahousu~~ | ~~uusi kanava, kutonen mitattu ja hylätty (20.8.2026)~~ | ~~vasta kun uusi kanava löytyy~~ |
-| Paskahousu | **uusi kanava**, kutonen ja lukumääräsääntö mitattu ja hylätty (20.8.2026) | vasta kun uusi kanava löytyy |
+| Paskahousu | **uusi kanava**, kutonen ja lukumääräsääntö mitattu ja hylätty (20.8.2026), ryhmän säästäminen mitattu ja peruttu (7.9.2026) | vasta kun uusi kanava löytyy |
 
 **Luokittelu koeteltiin heti ja piti.** Maija ennustettiin kalibroinniksi ja ratkesi
 yhden rivin muutoksella ilman uutta taitoelementtiä, täsmälleen kuten laji lupasi.
