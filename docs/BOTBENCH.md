@@ -899,8 +899,45 @@ kaikkialla. Kisälli on siis rakennettu, Mestarin lisäkyvyt eivät useimmissa p
 realisoidu voitoiksi. Tämä on nyt ensimmäistä kertaa mitattu ilman istuinvikaa, ja se on
 sama kuvio jonka 17.7.2026 baseline näki mutta väärillä luvuilla.
 
+*Kultakalan osalta tämä havainto on korjattu 7.9.2026, ks. osio alla. Ylin porras syntyi kun
+Mestarin ketjuvaihto vaihdettiin arvolaskennaksi, joten portaan puute oli tässä pelissä
+korjattavissa oleva puute eikä pelin ominaisuus. Kuvio itsessään pitää yhä kahdeksassa
+muussa pelissä.*
+
 **Läpsy liikkui vähiten** (91,8 → 90,0 ja 85,8 → 87,0 ja 80,5 → 83,0). Syytä ei ole
 mitattu eikä sitä arvata tässä.
+
+## Kultakala 7.9.2026 (N=400): Mestarin ketju laskee arvon, ja ylin porras syntyi
+
+Ensimmäinen AI-muutos joka on tehty 4.9. kartan jälkeen, ja se osui siihen kahdesta pelistä
+joissa ylintä porrasta ei ollut lainkaan (Kultakala z 1,0). Diagnoosi luettiin koodista eikä
+luvuista. Mestari ja Kisälli erosivat vain nostopäätöksessä, ja ketjuvaihto `kkChainStep` oli
+molemmilla sama säännöstö, joka ei vertaa nostettua korttia paikan tunnettuun arvoon eikä
+vaihtoa vaihtoehtoon lopeta. Mestari sai tilalle `kkChainGain`in, joka laskee askelen odotetun
+pistesäästön ketjun loppuun asti. Muutos ja sen peruste ovat `KULTAKALA.md`:ssä.
+
+**Baseline ajettiin uudelleen ennen muutosta, ja se kannatti.** 4.9. kartan luvut on mitattu
+ennen 5.9. kompositioauditoinnin H5- ja H8-muutoksia. Kaksi paria toistui bitilleen, mutta
+`hard vs normal` oli 52,6 % eikä taulukon 52,4 %, eli yhden pelin verran eri. Vertailukohta on
+siis alla oleva baseline eikä kartan luku.
+
+| pari | ennen (7.9. baseline) | jälkeen | voitot | z (50 %) |
+|------|----------------------:|--------:|-------:|---------:|
+| hard vs beginner | 62,1 % | **70,9 %** | 274 / 107 / 19 | 8,35 |
+| hard vs normal | 52,6 % | **60,6 %** | 235 / 150 / 15 | 4,25 |
+| normal vs beginner | 67,6 % | **67,6 %** | 262 / 121 / 17 | 7,05 |
+
+**Verrokki on bitilleen sama** (262/121/17 molemmissa ajoissa), mikä erottaa tuloksen
+rikkinäisestä mittauksesta samalla tavalla kuin 18.8.2026: muutos osui vain Mestariin.
+Keskisijat `hard vs normal` -parissa ovat 2,29 ja 2,60.
+
+**Muutoksen oma z on 2,26** (kahden riippumattoman osuuden erotus, keskivirhe 3,5 %-yks.),
+joten nousu on merkitsevä muttei valtava otos huomioiden. Kultakalan ylin porras on nyt
+olemassa, ja peleistä joissa sitä ei ole jäljelle jää Paskahousu (z -0,2).
+
+**Mitä tämä ei kerro.** Muutosta ei ole mitattu katselutilassa outojen siirtojen varalta, ja
+mittari näkee vain voitto-osuuden. Kolme Mestarin ketjua luettiin selaimesta ja ne olivat
+järkeviä, mutta se on havainto eikä mittaus.
 
 ## Käyttö jatkossa
 

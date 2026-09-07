@@ -99,10 +99,28 @@ function kkDrawDecision(p, top, level, roundsLeft) {
   return { source: 'deck' };
 }
 
+// Mestarin ketjuarvo (7.9.2026): odotettu pistesäästö kun kädessä oleva kortti
+// kuljetetaan paikasta idxPos rivin alkua kohti. Lopettaminen on arvoltaan 0, koska
+// pakasta nostetun kortin saa heittää poistopakkaan, joten askel kannattaa vain kun
+// summa on positiivinen. Tuntemattoman paikan arvo on UNKNOWN_EV, ja siitä syrjäytyvän
+// kortin arvo sama, koska botti ei tiedä sitä ennen paljastusta. Lukee vain botin omaa
+// riviä ja known-joukkoa (KULTAKALA.md > Pelaajakohtainen näkyvyys).
+//
+// Miksi tämä korvaa sääntötaulukon Mestarilla: taulukko ei vertaa nostettua korttia
+// paikan tunnettuun arvoon (viitonen meni kakkosen tilalle kun edessä oli tuntemattomia),
+// eikä vaihtoehtoon lopeta. Kisällillä ja Oppipojalla säännöstö säilyy sellaisenaan.
+function kkChainGain(p, heldV, idxPos) {
+  if (idxPos < 0) return 0;
+  const slotV = p.known.has(idxPos) ? p.row[idxPos].v : UNKNOWN_EV;
+  return Math.max(0, (slotV - heldV) + kkChainGain(p, slotV, idxPos - 1));
+}
+
 // Ketjuvaihdon yksi askel: kannattaako held vaihtaa paikkaan idxPos (0-indeksi)?
 // Sama säännöstö kuin aiChainSwap-silmukassa (paikka 1:n vartijat mukana).
-function kkChainStep(p, held, idxPos, playerCount) {
+function kkChainStep(p, held, idxPos, playerCount, level = 'normal') {
   const pos = idxPos + 1;
+  // Mestari laskee askelen arvon eikä lue sääntötaulukkoa (7.9.2026).
+  if (level === 'hard') return kkChainGain(p, held.v, idxPos) > 0;
   const maxSwapValue = playerCount + 1;
   // Paikka 1: älä aja ulos tunnettua pientä korttia poistopakkaan
   if (pos === 1 && p.known.has(0) && p.row[0].v <= maxSwapValue) return false;
@@ -137,7 +155,7 @@ export function getAdvice(g) {
   }
   if ((phase === 'holding' || phase === 'swapping') && held && swapIdx !== null) {
     // Ketju kannattaa vs. vaihtoa ei voi pysäyttää: eri syy, eri neuvo.
-    if (kkChainStep(p, held, swapIdx, g.players.length)) return { type: 'swapHere', slot: swapIdx };
+    if (kkChainStep(p, held, swapIdx, g.players.length, 'hard')) return { type: 'swapHere', slot: swapIdx };
     if (!canStop) return { type: 'swapForced', slot: swapIdx };
     return { type: 'stopSwap' };
   }
@@ -366,7 +384,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       commit({ ...newG, drawnFrom: 'discard' }, M.aiDrawDiscard(p));
       if (sndRef.current) SFX.flip();
       if (decision.mode === 'swapWorst') tm(() => aiDoSwap(idx, gRef.current, card, decision.worstKnownIdx), 1000);
-      else tm(() => aiChainSwap(idx, gRef.current, card, true), 1000);
+      else tm(() => aiChainSwap(idx, gRef.current, card, true, null, level), 1000);
     } else {
       if (!g.deck.length) { advance(g, idx); return; }
       card = g.deck[0]; newG = { ...g, deck: g.deck.slice(1) };
@@ -375,7 +393,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       tm(() => {
         // Oppipoika: ketju jatkuu vain ilmiselvän hyvällä kortilla (A-3);
         // Kisälli/Mestari ketjuttavat täydellä säännöstöllä
-        aiChainSwap(idx, gRef.current, card, false, level === 'beginner' ? 3 : null);
+        aiChainSwap(idx, gRef.current, card, false, level === 'beginner' ? 3 : null, level);
       }, 1000);
     }
   }
@@ -385,7 +403,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   // chainLimit (Oppipoika): jatka ketjua ensimmäisen vaihdon jälkeen vain jos
   // syrjäytetty kortti on ilmiselvän hyvä (arvo ≤ raja) — aloittelija tekee
   // ilmeisen jatkovaihdon (paljastunut ässä!) muttei suunnittele pidemmälle.
-  function aiChainSwap(idx, g2, card, mustSwap, chainLimit = null) {
+  function aiChainSwap(idx, g2, card, mustSwap, chainLimit = null, level = 'normal') {
     // Kopio, ei alkuperäinen: ketju kirjoittaa riviin ja known-joukkoon askel kerrallaan,
     // ja aiemmin se mutatoi g2:n pelaajaoliota paikallaan. Se oli ainoa immutaabelin
     // päivityksen poikkeus koko pelissä (kompositioauditointi H5).
@@ -400,7 +418,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       const idx_pos = pos - 1;
       if (chainLimit !== null && swaps.length >= 1 && held.v > chainLimit) break;
       // Askelen säännöstö: kkChainStep (moduulitaso; sama ajaa Heron neuvon)
-      if (!kkChainStep(p2, held, idx_pos, playerCount)) break;
+      if (!kkChainStep(p2, held, idx_pos, playerCount, level)) break;
       const old = p2.row[idx_pos];
       p2.row[idx_pos] = held;
       p2.known.add(idx_pos);

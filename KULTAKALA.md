@@ -67,3 +67,18 @@ korjaukselle jää enää vuoroja. Kynnys lukee vain nostopakan kokoa ja botin o
 **Vaihtojen järjestys:**
 - Vaihdetaan paikkoihin 5, 4, 3, 2, 1 järjestyksessä
 - Ei oikaista tuntemattomaan paikkaan
+
+**Ketjuvaihto on Mestarilla arvolaskenta, muilla säännöstö (7.9.2026).** Oppipoika ja Kisälli
+lukevat taulukkoa, jossa kortin arvo ratkaisee vaihdetaanko paikkaan. Mestari laskee sen sijaan
+askelen odotetun pistesäästön ketjun loppuun asti ja vaihtaa vain kun summa on positiivinen.
+Paikan arvo on tunnetulla paikalla sen oma arvo ja tuntemattomalla 7, ja lopettaminen on
+arvoltaan nolla, koska pakasta nostetun kortin saa heittää poistopakkaan. Laskenta lukee vain
+botin omaa riviä ja sen tunnettuja paikkoja, joten näkyvyyssääntö pätee ennallaan.
+
+Muutos korjaa kaksi kohtaa, joissa vanha säännöstö pelasi Mestarilla väärin. Se ei verrannut
+nostettua korttia paikan tunnettuun arvoon, joten viitonen meni kakkosen tilalle aina kun
+edessä oli tuntemattomia. Eikä se verrannut vaihtoa vaihtoehtoon lopeta. Sama laskenta ajaa
+Mestarin neuvon Herolle, joten neuvo muuttui samalla.
+
+Mitattu N=400:lla 7.9.2026: `hard vs normal` 52,6 → 60,6 % ja `hard vs beginner` 62,1 →
+70,9 %, kun verrokki `normal vs beginner` pysyi bitilleen samana. Ks. `docs/BOTBENCH.md`.
