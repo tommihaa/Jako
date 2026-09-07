@@ -13,6 +13,12 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '7.9.2026',
+    items: [
+      'Kultakalan Mestari vaihtaa kortteja nyt laskien. Aiemmin se noudatti samaa vaihtotaulukkoa kuin Kisälli, ja taulukko ei verrannut nostettua korttia siihen mikä paikassa jo on: viitonen saattoi mennä kakkosen tilalle. Nyt Mestari laskee jokaisen ketjun askeleen odotetun hyödyn loppuun asti ja vaihtaa vain kun se kannattaa. Oppipoika ja Kisälli pelaavat kuten ennen. Mittasimme muutoksen 400 pelin sarjoilla: Mestari voittaa Kisällin nyt kuusi kertaa kymmenestä, kun aiemmin se voitti vain vähän yli puolet. Kysy Mestalta -neuvo perustuu samaan laskentaan, joten se muuttui mukana.',
+    ],
+  },
+  {
     date: '5.9.2026',
     items: [
       'Bottien Taistelun Tauko pysäyttää nyt oikeasti kaikki yhdeksän peliä. Aiemmin botit jatkoivat siirtojaan tauon aikana, ja Moskassa peli eteni tauolla joka kerta. Myös ajastetut ikkunat pysähtyvät, eli Koputuksen reaktiolaskuri ja Paskahousun äkkikuoleman kello odottavat jatkoa sen sijaan että kuluisivat loppuun taustalla.',
