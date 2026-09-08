@@ -45,34 +45,41 @@ AI **ei voi nähdä**:
 - Kenen pistemäärä on paras/huonoin
 - Tuntemattomia kortteja
 
-**Päätöslogiikka (nostopäätös poistopakan ylimmästä):**
-1. Jos kortti on parempi kuin pahin tunnettu oma kortti → nosta se
-2. Muuten: jos kortti on hyvä ja rivissä on tuntematon paikka → nosta se
-3. Muuten nosta pakasta
-
 **Nosto ja vaihto ovat eri päätökset. Vaihto kulkee aina paikan 5 kautta (8.9.2026).**
 Botti vaihtaa nostetun kortin samalla tavalla kuin ihminen: ensin paikkaan 5, sitten
 paljastunut kortti paikkaan 4 ja niin edelleen. Poistopakasta nostettu on pakko vaihtaa
-paikkaan 5. Kohdat 1 ja 2 sanovat siis milloin poistopakan kortti kannattaa nostaa, eivät
-mihin se laitetaan. Tähän asti botti vaihtoi kohdan 1 kortin suoraan pahimman tunnetun
-tilalle mihin tahansa paikkaan, mikä oli ristiriidassa Pelitapa-osion kanssa ja etu jota
-ihmisellä ei ollut. Katselutilassa 8.9.2026 se ratkaisi pelin (A♣ suoraan paikkaan 1,
-ks. `docs/BOTBENCH.md` › Katselu 8.9.2026). Tommin päätös: kaanoni korjataan ja botti
-aloittaa paikasta 5 kuten ihminen.
+paikkaan 5. Nostopäätös sanoo siis vain kannattaako poistopakan kortti nostaa. Se verrataan
+paikan 5 korttiin eikä pahimpaan tunnettuun, koska vain paikkaan 5 se voi mennä. Tähän asti
+botti vaihtoi poistopakan kortin suoraan pahimman tunnetun tilalle mihin tahansa paikkaan,
+mikä oli ristiriidassa Pelitapa-osion kanssa ja etu jota ihmisellä ei ollut. Katselutilassa
+8.9.2026 se ratkaisi pelin (A♣ suoraan paikkaan 1, ks. `docs/BOTBENCH.md` › Katselu
+8.9.2026). Tommin päätös: kaanoni korjataan ja botti aloittaa paikasta 5 kuten ihminen.
+
+**Päätöslogiikka (nostopäätös poistopakan ylimmästä):**
+1. Jos paikka 5 on tunnettu ja kortti on sitä parempi → nosta poistopakasta
+2. Muuten: jos paikka 5 on tuntematon ja kortti on hyvä → nosta poistopakasta (vain Mestari)
+3. Muuten nosta pakasta
 
 **Kyvykkyysporras.** Tasot eroavat kyvyiltään eivätkä satunnaisuudelta. Kohta 2 on
 tasokohtainen, ja vain Mestari lukee kierrosten määrää:
 
-| Taso | Kohdan 1 kynnys | Kohta 2: milloin tuntemattomaan |
+| Taso | Kohdan 1 kynnys | Kohta 2: milloin tuntemattomaan paikkaan 5 |
 |---|---|---|
-| Oppipoika | pahin tunnettu **+3** (ottaa liian herkästi, esim. 9:n 7:n tilalle) | ei täytä tuntemattomia |
-| Kisälli | pahin tunnettu | ei täytä tuntemattomia |
-| Mestari | pahin tunnettu, ja verrataan kumpi hyöty on suurempi | arvo **≤ 4**, ja **≤ 6** kun kierroksia on enintään kaksi |
+| Oppipoika | paikan 5 kortti **+3** (ottaa liian herkästi, esim. 9:n 7:n tilalle) | ei täytä tuntemattomia |
+| Kisälli | paikan 5 kortti | ei täytä tuntemattomia |
+| Mestari | ketjun arvo paikasta 5 loppuun asti on positiivinen | odotettu hyöty **≥ 3** (arvo ≤ 4), ja **≥ 1** (arvo ≤ 6) kun kierroksia on enintään kaksi |
 
-Tuntemattoman paikan odotusarvo on **7**, joten Mestarin ehto tarkoittaa vähintään kolmen
-pisteen odotettua hyötyä, ja loppupelissä vähintään yhden. **Myöhäispelissä siis
-aggressiivisempi**, koska täyttämättä jäänyt tuntematon paikka jää tuntemattomaksi eikä
-korjaukselle jää enää vuoroja. Kynnys lukee vain nostopakan kokoa ja botin omaa riviä.
+Mestari laskee nostopäätöksen samalla ketjuarvolla kuin vaihdon (alla), pakollinen ensimmäinen
+askel mukaan luettuna. Tuntemattoman paikan odotusarvo on **7**, joten kohdan 2 kynnys
+tarkoittaa vähintään kolmen pisteen odotettua hyötyä, ja loppupelissä vähintään yhden.
+**Myöhäispelissä siis aggressiivisempi**, koska täyttämättä jäänyt tuntematon paikka jää
+tuntemattomaksi eikä korjaukselle jää enää vuoroja. Kynnys lukee vain nostopakan kokoa ja
+botin omaa riviä.
+
+**Ensimmäinen 8.9.2026 versio piti vanhan vertailun (pahin tunnettu) ja vaihtoi silti
+paikkaan 5.** Botbench näytti kaksi pattia ja verrokkiparin romahduksen (67,6 → 53,9 %):
+pieni kortti kiersi paikan 5 kautta pelaajalta toiselle, koska sääntötasojen vaihtosääntö ei
+vertaa korttia paikan 5 tunnettuun arvoon. Vertailukohta vaihdettiin paikkaan 5 samana päivänä.
 
 **Vaihtojen järjestys:**
 - Vaihdetaan paikkoihin 5, 4, 3, 2, 1 järjestyksessä

@@ -71,34 +71,32 @@ function kkRoundsLeft(g) {
 
 // Nostopäätös: mistä nostetaan. { source: 'deck' } tai { source: 'discard' }.
 // Päätös sanoo vain kannattaako poistopakan kortti nostaa, ei mihin se laitetaan:
-// vaihto kulkee aina paikan 5 kautta kuten ihmisellä (KULTAKALA.md > Nosto ja vaihto
-// ovat eri päätökset, 8.9.2026). Tähän asti paluuarvon `mode: 'swapWorst'` vei kortin
-// suoraan pahimman tunnetun tilalle mihin tahansa paikkaan, mikä oli etu jota
-// ihmisellä ei ollut.
+// poistopakasta nostettu on pakko vaihtaa paikkaan 5, ja ketju jatkuu siitä kuten
+// ihmisellä (KULTAKALA.md > Nosto ja vaihto ovat eri päätökset, 8.9.2026). Siksi kortti
+// verrataan paikan 5 korttiin eikä pahimpaan tunnettuun. Tähän asti paluuarvon
+// `mode: 'swapWorst'` vei kortin suoraan pahimman tunnetun tilalle mihin tahansa
+// paikkaan, mikä oli etu jota ihmisellä ei ollut. Ensimmäinen versio 8.9.2026 piti
+// vanhan vertailun ja vaihtoi silti paikkaan 5: Botbench näytti kaksi pattia
+// (pieni kortti kiersi paikan 5 kautta pelaajalta toiselle) ja verrokkiparin
+// romahduksen 67,6 → 53,9 %.
 // roundsLeft = kkRoundsLeft(g); undefined tarkoittaa ettei kierrostietoa käytetä.
 function kkDrawDecision(p, top, level, roundsLeft) {
-  const worstKnownIdx = [...p.known].sort((a, b) => p.row[b].v - p.row[a].v)[0];
-  const rightmostUnknown = [4, 3, 2, 1, 0].find(i => !p.known.has(i));
-  // Oppipojan deterministinen heikkous: kynnys +3 (ottaa esim. 9:n 7:n tilalle)
+  if (!top) return { source: 'deck' };
+  const slot5Known = p.known.has(4);
+  if (level === 'hard') {
+    // Mestari: pakollisen ensimmäisen askelen arvo ketjun loppuun asti (kkChainGain).
+    // Tuntemattomaan paikkaan 5 vaaditaan sama kynnys kuin ennen: odotettu hyöty
+    // vähintään 3, ja vähintään 1 kun kierroksia on enintään kaksi (18.8.2026).
+    const slot5V = slot5Known ? p.row[4].v : UNKNOWN_EV;
+    const gain = (slot5V - top.v) + kkChainGain(p, slot5V, 3);
+    const lateGame = roundsLeft !== undefined && roundsLeft <= 2;
+    const unknownBar = lateGame ? 1 : 3;
+    return { source: (slot5Known ? gain > 0 : gain >= unknownBar) ? 'discard' : 'deck' };
+  }
+  // Kisälli ja Oppipoika: vain tunnetun paikan 5 tilalle, eivät täytä tuntemattomia
+  // poistopakasta. Oppipojan deterministinen heikkous: kynnys +3 (ottaa esim. 9:n 7:n tilalle).
   const eagerBonus = level === 'beginner' ? 3 : 0;
-  // Mestari: hyötyvertailu — huonoimman tunnetun korvaus (varma hyöty) vs.
-  // tuntemattoman täyttö (EV-hyöty ≥3, muuten nostopakan ketjupotentiaali voittaa).
-  const worstV = worstKnownIdx !== undefined ? p.row[worstKnownIdx].v : -Infinity;
-  const gainKnown   = top ? worstV - top.v : -Infinity;
-  const gainUnknown = (top && rightmostUnknown !== undefined) ? UNKNOWN_EV - top.v : -Infinity;
-  // Mestarin kierrostietoinen kynnys (18.8.2026): kun kierroksia on enintään kaksi,
-  // tuntemattoman täytön hyötyvaatimus laskee 3:sta 1:een, eli loppupelissä
-  // aggressiivisempi. Syy: tuntematon paikka jää tuntemattomaksi jos sitä ei täytetä
-  // nyt, eikä korjaukselle jää enää vuoroja. Kynnys lukee vain pakan kokoa ja botin
-  // omaa riviä, ei muiden kortteja (KULTAKALA.md > Pelaajien näkyvyys).
-  const lateGame = roundsLeft !== undefined && roundsLeft <= 2;
-  const unknownBar = (level === 'hard' && lateGame) ? 1 : 3;
-  if (level === 'hard' && top && (gainKnown > 0 || gainUnknown >= unknownBar)) {
-    return { source: 'discard' };
-  }
-  if (level !== 'hard' && top && worstKnownIdx !== undefined && top.v < p.row[worstKnownIdx].v + eagerBonus) {
-    return { source: 'discard' };
-  }
+  if (slot5Known && top.v < p.row[4].v + eagerBonus) return { source: 'discard' };
   return { source: 'deck' };
 }
 

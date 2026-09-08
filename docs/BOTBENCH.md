@@ -1003,6 +1003,45 @@ Kysymys on kaanonikysymys (korjataanko koodi vai kaanoni), ei mittauskysymys.
 kerrallaan Botbenchillä (N=400 portaan toteamiseen, N=1600 erotteluun kuten 7.9. opetti).
 Löydös 3 odottaa Tommin päätöstä ennen kuin siihen kosketaan.
 
+## Kultakala 8.9.2026 (N=400): botti vaihtaa paikan 5 kautta kuten ihminen. Porras kapeni
+
+Katselun löydös 3 (yllä) ratkesi Tommin päätöksellä kaanonin puolelle: botti aloittaa vaihdon
+paikasta 5 kuten ihminen, eikä suoraa vaihtoa pahimman tunnetun tilalle enää ole. Muutos
+koskee kaikkia kolmea tasoa. Se on sääntöasia eikä vahvuusasia, joten tulos ei ole hyväksymis-
+tai hylkäyskysymys vaan hinta joka kirjataan. Kaanoni ja peruste ovat `KULTAKALA.md`:ssä.
+
+**Baseline ajettiin uudelleen ennen muutosta. Kaikki kolme paria toistuivat bitilleen
+7.9. lukuihin** (274/107/19 · 235/150/15 · 262/121/17).
+
+**Ensimmäinen versio jumiutui.** Se piti nostopäätöksen ennallaan (vertailu pahimpaan tunnettuun)
+ja vaihtoi silti paikkaan 5. Sääntötasojen vaihtosääntö ei vertaa korttia paikan 5 tunnettuun
+arvoon, joten pakollinen vaihto työnsi pienen kortin ulos ja se kiersi paikan 5 kautta pelaajalta
+toiselle. `normal vs beginner` antoi kaksi pattia ja 53,9 %. Nostopäätös vaihdettiin vertaamaan
+paikan 5 korttiin (Mestarilla pakollisen ensimmäisen askelen ketjuarvo, sääntötasoilla paikan 5
+tunnettu kortti, Oppipojalla +3). Toinen versio mitattiin.
+
+| pari | ennen (8.9. baseline) | v1 (vanha nostopäätös) | **v2 (paikan 5 vertailu)** | v2 voitot | z (50 %) | muutoksen z |
+|------|----------------------:|-----------------------:|---------------------------:|----------:|---------:|------------:|
+| hard vs beginner | 70,9 % | 63,4 % | **62,6 %** | 242 / 141 / 17 | 5,05 | -2,49 |
+| hard vs normal | 60,6 % | 62,5 % | **59,1 %** | 230 / 157 / 13 | 3,65 | -0,43 |
+| normal vs beginner | 67,6 % | 53,9 % (2 pattia) | **56,5 %** | 217 / 165 / 18 | 2,60 | -3,26 |
+
+Osuus on voitot plus puolet tasapeleistä jaettuna pelatuilla peleillä, sama laskutapa kuin
+7.9. taulussa. V2:ssa ei ole yhtään pattia.
+
+**Mitä luvut sanovat.** Mestarin porras Kisälliin säilyi (59,1 %, z 3,65; muutos on kohinan
+sisällä). Kisällin porras Oppipoikaan kapeni 67,6:sta 56,5:een. Se on muutoksen todellinen
+hinta: suora vaihto oli sääntötasojen tärkein työkalu, koska Kisälli otti poistopakasta hyvän
+kortin ja vei sen pahimman tunnetun tilalle mihin tahansa paikkaan. Nyt sekä Kisälli että
+Oppipoika käyttävät poistopakkaa vain paikan 5 kautta. Oppipojan liikaherkkyys (+3) maksaa
+vähemmän kun kortti ei enää mene kauas. Porras on yhä olemassa (z 2,60) mutta on nyt
+mittarin heikoin Kultakalassa.
+
+**Mitä tämä ei kerro.** Lukuja ei voi verrata 7.9. tauluun vahvuuden mittana, koska myös
+vastapuoli muuttui. Ihmistä vastaan botit ovat nyt samoilla säännöillä kuin ihminen. Se oli
+muutoksen tarkoitus. Jos Kisällin ja Oppipojan porras halutaan takaisin leveämmäksi, se on oma
+koe (ehdokas on Oppipojan liikaherkkyys +3 → +5 tai Kisällin kohta 2), eikä sitä tehty tässä.
+
 ## Paskahousu 7.9.2026 (N=400): ryhmän säästäminen mitattiin ja peruttiin
 
 Kokeen kohde oli sama muoto joka juuri korjattiin Kultakalassa, eli kohta jossa kaikki kolme
