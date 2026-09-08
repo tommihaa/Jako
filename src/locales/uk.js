@@ -377,6 +377,7 @@ export const uk = {
         clNormal: 'Зіграй {suit}-масть, {rank}-значення або візьми.',
         clSimple: 'зіграй {suit}-масть або {rank}.',
         aceDrawn: '{name} бере {card} як штраф за туза.',
+        aceDrawnNoCard: '{name} бере карту як штраф за туза.',
         forgotLappu: '{name} забув сказати Lappu — +{count} карт як штраф!',
         played: '{name}: {cards}',
         winTop: '{name} здобув перемогу! 🏆🎉',

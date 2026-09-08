@@ -368,6 +368,7 @@ export const is = {
         clNormal: 'Spilaðu {suit}-lit eða {rank}-gildi eða dragðu.',
         clSimple: 'spilaðu {suit}-lit eða {rank}.',
         aceDrawn: '{name} dregur {card} sem ásarefsingu.',
+        aceDrawnNoCard: '{name} dregur spil sem ásarefsingu.',
         forgotLappu: '{name} gleymdi að segja Lappu — +{count} spil sem sekt!',
         played: '{name}: {cards}',
         winTop: '{name} hlaut sigurinn! 🏆🎉',

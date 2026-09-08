@@ -368,6 +368,7 @@ export const et = {
         clNormal: 'Löö {suit}-mast või {rank}-väärtus või võta.',
         clSimple: 'löö {suit}-mast või {rank}.',
         aceDrawn: '{name} võtab ässakaristusena {card}.',
+        aceDrawnNoCard: '{name} võtab ässakaristusena kaardi.',
         forgotLappu: '{name} unustas öelda Lappu — +{count} kaarti trahviks!',
         played: '{name}: {cards}',
         winTop: '{name} võttis võidu! 🏆🎉',

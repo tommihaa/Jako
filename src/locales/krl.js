@@ -369,6 +369,7 @@ export const krl = {
         clNormal: 'Lyö {suit}-mua tai {rank}-arvo tai nošša.',
         clSimple: 'lyö {suit}-mua tai {rank}.',
         aceDrawn: '{name} noštau ässärangaistukšena {card}.',
+        aceDrawnNoCard: '{name} noštau ässärangaistukšena kortin.',
         forgotLappu: '{name} unohti šanuo Lappu — +{count} korttie šakkona!',
         played: '{name}: {cards}',
         winTop: '{name} vei voiton! 🏆🎉',

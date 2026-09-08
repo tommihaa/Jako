@@ -371,6 +371,7 @@ export const hu = {
         clNormal: 'Játssz {suit} színt vagy {rank} értéket vagy húzz.',
         clSimple: 'játssz {suit} színt vagy {rank}.',
         aceDrawn: '{name} ász-büntetésként húz: {card}.',
+        aceDrawnNoCard: '{name} ász-büntetésként húz egy lapot.',
         forgotLappu: '{name} elfelejtette mondani: Lappu — +{count} lap büntetésként!',
         played: '{name}: {cards}',
         winTop: '{name} elvitte a győzelmet! 🏆🎉',

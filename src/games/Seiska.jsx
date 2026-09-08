@@ -321,6 +321,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   const [pendingResult, setPendingResult] = useState(null); // { ranking } — odottaa käyttäjän "Tulokset →" -klikkiä
   const [advice, setAdvice] = useState(null); // { text, cardIds } | null
   const sndRef = useRef(soundOn);
+  const lappuWin = useRef(false); // S-2 (8.9.2026): Lappu-ikkuna sulkee muut ihmisen toiminnot
   const aiLevelRef = useRef(aiLevel);
   useEffect(() => { aiLevelRef.current = aiLevel; }, [aiLevel]);
   // botLevels: istuinkohtainen taso (benchmark-käyttö); null = normaali käytös
@@ -425,7 +426,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     gameStart:    card => t('games.seiska.msg.gameStart', { card }),
     turnOf:       name => t('games.seiska.msg.turnOf', { name }),
     yourTurnSuit: cl => t('games.seiska.msg.yourTurnSuit', { cl }),
-    aceDrawn:     (isH, name, card) => t('games.seiska.msg.aceDrawn', { name, card }),
+    aceDrawn:     (isH, name, card) => card ? t('games.seiska.msg.aceDrawn', { name, card }) : t('games.seiska.msg.aceDrawnNoCard', { name }),
     forgotLappu:  (name, count) => t('games.seiska.msg.forgotLappu', { name, count }),
     played:       (isH, name, cards) => t('games.seiska.msg.played', { name, cards }),
     won:          (isH, name, rank) => rank === 1 ? t('games.seiska.msg.winTop', { name }) : t('games.seiska.msg.winPlace', { name, rank }),
@@ -504,7 +505,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       if (!deck.length) return p;
       const drawn = deck.shift();
       drew.add(i);
-      lines.push(M.aceDrawn(p.isHuman, p.name, lblColored(drawn)));
+      lines.push(M.aceDrawn(p.isHuman, p.name, (p.isHuman || revealAll) ? lblColored(drawn) : null));
       return { ...p, hand: [...p.hand, drawn] };
     });
     // Nostanut pelaaja sai +1 kortin (käsi > 1) → poista lappuSaid-joukosta,
@@ -538,6 +539,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
 
   // ── Vuoron vaihto ───────────────────────────────────────────
   function advanceTurn(g, fromIdx) {
+    lappuWin.current = false;
     const lines = /** @type {string[]} */ ([]);
     let g2 = applyLappu(g, lines);
     const nextIdx = nextActive(g2.players, fromIdx, g2.finished);
@@ -709,6 +711,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
         }
       } else {
         g2 = { ...g2, pendingLappu: playerIdx };
+        lappuWin.current = true; // S-2 (8.9.2026): ikkunassa vain Lappu, ei toista siirtoa
         commit(g2);
         tm(() => advanceTurn(gRef.current, playerIdx), 4000);
       }
@@ -781,14 +784,15 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
         // Nostettu kortti ei käy — tarkista onko koko käteen nyt pelattava kortti
         // (esim. 7 tai A joka ei käynyt viimeisenä kortina, mutta käy nyt kun käsi kasvoi)
         const handPlay = aiBestPlay(hand, g2.discardTop, g2.reqSuit);
+        // S-5 (8.9.2026): botin käteen jäävä kortti näytetään vain paljastustilassa.
         if (handPlay) {
-          addLog(M.aiDrawFail(pName, lblColored(drawn)));
+          addLog(M.aiDrawFail(pName, revealAll ? lblColored(drawn) : null));
           aiTmr.current = aiTm(() => runAI(gRef.current), wd);
         } else if (draws < 3) {
-          addLog(M.aiDrawFail(pName, lblColored(drawn)));
+          addLog(M.aiDrawFail(pName, revealAll ? lblColored(drawn) : null));
           aiTmr.current = aiTm(() => doDraw(gRef.current, playerIdx), wd);
         } else {
-          addLog(M.aiDrawsGone(pName, lblColored(drawn)));
+          addLog(M.aiDrawsGone(pName, revealAll ? lblColored(drawn) : null));
           aiTmr.current = aiTm(() => advanceTurn(gRef.current, playerIdx), wd);
         }
       }
@@ -796,7 +800,8 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       addLog(M.humanDraws(lblColored(drawn)));
       if (valid) {
         addLog(M.drawnPlayable(lblColored(drawn), 3 - draws));
-      } else if (draws >= 3) {
+      } else if (draws >= 3 && validSingles(hand, g2.discardTop, g2.reqSuit).length === 0) {
+        // S-4 (8.9.2026): vuoro siirtyy vain jos KOKO kädessä ei ole pelattavaa, kuten botilla.
         addLog(M.draws3Used);
         tm(() => advanceTurn(gRef.current, playerIdx), 900);
       } else {
@@ -874,7 +879,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
 
   // ── Ihmistoiminnot (käyttää G.activePlayer, ei hardkoodattua 0) ─
   function humanToggle(card) {
-    if (!G || G.phase !== 'play' || !G.players[G.activePlayer]?.isHuman || handoff) return;
+    if (!G || G.phase !== 'play' || !G.players[G.activePlayer]?.isHuman || handoff || lappuWin.current) return;
     if (G.aceBonus !== null) {
       if (card.r === '7' || card.r === 'A') return;
       setSel(prev => {
@@ -897,7 +902,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   }
 
   function humanPlay() {
-    if (!selected.length || !G) return;
+    if (!selected.length || !G || lappuWin.current) return;
     const g = gRef.current;
     const idx = g.activePlayer;
     if (g.aceBonus !== null) {
@@ -909,6 +914,11 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     if (!canGroup(selected, g.discardTop, g.reqSuit, g.players[idx].hand.length)) {
       addLog(M.badCards);
       return;
+    }
+    // S-1 (8.9.2026): yhdistävä kortti pelataan ensin ja jää alimmaiseksi, kuten botilla.
+    if (selected.length > 1) {
+      const conn = selected.find(c => canSingle(c, g.discardTop, g.reqSuit, false));
+      if (conn) selected.splice(0, selected.length, conn, ...selected.filter(c => c.id !== conn.id));
     }
     const cards = [...selected]; setSel([]);
     doPlay(g, idx, cards, null);
@@ -923,6 +933,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     const g2 = /** @type {PeliTila} */ ({ ...g, aceBonus: null });
     const newHand = g2.players[idx].hand;
     if (newHand.length === 1 && !g2.lappuSaid.has(idx)) {
+      lappuWin.current = true;
       commit({ ...g2, pendingLappu: idx });
       tm(() => advanceTurn(gRef.current, idx), 4000);
     } else {
@@ -937,6 +948,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     const newHand = g.players[idx].hand;
     if (newHand.length === 1 && !g.lappuSaid.has(idx)) {
       const g2 = /** @type {PeliTila} */ ({ ...g, reqSuit: suit, phase: 'play', pendingLappu: idx });
+      lappuWin.current = true;
       commit(g2, M.suitSelected(suit));
       tm(() => advanceTurn(gRef.current, idx), 4000);
     } else {
@@ -947,7 +959,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   }
 
   function humanDraw() {
-    if (!G || G.phase !== 'play' || !G.players[G.activePlayer]?.isHuman || handoff) return;
+    if (!G || G.phase !== 'play' || !G.players[G.activePlayer]?.isHuman || handoff || lappuWin.current) return;
     doDraw(gRef.current, G.activePlayer);
   }
 
@@ -995,7 +1007,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   // Yksipelaaja-tilassa näytetään aina ihmispelaajan käsi, vaikka botin vuoro
   const displayP      = (humanIdx >= 0 && !multiHuman) ? G.players[humanIdx] : activeP;
   const isMyTurn      = activeP?.isHuman && !handoff && (G.phase === 'play' || G.phase === 'awaiting_suit');
-  const canAct        = isMyTurn && G.phase === 'play';
+  const canAct        = isMyTurn && G.phase === 'play' && !lappuWin.current;
   // Katsomotila: valaistaan aktiivisen botin pelattavat kortit
   const spectatorAct  = !isMyTurn && G.phase === 'play' && displayP?.id === G.activePlayer;
   const hasValid  = canAct && validSingles(activeP.hand, G.discardTop, G.reqSuit).length > 0;

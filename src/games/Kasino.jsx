@@ -765,7 +765,9 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     // Pakollinen siirto: yksi kortti kädessä ja pöytä tyhjä (vain ihmispelaajalle).
     // Ei koske pelaajaa jolla on oma rakennelma pöydällä — sitä ei saa jättää lunastamatta (noBuildLeave).
     const hasOwnBuildForced = g2.builds.some(b => b.ownerIdx === 0);
-    if (next === 0 && p.isHuman && p.hand.length === 1 && g2.table.length === 0 && !hasOwnBuildForced) {
+    // KA-2 (8.9.2026): pakkosiirto ei koske tilannetta jossa viimeinen kortti voi varastaa rakennelman.
+    const canStealBuild = p.hand.length === 1 && g2.builds.some(b => b.value === handVal(p.hand[0]));
+    if (next === 0 && p.isHuman && p.hand.length === 1 && g2.table.length === 0 && !hasOwnBuildForced && !canStealBuild) {
       setSelTable([]); setSelBuilds([]); setCaptureMode(false); setBuildMode(false); setLeaveMode(false);
       const g3 = { ...doLeave({ ...g2, cur: 0, phase: /** @type {Vaihe} */ ('idle') }, 0, p.hand[0], lines) };
       commit(g3);
@@ -1036,6 +1038,9 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     const g = gRef.current;
     const hasOwnBuild = g.builds.some(b => b.ownerIdx === 0);
     const hv = handVal(card);
+    // Porsaanreikäauditointi 8.9.2026 KA-1: oma rakennelma on lunastettava ennen muuta siirtoa,
+    // sama sääntö jota botti noudattaa (kasinoChooseMove ottaa oman rakennelman aina ensin).
+    if (hasOwnBuild && !g.builds.some(b => b.ownerIdx === 0 && selBuilds.includes(b.id))) { addLog(M.noBuildLeave); return; }
 
     // Rakennelma(t) valittu → kaappaa rakennelmat (+ mahdolliset pöytäkortit)
     if (selBuilds.length > 0) {

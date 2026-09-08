@@ -371,6 +371,7 @@ export const rom = {
         clNormal: 'Mar {suit}-farba vaj {rank}-vrednota vaj cirde.',
         clSimple: 'mar {suit}-farba vaj {rank}.',
         aceDrawn: '{name} cirdel sar kazna le asoski {card}.',
+        aceDrawnNoCard: '{name} cirdel jekh lil sar kazna le asoski.',
         forgotLappu: '{name} bistardas te phenel Lappu — +{count} karti sar kazna!',
         played: '{name}: {cards}',
         winTop: '{name} lija o niro! 🏆🎉',

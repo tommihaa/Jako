@@ -368,6 +368,7 @@ export const pt = {
         clNormal: 'Joga uma carta de {suit} ou um {rank}, ou compra.',
         clSimple: 'joga uma carta de {suit} ou um {rank}.',
         aceDrawn: '{name} compra {card} como penalização de ás.',
+        aceDrawnNoCard: '{name} compra uma carta como penalização de ás.',
         forgotLappu: '{name} esqueceu-se de dizer Lappu — +{count} cartas como penalização!',
         played: '{name}: {cards}',
         winTop: '{name} levou a vitória! 🏆🎉',

@@ -370,6 +370,7 @@ export const la = {
         clNormal: 'Feri colorem {suit} vel valorem {rank} vel trahe.',
         clSimple: 'feri colorem {suit} vel {rank}.',
         aceDrawn: '{name} trahit ut poenam assis {card}.',
+        aceDrawnNoCard: '{name} chartam ut poenam assis trahit.',
         forgotLappu: '{name} oblitus est Lappu dicere — +{count} chartae ut poena!',
         played: '{name}: {cards}',
         winTop: '{name} victoriam tulit! 🏆🎉',

@@ -896,19 +896,26 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       setSel(prev => {
         const has = prev.find(c => c.id === card.id);
         if (has) return prev.filter(c => c.id !== card.id);
-        if (prev.length > 0 && prev[0].r !== card.r) return [card];
+        if (prev.length > 0 && (prev[0].r !== card.r || prev[0].v !== card.v)) return [card];
         return [...prev, card];
       });
       return;
     }
     if (G.phase !== 'play') return;
     if (G.skipNext === 0) return;
+    // P-1 (8.9.2026): ryhmä on sama numero JA sama arvo (punainen 2 ei ole musta 2), kuten botilla (aiCards).
     setSel(prev => {
       const has = prev.find(c => c.id === card.id);
       if (has) return prev.filter(c => c.id !== card.id);
-      if (prev.length > 0 && prev[0].r !== card.r) return [card];
+      if (prev.length > 0 && (prev[0].r !== card.r || prev[0].v !== card.v)) return [card];
       return [...prev, card];
     });
+  }
+
+  // P-2 (8.9.2026): vaihdon oletus on yhden arvon ryhmä, kuten botilla (aiSwapChoice).
+  function defaultSwap(eligible) {
+    if (!eligible?.length) return [];
+    return eligible.filter(c => c.r === eligible[0].r && c.v === eligible[0].v);
   }
 
   function humanPlay() {
@@ -1163,9 +1170,9 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <AdviceButton onClick={askAdvice} />
               <button
-                onClick={() => { const toSwap = selected.length ? selected : G.swapData.eligible; setSel([]); applySwap(gRef.current, toSwap); }}
+                onClick={() => { const toSwap = selected.length ? selected : defaultSwap(G.swapData.eligible); setSel([]); applySwap(gRef.current, toSwap); }}
                 style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 20px', color: '#0d2118', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-                {t('games.paskahousu.ui.swapNow', { cards: (selected.length ? selected : G.swapData.eligible).map(lbl).join(' ') })}
+                {t('games.paskahousu.ui.swapNow', { cards: (selected.length ? selected : defaultSwap(G.swapData.eligible)).map(lbl).join(' ') })}
               </button>
               <button
                 onClick={() => skipSwap(gRef.current)}

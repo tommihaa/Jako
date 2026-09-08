@@ -370,6 +370,7 @@ export const se = {
         clNormal: 'Čuohpa {suit}-ivnni dahje {rank}-árvvu dahje gease.',
         clSimple: 'čuohpa {suit}-ivnni dahje {rank}.',
         aceDrawn: '{name} gease áhssaráŋggáštussan {card}.',
+        aceDrawnNoCard: '{name} gease goartta áhssaráŋggáštussan.',
         forgotLappu: '{name} vajálduhtii dadjat Lappu — +{count} goartta sáhkun!',
         played: '{name}: {cards}',
         winTop: '{name} válddii vuoittu! 🏆🎉',

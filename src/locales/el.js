@@ -368,6 +368,7 @@ export const el = {
         clNormal: 'Παίξε χαρτί {suit} ή ένα {rank}, ή τράβα.',
         clSimple: 'παίξε χαρτί {suit} ή ένα {rank}.',
         aceDrawn: 'Ο {name} τραβάει {card} ως ποινή άσου.',
+        aceDrawnNoCard: 'Ο {name} τραβάει ένα φύλλο ως ποινή άσου.',
         forgotLappu: 'Ο {name} ξέχασε να πει Lappu — +{count} χαρτιά ως ποινή!',
         played: '{name}: {cards}',
         winTop: 'Ο {name} πήρε τη νίκη! 🏆🎉',

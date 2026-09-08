@@ -17,6 +17,17 @@ puusta ja liikkuvat.
 
 Tämä tiedosto vanhenee koodin mukana. Jos tiedosto ja koodi ovat eri mieltä, koodi voittaa.
 
+**Korjaukset 8.9.2026 illalla, Tommin kuittauksella *"tee korjaukset"*.** Kolmetoista
+löydöstä korjattiin samana iltana: KA-1, KA-2, L-1, L-2, M-1, KO-1, KO-2 (kaikki kuusi
+kohtaa), KO-4, P-1, P-2, S-1, S-2, S-4 ja S-5. Jokainen korjaus on koodissa kommentilla
+jossa on löydöksen tunnus ja päivä. Tyyppitarkistus ja 149 testiä menivät läpi. S-1
+todennettiin selaimessa (♠4 päällä, valinta ♦3 ♣3 ♠3, loki *3♠ 3♦ 3♣ → 3♣*). Muut on
+todennettu koodinluvulla ja testeillä, ei pelaamalla. Kokoelmatason korjausmuoto oli kaksi:
+lukko ajastuksen ajaksi (`lockRef` Koputuksessa, `lappuWin` Seiskassa) tai ehto UI:n
+vaihe-ehtoon (`awaitingPlayerContinue` Moskassa). Läpsyssä ajastettu jatko lukee
+`gRef.current`-tilan ajastushetken argumenttien sijaan. Korjaamatta jäivät D-luokan
+symmetriset kohdat ja kuusi kaanonikysymystä alla.
+
 ## Neljä luokkaa
 
 Jokainen agentti kävi jokaisen pelin toiminnot läpi samalla listalla: missä pelaajan polku
@@ -83,7 +94,7 @@ kirjoittajan toimesta. Muut ovat agentin raportin varassa.
 
 ### Kasino (`src/games/Kasino.jsx`, `KASINO.md`)
 
-**KA-1, luokka C [tarkistettu].** Pelaaja voi käyttää oman rakennelman kaappaajan muuhun
+**KA-1, luokka C [tarkistettu, korjattu 8.9.2026].** Pelaaja voi käyttää oman rakennelman kaappaajan muuhun
 kaappaukseen ja jättää rakennelman roikkumaan. `hasOwnBuild`-tarkistus on vain
 parirakennelmassa (1067) ja jätössä (1084), ei pöytäkaappauksessa (1097) eikä
 pöytäkorttirakennuksessa (1066). Kanoni rivillä 21: rakennelma on kaapattava seuraavalla
@@ -91,7 +102,7 @@ vuorolla. Botti lunastaa oman rakennelmansa aina ensimmäisenä (319–322). Jat
 kaappaaja on käytetty ja pöytä tyhjenee, pelaajalla ei ole yhtään laillista siirtoa ennen
 kuin vastustaja varastaa rakennelman.
 
-**KA-2, luokka D [tarkistettu].** Pakkosiirto (yksi kortti, tyhjä pöytä) lukee vain
+**KA-2, luokka D [tarkistettu, korjattu 8.9.2026].** Pakkosiirto (yksi kortti, tyhjä pöytä) lukee vain
 `g2.table.length` (768), ei rakennelmia. Kun pöytä on tyhjä mutta vastustajan rakennelma on
 pöydällä ja pelaajan viimeinen kortti täsmää siihen, pakkosiirto jättää kortin pöytään
 varastamisen sijaan. Botti samassa tilanteessa varastaa. Ihmiseltä estetään sallittu.
@@ -128,14 +139,14 @@ klikattaviksi, tämä avaa saman oikaisun joka botilta suljettiin.
 
 ### Läpsy (`src/games/Lapsy.jsx`, `LAEPSY.md`)
 
-**L-1, luokka C [tarkistettu].** Ihminen jolla ei ole kortteja voi läpsäistä täsmäyksessä ja
+**L-1, luokka C [tarkistettu, korjattu 8.9.2026].** Ihminen jolla ei ole kortteja voi läpsäistä täsmäyksessä ja
 palata peliin kasan kanssa. `humanSlap`in täsmäyshaara (444–445) ei tarkista
 `piles[0].length`; tyhjän pinon tarkistus on vain väärän läpsyn haarassa (431). Botti
 ohittaa tyhjän pinon (354). 👋-nappi on aina käytössä (702). Kanoni 263–264: pudonneet
 jatkavat sijoituksista poistumisjärjestyksessä. Lisäseuraus: `fullOrder` (521–523) voi
 sisältää saman pelaajan kahdesti.
 
-**L-2, luokka C.** Väärän läpsyn sakko peruuntuu kun ajastettu bottisiirto kirjoittaa tilan
+**L-2, luokka C [korjattu 8.9.2026].** Väärän läpsyn sakko peruuntuu kun ajastettu bottisiirto kirjoittaa tilan
 vanhoista argumenteista. `doFlip` ja `giveCenter` laskevat uuden tilan parametreistaan
 eivätkä `gRef.current`ista (247–257, 478, 505). Jos ihminen läpsäisee väärin raossa
 (500 ms, haasteessa 100–180 ms, epäonnistuneen haasteen 1600 ms), sakkokortti palaa pinoon
@@ -153,7 +164,7 @@ muisti on sen jälkeen väärässä.
 
 ### Moska (`src/games/Moska.jsx`, `MOSKA.md`)
 
-**M-1, luokka C [tarkistettu].** Oton jälkeen pöytä ja käsi jäävät klikattaviksi.
+**M-1, luokka C [tarkistettu, korjattu 8.9.2026].** Oton jälkeen pöytä ja käsi jäävät klikattaviksi.
 `resolveRound` (593) jättää vaiheen `defend`-tilaan ja puolustajan ennalleen. `isMyDef`
 (1093) ei tarkista `awaitingPlayerContinue`a. Vain Otto-nappi piilotetaan. Kun ihminen ottaa
 7♠:n, `moskaCanPass` on tosi (juuri nostettu 7♠ kädessä, `passChain` tyhjennetty) ja Siirrä
@@ -180,7 +191,7 @@ on muistista. Kanonin kaksi osiota eivät sano samaa.
 
 ### Koputus (`src/games/Koputus.jsx`, `KOPUTUS.md`)
 
-**KO-1, luokka B [tarkistettu].** Botti lukee todellisen kortin paikasta jonka ihminen
+**KO-1, luokka B [tarkistettu, korjattu 8.9.2026].** Botti lukee todellisen kortin paikasta jonka ihminen
 vaihtoi Q:lla tai K:lla botin näkemättä. `handleQTarget` (455–465) ja `handleKSwap`
 (484–497) vaihtavat kortin botin paikkaan koskematta botin `known`-joukkoon. Botin
 päätökset lukevat `known`-indekseistä todellisen arvon (koputusarvio 85, poistopäätös
@@ -192,7 +203,7 @@ nähnyt. Peilikuva: Mestarin neuvo laskee Heron `known`-joukosta samat arvot. He
 Tämä on auditoinnin ainoa löydös jossa botti saa tietoa jota sillä ei kanonin mukaan ole.
 Se ei ole tahallinen kurkkaus vaan päivittämättä jäänyt muisti, mutta vaikutus on sama.
 
-**KO-2, luokka C [tarkistettu humanSwap], kuusi kohtaa.** Viivästetty vaiheenvaihto jättää
+**KO-2, luokka C [tarkistettu humanSwap, korjattu 8.9.2026], kuusi kohtaa.** Viivästetty vaiheenvaihto jättää
 toiminnot kahdesti klikattaviksi: `humanSwap` (416–429, 600 ms), `humanDiscard` (430–439,
 200 ms), `handleJ` (441–448, 2800 ms), `handleQTarget` (455–467, 800 ms), `handleKSkip`
 (498–502, 800 ms) ja `handleKSwap` (484–497, 1200 ms). Pahin on `humanSwap`: nostettu kortti
@@ -205,7 +216,7 @@ ihminen käyttää. Lisäksi ihminen voi nostaa J/Q/K:n poistopakasta ja laukais
 (397–402, 435–437). `PELIKANONIT.md` kohta 2 nimesi laukeamisehdon aukoksi; tämä täydentää:
 aukko on epäsymmetrinen, koska vain toinen osapuoli käyttää sitä.
 
-**KO-4, luokka D, symmetrinen.** Rangaistuksen toinen kortti katoaa pakasta kun tilaa on
+**KO-4, luokka D, symmetrinen [korjattu 8.9.2026].** Rangaistuksen toinen kortti katoaa pakasta kun tilaa on
 vain yhdelle (573–575, 619–621): `deck.slice(2)` riippumatta siitä montako sijoitettiin.
 
 **KO-5, luokka D, lievä.** Ihmisen viimeinen reaktiokortti päättää pelin heti (596–609),
@@ -213,13 +224,13 @@ botin ei (535–543). Käytännön vaikutus pieni, polku eri.
 
 ### Paskahousu (`src/games/Paskahousu.jsx`, `PASKAHOUSU.md`)
 
-**P-1, luokka C [tarkistettu].** Pelaaja voi lyödä eriarvoisia kakkosia yhtenä ryhmänä.
+**P-1, luokka C [tarkistettu, korjattu 8.9.2026].** Pelaaja voi lyödä eriarvoisia kakkosia yhtenä ryhmänä.
 Ryhmäehto (909) vertaa vain numeroa `r`, ei arvoa `v`; vakiosäännöllä ♥2 on 2 ja ♠2 on 15
 (43). `humanPlay` tarkistaa vain `selected[0]` (917). Botti vaatii saman `r`:n ja `v`:n
 (257). Kädessä ♥2 ja ♠2: kasaan menee molemmat, päällimmäiseksi ♠2, kahdesta eriarvoisesta
 kortista yhdellä vuorolla.
 
-**P-2, luokka C.** Vaihdon oletusnappi lyö kaikki eligible-kortit kerralla riippumatta
+**P-2, luokka C [korjattu 8.9.2026].** Vaihdon oletusnappi lyö kaikki eligible-kortit kerralla riippumatta
 arvosta (1166). Eligible kootaan kortti kerrallaan (573–584), joten se voi sisältää eri
 arvoja. Botin `aiSwapChoice` (273–275) palauttaa aina yhden arvon ryhmän.
 
@@ -239,14 +250,14 @@ kanoni sanoo "nostaa" täsmentämättä mistä. Symmetrinen.
 
 ### Seiska (`src/games/Seiska.jsx`, `SEISKA.md`)
 
-**S-1, luokka C.** Pelaaja voi jättää yhdistävän kortin päällimmäiseksi ryhmälyönnissä.
+**S-1, luokka C [korjattu 8.9.2026, todennettu selaimessa].** Pelaaja voi jättää yhdistävän kortin päällimmäiseksi ryhmälyönnissä.
 `canGroup` (40) vaatii vain että jokin kortti täsmää. `humanToggle` (888–896) ottaa
 ensimmäiseksi minkä tahansa. Kanoni: yhdistävä kortti pelataan ensin ja jää alimmaiseksi.
 Päällä ♠5, kädessä ♠9 ja ♥9: klikkaa ensin ♥9 ja sitten ♠9. Päällimmäiseksi jää ♠9.
 Pelaaja pääsi ♥9:stä eroon maata vaihtamatta. Botti järjestää yhdistävän ensimmäiseksi
 (119–120). Ässäbonuksessa ihmiseltäkin vaaditaan järjestys (904).
 
-**S-2, luokka C [tarkistettu].** Lapun 4 sekunnin ikkunan aikana pelaaja voi tehdä toisen
+**S-2, luokka C [tarkistettu, korjattu 8.9.2026].** Lapun 4 sekunnin ikkunan aikana pelaaja voi tehdä toisen
 siirron. `pendingLappu` asetetaan ja `advanceTurn` ajastetaan 4000 ms päähän (711–713), mutta
 vaihe pysyy `play`-tilassa ja `canAct` (998) on tosi. Päällä ♥5, kädessä ♠5 ja ♠9: lyö ♠5,
 Lappu-banneri, lyö ♠9 ja voita ennen kuin kukaan ehti vuoroon. Lisäseuraus: toinen `doPlay`
@@ -257,12 +268,12 @@ vielä kerran. Sama ikkuna `humanChooseSuit` (941) ja `humanSkipAceBonus` (927) 
 (`canDraw` 1002). `hasValid` (1001) lasketaan muttei käytetä missään. Kanoni: jos ei pysty
 lyömään, on pakko nostaa. Botti nostaa vain kun ei ole siirtoa (868). Sääntötulkinta Tommille.
 
-**S-4, luokka D, botin eduksi.** Kolmannen epäonnistuneen noston jälkeen ihmiseltä viedään
+**S-4, luokka D, botin eduksi [korjattu 8.9.2026].** Kolmannen epäonnistuneen noston jälkeen ihmiseltä viedään
 laillinen siirto, botilta ei. Ihmisen haara (799–801) tarkistaa vain nostetun kortin, botin
 haara (783–786) koko käden. Kanoni: jos kolmannenkaan noston jälkeen mikään ei käy, vuoro
 siirtyy. "Mikään" tarkoittaa kättä.
 
-**S-5, luokka C, käänteinen B.** Loki paljastaa ihmiselle botin käteen jääneen kortin:
+**S-5, luokka C, käänteinen B [korjattu 8.9.2026].** Loki paljastaa ihmiselle botin käteen jääneen kortin:
 `aiDrawFail` (785, 788, 791) lokittaa kortin ilman `revealAll`-ehtoa, kun `aiDraws` (752)
 on ehdollinen. Sama ässärangaistuksessa (507). Kanoni: muiden kädet ovat piilossa.
 Kortinlaskijalle täsmällistä tietoa vastustajan kädestä.
@@ -310,5 +321,5 @@ Nämä ovat kaanonikysymyksiä. Kaanoni kirjataan ennen koodia.
 6. **KO-3, erityiskortit boteille.** Kanoni ei rajaa erityiskortteja ihmiselle, mutta botti
    ei käytä niitä. Onko se taso-ominaisuus vai puute.
 
-Selvät korjaukset ilman kaanonikysymystä, jos Tommi kuittaa toteutuksen: KA-1, KA-2, L-1,
-KO-1 (botin `known` päivitetään Q- ja K-vaihdossa pois), P-1, P-2, S-1, S-2, S-4 ja S-5.
+Selvät korjaukset ilman kaanonikysymystä tehtiin 8.9.2026 illalla, ks. alku. Kohta 1 yllä
+ratkesi samalla: korjaus tehtiin peli kerrallaan mutta samalla muodolla.

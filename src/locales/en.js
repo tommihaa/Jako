@@ -372,6 +372,7 @@ export const en = {
         clNormal: 'Play a {suit} card or a {rank}, or draw.',
         clSimple: 'play a {suit} card or a {rank}.',
         aceDrawn: '{name} draws {card} as an ace penalty.',
+        aceDrawnNoCard: '{name} draws a card as an ace penalty.',
         forgotLappu: '{name} forgot to say Lappu! Penalty: +{count} cards.',
         played: '{name}: {cards}',
         winTop: '{name} took the win! 🏆🎉',

@@ -368,6 +368,7 @@ export const no = {
         clNormal: 'Spill et {suit}-kort eller en {rank}, eller trekk.',
         clSimple: 'spill et {suit}-kort eller en {rank}.',
         aceDrawn: '{name} trekker {card} som ess-straff.',
+        aceDrawnNoCard: '{name} trekker et kort som ess-straff.',
         forgotLappu: '{name} glemte å si Lappu — +{count} kort som straff!',
         played: '{name}: {cards}',
         winTop: '{name} tok seieren! 🏆🎉',

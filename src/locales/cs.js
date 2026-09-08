@@ -379,6 +379,7 @@ export const cs = {
         clNormal: 'Zahraj barvu {suit} nebo hodnotu {rank} nebo dober.',
         clSimple: 'zahraj barvu {suit} nebo {rank}.',
         aceDrawn: '{name} dobírá jako trest za eso {card}.',
+        aceDrawnNoCard: '{name} dobírá kartu jako trest za eso.',
         forgotLappu: '{name} zapomněl říct Lappu — +{count} karet jako pokuta!',
         played: '{name}: {cards}',
         winTop: '{name} si odnesl výhru! 🏆🎉',

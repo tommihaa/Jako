@@ -413,7 +413,12 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     tm(() => setLastSwap(null), 2200);
   }
 
+  // KO-2 (8.9.2026): kun jatko on ajastettu, toinen klikkaus ei tee toista siirtoa.
+  // Lukko avataan openReactionissa (advance-polku kulkee sen kautta).
+  const lockRef = useRef(false);
+
   function humanSwap(cardIdx) {
+    if (lockRef.current) return;
     const g = gRef.current, drawn = g.drawn, oldCard = g.players[0].cards[cardIdx];
     flashSlot(0, cardIdx);
     if (soundOn) SFX.swap();
@@ -423,14 +428,17 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       return { ...p, cards, known: new Set([...p.known, cardIdx]) };
     });
     const newG = { ...g, players, discard: [...g.discard, oldCard] };
+    lockRef.current = true;
     commit(newG, M.swapped(oldCard));
     stopReact.current = false;
     tm(() => openReaction(newG, oldCard, 0), 600);
   }
   function humanDiscard() {
+    if (lockRef.current) return;
     const g = gRef.current, drawn = g.drawn;
     if (soundOn) SFX.play();
     const newG = { ...g, discard: [...g.discard, drawn] };
+    if (drawn.r !== 'J' && drawn.r !== 'Q' && drawn.r !== 'K') lockRef.current = true;
     commit(newG, M.discarded(drawn));
     if (drawn.r === 'J') { commit({ ...newG, phase: /** @type {Vaihe} */ ('spec_j') }, M.jackMsg); return; }
     if (drawn.r === 'Q') { commit({ ...newG, phase: /** @type {Vaihe} */ ('spec_q_own') }, M.queenMsg); setSS({ type: 'Q', ownIdx: null }); return; }
@@ -439,6 +447,8 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   }
 
   function handleJ(idx) {
+    if (lockRef.current) return;
+    lockRef.current = true;
     const g = gRef.current, card = g.players[0].cards[idx];
     setTP(new Set([idx])); tm(() => setTP(new Set()), 2500);
     const players = g.players.map((p, i) => i === 0 ? { ...p, known: new Set([...p.known, idx]) } : p);
@@ -453,14 +463,17 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
            t('games.koputus.msg.queenPickOther', { idx: idx + 1 }));
   }
   function handleQTarget(pIdx, cIdx) {
+    if (lockRef.current) return;
     const g = gRef.current, own = specState.ownIdx;
     const oc = g.players[0].cards[own], tc = g.players[pIdx].cards[cIdx];
+    // KO-1 (8.9.2026): kumpikaan ei ole nähnyt saamaansa korttia, joten muisti tyhjenee paikasta.
     const players = g.players.map((p, i) => {
-      if (i === 0) { const c = [...p.cards]; c[own] = tc; return { ...p, cards: c }; }
-      if (i === pIdx) { const c = [...p.cards]; c[cIdx] = oc; return { ...p, cards: c }; }
+      if (i === 0) { const c = [...p.cards]; c[own] = tc; return { ...p, cards: c, known: new Set([...p.known].filter(k => k !== own)) }; }
+      if (i === pIdx) { const c = [...p.cards]; c[cIdx] = oc; return { ...p, cards: c, known: new Set([...p.known].filter(k => k !== cIdx)) }; }
       return p;
     });
     const newG = { ...g, players }; setSS(null);
+    lockRef.current = true;
     commit(newG, t('games.koputus.msg.swapDoneHidden'));
     stopReact.current = false;
     tm(() => openReaction(newG, g.drawn, 0), 800);
@@ -482,26 +495,32 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
            t('games.koputus.msg.kingRivalCard', { card: lbl(tgtCard), v: tgtCard.v }));
   }
   function handleKSwap() {
+    if (lockRef.current) return;
     const g = gRef.current, own = specState.ownIdx;
     const realPIdx = specState.tgtPIdx, realCIdx = specState.tgtCIdx;
     const oc = g.players[0].cards[own], tc = g.players[realPIdx].cards[realCIdx];
+    // KO-1 (8.9.2026): Hero näki kohdekortin (kingPeeked), botti ei ole nähnyt saamaansa.
     const players = g.players.map((p, i) => {
       if (i === 0) { const c = [...p.cards]; c[own] = tc; return { ...p, cards: c }; }
-      if (i === realPIdx) { const c = [...p.cards]; c[realCIdx] = oc; return { ...p, cards: c }; }
+      if (i === realPIdx) { const c = [...p.cards]; c[realCIdx] = oc; return { ...p, cards: c, known: new Set([...p.known].filter(k => k !== realCIdx)) }; }
       return p;
     });
     const newG = { ...g, players };
     setTP(new Set()); setSS(null); stopReact.current = false;
+    lockRef.current = true;
     commit(newG, t('games.koputus.msg.swapDone'));
     tm(() => openReaction(newG, g.drawn, 0), 1200);
   }
   function handleKSkip() {
+    if (lockRef.current) return;
+    lockRef.current = true;
     setTP(new Set()); setSS(null); stopReact.current = false;
     setMsg(t('games.koputus.msg.skipped'));
     tm(() => openReaction(gRef.current, gRef.current?.drawn, 0), 800);
   }
 
   function openReaction(gState, card, byIdx) {
+    lockRef.current = false;
     if (gState.deck.length < 2) { advance(gState, byIdx); return; }
     stopReact.current = false; setRO(true); setRS(3.5);
     commit({ ...(gRef.current ?? gState), phase: /** @type {Vaihe} */ ('reaction') }, M.reactQ(card));
@@ -572,7 +591,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
             const afterLoss = [...cur.players[i].cards]; afterLoss[wrongIdx] = null;
             const draws = cur.deck.slice(0, 2); let dIdx = 0;
             const withPenalty = afterLoss.map(c => { if (c === null && dIdx < draws.length) return draws[dIdx++]; return c; });
-            const remainingDeck = cur.deck.slice(2);
+            const remainingDeck = cur.deck.slice(dIdx); // KO-4 (8.9.2026): vain sijoitetut kortit poistuvat pakasta
             const players = cur.players.map((pl, pi) => {
               if (pi !== i) return pl;
               const kn = new Set([...pl.known].filter(k => k !== wrongIdx));
@@ -618,7 +637,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       const afterLoss = [...g.players[0].cards]; afterLoss[cardIdx] = null;
       const draws = g.deck.slice(0, 2); let dIdx = 0;
       const withPenalty = afterLoss.map(c => { if (c === null && dIdx < draws.length) return draws[dIdx++]; return c; });
-      const remainingDeck = g.deck.slice(2);
+      const remainingDeck = g.deck.slice(dIdx); // KO-4 (8.9.2026)
       const newKn = new Set([...g.players[0].known].filter(k => k !== cardIdx));
       const players = g.players.map((p, i) => i === 0 ? { ...p, cards: withPenalty, known: newKn } : p);
       const newG = { ...g, players, deck: remainingDeck, discard: [...g.discard, lostCard] };

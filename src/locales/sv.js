@@ -368,6 +368,7 @@ export const sv = {
         clNormal: 'Spela en {suit}-färg eller en {rank}, eller dra.',
         clSimple: 'spela en {suit}-färg eller en {rank}.',
         aceDrawn: '{name} drar {card} som ässtraff.',
+        aceDrawnNoCard: '{name} drar ett kort som ässtraff.',
         forgotLappu: '{name} glömde säga Lappu — +{count} kort som straff!',
         played: '{name}: {cards}',
         winTop: '{name} tog hem segern! 🏆🎉',

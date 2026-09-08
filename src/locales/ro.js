@@ -370,6 +370,7 @@ export const ro = {
         clNormal: 'Joacă culoarea {suit} sau valoarea {rank} sau trage.',
         clSimple: 'joacă culoarea {suit} sau {rank}.',
         aceDrawn: '{name} trage ca penalizare de as {card}.',
+        aceDrawnNoCard: '{name} trage o carte ca penalizare de as.',
         forgotLappu: '{name} a uitat să spună Lappu — +{count} cărți ca amendă!',
         played: '{name}: {cards}',
         winTop: '{name} a luat victoria! 🏆🎉',

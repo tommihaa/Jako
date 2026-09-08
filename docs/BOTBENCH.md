@@ -1073,6 +1073,36 @@ odotusarvo 7 pysyy kaanonissa.
 jompikumpi halutaan vielä eloon, seuraava kanava on eri: ei arvon säätö vaan vastustajan
 lahjan käyttö (Mestari lukisi ylimmän poistokortin useammin). Se on jo Mestarin nostopäätös.
 
+### Kisällin porras 8.9.2026 illalla: Oppipojan herkkyys +3 → +5, ensimmäinen ei-nollatulos N=1600:lla
+
+Tommin tilaus samana iltana: mittaa ehdokas joka kirjattiin yllä. Herkkyys on Oppipojan
+nostopäätöksen kynnys (`kkDrawDecision`, `eagerBonus`): Oppipoika ottaa poistopakasta kortin
+joka on enintään kynnyksen verran huonompi kuin paikan 5 tunnettu kortti. Koe kytkettiin
+ympäristömuuttujalla (`KK_EAGER`). Kytkin pois toisti v2-baselinen bitilleen (217/165/18).
+
+| ajo | N | normal vs beginner | voitot | muutoksen z |
+|-----|--:|-------------------:|-------:|------------:|
+| baseline +3 | 400 | 56,5 % | 217 / 165 / 18 | |
+| koe +5 | 400 | 61,5 % | 236 / 144 / 20 | 1,44 |
+| baseline +3 | 1600 | 52,4 % | 807 / 729 / 64 | |
+| koe +5 | 1600 | **59,5 %** | 909 / 605 / 86 | **4,05** |
+
+Osuus on voitot plus puolet tasapeleistä jaettuna pelatuilla peleillä. Muutoksen z on laskettu
+yhdistetystä osuudesta saman N:n ajojen välillä. N=400:n ja N=1600:n baselinet eivät ole samat
+luvut, koska siemenet ovat N-kohtaisia; vertailu tehdään aina saman N:n sisällä.
+
+**Tämä on viikon ensimmäinen koe joka ei kutistunut kohinaksi.** Kolme edellistä (7.9. A ja B,
+8.9. löydökset 1 ja 2) näyttivät N=400:lla noin +3 %-yksikköä ja N=1600:lla alle yhden
+keskivirheen. Tässä N=400 näytti +5 ja N=1600 +7. Muutoksen z nousi 1,44:stä 4,05:een. Mekanismi on
+uskottava: kun vaihto kulkee paikan 5 kautta, Oppipojan liikaherkkyys maksaa vain jos kynnys
+on niin väljä että se ottaa selvästi huonompia kortteja. Kynnys +5 on sitä.
+
+**Mitä tämä ei ratkaise.** Kynnys +3 on kaanonissa (`KULTAKALA.md`, Oppipojan
+deterministinen heikkous), joten +5 on kaanonimuutos eikä viritys. Se leventää Kisällin
+porrasta tekemällä Oppipojasta heikomman, ei Kisällistä parempaa. Päätös on Tommin, ja
+koekoodi on työpuussa committoimatta kunnes se on tehty. Jos päätös on +5, kaanoni
+kirjataan ensin ja vasta sitten vakio koodiin ilman ympäristömuuttujaa.
+
 ## Paskahousu 7.9.2026 (N=400): ryhmän säästäminen mitattiin ja peruttiin
 
 Kokeen kohde oli sama muoto joka juuri korjattiin Kultakalassa, eli kohta jossa kaikki kolme

@@ -1089,9 +1089,10 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   if (!G) return null;
 
   const human = G.players[0];
-  const isMyAtk  = G.phase === 'attack'  && G.primaryAtk === 0 && !allBots;
-  const isMyDef  = G.phase === 'defend'  && G.defender === 0 && !allBots;
-  const isMyAdd  = G.phase === 'add'     && G.addQueue?.[0] === 0 && !allBots;
+  // M-1 (8.9.2026): kierroksen tulosta odottaessa pöytä ja käsi eivät ole klikattavia.
+  const isMyAtk  = G.phase === 'attack'  && G.primaryAtk === 0 && !allBots && !awaitingPlayerContinue;
+  const isMyDef  = G.phase === 'defend'  && G.defender === 0 && !allBots && !awaitingPlayerContinue;
+  const isMyAdd  = G.phase === 'add'     && G.addQueue?.[0] === 0 && !allBots && !awaitingPlayerContinue;
   const myTurn   = isMyAtk || isMyDef || isMyAdd;
 
   const unbeatenSlots = G.table.filter(t => !t.def);

@@ -413,6 +413,7 @@ export const fi = {
         clNormal: 'Lyö {suit}-maa tai {rank}-arvo tai nosta.',
         clSimple: 'lyö {suit}-maa tai {rank}.',
         aceDrawn: '{name} nostaa ässärangaistuksena {card}.',
+        aceDrawnNoCard: '{name} nostaa ässärangaistuksena kortin.',
         forgotLappu: '{name} unohti sanoa Lappu! Sakkona +{count} korttia.',
         played: '{name}: {cards}',
         winTop: '{name} vei voiton! 🏆🎉',

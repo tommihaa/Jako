@@ -224,7 +224,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
         return;
       }
       setGS({ ...gRef.current, cur: target });
-      tm(() => maybeAIFlip(target, newPiles, newCenter, ch), 100 + Math.random() * 80);
+      tm(() => maybeAIFlip(target, gRef.current.piles, gRef.current.center, ch), 100 + Math.random() * 80);
       return;
     }
     const n = newPiles.length;
@@ -232,7 +232,8 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     while (newPiles[next].length === 0 && tries < n) { next = (next + 1) % n; tries++; }
     if (tries >= n) { checkGameOver(newPiles); return; }
     setGS({ ...gRef.current, cur: next });
-    tm(() => maybeAIFlip(next, newPiles, newCenter, null), 500);
+    // L-2 (8.9.2026): ajastettu jatko lukee nykytilan, ei ajastushetken pinoja (väärä läpsy raossa).
+    tm(() => maybeAIFlip(next, gRef.current.piles, gRef.current.center, null), 500);
   }
 
   function maybeAIFlip(idx, piles, center, ch) {
@@ -303,7 +304,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
           setGS({ ...gRef.current, challenge: null });
           setFR({ card, winner: ch.byIdx, n: newCenter.length });
           clearTimeout(failTmr.current);
-          failTmr.current = tm(() => { setFR(null); giveCenter(ch.byIdx, newPiles, newCenter); }, 1600);
+          failTmr.current = tm(() => { setFR(null); giveCenter(ch.byIdx, gRef.current.piles, gRef.current.center); }, 1600);
         } else {
           const newCh = { ...ch, cardsLeft: left };
           setGS({ ...gRef.current, challenge: newCh });
@@ -441,6 +442,8 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
       }
       return;
     }
+    // L-1 (8.9.2026): pudonnut pelaaja ei läpsäise, sama ehto kuin botilla (handleMatch).
+    if (gRef.current.piles[0].length === 0) return;
     const ms = Math.round(performance.now() - matchTimeRef.current - (pausedTotalMs.current - matchPauseBase.current));
     doSlap(0, gRef.current.piles, gRef.current.center, ms);
   }
@@ -508,7 +511,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
     if (checkGameOver(finalPiles)) return;
     updateDuelTimer(finalPiles);
     setGS({ ...gRef.current, cur: winnerIdx });
-    tm(() => maybeAIFlip(winnerIdx, finalPiles, [], null), 800);
+    tm(() => maybeAIFlip(winnerIdx, gRef.current.piles, gRef.current.center, null), 800);
   }
 
   function checkGameOver(piles) {

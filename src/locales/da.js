@@ -368,6 +368,7 @@ export const da = {
         clNormal: 'Spil en {suit}-farve eller en {rank}-værdi, eller træk.',
         clSimple: 'spil en {suit}-farve eller en {rank}.',
         aceDrawn: '{name} trækker {card} som esstraf.',
+        aceDrawnNoCard: '{name} trækker et kort som esstraf.',
         forgotLappu: '{name} glemte at sige Lappu — +{count} kort i straf!',
         played: '{name}: {cards}',
         winTop: '{name} tog sejren! 🏆🎉',

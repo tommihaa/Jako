@@ -368,6 +368,7 @@ export const de = {
         clNormal: 'Spiele eine {suit}-Karte oder eine {rank}, oder ziehe.',
         clSimple: 'spiele eine {suit}-Karte oder eine {rank}.',
         aceDrawn: '{name} zieht {card} als Ass-Strafe.',
+        aceDrawnNoCard: '{name} zieht eine Karte als Ass-Strafe.',
         forgotLappu: '{name} hat vergessen, Lappu zu sagen — +{count} Karten als Strafe!',
         played: '{name}: {cards}',
         winTop: '{name} holte sich den Sieg! 🏆🎉',

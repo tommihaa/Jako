@@ -368,6 +368,7 @@ export const fr = {
         clNormal: 'Joue une carte {suit} ou une valeur {rank}, ou pioche.',
         clSimple: 'joue une carte {suit} ou une {rank}.',
         aceDrawn: '{name} pioche {card} en pénalité d\'as.',
+        aceDrawnNoCard: "{name} pioche une carte en pénalité d'as.",
         forgotLappu: '{name} a oublié de dire Lappu — +{count} cartes en pénalité !',
         played: '{name} : {cards}',
         winTop: '{name} remporte la victoire ! 🏆🎉',

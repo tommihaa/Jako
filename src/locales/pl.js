@@ -377,6 +377,7 @@ export const pl = {
         clNormal: 'Zagraj kolor {suit} lub figurę {rank}, albo dobierz.',
         clSimple: 'zagraj kolor {suit} lub {rank}.',
         aceDrawn: '{name} dobiera {card} jako karę za asa.',
+        aceDrawnNoCard: '{name} dobiera kartę jako karę za asa.',
         forgotLappu: '{name} zapomniał powiedzieć Lappu — +{count} kart kary!',
         played: '{name}: {cards}',
         winTop: '{name} odniósł zwycięstwo! 🏆🎉',
