@@ -24,7 +24,9 @@ Kaikkien ehtojen on täytyttävä, ja ne ovat **samat ihmiselle ja boteille**:
 
 1. Puolustaja **ei ole kaatanut yhtään korttia** tällä vuorolla
 2. Pöydässä on vain **yhtä vahvuutta** olevia kortteja
-3. Puolustaja **pelaa** samaa vahvuutta olevan kortin kädestään (valtti kelpaa)
+3. Puolustaja **pelaa** yhden tai useamman samaa vahvuutta olevan kortin kädestään (valtti
+   kelpaa). Siirrolla ei ole puolustajan käden kokoon sidottua rajaa, toisin kuin
+   hyökkäyksellä (Tommin päätös 8.9.2026, porsaanreikäauditointi M-2 ja M-3)
 4. **Sama pelaaja ei voi siirtää kahdesti** samassa hyökkäyksessä
 5. Aktiivisia pelaajia on **enemmän kuin kaksi**
 6. Siirron vastaanottaja löytyy: hän ei saa olla päähyökkääjä eikä kukaan joka on jo siirtänyt
@@ -89,7 +91,7 @@ Pelin lopussa muodostuu ranking:
 | Kyky | Oppipoika | Kisälli | Mestari |
 |---|---|---|---|
 | Hyökkäyskortin valinta | 50 % ajasta virhe: lyö suurimman | sama virhe 15 % ajasta | laskee poistuneet kortit, ei virheitä |
-| Siirtäminen (passaus) | ei siirrä koskaan | siirtää kun ehdot täyttyvät | siirtää kun ehdot täyttyvät |
+| Siirtäminen (passaus) | ei siirrä koskaan | siirtää kun ehdot täyttyvät, kaikki samanarvoiset ei-valtit kerralla (8.9.2026) | siirtää kun ehdot täyttyvät, kaikki samanarvoiset ei-valtit kerralla (8.9.2026) |
 | Sivusta lisääminen | vain jos pöydässä enintään yksi kortti ja puolustajalla vähintään viisi | puolustajalla vähintään kolme tai pöydässä enintään kaksi | puolustajalla vähintään kaksi ja pöydässä alle viisi |
 | Puolustuksen kortinvalinta | pienin voittava, mutta 50 % ajasta tuhlaa valtin | pienin voittava, 15 % ajasta tuhlaa valtin | pienin voittava, ei virheitä |
 

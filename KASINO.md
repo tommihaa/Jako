@@ -12,6 +12,9 @@ Tavoite: saada eniten pisteitä. **Pisteraja: 16*, ensimmäinen 16 pistettä saa
 - Oman kortin arvo **vastaa** pöydän yhden kortin arvoa **tai**
 - Oman kortin arvo **vastaa summan** pöydän useiden korttien yhteissummasta
 - Kaappaa kortit pöydästä ja laita ne voittosalkkoosi
+- Erikoiskortin kaappausarvo kädessä (A 14, ♠2 15, ♦10 16) on eri kuin sen arvo pöydällä
+  (1, 2, 10), joten ässä ei kaappaa ässää eikä ♠2 kakkosta. **Tarkoitettu**, vahvistettu
+  8.9.2026 (porsaanreikäauditointi KA-4)
 
 ### Rakentaminen (Build)
 - Käytössä **kaikilla pelaajamäärillä**, sekä ihmisellä että boteilla

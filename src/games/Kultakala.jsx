@@ -94,8 +94,9 @@ function kkDrawDecision(p, top, level, roundsLeft) {
     return { source: (slot5Known ? gain > 0 : gain >= unknownBar) ? 'discard' : 'deck' };
   }
   // Kisälli ja Oppipoika: vain tunnetun paikan 5 tilalle, eivät täytä tuntemattomia
-  // poistopakasta. Oppipojan deterministinen heikkous: kynnys +3 (ottaa esim. 9:n 7:n tilalle).
-  const eagerBonus = level === 'beginner' ? 3 : 0;
+  // poistopakasta. Oppipojan deterministinen heikkous: kynnys +5 (ottaa esim. 11:n 7:n tilalle).
+  // Oli +3 8.9.2026 asti; +5 mitattiin N=1600:lla (z 4,05), ks. KULTAKALA.md ja BOTBENCH.md.
+  const eagerBonus = level === 'beginner' ? 5 : 0;
   if (slot5Known && top.v < p.row[4].v + eagerBonus) return { source: 'discard' };
   return { source: 'deck' };
 }

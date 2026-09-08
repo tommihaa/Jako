@@ -1103,6 +1103,38 @@ porrasta tekemällä Oppipojasta heikomman, ei Kisällistä parempaa. Päätös 
 koekoodi on työpuussa committoimatta kunnes se on tehty. Jos päätös on +5, kaanoni
 kirjataan ensin ja vasta sitten vakio koodiin ilman ympäristömuuttujaa.
 
+## Neljä peliä 8.9.2026 myöhäisillalla (N=400): porsaanreikäauditoinnin päätökset koodissa
+
+Tommin päätökset auditoinnin kuuteen kaanonikysymykseen (`docs/AUDITOINTI-PORSAANREIAT.md`
+› Päätökset) muuttivat neljän pelin botteja samana iltana: Kultakalan Oppipojan kynnys +5,
+Seiskan Kisällin ja Mestarin kortinlaskuri, Moskan siirto kaikilla samanarvoisilla ja
+Koputuksen erityiskortit boteille (Kisälli J ja K, Mestari myös Q). Kaikki neljä mitattiin
+kerralla ennen julkaisua 1.2.227. Vertailuluku hakasulkeissa on edellinen mittaus samalle
+parille (Kultakalalla 8.9. v2, muilla 4.9. kartta).
+
+| Peli | hard vs beginner | hard vs normal | normal vs beginner |
+|------|-----------------:|---------------:|-------------------:|
+| Kultakala | 74,5 % (285/89/26) [70,9] | 58,9 % (229/158/13) [59,1] | 61,6 % (237/144/19) [56,5] |
+| Koputus | 98,4 % (393/6/1) [96,0] | **58,6 %** (228/159/13) [67,9] | 93,6 % (374/25/1) [84,6] |
+| Moska | 92,8 % (371/29/0) [91,8] | 56,3 % (225/175/0) [57,2] | 88,0 % (352/48/0) [90,0] |
+| Seiska | 76,0 % (304/96/0) [73,8] | 53,5 % (214/186/0) [58,0] | 64,5 % (258/142/0) [66,0] |
+
+**Kultakala:** Oppipojan kynnys +5 leventää alaportaan kuten N=1600-koe lupasi. Mestarin
+porras Kisälliin ei liikkunut. **Koputus:** ainoa selvä siirtymä. Kisälli sai Jätkän ja
+Kuninkaan. Mestarin porras Kisälliin kapeni 67,9:stä 58,6 prosenttiin. Porras on yhä
+olemassa (z 3,45), mutta se on nyt Koputuksen heikoin. Mestarin Rouva-vaihto ei riittänyt
+kompensoimaan Kisällin uutta tietoa; ehdokas jatkoon on Mestarin Kuningas-vaihto myös
+tuntemattomaan omaan paikkaan. **Moska:** siirto usealla kortilla on kohinan sisällä
+kaikissa pareissa, eli botti ei hyödy eikä kärsi vapaudesta. **Seiska:** kortinlaskuri ei
+liikuttanut yhtään paria merkitsevästi. Mestarin porras Kisälliin pieneni 58,0:sta
+53,5:een (z 1,35 viidestäkymmenestä). Laskuri on koodissa koska kaanoni lupaa sen, ei
+koska se olisi mitattu eduksi. Se on kirjattava tulos: kanonin lupaama kyky on
+toteutettuna nollatulos. Jos kanoni haluaa Mestarin erottuvan Seiskassa, kanava on eri.
+
+Kultakalan neljän pelin ajo keskeytyi ensimmäisellä kerralla vitestin aikakatkaisuun
+(neljä peliä kertaa kolme paria yhdessä testissä), ei koodivirheeseen; loput ajettiin
+kahdessa erässä.
+
 ## Paskahousu 7.9.2026 (N=400): ryhmän säästäminen mitattiin ja peruttiin
 
 Kokeen kohde oli sama muoto joka juuri korjattiin Kultakalassa, eli kohta jossa kaikki kolme

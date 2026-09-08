@@ -111,7 +111,25 @@ function findBestMulti(hand, discardTop, reqSuit) {
   return bestMulti;
 }
 
-function aiBestPlay(hand, discardTop, reqSuit, opponents = []) {
+// Kortinlaskuri (SEISKA.md Tasot, koodiin 8.9.2026 porsaanreikäauditoinnin S-6 jälkeen).
+// Kisälli laskee nähdyt arvot, Mestari arvot ja maat. Nähty = kasassa (discardPile), joka on
+// julkinen ja nollautuu uudelleensekoituksessa itsestään, koska kasa palaa pakaksi.
+// Palauttaa kandidaateista sen, jota vastustajien on epätodennäköisintä seurata: mitä
+// enemmän kortin arvoa (ja Mestarilla maata) on jo nähty, sitä vähemmän seuraajia on jäljellä.
+function pickBySeen(cands, seen, level, hand) {
+  if (!seen || !seen.length || level === 'beginner' || cands.length < 2) return cands[0];
+  const score = c => {
+    const rankSeen = seen.filter(s => s.r === c.r).length + hand.filter(h => h.r === c.r).length;
+    if (level !== 'hard') return rankSeen;
+    const suitSeen = seen.filter(s => s.s === c.s).length + hand.filter(h => h.s === c.s).length;
+    return rankSeen * 4 + suitSeen; // maan 13 korttia vs arvon 4: arvo painaa enemmän per kortti
+  };
+  let best = cands[0], bestS = score(best);
+  for (const c of cands.slice(1)) { const s = score(c); if (s > bestS) { best = c; bestS = s; } }
+  return best;
+}
+
+function aiBestPlay(hand, discardTop, reqSuit, opponents = [], seen = null, level = 'hard') {
   let bestMulti = findBestMulti(hand, discardTop, reqSuit);
   if (bestMulti) {
     // Yhdistävä kortti (matching suit) ensin — se tulee alimmaiseksi pinoon
@@ -168,7 +186,7 @@ function aiBestPlay(hand, discardTop, reqSuit, opponents = []) {
   // Suosi korttia jolla ei ole paria kädessä — säästää parin myöhempään yhdistelmälyöntiin
   // (esim. pelaa ♥3 eikä ♥9 kun kädessä on myös ♠9)
   const nonPair = non7.filter(c => hand.filter(h => h.r === c.r).length === 1);
-  return [nonPair.length ? nonPair[0] : non7[0]];
+  return [pickBySeen(nonPair.length ? nonPair : non7, seen, level, hand)];
 }
 
 function aiSuit(hand) {
@@ -235,7 +253,7 @@ export function getAdvice(g) {
     return useBonus ? { type: 'aceBonusPlay', cards: bonusGroup } : { type: 'aceBonusSkip' };
   }
   const opponents = g.players.filter((pl, i) => i !== idx && !g.finished.includes(i));
-  let play = aiBestPlay(p.hand, g.discardTop, g.reqSuit, opponents);
+  let play = aiBestPlay(p.hand, g.discardTop, g.reqSuit, opponents, g.discardPile, 'hard');
   if (play && play.length === 1 && play[0].r === 'A') {
     const bestAce = pickBestAce(p.hand, g.discardTop, g.reqSuit);
     if (bestAce) play = [bestAce];
@@ -758,7 +776,8 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
         // (ässän maata), pelaa ässä ensin → ässäbonus jatkaa lopuilla → käsi tyhjäksi.
         // (Ässällä ei voi mennä ulos viimeisenä, joten ässä kannattaa pelata ennen muita.)
         const opponents = g2.players.filter((pl, i) => i !== playerIdx && !g2.finished.includes(i));
-        let best = aiBestPlay(hand, g2.discardTop, g2.reqSuit, opponents) || [drawn];
+        const lvlD = botLevelsRef.current?.[playerIdx] ?? aiLevelRef.current;
+        let best = aiBestPlay(hand, g2.discardTop, g2.reqSuit, opponents, g2.discardPile, lvlD) || [drawn];
         const aceWin = validSingles(hand, g2.discardTop, g2.reqSuit)
           .filter(c => c.r === 'A')
           .find(ace => {
@@ -836,7 +855,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
 
     addLog(M.turnOf(p.name));
     const opponents = players.filter((pl, i) => i !== activePlayer && !g.finished.includes(i));
-    const bestPlay = aiBestPlay(p.hand, discardTop, reqSuit, opponents);
+    const bestPlay = aiBestPlay(p.hand, discardTop, reqSuit, opponents, g.discardPile, level);
 
     const playIsOnlySeven = bestPlay && bestPlay.length === 1 && bestPlay[0].r === '7';
     if (playIsOnlySeven && drawsThisTurn < 3 && aiShouldFumble(level)) {

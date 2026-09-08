@@ -207,12 +207,16 @@ export function moskaCanPass(g, playerIdx) {
 // Puolustajan passauskortti: pienin sopiva, valttia säästetään. Valtti kelpaa sääntönä,
 // joten siihen mennään jos muuta samaa vahvuutta ei ole (ihmisellä on sama vapaus).
 // Portitus tehdään kutsupaikassa moskaCanPassilla; tämä valitsee vain kortin.
+// Palauttaa kortit taulukkona: kaikki samanarvoiset ei-valtit kerralla (sama vapaus kuin
+// ihmisellä, Tommin päätös 8.9.2026, MOSKA.md ehto 3), tai yksi valtti jos muuta ei ole.
 function aiPickPass(table, hand, ts) {
   const atkRanks = new Set(table.map(t => t.atk.r));
   const same = hand.filter(c => atkRanks.has(c.r));
   const byValue = cs => [...cs].sort((a, b) => MV(a) - MV(b));
   const nonTrump = byValue(same.filter(c => c.s !== ts));
-  return nonTrump[0] || byValue(same)[0] || null;
+  if (nonTrump.length) return nonTrump;
+  const trump = byValue(same)[0];
+  return trump ? [trump] : null;
 }
 
 // Puolustajan siirtosuunnitelma yhdessä paikassa: sama funktio ajaa botin ja Mestarin
@@ -220,8 +224,8 @@ function aiPickPass(table, hand, ts) {
 // kirjoitettu kahdesti eikä mikään sitonut versioita toisiinsa. Tasoporras on tässä
 // eikä säännössä: `moskaCanPass` on kaikille sama, ja Aloittelija vain jättää sen väliin.
 // `fumble` on Aloittelijan virhe (valtti vaikka ei-valtti riittäisi); neuvo kutsuu ilman.
-// Palauttaa { kind: 'pass', card } | { kind: 'beat', beats } | { kind: 'take' }.
-// Siirtokortti tai null. Aloittelija ei siirrä, muut siirtävät aina kun sääntö sallii.
+// Palauttaa { kind: 'pass', cards } | { kind: 'beat', beats } | { kind: 'take' }.
+// Siirtokortit (taulukko) tai null. Aloittelija ei siirrä, muut siirtävät aina kun sääntö sallii.
 function moskaPlanPass(g, playerIdx, level) {
   if (level === 'beginner' || !moskaCanPass(g, playerIdx)) return null;
   // Pienin sopiva kortti, valttia säästäen
@@ -252,8 +256,8 @@ function moskaPlanBeats(g, playerIdx, fumble = false) {
 
 // Koko puolustussuunnitelma yhtenä kutsuna: siirto ensin, sitten kaato tai otto.
 function moskaPlanDefense(g, playerIdx, level, fumble = false) {
-  const passCard = moskaPlanPass(g, playerIdx, level);
-  if (passCard) return { kind: 'pass', card: passCard, beats: [] };
+  const passCards = moskaPlanPass(g, playerIdx, level);
+  if (passCards) return { kind: 'pass', cards: passCards, beats: [] };
   return moskaPlanBeats(g, playerIdx, fumble);
 }
 
@@ -286,7 +290,7 @@ export function getAdvice(g, removed) {
   if (phase === 'defend' && defender === 0) {
     // Sama suunnitelma kuin Mestari-botilla: siirto ensin, sitten ahne kaato, muuten otto
     const plan = moskaPlanDefense(g, 0, 'hard');
-    if (plan.kind === 'pass') return { type: 'pass', cards: [plan.card] };
+    if (plan.kind === 'pass') return { type: 'pass', cards: plan.cards };
     if (plan.kind === 'take') return { type: 'take' };
     if (!plan.beats.length) return null;
     const first = plan.beats[0];
@@ -843,10 +847,10 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       const lvl = botLevelsRef.current?.[defender] ?? aiLevelRef.current;
       const isSN = lvl === 'hard';
 
-      const passCard = moskaPlanPass(g, defender, lvl);
-      if (passCard) {
+      const passCards = moskaPlanPass(g, defender, lvl);
+      if (passCards) {
         schedMove(() => {
-          doPass(gRef.current, [passCard]);
+          doPass(gRef.current, passCards);
         }, 1000);
         return;
       }

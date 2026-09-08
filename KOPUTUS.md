@@ -19,6 +19,14 @@ Jokaisen vuoron jakajasta seuraava pelaaja nostaa pakasta kortin. Voit vaihtaa s
 - **Kuningatar (Q)**: saat vaihtaa yhden kortin kenen tahansa pelaajan minkä tahansa pöytäkortin kanssa
 - **Kuningas (K)**: saat katsoa oman pöytäkortin, yhden jonkun muun pelaajan pöytäkortin ja halutessasi tehdä vaihdon
 
+Erityiskortit kuuluvat kaikille. Botit eivät käyttäneet niitä 8.9.2026 asti (porsaanreikäauditointi
+KO-3, Tommin päätös: puute). Botin käyttö: J katsoo oman tuntemattoman paikan; Q vaihtaa oman
+huonoimman tunnetun kortin vastustajan satunnaiseen paikkaan, jos se on odotusarvoa huonompi;
+K katsoo oman tuntemattoman ja vastustajan satunnaisen kortin ja vaihtaa jos vastustajan kortti
+on omaa huonointa tunnettua pienempi. Vaihdon vastaanottaja ei tiedä saamaansa korttia
+(muisti tyhjenee paikasta, sama sääntö kuin ihmisen vaihdossa KO-1). Tasoporras on
+kyvykkyystaulukossa.
+
 ## Pistelasku lopussa
 
 - Ässä = 1 piste
@@ -61,6 +69,7 @@ Kolme ensimmäistä riviä ovat kyvykkyyttä, kaksi viimeistä reaktionopeutta.
 | Poistopakan seuraaminen | ei huomaa poistopakkaa | ottaa paremman kuin pahin tunnettu | ottaa lisäksi pikkukortin (≤ 4) tuntemattomaan |
 | Tuntemattoman täytön kynnys | ei täytä | odotettu hyöty ≥ 5 | odotettu hyöty ≥ 3 |
 | Erityiskorttiin reagointi jää huomaamatta | 50 % | 25 % | 3 % |
+| Erityiskortin käyttö (8.9.2026) | ei käytä | J ja K | J, Q ja K |
 | Väärä reaktio | 15 % | ei koskaan | ei koskaan |
 
 ## Pakkakoko ja kierrosten määrä

@@ -13,7 +13,9 @@ Tavoite: pääse eroon käsikorteista ensimmäisenä.
 3. Kortin on **täsmättävä** maalta **tai** arvoltaan päällimmäisen kanssa:
    - **Sama maa**: yksi kortti kerrallaan
    - **Sama arvo**: useamman saman arvoisen voi lyödä **yhdellä kertaa**
-4. Jos ei pysty lyödä → **on pakko nostaa pakasta, enintään 3 korttia** (ei vapaaehtoista passia)
+4. Jos ei pysty lyödä → **on pakko nostaa pakasta, enintään 3 korttia** (ei vapaaehtoista passia).
+   **Nostaa saa myös kun voisi lyödä** (Tommin päätös 8.9.2026, porsaanreikäauditointi S-3):
+   sääntö on sama kaikille, botti ei toistaiseksi käytä vapautta ja se on Botbench-ehdokas
 5. Nostetun pelattavan kortin saa joko lyödä tai jättää lyömättä ja nostaa lisää (jos nostoja jäljellä); jos kolmannenkaan noston jälkeen mikään ei käy → **vuoro siirtyy automaattisesti**
 6. Jos nostopakka loppuu → lyöntipakan päällimmäinen jätetään paikalleen, muut sekoitetaan uudeksi nostopakaksi
 
@@ -81,8 +83,8 @@ Kolme tasoa (UI-nimet: **Oppipoika / Kisälli / Mestari**):
 | Taso | Kuvaus |
 |---|---|
 | `beginner` (Oppipoika) | Tekee satunnaisia virheitä: unohtaa että 7 käy aina, pelaa ryhmän yksittäisenä |
-| `normal` (Kisälli) | Kortinlaskuri, muistaa nähtyjen arvojen määrät, ennakoinnin perusteella |
-| `hard` (Mestari) | Täysi strategia ilman virheitä + **muistaa pelatut kortit** (kasan järjestyksen voitetun pöydän pohjalta) ja ennakoi täsmäykset. Vastaa aiempaa "Yliluonnollinen"-logiikkaa, joka yhdistettiin tähän. |
+| `normal` (Kisälli) | Kortinlaskuri, muistaa nähtyjen arvojen määrät, ennakoinnin perusteella. **Koodissa 8.9.2026 alkaen:** valitsee yksittäisen lyönnin sen mukaan, kuinka monta kortin arvoa on jo nähty kasassa (mitä enemmän, sitä harvemmin vastustaja voi seurata arvolla) |
+| `hard` (Mestari) | Täysi strategia ilman virheitä + **muistaa pelatut kortit** (kasan järjestyksen voitetun pöydän pohjalta) ja ennakoi täsmäykset. Vastaa aiempaa "Yliluonnollinen"-logiikkaa, joka yhdistettiin tähän. **Koodissa 8.9.2026 alkaen:** laskee sekä arvon että maan nähdyt kortit ja valitsee lyönnin jota vastustajien on epätodennäköisintä seurata. Porsaanreikäauditointi S-6 löysi että kumpaakaan laskuria ei ollut koodissa; Tommin päätös oli korjata koodi kanonin mukaiseksi. |
 
 ### Ryhmälyöntilogiikka (`aiBestPlay`)
 

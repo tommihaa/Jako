@@ -27,7 +27,9 @@ Tavoite: pääse eroon käsikorteista, viimeinen on **Paskahousu**.
 3. Kortin arvo pitää olla **yhtä suuri tai suurempi** kuin päällimmäinen
 4. **Kuvakorttia** ei saa lyödä alle 7 olevan kortin päälle
 5. Tyhjälle pöydälle käyvät kaikki kortit (paitsi 10 ja A → rangaistus)
-6. Jos ei voi pelata → **nosta pakasta** (sokkona) tai **nosta kasa** käteen
+6. Jos ei voi pelata → **nosta pakasta** (sokkona) tai **nosta kasa** käteen. **Nosto on
+   sallittu myös kun voisi pelata** (Tommin päätös 8.9.2026, porsaanreikäauditointi P-3):
+   sääntö on sama kaikille, botti ei toistaiseksi käytä vapautta ja se on Botbench-ehdokas
 7. Pelattuaan pelaaja täydentää kätensä 6 kortiksi nostopakasta
 
 ## Sääntövalinnat aloitusnäytöltä

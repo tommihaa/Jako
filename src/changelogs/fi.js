@@ -13,6 +13,15 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '8.9.2026 ilta',
+    items: [
+      'Kaikki yhdeksän peliä käytiin läpi kysymyksellä: pääseekö botti tekemään jotain mikä sinulta on estetty, ja pääsetkö sinä kiertämään sääntöjä? Botin puolelta ei löytynyt yhtään etua. Sinun puoleltasi löytyi kolmetoista aukkoa, ja ne on nyt suljettu. Suurin osa oli samaa lajia: nopea toinen klikkaus ehti tehdä toisen siirron ennen kuin peli vaihtoi vaihetta. Koputuksessa saman kortin sai kahteen paikkaan, Seiskassa Lappu-ikkunan aikana sai lyödä toisen kortin ja voittaa, Moskassa oton jälkeen sai vielä siirtää tai kaataa. Kasinossa oman rakennelman sai jättää lunastamatta, Läpsyssä pudonnut pelaaja sai läpsäistä itsensä takaisin peliin, Paskahousussa punaisen ja mustan kakkosen sai lyödä yhtenä ryhmänä, ja Seiskassa ryhmälyönnin sai jättää väärän kortin päälle.',
+      'Koputuksen botti ei enää tiedä korttia jonka vaihdoit sille Rouvalla tai Kuninkaalla. Tähän asti sen muisti jäi päivittämättä ja se lyö kortin reaktiossa oikein vaikkei ollut nähnyt sitä. Samalla botit alkoivat käyttää erityiskortteja itsekin: Kisälli katsoo Jätkällä ja Kuninkaalla, Mestari vaihtaa myös Rouvalla. Oppipoika ei käytä niitä.',
+      'Seiskan Kisälli ja Mestari laskevat nyt kortteja, kuten säännöt ovat luvanneet alusta asti. Kisälli muistaa nähdyt arvot, Mestari myös maat, ja kumpikin lyö mieluummin kortin jota vastustajien on vaikea seurata. Seiskan botin loki ei enää paljasta nostettua korttia joka jää sen käteen, ja kolmannen epäonnistuneen noston jälkeen vuorosi ei siirry jos kädessäsi on yhä pelattava kortti.',
+      'Moskan botit siirtävät hyökkäyksen nyt kaikilla samanarvoisilla korteillaan kerralla, samalla vapaudella kuin sinä. Paskahousussa ja Seiskassa nosto on sallittu myös silloin kun voisit pelata. Se on nyt kirjattu sääntöihin. Kultakalan Oppipoika ottaa poistopakasta vielä herkemmin kuin ennen, jotta se eroaa Kisällistä selvästi.',
+    ],
+  },
+  {
     date: '8.9.2026',
     items: [
       'Kultakalan botit vaihtavat nyt samoilla säännöillä kuin sinä. Tähän asti botti sai viedä poistopakasta nostamansa kortin suoraan mihin tahansa paikkaan, vaikka pelaajan vaihto alkaa aina paikasta 5 ja etenee siitä. Etu oli koodissa ensimmäisestä versiosta asti ja löytyi Bottien Taistelua katsomalla. Nyt myös botti aloittaa paikasta 5, ja poistopakasta nostettu on sillekin pakko vaihtaa. Kisällin ja Oppipojan ero kapeni samalla, koska suora vaihto oli niiden tärkein keino.',

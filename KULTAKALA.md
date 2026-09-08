@@ -75,7 +75,7 @@ tasokohtainen, ja vain Mestari lukee kierrosten määrää:
 
 | Taso | Kohdan 1 kynnys | Kohta 2: milloin tuntemattomaan paikkaan 5 |
 |---|---|---|
-| Oppipoika | paikan 5 kortti **+3** (ottaa liian herkästi, esim. 9:n 7:n tilalle) | ei täytä tuntemattomia |
+| Oppipoika | paikan 5 kortti **+5** (ottaa liian herkästi, esim. 11:n 7:n tilalle; oli +3 8.9.2026 asti) | ei täytä tuntemattomia |
 | Kisälli | paikan 5 kortti | ei täytä tuntemattomia |
 | Mestari | ketjun arvo paikasta 5 loppuun asti on positiivinen | odotettu hyöty **≥ 3** (arvo ≤ 4), ja **≥ 1** (arvo ≤ 6) kun kierroksia on enintään kaksi |
 
@@ -109,3 +109,10 @@ Mestarin neuvon Herolle, joten neuvo muuttui samalla.
 
 Mitattu N=400:lla 7.9.2026: `hard vs normal` 52,6 → 60,6 % ja `hard vs beginner` 62,1 →
 70,9 %, kun verrokki `normal vs beginner` pysyi bitilleen samana. Ks. `docs/BOTBENCH.md`.
+
+**Oppipojan kynnys +3 → +5 (Tommin päätös 8.9.2026 illalla).** Kun vaihto alkoi kulkea
+paikan 5 kautta (yllä), Kisällin porras Oppipoikaan kapeni 67,6:sta 56,5 prosenttiin, koska
+liikaherkkyys +3 ei enää maksanut paljon. Kynnys +5 mitattiin N=1600:lla: porras leveni
+52,4:stä 59,5 prosenttiin (muutoksen z 4,05), viikon ensimmäinen ei-nollatulos. Muutos
+tekee Oppipojasta heikomman eikä Kisällistä parempaa. Luvut `docs/BOTBENCH.md` › Kisällin
+porras 8.9.2026 illalla.

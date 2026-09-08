@@ -69,6 +69,10 @@ const M = {
   aiSwapped: (n, c) => tr('games.koputus.msg.aiSwapped', { name: n, card: lblColored(c) }),
   aiDiscard: (n, c) => tr('games.koputus.msg.aiDiscard', { name: n, card: lblColored(c) }),
   aiKnock:   n => tr('games.koputus.msg.aiKnock', { name: n }),
+  aiJack:      n => tr('games.koputus.msg.aiJack', { name: n }),
+  aiQueenSwap: (n, tgt) => tr('games.koputus.msg.aiQueenSwap', { name: n, target: tgt }),
+  aiKingSwap:  (n, tgt) => tr('games.koputus.msg.aiKingSwap', { name: n, target: tgt }),
+  aiKingKeep:  (n, tgt) => tr('games.koputus.msg.aiKingKeep', { name: n, target: tgt }),
   aiReact:   (n, c) => tr('games.koputus.msg.aiReact', { name: n, card: lblColored(c) }),
   aiWrongReact: n => tr('games.koputus.msg.aiWrongReact', { name: n }),
 };
@@ -79,6 +83,59 @@ const M = {
 
 // UNKNOWN_EV (tuntemattoman paikan odotusarvo) on helpers.js:ssä, koska Kultakala käyttää
 // samaa lukua samaan vertailuun.
+
+// Botin erityiskortti (KOPUTUS.md Erityiskortit, 8.9.2026, porsaanreikäauditointi KO-3).
+// Oppipoika ei käytä, Kisälli J ja K, Mestari kaikki. Palauttaa { g, msg } tai null.
+// Vaihdon vastaanottaja ei tiedä saamaansa korttia: muisti tyhjenee paikasta (KO-1).
+function koAISpecial(g, playerIdx, card, level, M) {
+  if (level === 'beginner') return null;
+  const p = g.players[playerIdx];
+  const nonNull = (pl, i) => pl.cards[i] !== null;
+  const unknownOwn = p.cards.findIndex((c, i) => c !== null && !p.known.has(i));
+  const worst = [...p.known].filter(i => nonNull(p, i)).sort((a, b) => p.cards[b].v - p.cards[a].v)[0];
+  const oppIdx = g.players.map((_, i) => i).filter(i => i !== playerIdx && g.players[i].cards.some(c => c !== null));
+  const pickOpp = () => {
+    const oi = oppIdx[Math.floor(Math.random() * oppIdx.length)];
+    const slots = [0, 1, 2, 3].filter(i => nonNull(g.players[oi], i));
+    return { oi, si: slots[Math.floor(Math.random() * slots.length)] };
+  };
+  const swapWith = (players, own, oi, si, ownSees) => players.map((pl, i) => {
+    if (i === playerIdx) {
+      const c = [...pl.cards]; const tc = players[oi].cards[si]; c[own] = tc;
+      const kn = new Set([...pl.known].filter(k => k !== own)); if (ownSees) kn.add(own);
+      return { ...pl, cards: c, known: kn };
+    }
+    if (i === oi) {
+      const c = [...pl.cards]; c[si] = players[playerIdx].cards[own];
+      return { ...pl, cards: c, known: new Set([...pl.known].filter(k => k !== si)) };
+    }
+    return pl;
+  });
+  if (card.r === 'J') {
+    if (unknownOwn === -1) return null;
+    const players = g.players.map((pl, i) => i === playerIdx ? { ...pl, known: new Set([...pl.known, unknownOwn]) } : pl);
+    return { g: { ...g, players }, msg: M.aiJack(p.name) };
+  }
+  if (card.r === 'Q') {
+    if (level !== 'hard' || worst === undefined || p.cards[worst].v <= UNKNOWN_EV || !oppIdx.length) return null;
+    const { oi, si } = pickOpp();
+    return { g: { ...g, players: swapWith(g.players, worst, oi, si, false) }, msg: M.aiQueenSwap(p.name, g.players[oi].name) };
+  }
+  if (card.r === 'K') {
+    let players = g.players;
+    if (unknownOwn !== -1) players = players.map((pl, i) => i === playerIdx ? { ...pl, known: new Set([...pl.known, unknownOwn]) } : pl);
+    if (!oppIdx.length) return { g: { ...g, players }, msg: M.aiJack(p.name) };
+    const { oi, si } = pickOpp();
+    const me = players[playerIdx];
+    const w = [...me.known].filter(i => nonNull(me, i)).sort((a, b) => me.cards[b].v - me.cards[a].v)[0];
+    const tgt = players[oi].cards[si];
+    if (w !== undefined && tgt.v < me.cards[w].v) {
+      return { g: { ...g, players: swapWith(players, w, oi, si, true) }, msg: M.aiKingSwap(p.name, players[oi].name) };
+    }
+    return { g: { ...g, players }, msg: M.aiKingKeep(p.name, players[oi].name) };
+  }
+  return null;
+}
 
 // Koputusarvio: tunnettujen summa + tuntemattomien EV vs. kynnys
 function koKnockEstimate(player, level) {
@@ -707,9 +764,12 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
         }
         doSwap();
       } else {
-        const updG = { ...gNow, deck, discard: [...discard, card] };
+        let updG = { ...gNow, deck, discard: [...discard, card] };
         commit(updG, M.aiDiscard(p.name, card));
         if (sndRef.current) SFX.play();
+        // Erityiskortti (J/Q/K): botti käyttää sen tasonsa mukaan (KO-3, 8.9.2026)
+        const sp = koAISpecial(updG, playerIdx, card, level, M);
+        if (sp) { updG = sp.g; commit(updG, sp.msg); }
         schedMove(() => openReaction(updG, card, playerIdx), reactMs);
       }
     }, 3600);

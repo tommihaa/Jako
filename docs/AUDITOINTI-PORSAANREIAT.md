@@ -311,7 +311,21 @@ kanonia; kattavuus on toimintotasolla eikä rivitasolla. Jokaisen agentin raport
 
 ## Päätökset jotka odottavat Tommia
 
-Nämä ovat kaanonikysymyksiä. Kaanoni kirjataan ennen koodia.
+**Kaikki kuusi ratkesivat 8.9.2026 illalla.** Kultakalan Oppipojan kynnys (+3 → +5,
+`docs/BOTBENCH.md`) ratkesi samalla. Kaanoni kirjattiin ensin, koodi sen jälkeen, ja
+Botbench ajettiin neljälle muuttuneelle pelille (tulos alla). Päätökset ja kodit:
+
+| Kohta | Päätös | Kaanoni | Koodi |
+|---|---|---|---|
+| 1 kokoelmatason korjaus | peli kerrallaan, sama muoto | ei muutosta | tehty aiemmin illalla |
+| 2 P-3 ja S-3 vapaaehtoinen nosto | sallittu kaikille | `PASKAHOUSU.md` kohta 6, `SEISKA.md` kohta 4 | ei muutosta; botti ei käytä vapautta, Botbench-ehdokas |
+| 3 S-6 kortinlaskuri | koodi kanonin mukaiseksi | `SEISKA.md` Tasot, mitä laskuri tekee | `pickBySeen` Seiskassa |
+| 4 KA-4 ässän arvo | tarkoitettu | `KASINO.md` Kaappaaminen | ei muutosta |
+| 5 M-2 ja M-3 siirron korttimäärä | sama vapaus botille | `MOSKA.md` ehto 3 ja taulukko | `aiPickPass` palauttaa kaikki samanarvoiset |
+| 6 KO-3 erityiskortit boteille | puute | `KOPUTUS.md` Erityiskortit ja taulukko | `koAISpecial` Koputuksessa |
+
+Alkuperäinen lista säilyy alla historiana.
+
 
 1. **Kokoelmatason korjaus vai peli kerrallaan.** Ajastettu vaiheenvaihto (Koputus, Seiska,
    Moska, Läpsy) on yksi muoto. Korjaus on vaihtaa vaihe ennen ajastusta tai lukita
