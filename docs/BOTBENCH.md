@@ -999,9 +999,8 @@ että kortti vaihdetaan paikalle 5 ja siitä eteenpäin. AI-strategian kohta 1 s
 pahin tunnettu korvataan. Tämä on vanhempi kuin 7.9.2026 muutos ja koskee kaikkia tasoja.
 Kysymys on kaanonikysymys (korjataanko koodi vai kaanoni), ei mittauskysymys.
 
-**Mitä tästä seuraa.** Löydökset 1 ja 2 ovat mittauskohteita. Ehdokas on yksi muutos
-kerrallaan Botbenchillä (N=400 portaan toteamiseen, N=1600 erotteluun kuten 7.9. opetti).
-Löydös 3 odottaa Tommin päätöstä ennen kuin siihen kosketaan.
+**Mitä tästä seurasi.** Löydös 3 ratkesi Tommin päätöksellä kaanonin puolelle (seuraava
+osio). Löydökset 1 ja 2 mitattiin samana iltana nollatuloksiksi (osion loppu).
 
 ## Kultakala 8.9.2026 (N=400): botti vaihtaa paikan 5 kautta kuten ihminen. Porras kapeni
 
@@ -1041,6 +1040,38 @@ mittarin heikoin Kultakalassa.
 vastapuoli muuttui. Ihmistä vastaan botit ovat nyt samoilla säännöillä kuin ihminen. Se oli
 muutoksen tarkoitus. Jos Kisällin ja Oppipojan porras halutaan takaisin leveämmäksi, se on oma
 koe (ehdokas on Oppipojan liikaherkkyys +3 → +5 tai Kisällin kohta 2), eikä sitä tehty tässä.
+
+### Katselun löydökset 1 ja 2 mitattu samana iltana, molemmat nollatuloksia
+
+Tommin tilaus: mittaa. Kumpikin koe rakennettiin ympäristömuuttujalla kytkettäväksi. Kytkin
+pois toisti v2-baselinen bitilleen kaikissa kolmessa parissa (242/141/17 · 230/157/13 ·
+217/165/18). Koeviritys itse ei liikuttanut mitään. Verrokki `normal vs beginner` oli
+bitilleen sama myös kokeiden kanssa, joten muutokset osuivat vain Mestariin.
+
+**Koe 1, paikan 1 lahja.** Ketjuarvo sai lopettamiselle ja paikasta 1 poistuvalle kortille
+hinnan: tunnetulla kortilla `max(0, 7 - v)`, tuntemattomalla `21/13` (odotusarvo
+`E[max(0, 7 - V)]` tasajakaumalla 1–13). Askel otetaan kun jatko voittaa lopettamisen.
+
+**Koe 2, tuntemattoman arvo laskee pelin edetessä.** Pakan kokoon sidottu odotusarvo, 7 pelin
+alussa ja 5 kun pakka on tyhjä, lineaarisesti. Kasaa ei lueta, joten se pysyy kaanonin
+näkyvyyssäännössä.
+
+| koe | hard vs beginner N=400 | hard vs normal N=400 | **hard vs normal N=1600** | muutoksen z (N=1600) |
+|-----|-----------------------:|---------------------:|--------------------------:|---------------------:|
+| v2 baseline | 62,6 % | 59,1 % | **59,1 %** (902 / 612 / 86) | |
+| koe 1, lahja | 62,7 % | 62,4 % | **60,4 %** (931 / 598 / 71) | 0,78 |
+| koe 2, odotusarvo | 65,1 % | 63,0 % | **59,9 %** (921 / 605 / 74) | 0,47 |
+
+**Sama kaava kuin 7.9. kokeissa A ja B.** N=400 näytti kummallekin noin +3 %-yksikköä
+(z noin 1). N=1600 kutisti nousun 1,3:een ja 0,8:aan. Kumpikaan ei ole näyttö.
+Kumpikin peruttiin koodista. Katselussa nähty mekanismi on siis todellinen (pikkukortti
+menee seuraavalle; se ratkaisi yhden pelin) mutta harvinainen tai symmetrinen: Kisälli
+lahjoittaa samalla tavalla. Mestari hyötyy lahjoista yhtä usein kuin kärsii. Tuntemattoman
+odotusarvo 7 pysyy kaanonissa.
+
+**Mitä jäi.** Molemmat kokeet mitattiin vain `hard vs normal` -parilla N=1600:lla. Jos
+jompikumpi halutaan vielä eloon, seuraava kanava on eri: ei arvon säätö vaan vastustajan
+lahjan käyttö (Mestari lukisi ylimmän poistokortin useammin). Se on jo Mestarin nostopäätös.
 
 ## Paskahousu 7.9.2026 (N=400): ryhmän säästäminen mitattiin ja peruttiin
 
