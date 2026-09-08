@@ -966,6 +966,43 @@ samansuuntaisuus ei ole näyttöä. `N≥150`-ohje riittää portaan olemassaolo
 kahden lähekkäisen version erotteluun, ja siihen tarvittiin N=1600. Ja teoriassa oikea muutos
 voi olla mitatusti arvoton, mikä on sama tulos kuin Kultakalan kynnyksellä 18.8.2026.
 
+### Katselu 8.9.2026: yksi peli katselutilassa, kolme löydöstä, ei mittausta
+
+Mittari ei näe outoja siirtoja, joten uusi ketju katsottiin yhdessä Bottien Taistelussa
+(neljä Mestaria, dev-palvelin, loki auki). Yksi peli ei ole otos. Se riittää näyttämään
+mekanismin. Luvut ovat siitä yhdestä pelistä. Koodia ei muutettu.
+
+**1. Ketju työntää paikasta 1 pikkukortin poistopakkaan seuraavan pelaajan eteen.** Laskenta
+antaa paikasta 1 poistuvalle kortille arvon nolla, samoin kuin lopettamiselle, mutta kortti ei
+katoa vaan jää näkyviin seuraavan nostettavaksi. Pelissä se tapahtui kolmesti. Juuso työnsi
+tuntemattoman 3♣:n ulos (Tarja otti sen heti). Tinja työnsi tuntemattoman A♣:n ulos. Juuso
+otti sen ja voitti pelin 12 pisteellä. Arttu työnsi 3♥:n ulos viimeisellä vuorolla. Vanhassa
+sääntötaulukossa oli paikalle 1 kaksi vartijaa (tunnettua pientä ei ajeta ulos; 5–7 ei
+mene paikkaan 1). Mestarilla kumpaakaan ei enää ole. Mittari ei rankaise tästä täysin,
+koska `hard vs normal` -parissa lahjan saaja on puolet ajasta Kisälli, joka ottaa sen
+sääntötaulukolla vain jos se on parempi kuin pahin tunnettu.
+
+**2. Tuntemattoman paikan arvo 7 on loppupelissä luultavasti liian suuri.** Isot kortit
+kasautuvat poistopakkaan ja pienet riveihin, joten näkemättömät kortit, oma tuntematon paikka
+mukaan lukien, painottuvat pelin edetessä pieniin. Silloin ketju vaihtaa viitosen tai kutosen
+tuntemattomaan paikkaan liian herkästi. Se on juuri löydöksen 1 mekanismi. Tässä pelissä
+paikasta 1 ulos työnnetyt tuntemattomat olivat A, 2, 3 ja 3 (neljä tapausta, ei näyttö).
+Kaanoni sanoo että botti näkee poistopakasta vain ylimmän kortin, joten kasaa lukeva
+odotusarvo olisi kaanonimuutos. Kasaa lukematon vaihtoehto on pakan kokoon sidottu
+odotusarvo. Kumpikin on mitattava ennen kuin kumpaakaan tehdään.
+
+**3. Botti vaihtaa suoraan mihin tahansa paikkaan, ihminen aloittaa aina paikasta 5.** Juuso
+otti A♣:n poistopakasta ja vaihtoi sen suoraan paikkaan 1 (`swapWorst`, `aiDoSwap`), kun
+`humanSwapRow` etenee vain paikasta 5 alaspäin. Sama ketjulla olisi antanut rivin 13 pistettä
+suoran vaihdon 11 sijaan. `KULTAKALA.md` on tässä ristiriidassa itsensä kanssa: Pelitapa sanoo
+että kortti vaihdetaan paikalle 5 ja siitä eteenpäin. AI-strategian kohta 1 sanoo että
+pahin tunnettu korvataan. Tämä on vanhempi kuin 7.9.2026 muutos ja koskee kaikkia tasoja.
+Kysymys on kaanonikysymys (korjataanko koodi vai kaanoni), ei mittauskysymys.
+
+**Mitä tästä seuraa.** Löydökset 1 ja 2 ovat mittauskohteita. Ehdokas on yksi muutos
+kerrallaan Botbenchillä (N=400 portaan toteamiseen, N=1600 erotteluun kuten 7.9. opetti).
+Löydös 3 odottaa Tommin päätöstä ennen kuin siihen kosketaan.
+
 ## Paskahousu 7.9.2026 (N=400): ryhmän säästäminen mitattiin ja peruttiin
 
 Kokeen kohde oli sama muoto joka juuri korjattiin Kultakalassa, eli kohta jossa kaikki kolme
