@@ -215,7 +215,6 @@ export const it = {
         aiThinking: 'Tocca a {name}.',
         aiDrawDiscard: '{name} pesca dagli scarti.',
         aiDrawDeck: '{name} pesca dal mazzo.',
-        aiSwapRow: '{name} scambia: casella {idx}: {newCard} ({nv} pti) dentro, {oldCard} agli scarti.',
         aiDiscard: '{name} scarta {card}.',
         aiCannotForceSwap: '{name} non può scambiare {card} dal mazzo: {reason}',
         slotItem: 'casella {pos}: {card}',

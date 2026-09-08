@@ -224,7 +224,6 @@ export const ru = {
         aiThinking: 'Ход {name}.',
         aiDrawDiscard: '{name} берёт из сброса.',
         aiDrawDeck: '{name} берёт из колоды.',
-        aiSwapRow: '{name} меняет: ячейка {idx}: {newCard} ({nv} о) внутрь, {oldCard} в сброс.',
         aiDiscard: '{name} сбрасывает {card}.',
         aiCannotForceSwap: '{name} не может поменять {card} из колоды: {reason}',
         slotItem: 'ячейка {pos}: {card}',

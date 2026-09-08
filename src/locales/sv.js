@@ -215,7 +215,6 @@ export const sv = {
         aiThinking: '{name}s tur.',
         aiDrawDiscard: '{name} drar från kasthögen.',
         aiDrawDeck: '{name} drar från leken.',
-        aiSwapRow: '{name} byter: plats {idx}: {newCard} ({nv} p) in, {oldCard} till kasthögen.',
         aiDiscard: '{name} kastar {card} i kasthögen.',
         aiCannotForceSwap: '{name} kan inte byta {card} från leken: {reason}',
         slotItem: 'plats {pos}: {card}',

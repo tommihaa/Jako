@@ -226,7 +226,6 @@ export const cs = {
         aiThinking: 'Na tahu {name}.',
         aiDrawDiscard: '{name} dobírá z odhazovacího balíčku.',
         aiDrawDeck: '{name} dobírá z dobíracího balíčku.',
-        aiSwapRow: '{name} mění: místo {idx}: {newCard} ({nv} b) dovnitř, {oldCard} do odhazovacího balíčku.',
         aiDiscard: '{name} odhazuje {card} do odhazovacího balíčku.',
         aiCannotForceSwap: '{name} nemůže vyměnit {card} z nutnosti: {reason}',
         slotItem: 'místo {pos}: {card}',

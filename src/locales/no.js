@@ -215,7 +215,6 @@ export const no = {
         aiThinking: '{name}s tur.',
         aiDrawDiscard: '{name} trekker fra kastbunken.',
         aiDrawDeck: '{name} trekker fra stokken.',
-        aiSwapRow: '{name} bytter: plass {idx}: {newCard} ({nv} p) inn, {oldCard} til kastbunken.',
         aiDiscard: '{name} kaster {card} i kastbunken.',
         aiCannotForceSwap: '{name} kan ikke bytte {card} fra stokken: {reason}',
         slotItem: 'plass {pos}: {card}',

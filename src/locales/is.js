@@ -215,7 +215,6 @@ export const is = {
         aiThinking: 'Umferð {name}.',
         aiDrawDiscard: '{name} dregur úr kasthaug.',
         aiDrawDeck: '{name} dregur úr stokki.',
-        aiSwapRow: '{name} skiptir: reitur {idx}: {newCard} ({nv} st) inn, {oldCard} í kasthaug.',
         aiDiscard: '{name} kastar {card} í kasthaug.',
         aiCannotForceSwap: '{name} getur ekki skipt {card} úr stokki: {reason}',
         slotItem: 'reitur {pos}: {card}',

@@ -46,9 +46,19 @@ AI **ei voi nähdä**:
 - Tuntemattomia kortteja
 
 **Päätöslogiikka (nostopäätös poistopakan ylimmästä):**
-1. Jos kortti on parempi kuin pahin tunnettu oma kortti → vaihda
-2. Muuten: jos kortti on hyvä, vaihda tuntemattomaan paikkaan
-3. Muuten heitä poistopakkaan
+1. Jos kortti on parempi kuin pahin tunnettu oma kortti → nosta se
+2. Muuten: jos kortti on hyvä ja rivissä on tuntematon paikka → nosta se
+3. Muuten nosta pakasta
+
+**Nosto ja vaihto ovat eri päätökset. Vaihto kulkee aina paikan 5 kautta (8.9.2026).**
+Botti vaihtaa nostetun kortin samalla tavalla kuin ihminen: ensin paikkaan 5, sitten
+paljastunut kortti paikkaan 4 ja niin edelleen. Poistopakasta nostettu on pakko vaihtaa
+paikkaan 5. Kohdat 1 ja 2 sanovat siis milloin poistopakan kortti kannattaa nostaa, eivät
+mihin se laitetaan. Tähän asti botti vaihtoi kohdan 1 kortin suoraan pahimman tunnetun
+tilalle mihin tahansa paikkaan, mikä oli ristiriidassa Pelitapa-osion kanssa ja etu jota
+ihmisellä ei ollut. Katselutilassa 8.9.2026 se ratkaisi pelin (A♣ suoraan paikkaan 1,
+ks. `docs/BOTBENCH.md` › Katselu 8.9.2026). Tommin päätös: kaanoni korjataan ja botti
+aloittaa paikasta 5 kuten ihminen.
 
 **Kyvykkyysporras.** Tasot eroavat kyvyiltään eivätkä satunnaisuudelta. Kohta 2 on
 tasokohtainen, ja vain Mestari lukee kierrosten määrää:

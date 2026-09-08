@@ -216,7 +216,6 @@ export const krl = {
         aiThinking: 'Vuorossa {name}.',
         aiDrawDiscard: '{name} noštau poistopakasta.',
         aiDrawDeck: '{name} noštau nostopakasta.',
-        aiSwapRow: '{name} vaihtau: šija {idx}: {newCard} ({nv} p) šiäh, {oldCard} poistopakkah.',
         aiDiscard: '{name} viskuau {card} poistopakkah.',
         aiCannotForceSwap: '{name} ei voi vaihtua {card} pakosta: {reason}',
         slotItem: 'šija {pos}: {card}',

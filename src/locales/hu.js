@@ -218,7 +218,6 @@ export const hu = {
         aiThinking: '{name} jön.',
         aiDrawDiscard: '{name} a dobópakliból húz.',
         aiDrawDeck: '{name} a húzópakliból húz.',
-        aiSwapRow: '{name} cserél: {idx}. hely: {newCard} ({nv} p) be, {oldCard} a dobópakliba.',
         aiDiscard: '{name} eldobja a(z) {card} lapot a dobópakliba.',
         aiCannotForceSwap: '{name} nem tudja kicserélni a(z) {card} lapot kényszerből: {reason}',
         slotItem: '{pos}. hely: {card}',

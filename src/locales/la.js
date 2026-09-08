@@ -217,7 +217,6 @@ export const la = {
         aiThinking: 'Vices {name}.',
         aiDrawDiscard: '{name} trahit e cumulo deiecto.',
         aiDrawDeck: '{name} trahit e cumulo tractus.',
-        aiSwapRow: '{name} mutat: locus {idx}: {newCard} ({nv} p) intro, {oldCard} in cumulum deiectum.',
         aiDiscard: '{name} iacit {card} in cumulum deiectum.',
         aiCannotForceSwap: '{name} non potest mutare {card} ex necessitate: {reason}',
         slotItem: 'locus {pos}: {card}',

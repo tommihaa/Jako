@@ -215,7 +215,6 @@ export const et = {
         aiThinking: 'Kord on mängijal {name}.',
         aiDrawDiscard: '{name} võtab viskehunnikust.',
         aiDrawDeck: '{name} võtab võtuhunnikust.',
-        aiSwapRow: '{name} vahetab: koht {idx}: {newCard} ({nv} p) sisse, {oldCard} viskehunnikusse.',
         aiDiscard: '{name} viskab {card} viskehunnikusse.',
         aiCannotForceSwap: '{name} ei saa {card} pakist vahetada: {reason}',
         slotItem: 'koht {pos}: {card}',

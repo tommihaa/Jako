@@ -219,7 +219,6 @@ export const en = {
         aiThinking: "{name}'s turn.",
         aiDrawDiscard: '{name} draws from the discard pile.',
         aiDrawDeck: '{name} draws from the deck.',
-        aiSwapRow: '{name} swaps: slot {idx}: {newCard} ({nv} pts) in, {oldCard} to discard.',
         aiDiscard: '{name} discards {card}.',
         aiCannotForceSwap: '{name} cannot swap {card} from the deck: {reason}',
         slotItem: 'slot {pos}: {card}',

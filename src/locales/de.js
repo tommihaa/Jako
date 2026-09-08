@@ -215,7 +215,6 @@ export const de = {
         aiThinking: '{name} ist am Zug.',
         aiDrawDiscard: '{name} zieht vom Ablagestapel.',
         aiDrawDeck: '{name} zieht vom Stapel.',
-        aiSwapRow: '{name} tauscht: Platz {idx}: {newCard} ({nv} P) rein, {oldCard} auf den Ablagestapel.',
         aiDiscard: '{name} wirft {card} auf den Ablagestapel.',
         aiCannotForceSwap: '{name} kann {card} nicht vom Stapel tauschen: {reason}',
         slotItem: 'Platz {pos}: {card}',

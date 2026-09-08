@@ -217,7 +217,6 @@ export const se = {
         aiThinking: 'Vuorus {name}.',
         aiDrawDiscard: '{name} gease sihkkunstohkas.',
         aiDrawDeck: '{name} gease geassinstohkas.',
-        aiSwapRow: '{name} molsso: báiki {idx}: {newCard} ({nv} č) sisa, {oldCard} sihkkunstohkii.',
         aiDiscard: '{name} bálká {card} sihkkunstohkii.',
         aiCannotForceSwap: '{name} ii sáhte molssodit {card} bággu mielde: {reason}',
         slotItem: 'báiki {pos}: {card}',

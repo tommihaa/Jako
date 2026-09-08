@@ -215,7 +215,6 @@ export const pt = {
         aiThinking: 'É a vez de {name}.',
         aiDrawDiscard: '{name} compra do monte de descarte.',
         aiDrawDeck: '{name} compra do baralho.',
-        aiSwapRow: '{name} troca: posição {idx}: {newCard} ({nv} p) entra, {oldCard} para o descarte.',
         aiDiscard: '{name} descarta {card}.',
         aiCannotForceSwap: '{name} não pode trocar {card} do baralho: {reason}',
         slotItem: 'posição {pos}: {card}',

@@ -215,7 +215,6 @@ export const el = {
         aiThinking: 'Σειρά του {name}.',
         aiDrawDiscard: 'Ο {name} τραβάει από τον σωρό απόρριψης.',
         aiDrawDeck: 'Ο {name} τραβάει από την τράπουλα.',
-        aiSwapRow: 'Ο {name} αλλάζει: θέση {idx}: {newCard} ({nv} π) μέσα, {oldCard} στην απόρριψη.',
         aiDiscard: 'Ο {name} απορρίπτει το {card}.',
         aiCannotForceSwap: 'Ο {name} δεν μπορεί να αλλάξει το {card} από την τράπουλα: {reason}',
         slotItem: 'θέση {pos}: {card}',

@@ -263,7 +263,6 @@ export const fi = {
         aiThinking: 'Vuorossa {name}.',
         aiDrawDiscard: '{name} nostaa poistopakasta.',
         aiDrawDeck: '{name} nostaa nostopakasta.',
-        aiSwapRow: '{name} vaihtaa: paikka {idx}: {newCard} ({nv} p) sisään, {oldCard} poistopakkaan.',
         aiDiscard: '{name} heittää {card} poistopakkaan.',
         aiCannotForceSwap: '{name} ei voi vaihtaa {card} pakosta: {reason}',
         slotItem: 'paikka {pos}: {card}',

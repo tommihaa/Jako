@@ -224,7 +224,6 @@ export const pl = {
         aiThinking: 'Kolej {name}.',
         aiDrawDiscard: '{name} dobiera ze stosu zrzutów.',
         aiDrawDeck: '{name} dobiera z talii.',
-        aiSwapRow: '{name} zmienia: pole {idx}: {newCard} ({nv} p) do środka, {oldCard} na stos zrzutów.',
         aiDiscard: '{name} zrzuca {card} na stos zrzutów.',
         aiCannotForceSwap: '{name} nie może zmienić {card} z talii: {reason}',
         slotItem: 'pole {pos}: {card}',

@@ -224,7 +224,6 @@ export const uk = {
         aiThinking: 'Хід {name}.',
         aiDrawDiscard: '{name} бере зі скидання.',
         aiDrawDeck: '{name} бере з колоди.',
-        aiSwapRow: '{name} обмінює: позиція {idx}: {newCard} ({nv} оч) всередину, {oldCard} у скидання.',
         aiDiscard: '{name} скидає {card} у скидання.',
         aiCannotForceSwap: '{name} не може обміняти {card} з колоди: {reason}',
         slotItem: 'позиція {pos}: {card}',

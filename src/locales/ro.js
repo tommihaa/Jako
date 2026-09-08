@@ -217,7 +217,6 @@ export const ro = {
         aiThinking: 'La rând {name}.',
         aiDrawDiscard: '{name} trage din pachetul de aruncare.',
         aiDrawDeck: '{name} trage din pachetul de tras.',
-        aiSwapRow: '{name} schimbă: locul {idx}: {newCard} ({nv} p) înăuntru, {oldCard} în pachetul de aruncare.',
         aiDiscard: '{name} aruncă {card} în pachetul de aruncare.',
         aiCannotForceSwap: '{name} nu poate schimba {card} forțat: {reason}',
         slotItem: 'locul {pos}: {card}',

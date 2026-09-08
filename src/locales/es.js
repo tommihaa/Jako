@@ -215,7 +215,6 @@ export const es = {
         aiThinking: 'Turno de {name}.',
         aiDrawDiscard: '{name} roba del descarte.',
         aiDrawDeck: '{name} roba del mazo.',
-        aiSwapRow: '{name} cambia: posición {idx}: entra {newCard} ({nv} p), {oldCard} al descarte.',
         aiDiscard: '{name} descarta {card}.',
         aiCannotForceSwap: '{name} no puede cambiar {card} del mazo: {reason}',
         slotItem: 'posición {pos}: {card}',

@@ -218,7 +218,6 @@ export const rom = {
         aiThinking: 'Rindo {name}.',
         aiDrawDiscard: '{name} cirdel andai kupa šudimaski.',
         aiDrawDeck: '{name} cirdel andai kupa cirdimaski.',
-        aiSwapRow: '{name} paruvel: than {idx}: {newCard} ({nv} p) andre, {oldCard} ki kupa šudimaski.',
         aiDiscard: '{name} čhudel {card} ki kupa šudimaski.',
         aiCannotForceSwap: '{name} našti paruvel {card} le zorasa: {reason}',
         slotItem: 'than {pos}: {card}',

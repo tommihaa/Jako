@@ -215,7 +215,6 @@ export const fr = {
         aiThinking: 'Au tour de {name}.',
         aiDrawDiscard: '{name} pioche dans la défausse.',
         aiDrawDeck: '{name} pioche dans la pioche.',
-        aiSwapRow: '{name} échange : emplacement {idx} : {newCard} ({nv} p) entre, {oldCard} à la défausse.',
         aiDiscard: '{name} défausse {card}.',
         aiCannotForceSwap: '{name} ne peut pas échanger {card} de la pioche : {reason}',
         slotItem: 'emplacement {pos} : {card}',

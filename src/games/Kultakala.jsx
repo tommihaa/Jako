@@ -28,7 +28,6 @@ const M = {
   aiThinking: p => tr('games.kultakala.msg.aiThinking', { name: p.name }),
   aiDrawDiscard: p => tr('games.kultakala.msg.aiDrawDiscard', { name: p.name }),
   aiDrawDeck: p => tr('games.kultakala.msg.aiDrawDeck', { name: p.name }),
-  aiSwapRow: (p, idx, newCard, oldCard) => tr('games.kultakala.msg.aiSwapRow', { name: p.name, idx: idx + 1, newCard: lblColored(newCard), nv: newCard.v, oldCard: lblColored(oldCard) }),
   aiDiscard: (p, c) => tr('games.kultakala.msg.aiDiscard', { name: p.name, card: lblColored(c) }),
   aiCannotForceSwap: (p, c, reason) => tr('games.kultakala.msg.aiCannotForceSwap', { name: p.name, card: lblColored(c), reason }),
   humanDrawDiscard: (c, v) => tr('games.kultakala.msg.humanDrawDiscard', { card: lblColored(c), v }),
@@ -70,8 +69,12 @@ function kkRoundsLeft(g) {
   return Math.ceil(g.deck.length / (g.players.length || 1));
 }
 
-// Nostopäätös: mistä nostetaan ja mihin poistopakan kortti menisi.
-// { source: 'deck' } tai { source: 'discard', mode: 'swapWorst'|'chain', worstKnownIdx }
+// Nostopäätös: mistä nostetaan. { source: 'deck' } tai { source: 'discard' }.
+// Päätös sanoo vain kannattaako poistopakan kortti nostaa, ei mihin se laitetaan:
+// vaihto kulkee aina paikan 5 kautta kuten ihmisellä (KULTAKALA.md > Nosto ja vaihto
+// ovat eri päätökset, 8.9.2026). Tähän asti paluuarvon `mode: 'swapWorst'` vei kortin
+// suoraan pahimman tunnetun tilalle mihin tahansa paikkaan, mikä oli etu jota
+// ihmisellä ei ollut.
 // roundsLeft = kkRoundsLeft(g); undefined tarkoittaa ettei kierrostietoa käytetä.
 function kkDrawDecision(p, top, level, roundsLeft) {
   const worstKnownIdx = [...p.known].sort((a, b) => p.row[b].v - p.row[a].v)[0];
@@ -91,10 +94,10 @@ function kkDrawDecision(p, top, level, roundsLeft) {
   const lateGame = roundsLeft !== undefined && roundsLeft <= 2;
   const unknownBar = (level === 'hard' && lateGame) ? 1 : 3;
   if (level === 'hard' && top && (gainKnown > 0 || gainUnknown >= unknownBar)) {
-    return { source: 'discard', mode: gainKnown >= gainUnknown ? 'swapWorst' : 'chain', worstKnownIdx };
+    return { source: 'discard' };
   }
   if (level !== 'hard' && top && worstKnownIdx !== undefined && top.v < p.row[worstKnownIdx].v + eagerBonus) {
-    return { source: 'discard', mode: 'swapWorst', worstKnownIdx };
+    return { source: 'discard' };
   }
   return { source: 'deck' };
 }
@@ -383,8 +386,9 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       newG = { ...g, discard }; card = top;
       commit({ ...newG, drawnFrom: 'discard' }, M.aiDrawDiscard(p));
       if (sndRef.current) SFX.flip();
-      if (decision.mode === 'swapWorst') tm(() => aiDoSwap(idx, gRef.current, card, decision.worstKnownIdx), 1000);
-      else tm(() => aiChainSwap(idx, gRef.current, card, true, null, level), 1000);
+      // Poistopakasta nostettu on pakko vaihtaa paikkaan 5, ja ketju jatkuu siitä
+      // samoin kuin ihmisellä (8.9.2026, aiemmin suora vaihto pahimman tunnetun tilalle).
+      tm(() => aiChainSwap(idx, gRef.current, card, true, null, level), 1000);
     } else {
       if (!g.deck.length) { advance(g, idx); return; }
       card = g.deck[0]; newG = { ...g, deck: g.deck.slice(1) };
@@ -398,8 +402,10 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     }
   }
 
-  // KETJUVAIHTO: järjestys 5,4,3,2,1. mustSwap = poistopakkanosto (pakollinen vaihto):
-  // jos ketju ei käynnisty, vaihdetaan varasijalle (huonoin tunnettu tai tuntematon).
+  // KETJUVAIHTO: järjestys 5,4,3,2,1, sama kuin humanSwapRow. mustSwap = poistopakkanosto:
+  // ensimmäinen askel paikkaan 5 on pakollinen eikä sitä kysytä säännöstöltä, ja ketju
+  // jatkuu siitä normaalisti. Varasijaa (suora vaihto huonoimman tunnetun tai tuntemattoman
+  // tilalle) ei enää ole, koska ihmisellä ei ole sitä (KULTAKALA.md, 8.9.2026).
   // chainLimit (Oppipoika): jatka ketjua ensimmäisen vaihdon jälkeen vain jos
   // syrjäytetty kortti on ilmiselvän hyvä (arvo ≤ raja) — aloittelija tekee
   // ilmeisen jatkovaihdon (paljastunut ässä!) muttei suunnittele pidemmälle.
@@ -417,8 +423,10 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     for (let pos = 5; pos >= 1; pos--) {
       const idx_pos = pos - 1;
       if (chainLimit !== null && swaps.length >= 1 && held.v > chainLimit) break;
-      // Askelen säännöstö: kkChainStep (moduulitaso; sama ajaa Heron neuvon)
-      if (!kkChainStep(p2, held, idx_pos, playerCount, level)) break;
+      // Askelen säännöstö: kkChainStep (moduulitaso; sama ajaa Heron neuvon).
+      // Pakollinen vaihto ohittaa sen vain paikassa 5, kuten Heron swapForced-neuvo.
+      const forced = mustSwap && pos === 5;
+      if (!forced && !kkChainStep(p2, held, idx_pos, playerCount, level)) break;
       const old = p2.row[idx_pos];
       p2.row[idx_pos] = held;
       p2.known.add(idx_pos);
@@ -435,31 +443,16 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       // Logita ketjuvaihto - näytä kaikki välivaiheet väreillä
       const swapChain = swaps.map(s => t('games.kultakala.msg.slotItem', { pos: s.pos, card: lblColored(s.card) })).join(' → ');
       commit(newG, t('games.kultakala.msg.aiSwapChain', { name: g2.players[idx].name, chain: swapChain, card: lblColored(held) }));
+      // Paikasta 1 ulos ajettu pikkukortti kohahduttaa, sama ehto kuin humanSwapRow:ssa.
+      if (swaps[swaps.length - 1].pos === 1 && held.v <= 2) triggerKohahdus(held);
 
       tm(() => advance(newG, idx), 700);
-    } else if (mustSwap) {
-      const unknown2 = [4, 3, 2, 1, 0].find(i => !p2.known.has(i));
-      const worstKnown2 = [...p2.known].sort((a, b) => p2.row[b].v - p2.row[a].v)[0];
-      const target = (worstKnown2 !== undefined && card.v < p2.row[worstKnown2].v)
-        ? worstKnown2 : (unknown2 ?? worstKnown2);
-      aiDoSwap(idx, g2, card, target);
     } else {
       // Ei vaihtoja - discardata kortti suoraan
       aiDoDiscard(idx, g2, card);
     }
   }
 
-  function aiDoSwap(idx, g, card, rowIdx) {
-    const p = g.players[idx], old = p.row[rowIdx];
-    const newRow = [...p.row]; newRow[rowIdx] = card;
-    const known = new Set(p.known); known.add(rowIdx);
-    const players = g.players.map((pl, i) => i === idx ? { ...pl, row: newRow, known } : pl);
-    const newG = { ...g, players, discard: [...g.discard, old] };
-    if (sndRef.current) SFX.swap();
-    commit(newG, M.aiSwapRow(g.players[idx], rowIdx, card, old));
-    if (rowIdx === 0 && old.v <= 2) triggerKohahdus(old);
-    tm(() => advance(newG, idx), 700);
-  }
 
   function aiDoDiscard(idx, g, card) {
     const newG = { ...g, discard: [...g.discard, card] };
