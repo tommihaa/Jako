@@ -27,6 +27,11 @@ lukko ajastuksen ajaksi (`lockRef` Koputuksessa, `lappuWin` Seiskassa) tai ehto 
 vaihe-ehtoon (`awaitingPlayerContinue` Moskassa). Läpsyssä ajastettu jatko lukee
 `gRef.current`-tilan ajastushetken argumenttien sijaan. Korjaamatta jäivät D-luokan
 symmetriset kohdat ja kuusi kaanonikysymystä alla.
+Botbench-tarkistus Koputukselle korjausten jälkeen (N=400, 4.9. kartta hakasuluissa):
+hard vs beginner 97,2 % [96,0], hard vs normal 68,1 % [67,9], normal vs beginner 90,0 %
+[84,6]. Botit eivät käytä erityiskortteja (KO-3), joten KO-1 ei voi näkyä bottien
+välisessä pelissä; kolmannen parin siirtymä tulee KO-4:stä, joka muuttaa pakan
+järjestystä rangaistuksen jälkeen. Porras ei kaventunut.
 
 ## Neljä luokkaa
 
