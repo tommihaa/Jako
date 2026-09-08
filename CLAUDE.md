@@ -40,6 +40,13 @@ yhdeksänä kopiona, katselutilan taso, kuollut tulosruutukerros, snapshot-järj
 sijainti, asetuksen omistaja, botti vs neuvo) tiloineen ja Tommille osoitetut kysymykset:
 `docs/AUDITOINTI-KOMPOSITIO.md`. Lue se ennen rakennemuutosta tai uuden pelin lisäystä.
 
+**Porsaanreikäauditointi 8.9.2026:** botti vastaan pelaaja yhdeksässä pelissä. A-luokan
+löydöksiä (botti tekee pelaajalta estetyn) on nolla; aukot ovat pelaajan puolella, ja
+kokoelmatason syy on ajastettu vaiheenvaihto jossa `tm`:llä ajastettu jatko jättää UI:n
+vaihe-ehdon todeksi ikkunan ajaksi. Löydökset luokittain, kuusi Tommille osoitettua
+kaanonikysymystä ja mitä ei tarkistettu: `docs/AUDITOINTI-PORSAANREIAT.md`. Lue se ennen
+kuin ajastat tilasiirtymän `tm`:llä tai lisäät pelaajalle klikattavan polun.
+
 **Ristiseiska on rakenteeltaan eri kuin muut kahdeksan (4.9.2026).** Sen säännöt, AI-valinta
 ja siirtymät asuvat `src/games/ristiseiskaEngine.js`:ssä, ja komponentti on niiden kuljettaja
 joka kääntää moottorin askeleet lokiriveiksi, ääniksi ja ajastimiksi. Sääntömuutos tehdään
