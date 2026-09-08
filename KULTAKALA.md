@@ -55,6 +55,16 @@ mikä oli ristiriidassa Pelitapa-osion kanssa ja etu jota ihmisellä ei ollut. K
 8.9.2026 se ratkaisi pelin (A♣ suoraan paikkaan 1, ks. `docs/BOTBENCH.md` › Katselu
 8.9.2026). Tommin päätös: kaanoni korjataan ja botti aloittaa paikasta 5 kuten ihminen.
 
+*Se oli koodissa alusta asti.* Ensimmäinen commit 6.5.2026 vei poistopakan kortin suoraan
+pahimman tunnetun tilalle. Sama kutsu eli jokaisen välivaiheen läpi (vaikeustasojen hionta
+18.7., Mestarin neuvo 19.7., kompositioauditointi 3.9.) tämän päivän committiin asti. Tommi
+muisti sen estetyksi kuukausia sitten. Muisti osui 16.5.2026 committiin, jossa ketjuvaihto
+sai järjestyksen 5, 4, 3, 2, 1 ja yllä olevan rivin *ei oikaista tuntemattomaan paikkaan*. Se
+esti oikaisun pakasta nostetulla kortilla. Poistopakasta nostettu kulki eri funktion kautta.
+Se jäi koskematta. Lokirivi *vaihtaa: paikka 2: A♣ sisään* näyttää normaalilta, ellei
+tiedä ettei ihminen voi tehdä samaa. Siksi se löytyi vasta lokia ihmisen vaihtokoodiin
+vertaamalla eikä pelaamalla. Todennettu gitistä 8.9.2026 (`git log -S aiDoSwap`).
+
 **Päätöslogiikka (nostopäätös poistopakan ylimmästä):**
 1. Jos paikka 5 on tunnettu ja kortti on sitä parempi → nosta poistopakasta
 2. Muuten: jos paikka 5 on tuntematon ja kortti on hyvä → nosta poistopakasta (vain Mestari)
