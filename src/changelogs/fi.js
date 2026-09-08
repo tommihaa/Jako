@@ -13,6 +13,12 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '8.9.2026',
+    items: [
+      'Kultakalan botit vaihtavat nyt samoilla säännöillä kuin sinä. Tähän asti botti sai viedä poistopakasta nostamansa kortin suoraan mihin tahansa paikkaan, vaikka pelaajan vaihto alkaa aina paikasta 5 ja etenee siitä. Etu oli koodissa ensimmäisestä versiosta asti ja löytyi Bottien Taistelua katsomalla. Nyt myös botti aloittaa paikasta 5, ja poistopakasta nostettu on sillekin pakko vaihtaa. Kisällin ja Oppipojan ero kapeni samalla, koska suora vaihto oli niiden tärkein keino.',
+    ],
+  },
+  {
     date: '7.9.2026',
     items: [
       'Kultakalan Mestari vaihtaa kortteja nyt laskien. Aiemmin se noudatti samaa vaihtotaulukkoa kuin Kisälli, ja taulukko ei verrannut nostettua korttia siihen mikä paikassa jo on: viitonen saattoi mennä kakkosen tilalle. Nyt Mestari laskee jokaisen ketjun askeleen odotetun hyödyn loppuun asti ja vaihtaa vain kun se kannattaa. Oppipoika ja Kisälli pelaavat kuten ennen. Mittasimme muutoksen 400 pelin sarjoilla: Mestari voittaa Kisällin nyt kuusi kertaa kymmenestä, kun aiemmin se voitti vain vähän yli puolet. Kysy Mestalta -neuvo perustuu samaan laskentaan, joten se muuttui mukana.',
