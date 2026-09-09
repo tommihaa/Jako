@@ -239,7 +239,11 @@ kortista yhdellä vuorolla.
 arvosta (1166). Eligible kootaan kortti kerrallaan (573–584), joten se voi sisältää eri
 arvoja. Botin `aiSwapChoice` (273–275) palauttaa aina yhden arvon ryhmän.
 
-**P-3, luokka C, tulkinta avoin.** Pelaaja saa koputtaa tai nostaa kasan vaikka kädessä on
+**P-3, luokka C [ratkaistu 8.9.2026, ei koodimuutosta; vahvistettu uudelleen 9.9.2026].**
+Vapaus on sääntö eikä aukko, ks. päätöstaulukon kohta 2 ja `PASKAHOUSU.md` kohta 6. Tommi
+vahvisti kasan noston osuuden 9.9.2026 omin sanoin, kun tämä lohko oli jäänyt merkitsemättä
+ja johti kysymään jo päätettyä. Alkuperäinen havainto sellaisenaan:
+Pelaaja saa koputtaa tai nostaa kasan vaikka kädessä on
 pelattava kortti (`canKnock`, `canTake` 980–981; `myPlayable` lasketaan muttei rajoita).
 Kanoni: jos ei voi pelata, nosta. Botti koputtaa vain kun ei ole pelattavaa (879), ja
 Mestarin neuvo samoin (301). Tilanne: päällä K, kädessä ♠2 ja pikkukortteja, pelaaja ei halua
@@ -269,7 +273,9 @@ Lappu-banneri, lyö ♠9 ja voita ennen kuin kukaan ehti vuoroon. Lisäseuraus: 
 kutsuu `advanceTurn`ia, jonka `applyLappu` sakottaa jo voittaneen. Ajastin kutsuu sitä
 vielä kerran. Sama ikkuna `humanChooseSuit` (941) ja `humanSkipAceBonus` (927) -poluilla.
 
-**S-3, luokka C, tulkinta avoin.** Pelaaja saa nostaa vaikka kädessä on pelattava kortti
+**S-3, luokka C [ratkaistu 8.9.2026, ei koodimuutosta].** Vapaus on sääntö eikä aukko, ks.
+päätöstaulukon kohta 2 ja `SEISKA.md` kohta 4. Alkuperäinen havainto sellaisenaan:
+Pelaaja saa nostaa vaikka kädessä on pelattava kortti
 (`canDraw` 1002). `hasValid` (1001) lasketaan muttei käytetä missään. Kanoni: jos ei pysty
 lyömään, on pakko nostaa. Botti nostaa vain kun ei ole siirtoa (868). Sääntötulkinta Tommille.
 
