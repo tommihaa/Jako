@@ -1372,6 +1372,22 @@ eli kanava oli todellinen ja haitallinen. Luvut ja tulkinta osiossa "Lukumäär�
 20.8.2026". Kohta pysyy auki, mutta tunnetut kanavat on nyt käytetty loppuun: seuraava
 ehdokas vaatii keksinnön eikä työsuoritusta.
 
+### Hypoteesijono, avoin backlog-kohta (kirjattu 10.9.2026)
+
+`/insights`-raportin 10.9.2026 ehdotus, Tommin päätöksellä backlogiin eikä hautakiveen.
+Ajatus: `docs/HYPOTEESIT.md` luettelee ehdokasmuutokset ennusteineen, ja ajuri tekee
+jokaiselle haaran, ajaa N=400-vertailun, laskee merkitsevyyden ja kirjaa tuloksen
+tiedostoon; nollatulos perutaan ja merkitään syineen, kandidaatti jää haaralle
+katselmoitavaksi. Se on tämän osion työjärjestys (muutos → N=400 → pidä tai peru)
+kirjoitettuna jonoksi, ei uusi menetelmä.
+
+Kaksi ehtoa ennen kuin tähän tartutaan. Ajurin on oltava jatkettava ja katkaisun kestävä,
+koska 3.9. ajo katkesi kesken (ks. `workflow_pitkat_ajot`-muisti ja osio "Koko kartta
+uudelleen 4.9.2026"). Ja jonossa on oltava ehdokkaita: yllä sanotaan että tunnetut kanavat on
+käytetty loppuun ja seuraava vaatii keksinnön, joten jono ilman keksintöjä ajaisi tyhjää.
+Kohta on siis ajankohtainen vasta kun taulukon "vasta kun kanava löytyy" -rivit saavat
+ehdokkaan. Mikään ei mene mergeen ilman Tommin katselmusta.
+
 ### Reunaehdot AI-työssä
 
 - **Sääntölogiikkaan ei kosketa.** Jos muutos näyttäisi vaativan sitä, lue pelin oma
