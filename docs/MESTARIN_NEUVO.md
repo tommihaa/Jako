@@ -140,6 +140,14 @@ valitse mitään, joten tämän dokumentin rakennesuoja (sama valintafunktio) s�
 ajautumapinta on se, että `classifySingle`n ehdot eroaisivat `aiBestPlay`n ehdoista. Kun
 muutat `aiBestPlay`n yksittäisen kortin haaraa, muuta `classifySingle` samassa muutoksessa.
 
+**Läpikäyntiaineisto:** `docs/NEUVOASEMAT.md` on generoitu otos arvotuista asemista ja niiden
+neuvoteksteistä (`NEUVOASEMAT=1 npx vitest run test/neuvoasemat.gen.test.js`, siemen vakio).
+Tommi pyysi sen 11.9.2026 tekstien läpikäyntiä varten. Ensimmäinen havainto samasta
+otoksesta: Moskan `pass` sanoo "valtit säästetään" myös silloin kun siirto tehdään valtilla,
+koska `aiPickPass` siirtää valtilla jos muuta samanarvoista ei ole. Teksti on väärä siinä
+haarassa, ja korjaus odottaa Tommin läpikäyntiä (todennäköisesti kaksi avainta kuten
+Koputuksen `swapUnknown`).
+
 ## Miksi tästä ei tehty konetarkistinta
 
 Neuvoteksti on proosaa ja sen väite on tarkoitus, ei merkkijono. `Kaanon/TYÖTAVAT.md`:n portin
