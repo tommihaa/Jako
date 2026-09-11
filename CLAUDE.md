@@ -29,6 +29,11 @@ botti, joten neuvon **siirto** ei voi ajautua, mutta neuvon **perustelu** voi. T
 ja avoimet löydökset: `docs/MESTARIN_NEUVO.md`. Kun muutat bottilogiikan lajitteluavainta, lue
 sieltä väittääkö jokin neuvoteksti vanhaa avainta.
 
+**Mestarin opastus (päätetty 11.9.2026, ei koodissa):** neuvon toinen muoto opetteluun, kupla
+ilman korostusta ja palaute vasta pelaajan valinnan jälkeen, kaikissa peleissä, ja auktoriteettivaraus
+näkyy siellä missä Botbench ei näytä Mestarin porrasta. Korvaa Tulossa-listan Mestarin luennon. Päätökset ja reunaehdot:
+`docs/MESTARIN_OPASTUS.md`. Lue se ennen kuin kosket 🧙-nappiin tai `todoItems`-riviin.
+
 **Pelikanonin ja koodin pinta on eri pinta kuin edellinen:** yhdeksän `PELI.md`:n sääntökuvaus
 koko pelilogiikkaa vasten, eikä sillä ole koodiin mitään yhteyttä joka estäisi ajautumisen.
 Tarkastuskirjanpito ja ratkaisemattomat sopimusmuutoskysymykset: `docs/PELIKANONIT.md`. Lue se
