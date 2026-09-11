@@ -16,9 +16,10 @@ arkistoi `Kaanon/saatteet/`-kansioon vanhentumisrivillä session päätteeksi. T
 ## Mitä tehdään, järjestyksessä
 
 1. **Botbench Seiska N=400 kolmella parilla**, jos sitä ei ole kirjattu `docs/BOTBENCH.md`:hen
-   (hae otsikkoa "Seiska 11.9.2026"). Edellinen sessio käynnisti ajon mutta se ei ehtinyt
-   valmistua ennen session loppua. Komento PowerShellissä:
-   `$env:BOTBENCH='1'; $env:BOTBENCH_N='400'; $env:BOTBENCH_GAMES='Seiska'; npx vitest run test/botbench.test.jsx`
+   (hae otsikkoa "Seiska 11.9.2026"). Edellinen sessio ajoi sen (17 min), mutta tulos katosi:
+   Bash-tulosteen ohjaus tiedostoon pudotti vitestin console.log-rivit eikä `BOTBENCH_OUT` ollut
+   asetettu (kirjattu `docs/BOTBENCH.md` › Käyttö jatkossa). Aja PowerShellissä ja aseta tulostiedosto:
+   `$env:BOTBENCH='1'; $env:BOTBENCH_N='400'; $env:BOTBENCH_GAMES='Seiska'; $env:BOTBENCH_OUT='docs/botbench-ajot.jsonl'; npx vitest run test/botbench.test.jsx`
    Vertailuluvut 8.9.2026: 76,0 / 53,5 / 64,5 %. Kirjaa samaan taulukkomuotoon kuin
    "Neljä peliä 8.9.2026" ja sano mitä sääntömuutos teki portaille.
 2. **Neuvoasemien läpikäynti Tommin kanssa**: `Jako/docs/NEUVOASEMAT.md`. Tommi pyysi tämän
