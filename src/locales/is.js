@@ -5,6 +5,10 @@
 export const is = {
   ui: {
     advice: {
+      guide: "Leiðbeina",
+      hit: "Sama val.",
+      miss: "Annað val. Ráðið var:",
+      flat: "Í þessum leik er Meistarinn ekki mælanlega sterkari en Sveinninn, svo leiðsögnin kennir venju Meistarans.",
       ask: "Spyrja Meistarann",
       from: "Meistarinn:",
     },

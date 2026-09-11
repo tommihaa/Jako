@@ -310,7 +310,7 @@ export function getAdvice(g, removed) {
 
 // ── Komponentti ───────────────────────────────────────────────
 import { useT, tr } from '../shared/i18n.jsx';
-import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
+import { AdviceButton, AdviceBubble, GuideButton, useOpastus, opastusAvain } from '../shared/MestariNeuvo.jsx';
 
 // Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 /** @typedef {'attack'|'defend'|'add'|'gameover'} Vaihe */
@@ -362,24 +362,35 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { showNextBtnRef.current = showNextBtn; }, [showNextBtn]);
   useEffect(() => { setAdvice(null); }, [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
+  const opastus = useOpastus('moska', G);
+  const adv = advice || opastus.hl; // korostettava: neuvo tai opastuksen palaute
 
-  function askAdvice() {
+  // Neuvo ja opastus laskevat saman olion; ero on siinä mitä UI näyttää ja milloin.
+  function computeAdvice() {
     const g = gRef.current;
-    if (!g) return;
+    if (!g) return null;
     const a = getAdvice(g, removedRef.current);
-    if (!a) return;
+    if (!a) return null;
     const card = a.card || a.cards?.[0];
     const params = {
       cards: a.cards ? a.cards.map(lbl).join(', ') : undefined,
       card:  card ? lbl(card) : undefined,
       target: a.target ? lbl(a.target) : undefined,
     };
-    setAdvice({
+    const cardIds = a.card ? [a.card.id] : (a.cards ? a.cards.map(c => c.id) : []);
+    const key = a.type === 'take' ? opastusAvain('take')
+      : a.type === 'pass' ? opastusAvain('pass', cardIds)
+      : (a.type === 'noAdd' || a.type === 'skipAdd') ? opastusAvain('skip')
+      : opastusAvain('play', cardIds);
+    return {
       text: t('games.moska.advice.' + a.type, params),
-      cardIds: a.card ? [a.card.id] : (a.cards ? a.cards.map(c => c.id) : []),
+      cardIds,
       targetId: a.target ? a.target.id : null,
-    });
+      key,
+    };
   }
+  function askAdvice() { setAdvice(computeAdvice()); }
+  function askGuide() { opastus.ask(computeAdvice()); }
   // Auto-advance kun showNextBtn=false ja kierros odottaa jatkoa
   useEffect(() => {
     if (awaitingPlayerContinue && !showNextBtnRef.current) {
@@ -902,6 +913,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     }
     const cards = [...selAtk];
     setSelAtk([]);
+    opastus.answer(opastusAvain('play', cards.map(c => c.id)));
     doAttack(g, 0, cards);
   }
 
@@ -918,6 +930,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       return;
     }
     const g = gRef.current;
+    opastus.answer(opastusAvain('play', [card.id]));
     const beatLines = /** @type {string[]} */ ([]);
     let g2 = doBeat(g, selDefTarget.atk.id, card, beatLines);
     setSelDefTarget(null);
@@ -932,6 +945,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   function humanTake() {
     if (!G || G.phase !== 'defend' || G.defender !== 0) return;
     setSelDefTarget(null); setSelPass([]);
+    opastus.answer(opastusAvain('take'));
     resolveRound(gRef.current, false);
   }
 
@@ -951,6 +965,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     if (!selPass.length) return;
     const cards = [...selPass];
     setSelPass([]);
+    opastus.answer(opastusAvain('pass', cards.map(c => c.id)));
     doPass(G, cards);
   }
 
@@ -972,11 +987,13 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     if (!selAdd.length) { humanSkipAdd(); return; }
     const cards = [...selAdd];
     setSelAdd([]);
+    opastus.answer(opastusAvain('play', cards.map(c => c.id)));
     doAdd(gRef.current, 0, cards);
   }
 
   function humanSkipAdd() {
     const g = gRef.current;
+    opastus.answer(opastusAvain('skip'));
     const rest = (g.addQueue || []).slice(1);
     const g2 = { ...g, addQueue: rest };
     commit(g2);
@@ -1114,7 +1131,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       <TurnPrompt show={myTurn} action={t(isMyDef ? 'ui.turn.moskaDefend' : 'ui.turn.moskaAttack')} />
-      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
+      <AdviceBubble text={advice?.text || opastus.text} onDismiss={() => { setAdvice(null); opastus.dismiss(); }} />
 
       {/* Viestikupla */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -1216,7 +1233,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
               <div key={si} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
                 <Card card={slot.atk} small                   justPlaced={justPlacedIds.has(slot.atk.id)}
                   highlight={isMyDef && !slot.def && !isTargeted}
-                  advice={advice?.targetId === slot.atk.id}
+                  advice={adv?.targetId === slot.atk.id}
                   selected={isTargeted}
                   dim={cantTarget}
                   onClick={isMyDef && !slot.def ? () => humanSelectTarget(slot) : undefined}
@@ -1278,9 +1295,9 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
             const hlght = !isAtkSel && !isPassSel && !isAddSel && (
               selDefTarget ? canBeatTarget : (canDef || isMyAtk || isAddable || canPassCard)
             );
-            const isAdv  = !isAtkSel && !isPassSel && !isAddSel && !!advice?.cardIds?.includes(c.id);
+            const isAdv  = !isAtkSel && !isPassSel && !isAddSel && !!adv?.cardIds?.includes(c.id);
             // Mestarin neuvo päällä: kaikki muu himmenee, jotta osoitettu kortti erottuu
-            const dimmed = advice?.cardIds?.length
+            const dimmed = adv?.cardIds?.length
               ? !isAdv
               : (isMyAdd && !isAddable && !isAddSel)
                 || (isMyDef && !!selDefTarget && !canBeatTarget && !isPassSel)
@@ -1358,7 +1375,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
           </>
         )}
 
-        {!allBots && myTurn && !awaitingPlayerContinue && <AdviceButton onClick={askAdvice} />}
+        {!allBots && myTurn && !awaitingPlayerContinue && <><AdviceButton onClick={askAdvice} /><GuideButton onClick={askGuide} /></>}
 
         {/* Seuraavaan kierrokseen -nappi */}
         {awaitingPlayerContinue && showNextBtn && (

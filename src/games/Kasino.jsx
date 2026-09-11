@@ -371,6 +371,10 @@ export function kasinoChooseMove(g, playerIdx, buildCap, level) {
 // kaksi asiaa joita botti ei erota: kiireellinen oman rakennelman kaappaus turvallisesta
 // ja mökki tavallisesta kaappauksesta. Palauttaa
 // { type, handCard, tableCards?, buildId?, value? } — type vastaa games.kasino.advice.* -avainta.
+// Opastuksen vertailuavain: siirron laji sekä käsikortti, pöytäkortit ja rakennelmat yhtenä joukkona.
+const kasinoAvain = (act, handCard, tableIds, buildIds) =>
+  opastusAvain(act, [handCard ? 'h' + handCard.id : 'h', ...tableIds, ...buildIds.map(b => 'b' + b)]);
+
 export function getAdvice(g, playerIdx, buildCap) {
   const move = kasinoChooseMove(g, playerIdx, buildCap, 'hard');
   if (!move) return null;
@@ -528,7 +532,7 @@ const M = {
 };
 
 import { useT, tr } from '../shared/i18n.jsx';
-import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
+import { AdviceButton, AdviceBubble, GuideButton, useOpastus, opastusAvain } from '../shared/MestariNeuvo.jsx';
 
 // Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 /** @typedef {'idle'|'select_table'} Vaihe */
@@ -588,28 +592,37 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { setAdvice(null); }, [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
+  const opastus = useOpastus('kasino', G);
+  const adv = advice || opastus.hl; // korostettava: neuvo tai opastuksen palaute
 
   // Renderin lukemat: vaihe ja vuoro luetaan G:stä eikä rinnakkaisesta useStatesta.
   const phase  = G?.phase ?? 'idle';
   const curIdx = G?.cur ?? 0;
 
-  function askAdvice() {
+  // Neuvo ja opastus laskevat saman olion; ero on siinä mitä UI näyttää ja milloin.
+  function computeAdvice() {
     const g = gRef.current;
-    if (!g) return;
+    if (!g) return null;
     const a = getAdvice(g, 0, buildCap);
-    if (!a) return;
+    if (!a) return null;
     const targets = a.tableCards && a.tableCards.length ? a.tableCards.map(lbl).join('+') : undefined;
-    setAdvice({
+    const tableCardIds = a.tableCards ? a.tableCards.map(c => c.id) : [];
+    const key = kasinoAvain(a.type === 'build' ? 'build' : a.type === 'trail' ? 'trail' : 'capture',
+      a.handCard, tableCardIds, a.buildId ? [a.buildId] : []);
+    return {
       text: t('games.kasino.advice.' + a.type, {
         card: a.handCard ? lbl(a.handCard) : undefined,
         targets,
         value: a.value,
       }),
       handCardId: a.handCard ? a.handCard.id : null,
-      tableCardIds: a.tableCards ? a.tableCards.map(c => c.id) : [],
+      tableCardIds,
       buildId: a.buildId ?? null,
-    });
+      key,
+    };
   }
+  function askAdvice() { setAdvice(computeAdvice()); }
+  function askGuide() { opastus.ask(computeAdvice()); }
   // Auto-advance kun showNextBtn=false tai allBots-tila ja kaappaus odottaa jatkoa
   useEffect(() => {
     if (pendingCapture && (!showNextBtnRef.current || allBotsRef.current)) {
@@ -1053,6 +1066,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       }
       const snapshotBuilds = [...selectedBuildObjs];
       const snapshotTable = [...selTable];
+      opastus.answer(kasinoAvain('capture', card, snapshotTable.map(c => c.id), snapshotBuilds.map(b => b.id)));
       const animCards = [...snapshotBuilds.flatMap(b => b.cards), ...snapshotTable];
       setCaptureAnim({ handCard: card, tableCards: animCards });
       setSelTable([]); setSelBuilds([]);
@@ -1072,6 +1086,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       if (hasOwnBuild && selTable.length === 0) { addLog(M.noBuildLeave); return; }
       const buildVal = getBuildValue(card, selTable, g.players[0].hand);
       if (buildVal !== null) {
+        opastus.answer(kasinoAvain('build', card, selTable.map(c => c.id), []));
         const lines = /** @type {string[]} */ ([]);
         const g2 = { ...doBuild(g, 0, card, selTable, buildVal, lines), phase: /** @type {Vaihe} */ ('idle') };
         commit(g2);
@@ -1090,6 +1105,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       if (captureMode) { addLog(t('games.kasino.msg.captureModeHint')); return; }
       if (!leaveMode)  { addLog(t('games.kasino.msg.chooseAction')); return; }
       // leaveMode: jätä kortti pöytään
+      opastus.answer(kasinoAvain('trail', card, [], []));
       const lines = /** @type {string[]} */ ([]);
       const g2 = { ...doLeave(g, 0, card, lines), phase: /** @type {Vaihe} */ ('idle') };
       commit(g2);
@@ -1102,6 +1118,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
     // Normaalitila — kaappaus (selTable.length > 0, ei buildMode)
     if (isValidCapture(card, selTable)) {
       const captured = [...selTable];
+      opastus.answer(kasinoAvain('capture', card, captured.map(c => c.id), []));
       setCaptureAnim({ handCard: card, tableCards: captured });
       setSelTable([]); setSelBuilds([]);
       commit({ ...g, phase: /** @type {Vaihe} */ ('idle') });
@@ -1297,7 +1314,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       <TurnPrompt show={isMyTurn} action={t('ui.turn.kasino')} />
-      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
+      <AdviceBubble text={advice?.text || opastus.text} onDismiss={() => { setAdvice(null); opastus.dismiss(); }} />
 
       {/* Pisteet-info */}
       {showInfo && (
@@ -1421,8 +1438,8 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
                   showBadges
                   small={isMobile}
                   selected={!!isSel || !!isAiPick}
-                  advice={!isSel && !isAiPick && !!advice?.tableCardIds?.includes(c.id)}
-                  dim={!!advice?.handCardId && !advice?.tableCardIds?.includes(c.id)}
+                  advice={!isSel && !isAiPick && !!adv?.tableCardIds?.includes(c.id)}
+                  dim={!!adv?.handCardId && !adv?.tableCardIds?.includes(c.id)}
                   highlight={isMyTurn && !isSel}
                   justPlaced={c.id === jpId}
                   onClick={isMyTurn && !allBots ? () => humanToggleTable(c) : undefined}
@@ -1451,7 +1468,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
               {G.builds.map(build => {
                 const isMine = G.players[build.ownerIdx]?.isHuman;
                 const isSel = selBuilds.includes(build.id);
-                const isAdvised = advice?.buildId === build.id;
+                const isAdvised = adv?.buildId === build.id;
                 const borderColor = isSel ? C.gold : isAdvised ? C.botMode : isMine ? '#4caf7d' : '#e05c3b';
                 return (
                   <div
@@ -1506,9 +1523,9 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
             return (
               <Card key={c.id} card={c} small={isMobile} showBadges
                 highlight={valid}
-                advice={!!advice?.handCardId && advice.handCardId === c.id}
-                dim={advice?.handCardId
-                  ? advice.handCardId !== c.id
+                advice={!!adv?.handCardId && adv.handCardId === c.id}
+                dim={adv?.handCardId
+                  ? adv.handCardId !== c.id
                   : isMyTurn && hasSelection && !valid}
                 onClick={isMyTurn && !allBots ? () => humanSelectHand(c) : undefined}
                 backStyle={BACKS[cardBack]}
@@ -1595,7 +1612,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
             {t('ui.action.cancelSelection')}
           </button>
         )}
-        {!allBots && isMyTurn && !pendingCapture && <AdviceButton onClick={askAdvice} />}
+        {!allBots && isMyTurn && !pendingCapture && <><AdviceButton onClick={askAdvice} /><GuideButton onClick={askGuide} /></>}
         {!allBots && pendingCapture && showNextBtn && (
           <button onClick={continueAfterCapture} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 9, padding: '10px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
             {t('games.kasino.ui.next')}

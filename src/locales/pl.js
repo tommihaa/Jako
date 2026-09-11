@@ -14,6 +14,10 @@ const plural = (n, one, few, many) => {
 export const pl = {
   ui: {
     advice: {
+      guide: "Prowadź mnie",
+      hit: "Ten sam wybór.",
+      miss: "Inny wybór. Rada brzmiała:",
+      flat: "W tej grze Mistrz nie jest mierzalnie silniejszy od Czeladnika, więc prowadzenie uczy nawyku Mistrza.",
       ask: "Zapytaj Mistrza",
       from: "Mistrz:",
     },

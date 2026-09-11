@@ -222,7 +222,7 @@ function StackRow({ suit, G, isMobile, cardBack, t }) {
 
 // ── Komponentti ─────────────────────────────────────────────────
 import { useT, tr } from '../shared/i18n.jsx';
-import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
+import { AdviceButton, AdviceBubble, GuideButton, useOpastus, opastusAvain } from '../shared/MestariNeuvo.jsx';
 
 // Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 /** @typedef {'play'|'gameover'} Vaihe */
@@ -259,17 +259,27 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     useAIScheduler({ extraTimerRefs: [lastPlayTmr] });
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { setAdvice(null); },          [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
+  const opastus = useOpastus('ristiseiska', G);
+  const adv = advice || opastus.hl; // korostettava: neuvo tai opastuksen palaute
 
-  function askAdvice() {
+  // Neuvo ja opastus laskevat saman olion; ero on siinä mitä UI näyttää ja milloin.
+  function computeAdvice() {
     const g = gRef.current;
-    if (!g) return;
+    if (!g) return null;
     const a = getAdvice(g);
-    if (!a) return;
-    setAdvice({
+    if (!a) return null;
+    const key = a.type === 'pass' ? opastusAvain('pass')
+      : a.type === 'bonusEnd' ? opastusAvain('end')
+      : a.type === 'give' ? opastusAvain('give', [a.card.id])
+      : opastusAvain('play', [a.card.id]);
+    return {
       text: t('games.ristiseiska.advice.' + a.type, a.card ? { card: lbl(a.card) } : undefined),
       cardIds: a.card ? [a.card.id] : [],
-    });
+      key,
+    };
   }
+  function askAdvice() { setAdvice(computeAdvice()); }
+  function askGuide() { opastus.ask(computeAdvice()); }
 
   const { log, logRef, addLog, commit, resetLog } = useGameLog({
     setGS,
@@ -463,6 +473,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
       return;
     }
     const card = selCard; setSel(null);
+    opastus.answer(opastusAvain('play', [card.id]));
     playSteps(applyMove(g, 0, { t: 'play', card }, levelOf));
   }
 
@@ -473,6 +484,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
       return;
     }
     setSel(null);
+    opastus.answer(opastusAvain('pass'));
     playSteps(applyMove(gRef.current, 0, { t: 'pass' }, levelOf));
   }
 
@@ -480,6 +492,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     const g = gRef.current;
     if (!g || g.bonusTurn !== 0) return;
     setSel(null);
+    opastus.answer(opastusAvain('end'));
     playSteps(applyMove(g, 0, { t: 'endBonus' }, levelOf));
   }
 
@@ -488,6 +501,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
     const card = selCard;
     if (!g || g.givingCardTo === null || !card) return;
     setSel(null);
+    opastus.answer(opastusAvain('give', [card.id]));
     playSteps(applyGiveCard(g, card));
   }
 
@@ -557,7 +571,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       <TurnPrompt show={isMyTurn} action={t('ui.turn.ristiseiska')} />
-      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
+      <AdviceBubble text={advice?.text || opastus.text} onDismiss={() => { setAdvice(null); opastus.dismiss(); }} />
 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -655,9 +669,9 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
             const isSel    = selCard?.id === c.id;
             const playable = (isMyTurn || isBonusTurn) && isPlayable(c, G.rows);
             const hl       = isGiving ? !isSel : (playable && !isSel);
-            const isAdv    = !isSel && !!advice?.cardIds?.includes(c.id);
+            const isAdv    = !isSel && !!adv?.cardIds?.includes(c.id);
             // Mestarin neuvo päällä: kaikki muu himmenee, jotta osoitettu kortti erottuu
-            const dimmed   = advice?.cardIds?.length
+            const dimmed   = adv?.cardIds?.length
               ? !isAdv
               : isGiving ? false : ((isMyTurn || isBonusTurn) && !playable && !isSel);
             const onClick  = isGiving
@@ -711,7 +725,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
             )}
           </>
         )}
-        {(isMyTurn || isGiving) && <AdviceButton onClick={askAdvice} />}
+        {(isMyTurn || isGiving) && <><AdviceButton onClick={askAdvice} /><GuideButton onClick={askGuide} /></>}
       </div>
 
       {/* Tilapalkki */}

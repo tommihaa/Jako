@@ -304,7 +304,7 @@ function slotsToPlayers(slots, playerNames = []) {
 
 // ── Komponentti ─────────────────────────────────────────────────
 import { useT } from '../shared/i18n.jsx';
-import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
+import { AdviceButton, AdviceBubble, GuideButton, useOpastus, opastusAvain } from '../shared/MestariNeuvo.jsx';
 
 // Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 // 'gameover' ei kuulu joukkoon tarkoituksella: kaksi sisarelta kopioitua vertailua
@@ -374,23 +374,30 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   };
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
   useEffect(() => { setAdvice(null); },          [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
+  const opastus = useOpastus('seiska', G);
+  const adv = advice || opastus.hl; // korostettava: neuvo tai opastuksen palaute
 
-  function askAdvice() {
+  // Neuvo ja opastus laskevat saman olion; ero on siinä mitä UI näyttää ja milloin.
+  function computeAdvice() {
     const g = gRef.current;
-    if (!g) return;
+    if (!g) return null;
     const a = getAdvice(g);
-    if (!a) return;
+    if (!a) return null;
     const params = {
       cards: a.cards ? a.cards.map(lbl).join(', ') : undefined,
       card: a.cards?.[0] ? lbl(a.cards[0]) : undefined,
       n: a.cards?.length,
       suit: a.suit,
     };
-    setAdvice({
-      text: t('games.seiska.advice.' + a.type, params),
-      cardIds: a.cards ? a.cards.map(c => c.id) : [],
-    });
+    const ids = a.cards ? a.cards.map(c => c.id) : [];
+    const key = a.type === 'aceBonusSkip' ? opastusAvain('skip')
+      : a.type === 'draw' ? opastusAvain('draw')
+      : a.type === 'endTurn' ? opastusAvain('end')
+      : opastusAvain('play', ids);
+    return { text: t('games.seiska.advice.' + a.type, params), cardIds: ids, key };
   }
+  function askAdvice() { setAdvice(computeAdvice()); }
+  function askGuide() { opastus.ask(computeAdvice()); }
 
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
@@ -927,6 +934,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     if (g.aceBonus !== null) {
       if (selected[0]?.s !== g.aceBonus) { addLog(M.wrongSuit); return; }
       const cards = [...selected]; setSel([]);
+      opastus.answer(opastusAvain('play', cards.map(c => c.id)));
       doPlay({ ...g, aceBonus: null }, idx, cards, null);
       return;
     }
@@ -940,6 +948,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       if (conn) selected.splice(0, selected.length, conn, ...selected.filter(c => c.id !== conn.id));
     }
     const cards = [...selected]; setSel([]);
+    opastus.answer(opastusAvain('play', cards.map(c => c.id)));
     doPlay(g, idx, cards, null);
   }
 
@@ -948,6 +957,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     if (!g || g.aceBonus === null) return;
     const idx = g.activePlayer;
     setSel([]);
+    opastus.answer(opastusAvain('skip'));
     // Rangaistus jo jaettu ässän lyöntihetkellä — tässä vain suljetaan bonusvuoro.
     const g2 = /** @type {PeliTila} */ ({ ...g, aceBonus: null });
     const newHand = g2.players[idx].hand;
@@ -979,6 +989,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
 
   function humanDraw() {
     if (!G || G.phase !== 'play' || !G.players[G.activePlayer]?.isHuman || handoff || lappuWin.current) return;
+    opastus.answer(opastusAvain('draw'));
     doDraw(gRef.current, G.activePlayer);
   }
 
@@ -1045,7 +1056,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       {handoff && <HandoffScreen playerName={handoff.name} onReady={onHandoffReady} />}
 
       <TurnPrompt show={isMyTurn} action={t('ui.turn.seiska')} />
-      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
+      <AdviceBubble text={advice?.text || opastus.text} onDismiss={() => { setAdvice(null); opastus.dismiss(); }} />
 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -1213,9 +1224,10 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
             const hl      = !isSel && (canAct
               ? (selected.length > 0 ? multi : (single || multi))
               : (single || multi));
-            const isAdv   = !isSel && canAct && !!advice?.cardIds?.includes(c.id);
+            // Opastuksen palaute korostaa Mestarin kortin vaikka vuoro on jo siirtynyt.
+            const isAdv   = !isSel && (canAct || !!opastus.hl) && !!adv?.cardIds?.includes(c.id);
             // Mestarin neuvo päällä: kaikki muu himmenee, jotta osoitettu kortti erottuu
-            const dimmed  = advice?.cardIds?.length
+            const dimmed  = adv?.cardIds?.length
               ? !isAdv
               : canAct
                 ? (!isSel && (selected.length > 0 ? !multi : (!single && !multi)))
@@ -1300,6 +1312,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
               </button>
             )}
             <AdviceButton onClick={askAdvice} />
+            <GuideButton onClick={askGuide} />
           </>
         )}
       </div>

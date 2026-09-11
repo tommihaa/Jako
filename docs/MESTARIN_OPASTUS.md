@@ -76,7 +76,29 @@ syyt (`283c7c6`). Tämä on syy pitää opastuksen palaute näkyvänä eikä pel
   teksti on yksi jaettu `ui.advice`-avain, ja pelilista on koodissa vakio jonka lähde on
   Botbench-osion päiväys.
 
-## Tila
+## Toteutus 11.9.2026
 
-Kirjattu 11.9.2026. Ei koodissa. Tulossa-listan rivi vaihdetaan luennosta opastukseksi
-koodivaiheessa samalla kun ominaisuus tehdään.
+Koodissa samana päivänä kuin päätös, ei julkaistu. Runko on `src/shared/MestariNeuvo.jsx`:n
+`useOpastus`-koukku, ja jokainen peli tekee kolme asiaa:
+
+- `computeAdvice` laskee saman olion neuvolle ja opastukselle ja lisää siihen vertailuavaimen
+  (`opastusAvain`, siirron laji ja korttien tunnisteet lajiteltuna). `askAdvice` ja `askGuide`
+  eroavat vain siinä kumpaan tilaan olio menee.
+- Pelaajan käsittelijä kutsuu `opastus.answer(avain)` ennen tilamuutosta. Osuma on avainten
+  yhtäsuuruus, joten "Mestari olisi pelannut toisin" ei ole tulkinta vaan merkkijonovertailu.
+- Palaute on oma tilansa jota `G`:n muutos ei tyhjennä, koska bottien siirrot tulevat heti
+  perään. Se kestää 8 sekuntia tai ✕:ään. Korostus tulee samasta `adv`-oliosta kuin neuvon.
+
+Todennettu dev-palvelimella 11.9.2026: Seiskassa opastus ilman korostusta ja varausteksti,
+osuma, eri valinta jossa Mestarin kortti korostui purppuralla; Kultakalassa nostokohteen osuma.
+Botbench-lukuja ei mitattu uudelleen, koska valintafunktioihin ja `getAdvice`-runkoihin ei
+koskettu (`neuvo-sauma`-testi vihreä). Muut seitsemän peliä on integroitu samalla kaavalla
+mutta todennettu vain buildilla, typecheckillä ja testeillä, ei pelaamalla.
+
+**Läpsy jäi ulkopuolelle.** Sen neuvo (`lapsyAdvice`) on huomion ohjaus (ennakoitu kortti,
+hälytys, käännä), ei valinta vaihtoehtojen välillä, joten "sama vai eri valinta" ei ole siinä
+määriteltävissä. Päätös yhdeksännestä pelistä on Tommin: jätetäänkö Läpsy ilman opastusta vai
+määritelläänkö osuma esimerkiksi läpsäisynä ennakoidun kortin jälkeen.
+
+Tulossa-listan rivi on vaihdettu luennosta opastukseksi (`src/todo.js`, `fi.js`), tila `open`
+kunnes julkaistaan.

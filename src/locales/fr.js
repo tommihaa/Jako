@@ -5,6 +5,10 @@
 export const fr = {
   ui: {
     advice: {
+      guide: "Guide-moi",
+      hit: "Même choix.",
+      miss: "Autre choix. Le conseil était :",
+      flat: "Dans ce jeu, le Maître n'est pas mesurablement plus fort que le Compagnon, le guidage enseigne donc l'habitude du Maître.",
       ask: "Demander au Maître",
       from: "Maître :",
     },

@@ -15,7 +15,7 @@ import { useT, tr } from '../shared/i18n.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
 import { useGameState } from '../shared/useGameState.js';
-import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
+import { AdviceButton, AdviceBubble, GuideButton, useOpastus, opastusAvain } from '../shared/MestariNeuvo.jsx';
 
 const pScore = p => p.cards.reduce((s, c) => s + (c ? c.v : 0), 0);
 const pCards = p => p.cards.filter(Boolean).length;
@@ -331,6 +331,8 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   // Neuvo vanhenee jokaisesta tilamuutoksesta. Yksi riippuvuus riittää, koska vuoron
   // tila asuu G:ssä (kompositioauditointi H5).
   useEffect(() => { setAdvice(null); }, [G]);
+  const opastus = useOpastus('koputus', G);
+  const adv = advice || opastus.hl; // korostettava: neuvo tai opastuksen palaute
 
   // Renderin lukemat: vuoron tila luetaan G:stä eikä rinnakkaisesta useStatesta.
   const phase     = G?.phase ?? 'idle';
@@ -338,19 +340,28 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   const drawn     = G?.drawn ?? null;
   const knockedBy = G?.knockedBy ?? null;
 
-  function askAdvice() {
-    const g = gRef.current; if (!g) return;
+  // Neuvo ja opastus laskevat saman olion; ero on siinä mitä UI näyttää ja milloin.
+  function computeAdvice() {
+    const g = gRef.current; if (!g) return null;
     const a = getAdvice(g);
-    if (!a) return;
-    setAdvice({
+    if (!a) return null;
+    const key = a.type === 'knock' ? opastusAvain('knock')
+      : a.type === 'drawDiscard' ? opastusAvain('draw:discard')
+      : a.type === 'drawDeck' ? opastusAvain('draw:deck')
+      : a.type === 'discardDrawn' ? opastusAvain('discard')
+      : opastusAvain('swap:' + a.slot);
+    return {
       text: t('games.koputus.advice.' + a.type, {
         card: a.card ? lbl(a.card) : undefined,
         slot: a.slot !== undefined ? a.slot + 1 : undefined,
       }),
       slot: a.slot,
       target: a.type === 'drawDiscard' ? 'discard' : a.type === 'drawDeck' ? 'deck' : null,
-    });
+      key,
+    };
   }
+  function askAdvice() { setAdvice(computeAdvice()); }
+  function askGuide() { opastus.ask(computeAdvice()); }
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
     const cur = G.deck.length;
@@ -448,12 +459,14 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   function humanDrawDeck() {
     const g = gRef.current; if (!g || !g.deck.length) return;
     if (soundOn) SFX.flip();
+    opastus.answer(opastusAvain('draw:deck'));
     const deck = [...g.deck], card = deck.shift();
     commit({ ...g, deck, drawn: card, phase: /** @type {Vaihe} */ ('drawn') }, M.drawn(card));
   }
   function humanDrawDiscard() {
     const g = gRef.current; if (!g || !g.discard.length) return;
     if (soundOn) SFX.flip();
+    opastus.answer(opastusAvain('draw:discard'));
     const discard = [...g.discard], card = discard.pop();
     commit({ ...g, discard, drawn: card, phase: /** @type {Vaihe} */ ('drawn') }, M.drawnD(card));
   }
@@ -461,6 +474,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     const g = gRef.current;
     if (!g || g.knockedBy !== null) return;
     if (soundOn) SFX.tikki();
+    opastus.answer(opastusAvain('knock'));
     const lr = new Set(g.players.filter((_, i) => i !== 0).map(p => p.id));
     commit({ ...g, knockedBy: 0, lastRound: lr }, M.knocked('Hero'));
   }
@@ -478,6 +492,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     if (lockRef.current) return;
     const g = gRef.current, drawn = g.drawn, oldCard = g.players[0].cards[cardIdx];
     flashSlot(0, cardIdx);
+    opastus.answer(opastusAvain('swap:' + cardIdx));
     if (soundOn) SFX.swap();
     const players = g.players.map((p, i) => {
       if (i !== 0) return p;
@@ -493,6 +508,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
   function humanDiscard() {
     if (lockRef.current) return;
     const g = gRef.current, drawn = g.drawn;
+    opastus.answer(opastusAvain('discard'));
     if (soundOn) SFX.play();
     const newG = { ...g, discard: [...g.discard, drawn] };
     if (drawn.r !== 'J' && drawn.r !== 'Q' && drawn.r !== 'K') lockRef.current = true;
@@ -827,7 +843,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : 16, maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 40, overflowX: 'hidden' }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
       <TurnPrompt show={isHuman && !showDrawn} action={t('ui.turn.koputus')} />
-      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
+      <AdviceBubble text={advice?.text || opastus.text} onDismiss={() => { setAdvice(null); opastus.dismiss(); }} />
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 66 : 72, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 17, flexShrink: 0 }}>🤜</span>
         <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text, overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: msg }}></p>
@@ -901,7 +917,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
               : <>
                 {G.deck.length > 2 && <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, transform: 'rotate(-5deg) translate(-4px,3px)', transformOrigin: 'bottom center', opacity: 0.55, zIndex: 0 }}>{BACKS[cardBack].render(cw, ch)}</div>}
                 {G.deck.length > 1 && <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: BACKS[cardBack].bg, border: `1px solid ${BACKS[cardBack].border}`, transform: 'rotate(-2.5deg) translate(-2px,1.5px)', transformOrigin: 'bottom center', opacity: 0.75, zIndex: 1 }}>{BACKS[cardBack].render(cw, ch)}</div>}
-                <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, overflow: 'hidden', background: BACKS[cardBack].bg, border: `2px solid ${advice?.target === 'deck' ? C.botMode : isHuman && phase === 'draw' ? C.gold : BACKS[cardBack].border}`, boxShadow: advice?.target === 'deck' ? '0 0 18px rgba(192,132,252,0.65)' : isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.4)', zIndex: 2 }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, overflow: 'hidden', background: BACKS[cardBack].bg, border: `2px solid ${adv?.target === 'deck' ? C.botMode : isHuman && phase === 'draw' ? C.gold : BACKS[cardBack].border}`, boxShadow: adv?.target === 'deck' ? '0 0 18px rgba(192,132,252,0.65)' : isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.4)', zIndex: 2 }}>
                   {BACKS[cardBack].render(cw, ch)}
                 </div>
               </>}
@@ -925,7 +941,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
             style={{ cursor: isHuman && phase === 'draw' && discardTop ? 'pointer' : 'default', position: 'relative', width: cw, height: ch }}>
             {!discardTop
               ? <div style={{ width: cw, height: ch, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.25 }} />
-              : <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: C.card, border: `2px solid ${advice?.target === 'discard' ? C.botMode : isHuman && phase === 'draw' ? C.gold : '#aaa'}`, boxShadow: advice?.target === 'discard' ? '0 0 18px rgba(192,132,252,0.65)' : isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              : <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: C.card, border: `2px solid ${adv?.target === 'discard' ? C.botMode : isHuman && phase === 'draw' ? C.gold : '#aaa'}`, boxShadow: adv?.target === 'discard' ? '0 0 18px rgba(192,132,252,0.65)' : isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ color: SUIT_COLOR[discardTop.s], fontFamily: 'Georgia,serif', textAlign: 'center', lineHeight: 1.1, pointerEvents: 'none' }}>
                   <div style={{ fontSize: isMobile ? 17 : 22, fontWeight: 700 }}>{discardTop.r}</div>
                   <div style={{ fontSize: isMobile ? 20 : 26 }}>{discardTop.s}</div>
@@ -941,7 +957,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       <div style={{ marginBottom: isMobile ? 6 : 12 }}>
         <PlayerGrid player={human} isActive={isHuman} phase={phase} debug={revealAll || allBots} backStyle={BACKS[cardBack]}
           clickableSet={ownClickable()} onCardClick={onOwnCard} peekSet={tempPeek}
-          adviceSlot={advice?.slot}
+          adviceSlot={adv?.slot}
           lastSwap={lastSwap?.pIdx === 0 ? lastSwap.cIdx : null} small={isMobile} />
       </div>
       )}
@@ -968,7 +984,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: isMobile ? 4 : 10, minHeight: isMobile ? 36 : 44, alignItems: 'center' }}>
         {isHuman && phase === 'drawn' && <Btn label={t('games.koputus.ui.discard')} onClick={humanDiscard} color={C.gold} />}
         {isHuman && phase === 'draw' && knockedBy === null && <Btn label={t('games.koputus.ui.knock')} onClick={humanKnock} color={C.red} outline />}
-        {isHuman && (phase === 'draw' || phase === 'drawn') && <AdviceButton onClick={askAdvice} />}
+        {isHuman && (phase === 'draw' || phase === 'drawn') && <><AdviceButton onClick={askAdvice} /><GuideButton onClick={askGuide} /></>}
         {!allBots && phase === 'spec_q_tgt' && specState && <Btn label={t('games.koputus.ui.skipSwap')} onClick={() => { setSS(null); stopReact.current = false; tm(() => openReaction(gRef.current, drawn, 0), 200); }} color={C.dim} outline />}
         {!allBots && phase === 'spec_k_decide' && specState && <Btn label={t('games.koputus.ui.skipSwap')} onClick={handleKSkip} color={C.dim} outline />}
         {!allBots && phase === 'spec_k_confirm' && <Btn label={t('games.koputus.ui.swapHere')} onClick={handleKSwap} color={C.gold} />}

@@ -3,6 +3,10 @@
 export const se = {
   ui: {
     advice: {
+      guide: "Bagat mu",
+      hit: "Seamma válljen.",
+      miss: "Eará válljen. Ráđđi lei:",
+      flat: "Dán spealus Meašttir ii leat mihtiduvvon gievrrat go Gáisli, nu ahte bagadeapmi oahpaha Meaštira dábi.",
       ask: "Jeara Meašttiris",
       from: "Meašttir:",
     },

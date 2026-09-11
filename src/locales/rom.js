@@ -4,6 +4,10 @@
 export const rom = {
   ui: {
     advice: {
+      guide: "Sikav man",
+      hit: "Sa jekh alosaripe.",
+      miss: "Aver alosaripe. O sikavipe sas:",
+      flat: "Ande kado khelipe o Majstoro naj mesurime maj zoralo sar o Amal, kade o sikavipe sikavel e Majstoreski buti.",
       ask: "Puč le Majstoros",
       from: "Majstoro:",
     },

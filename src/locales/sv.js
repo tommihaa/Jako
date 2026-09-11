@@ -5,6 +5,10 @@
 export const sv = {
   ui: {
     advice: {
+      guide: "Vägled mig",
+      hit: "Samma val.",
+      miss: "Annat val. Rådet var:",
+      flat: "I det här spelet är Mästaren inte mätbart starkare än Gesällen, så vägledningen lär ut Mästarens vana.",
       ask: "Fråga Mästaren",
       from: "Mästaren:",
     },

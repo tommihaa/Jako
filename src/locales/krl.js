@@ -6,6 +6,10 @@
 export const krl = {
   ui: {
     advice: {
+      guide: "Opasta",
+      hit: "Sama valličus.",
+      miss: "Toine valličus. Nevvo oli:",
+      flat: "Täs kizas Mestari ei ole mitatusti Kizälliä parembi, ga opastus opastau Mestarin tavan.",
       ask: "Kyzy Mestarilta",
       from: "Mestari:",
     },

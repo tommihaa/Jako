@@ -306,7 +306,7 @@ export function getAdvice(g) {
 // ── Komponentti ───────────────────────────────────────────────────────────────
 
 import { useT } from '../shared/i18n.jsx';
-import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
+import { AdviceButton, AdviceBubble, GuideButton, useOpastus, opastusAvain } from '../shared/MestariNeuvo.jsx';
 
 // Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 /** @typedef {'play'|'swap_offer'|'gameover'} Vaihe */
@@ -356,18 +356,30 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, tm, schedMove, schedAI, schedTick, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
     useAIScheduler({ jitter: 300, extraIntervalRefs: [swapTmr, suddenDeathTmr] });
   useEffect(() => { setAdvice(null); },          [G]); // neuvo vanhenee jokaisesta tilamuutoksesta
+  const opastus = useOpastus('paskahousu', G);
+  const adv = advice || opastus.hl; // korostettava: neuvo tai opastuksen palaute
 
-  function askAdvice() {
+  // Neuvo ja opastus laskevat saman olion; ero on siinä mitä UI näyttää ja milloin.
+  function computeAdvice() {
     const g = gRef.current;
-    if (!g) return;
+    if (!g) return null;
     const a = getAdvice(g);
-    if (!a) return;
-    setAdvice({
+    if (!a) return null;
+    const cardIds = a.cards ? a.cards.map(c => c.id) : [];
+    const key = a.type === 'swap' ? opastusAvain('swap', cardIds)
+      : a.type === 'swapSkip' ? opastusAvain('skip')
+      : a.type === 'knock' ? opastusAvain('knock')
+      : a.type === 'takePile' ? opastusAvain('take')
+      : opastusAvain('play', cardIds);
+    return {
       text: t('games.paskahousu.advice.' + a.type,
         { cards: a.cards ? a.cards.map(lbl).join(', ') : undefined }),
-      cardIds: a.cards ? a.cards.map(c => c.id) : [],
-    });
+      cardIds,
+      key,
+    };
   }
+  function askAdvice() { setAdvice(computeAdvice()); }
+  function askGuide() { opastus.ask(computeAdvice()); }
   useEffect(() => { sndRef.current = soundOn; },  [soundOn]);
 
   // Yhtäkkinen kuolema: käynnistä laskuri kun pakka tyhjä + 2 aktiivista + Mestari (hard)
@@ -927,6 +939,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     }
     const cards = [...selected];
     setSel([]);
+    opastus.answer(opastusAvain('play', cards.map(c => c.id)));
     applyPlay(gRef.current, 0, cards);
   }
 
@@ -994,7 +1007,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       <TurnPrompt show={isMyTurn && !mustSkip} action={t('ui.turn.paskahousu')} />
-      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
+      <AdviceBubble text={advice?.text || opastus.text} onDismiss={() => { setAdvice(null); opastus.dismiss(); }} />
 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 40 : 56, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -1154,12 +1167,12 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {G.swapData.eligible.map(c => {
                 const isSel = !!selected.find(s => s.id === c.id);
-                const isAdv = !isSel && !!advice?.cardIds?.includes(c.id);
+                const isAdv = !isSel && !!adv?.cardIds?.includes(c.id);
                 return (
                   <Card key={c.id} card={c} large={!isMobile} small={isMobile}
                     selected={isSel} highlight={!isSel}
                     advice={isAdv}
-                    dim={!!advice?.cardIds?.length && !isAdv}
+                    dim={!!adv?.cardIds?.length && !isAdv}
                     justPlaced={jpIds.has(c.id)}
                     onClick={() => toggleCard(c)}
                     backStyle={BACKS[cardBack]}
@@ -1168,14 +1181,14 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
               })}
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <AdviceButton onClick={askAdvice} />
+              <><AdviceButton onClick={askAdvice} /><GuideButton onClick={askGuide} /></>
               <button
-                onClick={() => { const toSwap = selected.length ? selected : defaultSwap(G.swapData.eligible); setSel([]); applySwap(gRef.current, toSwap); }}
+                onClick={() => { const toSwap = selected.length ? selected : defaultSwap(G.swapData.eligible); setSel([]); opastus.answer(opastusAvain('swap', toSwap.map(c => c.id))); applySwap(gRef.current, toSwap); }}
                 style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 20px', color: '#0d2118', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
                 {t('games.paskahousu.ui.swapNow', { cards: (selected.length ? selected : defaultSwap(G.swapData.eligible)).map(lbl).join(' ') })}
               </button>
               <button
-                onClick={() => skipSwap(gRef.current)}
+                onClick={() => { opastus.answer(opastusAvain('skip')); skipSwap(gRef.current); }}
                 style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 16px', color: C.dim, fontSize: 12, cursor: 'pointer', fontFamily: 'sans-serif' }}>
                 {t('games.paskahousu.ui.skipSwap', { s: swapCountdown })}
               </button>
@@ -1193,9 +1206,9 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
             const playable = isMyTurn && !mustSkip && canPlay(c, G.top, G.rules);
             const sameRank = selected.length > 0 && selected[0].r === c.r;
             const hl       = isMyTurn && !mustSkip && playable && !isSel && (selected.length === 0 || sameRank);
-            const isAdv    = !isSel && !!advice?.cardIds?.includes(c.id);
+            const isAdv    = !isSel && !!adv?.cardIds?.includes(c.id);
             // Mestarin neuvo päällä: kaikki muu himmenee, jotta osoitettu kortti erottuu
-            const dimmed   = advice?.cardIds?.length
+            const dimmed   = adv?.cardIds?.length
               ? !isAdv
               : ((isMyTurn && !mustSkip && !playable && !isSel) || (isSwapPhase && !isSel));
             return (
@@ -1231,16 +1244,16 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
           <button onClick={() => setSel([])} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
         )}
         {canKnock && (
-          <button onClick={() => { setSel([]); applyKnock(gRef.current, 0); }} style={{ background: 'rgba(201,168,76,0.08)', border: `1px solid ${C.gold}55`, borderRadius: 10, padding: '10px 20px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
+          <button onClick={() => { setSel([]); opastus.answer(opastusAvain('knock')); applyKnock(gRef.current, 0); }} style={{ background: 'rgba(201,168,76,0.08)', border: `1px solid ${C.gold}55`, borderRadius: 10, padding: '10px 20px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
             {t('games.paskahousu.ui.tryDeck')}
           </button>
         )}
         {canTake && (
-          <button onClick={() => { setSel([]); applyTakePile(gRef.current, 0); }} style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.dim}44`, borderRadius: 10, padding: '10px 18px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
+          <button onClick={() => { setSel([]); opastus.answer(opastusAvain('take')); applyTakePile(gRef.current, 0); }} style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.dim}44`, borderRadius: 10, padding: '10px 18px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
             {t('games.paskahousu.ui.takePile', { n: G.pile.length })}
           </button>
         )}
-        {isMyTurn && !mustSkip && <AdviceButton onClick={askAdvice} />}
+        {isMyTurn && !mustSkip && <><AdviceButton onClick={askAdvice} /><GuideButton onClick={askGuide} /></>}
       </div>
 
       {/* Yhtäkkinen kuolema -laskuri */}

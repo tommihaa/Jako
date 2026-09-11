@@ -3,6 +3,10 @@
 export const ro = {
   ui: {
     advice: {
+      guide: "Îndrumă-mă",
+      hit: "Aceeași alegere.",
+      miss: "Altă alegere. Sfatul era:",
+      flat: "În acest joc Maestrul nu este măsurabil mai puternic decât Calfa, așa că îndrumarea învață obiceiul Maestrului.",
       ask: "Întreabă Maestrul",
       from: "Maestrul:",
     },

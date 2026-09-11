@@ -270,7 +270,7 @@ function initGame(nPlayers, pool, allBots = false) {
 
 // ── Pääkomponentti ──────────────────────────────────────────────────
 import { useT } from '../shared/i18n.jsx';
-import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
+import { AdviceButton, AdviceBubble, GuideButton, useOpastus, opastusAvain } from '../shared/MestariNeuvo.jsx';
 
 // Suljettu arvojoukko: vaihe jota tässä ei ole, ei käänny (käännösaikainen portti).
 /** @typedef {'idle'|'attacking'|'defending'|'gameover'} Vaihe */
@@ -310,27 +310,35 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   // Neuvo vanhenee jokaisesta tilamuutoksesta. Yksi riippuvuus riittää, koska vaihe
   // ja pöytä asuvat G:ssä (kompositioauditointi H5).
   useEffect(() => { setAdvice(null); }, [G]);
+  const opastus = useOpastus('maija', G);
+  const adv = advice || opastus.hl; // korostettava: neuvo tai opastuksen palaute
 
   // Renderin lukemat: vaihe ja pöytä luetaan G:stä eikä rinnakkaisesta useStatesta.
   const phase = G?.phase ?? 'idle';
   const table = G?.table ?? [];
 
-  function askAdvice() {
+  // Neuvo ja opastus laskevat saman olion; ero on siinä mitä UI näyttää ja milloin.
+  function computeAdvice() {
     const g = gRef.current;
-    if (!g) return;
+    if (!g) return null;
     const a = getAdvice(g);
-    if (!a) return;
+    if (!a) return null;
     const card = a.card || a.cards?.[0];
-    setAdvice({
+    const cardIds = a.card ? [a.card.id] : (a.cards ? a.cards.map(c => c.id) : []);
+    const key = a.type === 'take' ? opastusAvain('take') : opastusAvain('play', cardIds);
+    return {
       text: t('games.maija.advice.' + a.type, {
         cards: a.cards ? a.cards.map(lbl).join(', ') : undefined,
         card:  card ? lbl(card) : undefined,
         target: a.target ? lbl(a.target) : undefined,
       }),
-      cardIds: a.card ? [a.card.id] : (a.cards ? a.cards.map(c => c.id) : []),
+      cardIds,
       targetId: a.target ? a.target.id : null,
-    });
+      key,
+    };
   }
+  function askAdvice() { setAdvice(computeAdvice()); }
+  function askGuide() { opastus.ask(computeAdvice()); }
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }
     const cur = G.deck.length;
@@ -606,6 +614,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     if (selectedCards.length > g.players[g.defenderIdx].hand.length) {
       addLog(M.tooManyCards); return;
     }
+    opastus.answer(opastusAvain('play', selectedCards.map(c => c.id)));
     doAttack(g, selectedCards);
   }
 
@@ -627,6 +636,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       addLog(M.cardTooSmall(lblColored(card), lblColored(row.att))); return;
     }
     if (sndRef.current) SFX.beat();
+    opastus.answer(opastusAvain('play', [card.id]));
     const newTbl = g.table.map((r, i) => i === selDefTargetIdx ? { ...r, def: card } : r);
     const players = g.players.map((p, i) => i === 0 ? { ...p, hand: p.hand.filter(c => c.id !== card.id) } : p);
     const g2 = { ...g, players, table: newTbl };
@@ -641,6 +651,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
 
   function humanTakeAll() {
     if (phase !== 'defending' || G.defenderIdx !== 0) return;
+    opastus.answer(opastusAvain('take'));
     resolveDefenseLoss(gRef.current);
   }
 
@@ -678,7 +689,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
 
       <TurnPrompt show={isHumanAttacker || isHumanDefender} action={t(isHumanAttacker ? 'ui.turn.maijaAttack' : 'ui.turn.maijaDefend')} />
-      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
+      <AdviceBubble text={advice?.text || opastus.text} onDismiss={() => { setAdvice(null); opastus.dismiss(); }} />
 
       {/* Viestikupla */}
       <div style={{ background:'rgba(255,255,255,0.03)', border:`1px solid ${C.panelBorder}`,
@@ -767,7 +778,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
                       dim={!!row.def}
                       selected={isTarget}
                       highlight={canBeTarget}
-                      advice={advice?.targetId === row.att.id}
+                      advice={adv?.targetId === row.att.id}
                       onClick={isHumanDefender && !row.def ? () => humanSelectDefTarget(i) : undefined}
                       backStyle={BACKS[cardBack]}/>
                     {row.def
@@ -812,9 +823,9 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
             const wrongSuit = isHumanAttacker && selectedCards.length > 0 && c.s !== selectedCards[0].s;
             const canBeatTarget = isHumanDefender && selDefTargetRow && canBeat(selDefTargetRow.att, c, G.trump) && !isMaija(c);
             const defDimmed = isHumanDefender && selDefTargetRow && !canBeatTarget;
-            const isAdv     = !isSel && !!advice?.cardIds?.includes(c.id);
+            const isAdv     = !isSel && !!adv?.cardIds?.includes(c.id);
             // Mestarin neuvo päällä: kaikki muu himmenee, jotta osoitettu kortti erottuu
-            const dimmed    = advice?.cardIds?.length ? !isAdv : (wrongSuit || !!defDimmed);
+            const dimmed    = adv?.cardIds?.length ? !isAdv : (wrongSuit || !!defDimmed);
             return (
               <div key={c.id} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2 }}>
                 <Card card={c}
@@ -879,7 +890,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
             )}
           </>
         )}
-        {!allBots && (isHumanAttacker || isHumanDefender) && <AdviceButton onClick={askAdvice} />}
+        {!allBots && (isHumanAttacker || isHumanDefender) && <><AdviceButton onClick={askAdvice} /><GuideButton onClick={askGuide} /></>}
       </div>
 
       {/* Tilarivi */}

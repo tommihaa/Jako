@@ -134,7 +134,7 @@ export const fi = {
         'Tekoälyn vaikeustasojen hionta (uskottavammat aloittelijan virheet)',
         "Kysy Mestarilta neuvoa -nappi viiteen peliin (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)",
         "Mestarin neuvo monivaiheisiin peleihin (Moska, Paskahousu, Kasino, Maija)",
-        "Mestarin luento: 🧙-neuvon rinnalle selitys MIKSI Mestari suosittelee juuri tätä siirtoa",
+        "Mestarin opastus: 🎓-nappi kertoo säännön ilman korostusta, palaute vasta oman valinnan jälkeen",
       ],
     },
 
@@ -242,6 +242,10 @@ export const fi = {
     advice: {
       ask: 'Kysy Mestarilta',
       from: 'Mestari:',
+      guide: 'Opasta',
+      hit: "Sama valinta.",
+      miss: "Eri valinta. Ohje oli:",
+      flat: 'Tässä pelissä Mestari ei ole mitatusti Kisälliä parempi, joten opastus opettaa Mestarin tavan.',
     },
 
   },

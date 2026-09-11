@@ -3,6 +3,10 @@
 export const la = {
   ui: {
     advice: {
+      guide: "Duc me",
+      hit: "Eadem electio.",
+      miss: "Alia electio. Consilium erat:",
+      flat: "In hoc ludo Magister non mensurabiliter Socio fortior est, itaque ductus morem Magistri docet.",
       ask: "Magistrum roga",
       from: "Magister:",
     },

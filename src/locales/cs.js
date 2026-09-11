@@ -12,6 +12,10 @@ const plural = (n, one, few, many) => {
 export const cs = {
   ui: {
     advice: {
+      guide: "Veď mě",
+      hit: "Stejná volba.",
+      miss: "Jiná volba. Rada zněla:",
+      flat: "V této hře není Mistr měřitelně silnější než Tovaryš, takže vedení učí Mistrův zvyk.",
       ask: "Zeptat se Mistra",
       from: "Mistr:",
     },

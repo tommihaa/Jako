@@ -5,6 +5,10 @@
 export const et = {
   ui: {
     advice: {
+      guide: "Juhenda",
+      hit: "Sama valik.",
+      miss: "Teine valik. Nõuanne oli:",
+      flat: "Selles mängus ei ole Meister mõõdetavalt Sellist tugevam, seega õpetab juhendamine Meistri harjumust.",
       ask: "Küsi Meistrilt",
       from: "Meister:",
     },

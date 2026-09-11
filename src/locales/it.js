@@ -5,6 +5,10 @@
 export const it = {
   ui: {
     advice: {
+      guide: "Guidami",
+      hit: "Stessa scelta.",
+      miss: "Altra scelta. Il consiglio era:",
+      flat: "In questo gioco il Maestro non è misurabilmente più forte dell'Artigiano, quindi la guida insegna l'abitudine del Maestro.",
       ask: "Chiedi al Maestro",
       from: "Maestro:",
     },

@@ -5,6 +5,10 @@
 export const da = {
   ui: {
     advice: {
+      guide: "Vejled mig",
+      hit: "Samme valg.",
+      miss: "Andet valg. Rådet var:",
+      flat: "I dette spil er Mesteren ikke målbart stærkere end Svenden, så vejledningen lærer Mesterens vane.",
       ask: "Spørg Mesteren",
       from: "Mesteren:",
     },

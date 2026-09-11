@@ -5,6 +5,10 @@
 export const no = {
   ui: {
     advice: {
+      guide: "Veiled meg",
+      hit: "Samme valg.",
+      miss: "Annet valg. Rådet var:",
+      flat: "I dette spillet er Mesteren ikke målbart sterkere enn Svennen, så veiledningen lærer Mesterens vane.",
       ask: "Spør Mesteren",
       from: "Mesteren:",
     },

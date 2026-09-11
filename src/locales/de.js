@@ -5,6 +5,10 @@
 export const de = {
   ui: {
     advice: {
+      guide: "Anleiten",
+      hit: "Gleiche Wahl.",
+      miss: "Andere Wahl. Der Rat war:",
+      flat: "In diesem Spiel ist der Meister nicht messbar stärker als der Geselle, die Anleitung lehrt also die Gewohnheit des Meisters.",
       ask: "Meister fragen",
       from: "Meister:",
     },

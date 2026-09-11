@@ -4,6 +4,10 @@
 export const hu = {
   ui: {
     advice: {
+      guide: "Vezess",
+      hit: "Ugyanaz a választás.",
+      miss: "Más választás. A tanács ez volt:",
+      flat: "Ebben a játékban a Mester mérhetően nem erősebb a Legénynél, így a vezetés a Mester szokását tanítja.",
       ask: "Kérdezd a Mestert",
       from: "Mester:",
     },

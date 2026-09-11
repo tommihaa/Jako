@@ -15,7 +15,7 @@ import { useT, tr } from '../shared/i18n.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
 import { useGameState } from '../shared/useGameState.js';
-import { AdviceButton, AdviceBubble } from '../shared/MestariNeuvo.jsx';
+import { AdviceButton, AdviceBubble, GuideButton, useOpastus, opastusAvain } from '../shared/MestariNeuvo.jsx';
 
 
 
@@ -264,6 +264,8 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   // tila asuu G:ssä; ennen listassa oli neljä kohdetta ja uusi ulkokehän useState olisi
   // pudottanut vanhenemisen hiljaa (kompositioauditointi H5).
   useEffect(() => { setAdvice(null); }, [G]);
+  const opastus = useOpastus('kultakala', G);
+  const adv = advice || opastus.hl; // korostettava: neuvo tai opastuksen palaute
 
   // Renderin lukemat: vuoron tila luetaan G:stä eikä rinnakkaisesta useStatesta.
   const phase   = G?.phase ?? 'idle';
@@ -271,18 +273,26 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   const held    = G?.held ?? null;
   const swapIdx = G?.swapIdx ?? null;
 
-  function askAdvice() {
-    const g = gRef.current; if (!g) return;
+  // Neuvo ja opastus laskevat saman olion; ero on siinä mitä UI näyttää ja milloin.
+  function computeAdvice() {
+    const g = gRef.current; if (!g) return null;
     const a = getAdvice(g);
-    if (!a) return;
-    setAdvice({
+    if (!a) return null;
+    const key = a.type === 'drawDiscard' ? opastusAvain('draw:discard')
+      : a.type === 'drawDeck' ? opastusAvain('draw:deck')
+      : a.type === 'stopSwap' ? opastusAvain('stop')
+      : opastusAvain('swap:' + a.slot);
+    return {
       text: t('games.kultakala.advice.' + a.type, {
         card: a.card ? lbl(a.card) : undefined,
         slot: a.slot !== undefined && a.slot !== null ? a.slot + 1 : undefined,
       }),
       target: a.type === 'drawDiscard' ? 'discard' : a.type === 'drawDeck' ? 'deck' : null,
-    });
+      key,
+    };
   }
+  function askAdvice() { setAdvice(computeAdvice()); }
+  function askGuide() { opastus.ask(computeAdvice()); }
 
 
   function triggerKohahdus(card) {
@@ -476,6 +486,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       logMsg = M.humanDrawDeck(card, card.v);
     }
     if (sndRef.current) SFX.flip();
+    opastus.answer(opastusAvain(fromDiscard ? 'draw:discard' : 'draw:deck'));
     commit({ ...newG, held: card, swapIdx: 4, phase: /** @type {Vaihe} */ ('holding'),
              drawnFrom: fromDiscard ? 'discard' : 'deck' }, logMsg);
   }
@@ -493,6 +504,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     known.add(rowIdx);
     const players = g.players.map((pl, i) => i === 0 ? { ...pl, row: newRow, known } : pl);
     if (sndRef.current) SFX.swap();
+    opastus.answer(opastusAvain('swap:' + rowIdx));
     const wasKnown = p.known.has(rowIdx);
     const oldName = wasKnown ? `${lbl(old)} (${old.v} p)` : `${lbl(old)} (${old.v} p paljastui)`;
     const nextIdx = rowIdx - 1;
@@ -516,6 +528,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     const g = gRef.current;
     if (!g || (g.phase !== 'swapping' && g.phase !== 'holding') || g.cur !== 0) return;
     if (g.drawnFrom === 'discard') return;
+    opastus.answer(opastusAvain('stop'));
     const held = g.held;
     const newG = { ...g, discard: [...g.discard, held], held: null, swapIdx: null,
                    drawnFrom: null, phase: /** @type {Vaihe} */ ('drawing') };
@@ -577,7 +590,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
     <div style={{ background: C.bg, fontFamily: 'Georgia,serif', color: C.text, padding: isMobile ? '6px 8px' : '14px 16px', maxWidth: 560, margin: '0 auto', paddingBottom: isMobile ? 8 : 32, overflowX: 'hidden' }}>
       <ShuffleOverlay visible={shuffling} onDone={() => setShuffling(false)} />
       <TurnPrompt show={canDraw} action={t('ui.turn.kultakala')} />
-      <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
+      <AdviceBubble text={advice?.text || opastus.text} onDismiss={() => { setAdvice(null); opastus.dismiss(); }} />
       {kohahdus && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, pointerEvents: 'none' }}>
           <div style={{ background: 'rgba(160,20,20,0.18)', border: '2px solid rgba(255,90,90,0.65)', borderRadius: 22, padding: '22px 36px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, boxShadow: '0 0 50px rgba(255,60,60,0.45)', animation: 'kohahdus 1.8s ease-out forwards' }}>
@@ -654,8 +667,8 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
               count={G.deck.length}
               w={pw} h={ph}
               backStyle={BACKS[cardBack]}
-              borderColor={advice?.target === 'deck' ? C.botMode : canDraw ? C.gold : undefined}
-              glowColor={advice?.target === 'deck' ? C.botMode : canDraw ? C.gold : undefined}
+              borderColor={adv?.target === 'deck' ? C.botMode : canDraw ? C.gold : undefined}
+              glowColor={adv?.target === 'deck' ? C.botMode : canDraw ? C.gold : undefined}
             />
           </div>
           <div style={{ marginTop: 5 }}>
@@ -670,7 +683,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
           >
             {!discardTop
               ? <div style={{ width: pw, height: ph, borderRadius: 9, border: `1.5px dashed ${canDiscard ? C.gold : C.panelBorder}`, opacity: canDiscard ? 0.8 : 0.3, boxShadow: canDiscard ? `0 0 14px rgba(201,168,76,0.4)` : 'none', transition: 'all 0.2s' }} />
-              : <div style={{ position: 'relative', width: pw, height: ph, borderRadius: 9, background: C.card, border: `2px solid ${advice?.target === 'discard' ? C.botMode : (canDraw || canDiscard) ? C.gold : '#aaa'}`, boxShadow: advice?.target === 'discard' ? '0 0 18px rgba(192,132,252,0.65)' : (canDraw || canDiscard) ? `0 0 18px rgba(201,168,76,0.5)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              : <div style={{ position: 'relative', width: pw, height: ph, borderRadius: 9, background: C.card, border: `2px solid ${adv?.target === 'discard' ? C.botMode : (canDraw || canDiscard) ? C.gold : '#aaa'}`, boxShadow: adv?.target === 'discard' ? '0 0 18px rgba(192,132,252,0.65)' : (canDraw || canDiscard) ? `0 0 18px rgba(201,168,76,0.5)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ textAlign: 'center', color: SUIT_COLOR[discardTop.s], fontFamily: 'Georgia,serif', lineHeight: 1.1, pointerEvents: 'none' }}>
                   <div style={{ fontSize: isMobile ? 15 : 18, fontWeight: 700 }}>{discardTop.r}</div>
                   <div style={{ fontSize: isMobile ? 18 : 22 }}>{discardTop.s}</div>
@@ -739,7 +752,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
             <button onClick={humanStopSwap} style={{ background: 'transparent', border: `1px solid ${C.gold}88`, borderRadius: 9, padding: isMobile ? '6px 12px' : '10px 18px', color: C.gold, fontSize: isMobile ? 12 : 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}
               dangerouslySetInnerHTML={{ __html: t('games.kultakala.ui.discard', { card: lblColored(held) }) }} />
           )}
-          {(canDraw || canSwapRow) && <AdviceButton onClick={askAdvice} />}
+          {(canDraw || canSwapRow) && <><AdviceButton onClick={askAdvice} /><GuideButton onClick={askGuide} /></>}
         </div>
       )}
 
