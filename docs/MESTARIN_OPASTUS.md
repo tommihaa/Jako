@@ -32,7 +32,7 @@ Mestarin valintaan.
 | Kytkentä | Toinen nappi 🧙-napin rinnalla. Pelaaja valitsee vuoroittain neuvon tai opastuksen. |
 | Palaute kun valinta erosi | Kupla "Mestari olisi pelannut X" ja lisäksi Mestarin kortti purppuralla siinä paikassa jossa se oli ennen siirtoa, jos kortti on yhä näkyvissä. Jos kortti lähti kädestä eikä sitä enää näy, pelkkä kupla. |
 | Palaute kun valinta osui | Lyhyt kuittaus kuplassa. |
-| Pelit | Kaikki yhdeksän. Peleissä joissa Botbench ei näytä Mestarin porrasta Kisälliin opastus sanoo auktoriteettivarauksen ääneen. |
+| Pelit | Kahdeksan valintapeliä, Läpsy ei (ks. Toteutus). Peleissä joissa Botbench ei näytä Mestarin porrasta Kisälliin opastus sanoo auktoriteettivarauksen ääneen. |
 
 ### Auktoriteettivaraus tulee Botbenchistä
 
@@ -95,10 +95,10 @@ Botbench-lukuja ei mitattu uudelleen, koska valintafunktioihin ja `getAdvice`-ru
 koskettu (`neuvo-sauma`-testi vihreä). Muut seitsemän peliä on integroitu samalla kaavalla
 mutta todennettu vain buildilla, typecheckillä ja testeillä, ei pelaamalla.
 
-**Läpsy jäi ulkopuolelle.** Sen neuvo (`lapsyAdvice`) on huomion ohjaus (ennakoitu kortti,
-hälytys, käännä), ei valinta vaihtoehtojen välillä, joten "sama vai eri valinta" ei ole siinä
-määriteltävissä. Päätös yhdeksännestä pelistä on Tommin: jätetäänkö Läpsy ilman opastusta vai
-määritelläänkö osuma esimerkiksi läpsäisynä ennakoidun kortin jälkeen.
+**Läpsy jää ilman opastusta (Tommin päätös 11.9.2026).** Sen neuvo (`lapsyAdvice`) on huomion
+ohjaus (ennakoitu kortti, hälytys, käännä), ei valinta vaihtoehtojen välillä, joten "sama vai
+eri valinta" ei ole siinä määriteltävissä. Päätöstaulukon "kaikki yhdeksän" tarkoittaa siis
+kahdeksaa valintapeliä, ja Läpsyllä on edelleen vain 🧙-neuvo.
 
 Tulossa-listan rivi on vaihdettu luennosta opastukseksi (`src/todo.js`, `fi.js`), tila `open`
 kunnes julkaistaan.
