@@ -299,7 +299,7 @@ export const cs = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Zahraj ${card}. Nejdřív nízké karty. Bránu (6 nebo 8) si nech v ruce jako zámek a otevři ji až tehdy, když máš ve stejné barvě aspoň dvě karty, které hned tak nezahraješ.`,
+        play: ({ card }) => `Zahraj ${card}, nejnižší hratelnou. Bránu (6 nebo 8) si nech v ruce jako zámek a otevři ji až tehdy, když máš ve stejné barvě aspoň dvě karty, které hned tak nezahraješ.`,
         playSeven: ({ card }) => `Zahraj ${card}. Otevři sedmičku v barvě, které máš nejvíc.`,
         pass: "Žádná z tvých karet nesedí. Pasuj.",
         give: ({ card }) => `Odevzdej ${card}, je nejdál od zahrání.`,
@@ -362,6 +362,10 @@ export const cs = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Zahraj ${card}. Je to jediná karta, která sedí.`,
+        playLeaveGroup: ({ card }) => `Zahraj ${card}. V ruce ti zůstane skupina stejné hodnoty, kterou můžeš zahrát najednou.`,
+        playNoPair: ({ card }) => `Zahraj ${card}, nemá v ruce pár. Páry si šetři na skupinové zahrání.`,
+        playSeen: ({ card }) => `Zahraj ${card}. Její hodnota už byla vidět nejvíc, takže ostatní mají nejméně čím odpovědět.`,
         play: ({ cards, n }) => n > 1
           ? `Zahraj skupinu ${cards}. Více karet najednou vyprázdní ruku nejrychleji.`
           : `Zahraj ${cards}.`,
@@ -370,7 +374,7 @@ export const cs = {
         playAce: ({ card }) => `Zahraj ${card}. Eso donutí ostatní líznout a ty dostaneš bonusový tah.`,
         draw: "Žádná z tvých karet nesedí. Lízni si z balíčku.",
         endTurn: "Lízání jsou vyčerpaná a nic nesedí. Tah končí.",
-        aceBonusPlay: ({ cards }) => `Využij bonusový tah: zahraj ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Využij bonusový tah: zahraj ${cards}. Vyplatí se, když skupina odejde najednou nebo je ruka už malá a nikdo není jednu kartu od výhry.`,
         aceBonusSkip: "Bonusový tah vynech, teď se nevyplatí.",
       },
       altName: 'Prší',
@@ -434,13 +438,13 @@ export const cs = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Seber ${targets} kartou ${card}. Sbírej body: piky, esa a speciální karty.`,
+        capture: ({ card, targets }) => `Seber ${targets} kartou ${card}. Nejcennější sebrání: nejdřív bodové karty (♦10, ♠2, esa), pak piky, pak počet.`,
         captureMokki: ({ card }) => `Seber celý stůl kartou ${card}. Je to domeček a dá bod navíc.`,
         takeOwnBuild: ({ card }) => `Seber vlastní stavbu kartou ${card}. Soupeř může mít kartu, kterou ti ji ukradne.`,
         takeOwnBuildSafe: ({ card }) => `Seber vlastní stavbu kartou ${card}. Nikdo ji už nemůže ukrást, takže body jsou jisté.`,
         stealBuild: ({ card }) => `Ukradni soupeřovu stavbu kartou ${card}. Vezmeš mu hotové sebrání.`,
         build: ({ card, value }) => `Postav hodnotu ${value} kartou ${card}. Máš další kartu, kterou ji příští tah sebereš.`,
-        trail: ({ card }) => `Nech ${card} na stole. Výhodné sebrání teď není a tuhle kartu je nejbezpečnější odložit.`,
+        trail: ({ card }) => `Nech ${card} na stole. Výhodné sebrání není a tuhle kartu soupeř sebere nejméně pravděpodobně. Bodové karty a esa zůstávají v ruce.`,
       },
       altName: 'Cassino',
       desc: 'Seber celý stůl',
@@ -732,8 +736,8 @@ export const cs = {
         attack: ({ cards }) => `Útoč kartou ${cards}. Vyber hodnotu, které je už nejvíc karet ze hry venku, bude méně přihazování. Šetři trumfy na obranu.`,
         beat: ({ card, target }) => `Přebij ${target} kartou ${card}. Stačí nejnižší vítězná, trumfy až když musíš.`,
         take: "Nedokážeš přebít všechny karty na stole. Vezmi si je do ruky.",
-        pass: ({ cards }) => `Pošli útok dál kartou ${cards}, a sám se z toho dostaneš.`,
-        add: ({ card }) => `Přidej ${card} ze strany. Obránce má stále čím bít, tak přitlač.`,
+        pass: ({ cards }) => `Pošli útok dál kartou ${cards}. Stačí nejnižší vhodná, trumfy si šetři.`,
+        add: ({ card }) => `Přidej ${card} ze strany: nejnižší netrumfová karta bez páru. Obránce má stále čím bít, tak přitlač.`,
         skipAdd: "Teď nepřidávej ze strany. Nech si karty na lepší chvíli.",
         noAdd: "Nemáš žádnou kartu, kterou bys přidal ze strany. Nech kolo pokračovat.",
       },

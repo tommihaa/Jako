@@ -288,7 +288,7 @@ export const it = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Gioca ${card}. Prima le carte basse. Tieni in mano una carta porta (6 o 8) come blocco e aprila solo quando in quel seme hai almeno due carte che non potrai giocare presto.`,
+        play: ({ card }) => `Gioca ${card}, la più bassa giocabile. Tieni in mano una carta porta (6 o 8) come blocco e aprila solo quando in quel seme hai almeno due carte che non potrai giocare presto.`,
         playSeven: ({ card }) => `Gioca ${card}. Apri un sette nel seme in cui hai più carte.`,
         pass: "Nessuna delle tue carte va bene. Passa.",
         give: ({ card }) => `Consegna ${card}, è la più lontana dall'essere giocabile.`,
@@ -351,6 +351,10 @@ export const it = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Gioca ${card}. È l'unica carta che va bene.`,
+        playLeaveGroup: ({ card }) => `Gioca ${card}. In mano resta un gruppo dello stesso valore, che potrai giocare in un colpo solo.`,
+        playNoPair: ({ card }) => `Gioca ${card}, non ha coppia in mano. Le coppie si conservano per una giocata di gruppo.`,
+        playSeen: ({ card }) => `Gioca ${card}. Il suo valore è quello visto di più, quindi gli altri hanno meno con cui rispondere.`,
         play: ({ cards, n }) => n > 1
           ? `Gioca il gruppo ${cards}. Più carte in una volta svuotano la mano più in fretta.`
           : `Gioca ${cards}.`,
@@ -359,7 +363,7 @@ export const it = {
         playAce: ({ card }) => `Gioca ${card}. L'asso fa pescare gli altri e tu ottieni un turno bonus.`,
         draw: "Nessuna delle tue carte va bene. Pesca dal mazzo.",
         endTurn: "Le pescate sono finite e niente va bene. Il turno finisce.",
-        aceBonusPlay: ({ cards }) => `Usa il turno bonus: gioca ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Usa il turno bonus: gioca ${cards}. Conviene quando un gruppo esce in un colpo solo o la mano è già piccola e nessuno è a una carta dalla vittoria.`,
         aceBonusSkip: "Salta il turno bonus, ora non conviene.",
       },
       altName: "Otto matto",
@@ -423,13 +427,13 @@ export const it = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Cattura ${targets} con ${card}. Raccogli punti: picche, assi e le carte speciali.`,
+        capture: ({ card, targets }) => `Cattura ${targets} con ${card}. La cattura più preziosa: prima le carte punto (♦10, ♠2, assi), poi le picche, poi la quantità.`,
         captureMokki: ({ card }) => `Cattura tutto il tavolo con ${card}. È una scopa e vale un punto in più.`,
         takeOwnBuild: ({ card }) => `Cattura la tua costruzione con ${card}. Un avversario può avere una carta che te la ruba.`,
         takeOwnBuildSafe: ({ card }) => `Cattura la tua costruzione con ${card}. Nessuno può più rubarla, quindi i punti sono sicuri.`,
         stealBuild: ({ card }) => `Ruba la costruzione dell'avversario con ${card}. Gli togli una cattura già pronta.`,
         build: ({ card, value }) => `Costruisci il valore ${value} con ${card}. Hai un'altra carta per catturarla al turno seguente.`,
-        trail: ({ card }) => `Lascia ${card} sul tavolo. Ora non c'è una cattura vantaggiosa, e questa carta è la più sicura da lasciare.`,
+        trail: ({ card }) => `Lascia ${card} sul tavolo. Non c'è una cattura vantaggiosa, e questa è la carta che l'avversario ha meno probabilità di catturare. Le carte punto e gli assi restano in mano.`,
       },
       altName: "Cassino",
       desc: 'Cattura tutto il tavolo',
@@ -721,8 +725,8 @@ export const it = {
         attack: ({ cards }) => `Attacca con ${cards}. Scegli il valore di cui sono già uscite più carte, così ci saranno meno attacchi laterali. Conserva le briscole per la difesa.`,
         beat: ({ card, target }) => `Batti ${target} con ${card}. Basta la vincente più bassa, briscole solo quando sei costretto.`,
         take: "Non puoi battere tutte le carte sul tavolo. Prendile in mano.",
-        pass: ({ cards }) => `Passa l'attacco con ${cards}, così te la cavi tu stesso.`,
-        add: ({ card }) => `Gioca ${card} di fianco. Il difensore ha ancora carte da battere, quindi insisti.`,
+        pass: ({ cards }) => `Passa l'attacco con ${cards}. Basta la carta più bassa che va bene, le briscole si conservano.`,
+        add: ({ card }) => `Gioca ${card} di fianco: la carta più bassa non di briscola e senza coppia. Il difensore ha ancora carte da battere, quindi insisti.`,
         skipAdd: "Non aggiungere di fianco ora. Conserva le carte per un momento migliore.",
         noAdd: "Non hai nessuna carta da aggiungere di lato. Lascia proseguire il turno.",
       },

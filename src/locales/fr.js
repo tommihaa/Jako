@@ -288,7 +288,7 @@ export const fr = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Joue ${card}. Les petites cartes d'abord. Garde une carte-porte (6 ou 8) en main comme un verrou et ne l'ouvre que lorsque la même couleur compte au moins deux cartes que tu ne pourras pas jouer de sitôt.`,
+        play: ({ card }) => `Joue ${card}, la plus petite jouable. Garde une carte-porte (6 ou 8) en main comme un verrou et ne l'ouvre que lorsque la même couleur compte au moins deux cartes que tu ne pourras pas jouer de sitôt.`,
         playSeven: ({ card }) => `Joue ${card}. Ouvre un sept dans la couleur où tu as le plus de cartes.`,
         pass: "Aucune de tes cartes ne convient. Passe.",
         give: ({ card }) => `Donne ${card}, c'est la carte la plus loin d'être jouable.`,
@@ -351,6 +351,10 @@ export const fr = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Joue ${card}. C'est la seule carte qui convient.`,
+        playLeaveGroup: ({ card }) => `Joue ${card}. Il reste en main un groupe de même valeur, que tu pourras jouer d'un coup.`,
+        playNoPair: ({ card }) => `Joue ${card}, elle n'a pas de paire en main. Les paires sont gardées pour un jeu groupé.`,
+        playSeen: ({ card }) => `Joue ${card}. Sa valeur est celle qu'on a le plus vue, donc les autres ont le moins de quoi répondre.`,
         play: ({ cards, n }) => n > 1
           ? `Joue le groupe ${cards}. Plusieurs cartes à la fois vident la main au plus vite.`
           : `Joue ${cards}.`,
@@ -359,7 +363,7 @@ export const fr = {
         playAce: ({ card }) => `Joue ${card}. L'as fait piocher les autres et tu gagnes un tour bonus.`,
         draw: "Aucune de tes cartes ne convient. Pioche.",
         endTurn: "Les pioches sont épuisées et rien ne convient. Le tour se termine.",
-        aceBonusPlay: ({ cards }) => `Utilise le tour bonus : joue ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Utilise le tour bonus : joue ${cards}. Cela vaut le coup quand un groupe part d'un coup ou que la main est déjà petite et que personne n'est à une carte de la victoire.`,
         aceBonusSkip: "Laisse passer le tour bonus, il ne vaut pas le coup maintenant.",
       },
       altName: "Huit américain",
@@ -423,13 +427,13 @@ export const fr = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Capture ${targets} avec ${card}. Amasse des points : piques, as et les cartes spéciales.`,
+        capture: ({ card, targets }) => `Capture ${targets} avec ${card}. La capture la plus précieuse : d'abord les cartes à points (♦10, ♠2, as), puis les piques, puis le nombre.`,
         captureMokki: ({ card }) => `Capture toute la table avec ${card}. C'est une rafle et cela rapporte un point de plus.`,
         takeOwnBuild: ({ card }) => `Capture ta propre construction avec ${card}. Un adversaire peut avoir une carte qui la vole.`,
         takeOwnBuildSafe: ({ card }) => `Capture ta propre construction avec ${card}. Personne ne peut plus la voler, les points sont donc assurés.`,
         stealBuild: ({ card }) => `Vole la construction de l'adversaire avec ${card}. Tu lui enlèves une capture toute prête.`,
         build: ({ card, value }) => `Construis la valeur ${value} avec ${card}. Tu as une autre carte pour la capturer au tour suivant.`,
-        trail: ({ card }) => `Laisse ${card} sur la table. Il n'y a pas de capture avantageuse maintenant, et cette carte est la plus sûre à poser.`,
+        trail: ({ card }) => `Laisse ${card} sur la table. Il n'y a pas de capture avantageuse, et c'est la carte que l'adversaire a le moins de chances de capturer. Les cartes à points et les as restent en main.`,
       },
       altName: "Casino",
       desc: 'Capture toute la table',
@@ -721,8 +725,8 @@ export const fr = {
         attack: ({ cards }) => `Attaquez avec ${cards}. Choisissez la valeur dont le plus de cartes sont déjà sorties du jeu, il y aura moins d'attaques latérales. Gardez les atouts pour la défense.`,
         beat: ({ card, target }) => `Bats ${target} avec ${card}. La plus petite gagnante suffit, les atouts seulement quand tu y es forcé.`,
         take: "Tu ne peux pas battre toutes les cartes sur la table. Prends-les en main.",
-        pass: ({ cards }) => `Renvoie l'attaque avec ${cards}, et tu t'en sors toi-même.`,
-        add: ({ card }) => `Joue ${card} sur le côté. Le défenseur a encore des cartes à battre, alors insiste.`,
+        pass: ({ cards }) => `Renvoie l'attaque avec ${cards}. La plus petite carte qui convient suffit, les atouts sont gardés.`,
+        add: ({ card }) => `Joue ${card} sur le côté : la plus petite carte hors atout sans paire. Le défenseur a encore des cartes à battre, alors insiste.`,
         skipAdd: "N'ajoute pas sur le côté maintenant. Garde tes cartes pour un meilleur moment.",
         noAdd: "Tu n'as aucune carte à ajouter sur le côté. Laisse le tour continuer.",
       },

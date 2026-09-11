@@ -291,7 +291,7 @@ export const hu = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Játszd ki: ${card}. Előbb a kis lapok. A kapulapot (6 vagy 8) tartsd a kezedben zárként, és csak akkor nyisd meg, ha ugyanabban a színben legalább két olyan lapod van, amit egyhamar nem tudsz kijátszani.`,
+        play: ({ card }) => `Játszd ki: ${card}, a legkisebb kijátszható. A kapulapot (6 vagy 8) tartsd a kezedben zárként, és csak akkor nyisd meg, ha ugyanabban a színben legalább két olyan lapod van, amit egyhamar nem tudsz kijátszani.`,
         playSeven: ({ card }) => `Játszd ki: ${card}. Nyiss hetest abban a színben, amelyikből a legtöbb lapod van.`,
         pass: "Egyik lapod sem jó. Passzolj.",
         give: ({ card }) => `Add oda: ${card}, az van legtávolabb a kijátszhatóságtól.`,
@@ -354,6 +354,10 @@ export const hu = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Játszd ki: ${card}. Ez az egyetlen lap, ami passzol.`,
+        playLeaveGroup: ({ card }) => `Játszd ki: ${card}. A kezedben egy azonos értékű csoport marad, amit egyszerre kijátszhatsz.`,
+        playNoPair: ({ card }) => `Játszd ki: ${card}, nincs párja a kezedben. A párokat csoportos kijátszásra tartogatjuk.`,
+        playSeen: ({ card }) => `Játszd ki: ${card}. Ebből az értékből látszott a legtöbb, így a többieknek a legkevesebb válasza van rá.`,
         play: ({ cards, n }) => n > 1
           ? `Játszd ki a(z) ${cards} csoportot. Több lap egyszerre üríti leggyorsabban a kezed.`
           : `Játszd ki: ${cards}.`,
@@ -362,7 +366,7 @@ export const hu = {
         playAce: ({ card }) => `Játszd ki: ${card}. Az ász húzásra kényszeríti a többieket, te pedig bónuszkört kapsz.`,
         draw: "Egyik lapod sem jó. Húzz a pakliból.",
         endTurn: "A húzások elfogytak, és semmi sem jó. A kör véget ér.",
-        aceBonusPlay: ({ cards }) => `Használd ki a bónuszkört: játszd ki: ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Használd ki a bónuszkört: játszd ki: ${cards}. Akkor éri meg, ha egy csoport egyszerre elmegy, vagy a kezed már kicsi és senki sincs egy lapra a győzelemtől.`,
         aceBonusSkip: "Hagyd ki a bónuszkört, most nem éri meg.",
       },
       altName: 'Makaó',
@@ -426,13 +430,13 @@ export const hu = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Söpörd be ${targets} a(z) ${card} lappal. Gyűjts pontot: pikkek, ászok és a speciális lapok.`,
+        capture: ({ card, targets }) => `Söpörd be ${targets} a(z) ${card} lappal. A legértékesebb begyűjtés: először a pontlapok (♦10, ♠2, ászok), aztán a pikkek, aztán a darabszám.`,
         captureMokki: ({ card }) => `Söpörd be az egész asztalt a(z) ${card} lappal. Ez söprés, és egy pluszpontot ér.`,
         takeOwnBuild: ({ card }) => `Söpörd be a saját építményedet a(z) ${card} lappal. Az ellenfélnél lehet lap, amivel ellopja.`,
         takeOwnBuildSafe: ({ card }) => `Söpörd be a saját építményedet a(z) ${card} lappal. Már senki nem tudja ellopni, így a pontok biztosak.`,
         stealBuild: ({ card }) => `Lopd el az ellenfél építményét a(z) ${card} lappal. Egy kész begyűjtést veszel el tőle.`,
         build: ({ card, value }) => `Építs ${value} értéket a(z) ${card} lappal. Van másik lapod, amivel a következő körben besöpröd.`,
-        trail: ({ card }) => `Hagyd az asztalon a(z) ${card} lapot. Most nincs kifizetődő begyűjtés, és ezt a lapot a legbiztonságosabb letenni.`,
+        trail: ({ card }) => `Hagyd az asztalon a(z) ${card} lapot. Nincs kifizetődő begyűjtés, és ezt a lapot gyűjti be az ellenfél a legkisebb eséllyel. A pontlapok és az ászok kézben maradnak.`,
       },
       altName: 'Cassino',
       desc: 'Söpörd be az egész asztalt',
@@ -724,8 +728,8 @@ export const hu = {
         attack: ({ cards }) => `Támadj ezzel: ${cards}. Válaszd azt az értéket, amelyből már a legtöbb lap kikerült a játékból, így kevesebb oldaltámadás lesz. Tartogasd az adukat védekezésre.`,
         beat: ({ card, target }) => `Üsd a(z) ${target} lapot a(z) ${card} lappal. A legkisebb nyerő is elég, adut csak kényszerből.`,
         take: "Nem tudod az összes asztali lapot ütni. Vedd fel őket a kezedbe.",
-        pass: ({ cards }) => `Told tovább a támadást a(z) ${cards} lappal, és magad megúszod.`,
-        add: ({ card }) => `Tegyél be oldalról ${card} lapot. A védőnek még van mivel ütnie, úgyhogy nyomd rá.`,
+        pass: ({ cards }) => `Told tovább a támadást a(z) ${cards} lappal. A legkisebb megfelelő is elég, az adukat tartogatjuk.`,
+        add: ({ card }) => `Tegyél be oldalról ${card} lapot: a legkisebb nem adu, aminek nincs párja. A védőnek még van mivel ütnie, úgyhogy nyomd rá.`,
         skipAdd: "Most ne tegyél be oldalról. Tartsd meg a lapjaidat jobb pillanatra.",
         noAdd: "Nincs olyan lapod, amit oldalról hozzátehetnél. Hagyd, hogy a kör folytatódjon.",
       },

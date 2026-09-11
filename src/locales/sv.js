@@ -288,7 +288,7 @@ export const sv = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Spela ${card}. Låga kort först. Behåll portkortet (6 eller 8) på hand som ett lås, och öppna det först när samma färg har minst två kort du inte kan spela på ett tag.`,
+        play: ({ card }) => `Spela ${card}, det lägsta spelbara. Behåll portkortet (6 eller 8) på hand som ett lås, och öppna det först när samma färg har minst två kort du inte kan spela på ett tag.`,
         playSeven: ({ card }) => `Spela ${card}. Öppna en sjua i färgen där du har flest kort.`,
         pass: "Inget av dina kort passar. Passa.",
         give: ({ card }) => `Ge ${card}, det är längst från spelbart.`,
@@ -351,6 +351,10 @@ export const sv = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Spela ${card}. Det är det enda kortet som passar.`,
+        playLeaveGroup: ({ card }) => `Spela ${card}. Kvar på hand blir en grupp med samma valör, som du kan spela på en gång.`,
+        playNoPair: ({ card }) => `Spela ${card}, det har inget par på hand. Paren sparas till en gruppspelning.`,
+        playSeen: ({ card }) => `Spela ${card}. Dess valör har setts mest, så de andra har minst att svara med.`,
         play: ({ cards, n }) => n > 1
           ? `Spela gruppen ${cards}. Flera kort på en gång tömmer handen snabbast.`
           : `Spela ${cards}.`,
@@ -359,7 +363,7 @@ export const sv = {
         playAce: ({ card }) => `Spela ${card}. Ässet tvingar de andra att dra och du får en bonustur.`,
         draw: "Inget av dina kort passar. Dra från leken.",
         endTurn: "Dragen är slut och inget passar. Turen tar slut.",
-        aceBonusPlay: ({ cards }) => `Använd bonusturen: spela ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Använd bonusturen: spela ${cards}. Det lönar sig när en grupp går ut på en gång eller handen redan är liten och ingen är ett kort från vinst.`,
         aceBonusSkip: "Hoppa över bonusturen, den lönar sig inte nu.",
       },
       altName: "Vändåtta",
@@ -423,13 +427,13 @@ export const sv = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Fånga ${targets} med ${card}. Samla poäng: spader, ess och specialkorten.`,
+        capture: ({ card, targets }) => `Fånga ${targets} med ${card}. Den värdefullaste fångsten: först poängkorten (♦10, ♠2, ess), sedan spader, sedan antal.`,
         captureMokki: ({ card }) => `Fånga hela bordet med ${card}. Det är ett svep och ger en extrapoäng.`,
         takeOwnBuild: ({ card }) => `Fånga ditt eget bygge med ${card}. En motståndare kan ha ett kort som stjäl det.`,
         takeOwnBuildSafe: ({ card }) => `Fånga ditt eget bygge med ${card}. Ingen kan stjäla det längre, så poängen är säkra.`,
         stealBuild: ({ card }) => `Stjäl motståndarens bygge med ${card}. Det tar en färdig fångst ifrån honom.`,
         build: ({ card, value }) => `Bygg värde ${value} med ${card}. Du har ett annat kort att fånga det med nästa tur.`,
-        trail: ({ card }) => `Lägg ${card} på bordet. Ingen lönsam fångst finns nu, och det här kortet är säkrast att lämna.`,
+        trail: ({ card }) => `Lägg ${card} på bordet. Ingen lönsam fångst finns, och det här är kortet motståndaren minst sannolikt fångar. Poängkort och ess stannar på hand.`,
       },
       altName: "Kasino",
       desc: 'Fånga hela bordet',
@@ -721,8 +725,8 @@ export const sv = {
         attack: ({ cards }) => `Anfall med ${cards}. Välj valören som har flest kort redan ute ur spelet, så blir det färre sidoanfall. Spara trumf till försvaret.`,
         beat: ({ card, target }) => `Slå ${target} med ${card}. Det minsta vinnande räcker, trumf först när du måste.`,
         take: "Du kan inte slå alla kort på bordet. Ta upp dem på handen.",
-        pass: ({ cards }) => `Skjut vidare anfallet med ${cards}, så slipper du undan själv.`,
-        add: ({ card }) => `Lägg ${card} från sidan. Försvararen har fortfarande kort att slå med, så tryck på.`,
+        pass: ({ cards }) => `Skjut vidare anfallet med ${cards}. Det lägsta passande räcker, trumfen sparas.`,
+        add: ({ card }) => `Lägg ${card} från sidan: det lägsta icke-trumfkortet utan par. Försvararen har fortfarande kort att slå med, så tryck på.`,
         skipAdd: "Lägg inte från sidan nu. Spara korten till ett bättre tillfälle.",
         noAdd: "Du har inget kort att lägga till från sidan. Låt turen fortsätta.",
       },

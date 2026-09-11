@@ -292,7 +292,7 @@ export const en = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Play ${card}. Low cards out first. Keep a gate card (6 or 8) in hand as a lock, and open it only when that suit holds at least two cards you cannot play soon.`,
+        play: ({ card }) => `Play ${card}, the lowest playable. Keep a gate card (6 or 8) in hand as a lock, and open it only when that suit holds at least two cards you cannot play soon.`,
         playSeven: ({ card }) => `Play ${card}. Open a seven in the suit where you hold the most cards.`,
         pass: "None of your cards fit. Pass.",
         give: ({ card }) => `Give ${card}, it is the furthest from playable.`,
@@ -355,6 +355,10 @@ export const en = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Play ${card}. It is the only card that fits.`,
+        playLeaveGroup: ({ card }) => `Play ${card}. It leaves a group of equal rank in hand, which you can play in one go.`,
+        playNoPair: ({ card }) => `Play ${card}, it has no pair in hand. Pairs are saved for a group play.`,
+        playSeen: ({ card }) => `Play ${card}. Its rank has been seen the most, so the others have the least to answer with.`,
         play: ({ cards, n }) => n > 1
           ? `Play the group ${cards}. Multiple cards at once empties your hand fastest.`
           : `Play ${cards}.`,
@@ -363,7 +367,7 @@ export const en = {
         playAce: ({ card }) => `Play ${card}. The ace makes the others draw and you get a bonus turn.`,
         draw: "None of your cards fit. Draw from the deck.",
         endTurn: "Draws are used up and nothing fits. Your turn ends.",
-        aceBonusPlay: ({ cards }) => `Use the bonus turn: play ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Use the bonus turn: play ${cards}. Worth it when a group goes out at once or your hand is already small and nobody is one card from winning.`,
         aceBonusSkip: "Skip the bonus turn, it is not worth it now.",
       },
       desc: 'A UNO-style race to empty your hand',
@@ -427,13 +431,13 @@ export const en = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Capture ${targets} with ${card}. Gather points: spades, aces and the special cards.`,
+        capture: ({ card, targets }) => `Capture ${targets} with ${card}. The most valuable capture: point cards first (♦10, ♠2, aces), then spades, then count.`,
         captureMokki: ({ card }) => `Capture the whole table with ${card}. It is a sweep and scores an extra point.`,
         takeOwnBuild: ({ card }) => `Capture your own build with ${card}. An opponent may hold a card that steals it.`,
         takeOwnBuildSafe: ({ card }) => `Capture your own build with ${card}. Nobody can steal it any more, so the points are safe.`,
         stealBuild: ({ card }) => `Steal the opponent's build with ${card}. It takes a ready capture away from them.`,
         build: ({ card, value }) => `Build value ${value} with ${card}. You hold another card to capture it with next turn.`,
-        trail: ({ card }) => `Trail ${card} to the table. There is no worthwhile capture now, and this card is the safest to leave.`,
+        trail: ({ card }) => `Trail ${card} to the table. There is no worthwhile capture, and this is the card the opponent is least likely to capture. Point cards and aces stay in hand.`,
       },
       desc: 'Capture the whole table',
       altName: "Cassino",
@@ -729,8 +733,8 @@ export const en = {
         attack: ({ cards }) => `Attack with ${cards}. Pick the rank with the most copies already out of play, so there are fewer side attacks. Save trumps for defence.`,
         beat: ({ card, target }) => `Beat ${target} with ${card}. The smallest winner is enough, trumps only when forced.`,
         take: "You cannot beat every card on the table. Take them into your hand.",
-        pass: ({ cards }) => `Pass the attack on with ${cards}, and you get off the hook yourself.`,
-        add: ({ card }) => `Play ${card} from the side. The defender still has cards to beat, so pile it on.`,
+        pass: ({ cards }) => `Pass the attack on with ${cards}. The lowest fitting card is enough, trumps are saved.`,
+        add: ({ card }) => `Play ${card} from the side: the lowest non-trump without a pair. The defender still has cards to beat, so pile it on.`,
         skipAdd: "Do not add from the side now. Save your cards for a better moment.",
         noAdd: "You have no card you could add from the side. Let the turn continue.",
       },

@@ -288,7 +288,7 @@ export const pt = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Joga ${card}. Cartas baixas primeiro. Guarda uma carta-porta (6 ou 8) na mão como tranca e só a abres quando esse naipe tiver pelo menos duas cartas que não vais poder jogar tão cedo.`,
+        play: ({ card }) => `Joga ${card}, a mais baixa jogável. Guarda uma carta-porta (6 ou 8) na mão como tranca e só a abres quando esse naipe tiver pelo menos duas cartas que não vais poder jogar tão cedo.`,
         playSeven: ({ card }) => `Joga ${card}. Abre um sete no naipe em que tens mais cartas.`,
         pass: "Nenhuma das tuas cartas serve. Passa.",
         give: ({ card }) => `Entrega ${card}, é a que está mais longe de ser jogável.`,
@@ -351,6 +351,10 @@ export const pt = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Joga ${card}. É a única carta que serve.`,
+        playLeaveGroup: ({ card }) => `Joga ${card}. Fica na mão um grupo do mesmo valor, que podes jogar de uma vez.`,
+        playNoPair: ({ card }) => `Joga ${card}, não tem par na mão. Os pares guardam-se para jogar em grupo.`,
+        playSeen: ({ card }) => `Joga ${card}. O valor dela é o mais visto, por isso os outros têm menos com que responder.`,
         play: ({ cards, n }) => n > 1
           ? `Joga o grupo ${cards}. Várias cartas de uma vez esvaziam a mão mais depressa.`
           : `Joga ${cards}.`,
@@ -359,7 +363,7 @@ export const pt = {
         playAce: ({ card }) => `Joga ${card}. O ás faz os outros comprarem e tu ganhas um turno bónus.`,
         draw: "Nenhuma das tuas cartas serve. Compra do baralho.",
         endTurn: "As compras esgotaram-se e nada serve. O turno termina.",
-        aceBonusPlay: ({ cards }) => `Usa o turno bónus: joga ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Usa o turno bónus: joga ${cards}. Compensa quando um grupo sai de uma vez ou a mão já é pequena e ninguém está a uma carta de ganhar.`,
         aceBonusSkip: "Dispensa o turno bónus, agora não compensa.",
       },
       altName: "Mau-Mau",
@@ -423,13 +427,13 @@ export const pt = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Captura ${targets} com ${card}. Junta pontos: espadas, ases e as cartas especiais.`,
+        capture: ({ card, targets }) => `Captura ${targets} com ${card}. A captura mais valiosa: primeiro as cartas de pontos (♦10, ♠2, ases), depois as espadas, depois a quantidade.`,
         captureMokki: ({ card }) => `Captura a mesa toda com ${card}. É uma varridela e vale um ponto extra.`,
         takeOwnBuild: ({ card }) => `Captura a tua própria construção com ${card}. Um adversário pode ter uma carta que a rouba.`,
         takeOwnBuildSafe: ({ card }) => `Captura a tua própria construção com ${card}. Já ninguém a pode roubar, por isso os pontos estão garantidos.`,
         stealBuild: ({ card }) => `Rouba a construção do adversário com ${card}. Tiras-lhe uma captura já pronta.`,
         build: ({ card, value }) => `Constrói o valor ${value} com ${card}. Tens outra carta para a capturar na jogada seguinte.`,
-        trail: ({ card }) => `Deixa ${card} na mesa. Não há captura vantajosa agora, e esta carta é a mais segura para largar.`,
+        trail: ({ card }) => `Deixa ${card} na mesa. Não há captura vantajosa, e esta é a carta que o adversário tem menos probabilidade de capturar. As cartas de pontos e os ases ficam na mão.`,
       },
       altName: "Casino",
       desc: 'Captura a mesa inteira',
@@ -721,8 +725,8 @@ export const pt = {
         attack: ({ cards }) => `Ataca com ${cards}. Escolhe o valor de que já saíram mais cartas, assim haverá menos ataques laterais. Guarda os trunfos para a defesa.`,
         beat: ({ card, target }) => `Vence ${target} com ${card}. Basta a vencedora mais baixa, trunfos só quando fores obrigado.`,
         take: "Não consegues vencer todas as cartas na mesa. Recolhe-as para a mão.",
-        pass: ({ cards }) => `Passa o ataque com ${cards}, e assim livras-te tu mesmo.`,
-        add: ({ card }) => `Joga ${card} pelo lado. O defensor ainda tem cartas para vencer, por isso insiste.`,
+        pass: ({ cards }) => `Passa o ataque com ${cards}. Basta a carta mais baixa que sirva, os trunfos guardam-se.`,
+        add: ({ card }) => `Joga ${card} pelo lado: a carta mais baixa que não é trunfo e não tem par. O defensor ainda tem cartas para vencer, por isso insiste.`,
         skipAdd: "Não juntes pelo lado agora. Guarda as cartas para um momento melhor.",
         noAdd: "Não tens nenhuma carta para juntar pelo lado. Deixa o turno continuar.",
       },

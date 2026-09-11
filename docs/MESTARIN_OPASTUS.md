@@ -175,15 +175,17 @@ ei muutu eikä Botbench liiku.
 | kasino `trail` | Jätä {card} pöytään. Kannattavaa kaappausta ei ole, ja tämä on kortti jonka vastustaja epätodennäköisimmin kaappaa. Pistekortit ja ässät pysyvät kädessä. |
 | ristiseiska `play` | Lyö {card}, pienin pelattava. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan. |
 
-Seuraavan session työlista (kaikki kuitattu 11.9.2026, mitään ei ole aloitettu koodissa):
+Työlista (kuitattu 11.9.2026; kohdat 1–3 tehty 11.9.2026, kohdat 4–5 auki):
 
-1. Nämä kymmenen tekstiä fi.js:ään ja 22 muuhun localeen (insert-after-anchor pelilohkon
-   `advice: {` sisään; Seiskan `play` jää ryhmätekstiksi).
-2. Seiskan `getAdvice` luokittelee yksittäisen kortin haaran jälkikäteen: ainoa käypä →
-   `playOnly`; 3–5 kortin käsi ja jää samanarvoinen ryhmä → `playLeaveGroup`; pariton
-   kandidaatti kun parillisiakin oli → `playNoPair`; muuten `playSeen`. Ei muutosta
-   `aiBestPlay`hin.
-3. `MESTARIN_NEUVO.md`: merkintä sääntötason vaatimuksesta ja tämä auditointi.
+1. **Tehty 11.9.2026.** Nämä kymmenen tekstiä fi.js:ään ja 22 muuhun localeen (insert-after-anchor
+   pelilohkon `advice: {` sisään; Seiskan `play` jää ryhmätekstiksi).
+2. **Tehty 11.9.2026.** Seiskan `getAdvice` luokittelee yksittäisen kortin haaran jälkikäteen
+   (`classifySingle`): ainoa käypä → `playOnly`; 3–5 kortin käsi ja jää samanarvoinen ryhmä →
+   `playLeaveGroup`; pariton kandidaatti kun parillisiakin oli → `playNoPair`; muuten `playSeen`.
+   Ei muutosta `aiBestPlay`hin, `neuvo-sauma`-testi vihreä. Yksi tulkinta kirjattiin koodiin:
+   "ainoa käypä" lasketaan ei-seiskoista, koska `aiBestPlay` ei koskaan suosi seiskaa. Jos
+   kädessä on yksi käypä ei-seiska ja lisäksi käypä seiska, teksti sanoo silti "ainoa käypä".
+3. **Tehty 11.9.2026.** `MESTARIN_NEUVO.md`: merkintä sääntötason vaatimuksesta ja tämä auditointi.
 4. Erillinen sääntötyö `SEISKA.md` (commit bc4de50): erikoiskortti viimeisenä vain saman
    erikoiskortin päälle, lyöjä nostaa kortin. Koodi `canSingle` (isLast-haara katsoo
    `discardTop.r`) ja `doPlay` (tyhjä käsi erikoiskortilla → nosto ennen voittotarkistusta,

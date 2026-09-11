@@ -119,6 +119,27 @@ löydöksessä 2). Tarkastetut väitteet ovat lajitteluavaimia ja sääntölupau
 on eniten"* (`maijaPickAttack`, valtit ja Maija suljettu pois) ja Kasinon *"sinulla on toinen
 kortti jolla kaappaat sen seuraavaksi"* (`findAIBuild` vaatii kaappaajan olemassaolon).
 
+## Sääntötaso: vaatimus kiristyi 11.9.2026
+
+Mestarin opastus antaa palautteen "Eri valinta" kun pelaajan kortti ei ole Mestarin kortti.
+Seiskan pelitestissä palaute rankaisi säännöstä jota teksti "Lyö K♠." ei ollut opettanut, ja
+Tommi päätti että korjaus on kaanoni eikä koodi: osuma pysyy avainten yhtäsuuruutena, ja
+jokainen kortin nimeävä teksti kertoo säännön jolla kortti erottui vaihtoehdoista.
+
+Vaatimus on siis tiukempi kuin 18.8.2026 auditoinnin. Silloin riitti ettei teksti väitä väärää
+avainta; nyt tekstin on nimettävä avain. Sitä vasten luettuna 52 tekstistä seitsemän jäi vajaaksi
+(Seiska `play` yksittäinen kortti ja `aceBonusPlay`, Moska `add` ja `pass`, Kasino `capture` ja
+`trail`, Ristiseiska `play`), ja yllä "Puhtaat"-kohdassa puhtaaksi luettu Seiska ja Kasino ovat
+puhtaita vain vanhalla vaatimuksella. Taulukko avaimineen ja Tommin kuittaamat tekstit ovat
+`MESTARIN_OPASTUS.md`:n kohdassa "Osuma ja sääntötaso".
+
+Toteutus 11.9.2026: kymmenen tekstiä 23 kieleen, ja Seiskan `getAdvice` nimeää yksittäisen
+kortin haaran jälkikäteen (`classifySingle`: `playOnly`, `playLeaveGroup`, `playNoPair`,
+`playSeen`) samoilla ehdoilla ja samassa järjestyksessä kuin `aiBestPlay`. Luokittelu ei
+valitse mitään, joten tämän dokumentin rakennesuoja (sama valintafunktio) säilyy: uusi
+ajautumapinta on se, että `classifySingle`n ehdot eroaisivat `aiBestPlay`n ehdoista. Kun
+muutat `aiBestPlay`n yksittäisen kortin haaraa, muuta `classifySingle` samassa muutoksessa.
+
 ## Miksi tästä ei tehty konetarkistinta
 
 Neuvoteksti on proosaa ja sen väite on tarkoitus, ei merkkijono. `Kaanon/TYÖTAVAT.md`:n portin

@@ -291,7 +291,7 @@ export const rom = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Khel ${card}. Anglune e cikne karti. Inker e vudareski karta (6 vaj 8) ando vast sar phandipe, thaj putar la numa kana ande godi farba si tut duj karti so našti khelen sigo.`,
+        play: ({ card }) => `Khel ${card}, e majcikni so šaj khelel pe. Inker e vudareski karta (6 vaj 8) ando vast sar phandipe, thaj putar la numa kana ande godi farba si tut duj karti so našti khelen sigo.`,
         playSeven: ({ card }) => `Khel ${card}. Putar jekh efta ande farba kaj si tut maj but karti.`,
         pass: "Nijekh ćiri karta či perel. Phen paso.",
         give: ({ card }) => `De ${card}, voj si maj dur katar o khelipe.`,
@@ -354,6 +354,10 @@ export const rom = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Khel ${card}. Si e jekhutni karta so avel.`,
+        playLeaveGroup: ({ card }) => `Khel ${card}. Ando vast ačhel jekh grupa la sa godja valoraha, savi šaj khelen jekhvar.`,
+        playNoPair: ({ card }) => `Khel ${card}, la naj para ando vast. Le para arakhen pe grupako khelipe.`,
+        playSeen: ({ card }) => `Khel ${card}. Laki valora dikhli pe majbut, kade le avren si majcera so te den palpale.`,
         play: ({ cards, n }) => n > 1
           ? `Khel e grupa ${cards}. Maj but karti jekhvar čhuden o vast maj sigo.`
           : `Khel ${cards}.`,
@@ -362,7 +366,7 @@ export const rom = {
         playAce: ({ card }) => `Khel ${card}. O as kerel le averen te len karti thaj tu les bonuso redo.`,
         draw: "Nijekh ćiri karta či perel. Le andar o pako.",
         endTurn: "Naj maj limata thaj khanči či perel. O redo getol pe.",
-        aceBonusPlay: ({ cards }) => `Užisar o bonuso redo: khel ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Užisar o bonuso redo: khel ${cards}. Mol kana jekh grupa žal jekhvar vaj o vast si aba cikno thaj khonik naj jekh karta dur katar o vuvipe.`,
         aceBonusSkip: "Muk o bonuso redo, akana či mol.",
       },
       altName: 'Mau-Mau',
@@ -426,13 +430,13 @@ export const rom = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Le ${targets} la ${card} kartaha. Ćiden pochti: la, asurja thaj le spečialna kartja.`,
+        capture: ({ card, targets }) => `Le ${targets} la ${card} kartaha. O majkuč liipe: anglal le pochtenge kartja (♦10, ♠2, asurja), pala kodo le la, pala kodo o gin.`,
         captureMokki: ({ card }) => `Le sa e skafidi la ${card} kartaha. Si jekh kher thaj del jekh pochti majbut.`,
         takeOwnBuild: ({ card }) => `Le ćiro vazdipe la ${card} kartaha. O dušmano šaj avel les karta savjaha čorel les.`,
         takeOwnBuildSafe: ({ card }) => `Le ćiro vazdipe la ${card} kartaha. Khonik našti maj čorel les, anda kodo e punkti si sigurni.`,
         stealBuild: ({ card }) => `Čor o vazdipe le dušmanosko la ${card} kartaha. Les lestar jekh gata liipe.`,
         build: ({ card, value }) => `Vazde e vrednota ${value} la ${card} kartaha. Si tut aver kart te les les pe aver rig.`,
-        trail: ({ card }) => `Mek ${card} pe skafidi. Akana naj lačho liipe, thaj kadja kart si e majsigurni te mekes.`,
+        trail: ({ card }) => `Mek ${card} pe skafidi. Naj lačho liipe, thaj kadja si e karta savi o dušmano lel majcera. Le pochtenge kartja thaj le asurja ačhen ando vast.`,
       },
       altName: 'Kasino',
       desc: 'Le sa i skafidi',
@@ -724,8 +728,8 @@ export const rom = {
         attack: ({ cards }) => `Marde le ${cards}. Alav o mol savestar avile avri maj but karti, kadja avena maj xanci marimata rigate. Garav le trumfuria pala zumaviba.`,
         beat: ({ card, target }) => `Mar ${target} la ${card} kartaha. Dosta si e majcikni kaj marel, trumfurja numaj kana trubul.`,
         take: "Naštik marés sa le kartja pe skafidi. Le len ando vast.",
-        pass: ({ cards }) => `Bičhal o napaipe angle la ${cards}, thaj korkoro našes.`,
-        add: ({ card }) => `Khel ${card} katar e rig. Le arakhitores si vi kartja te marel, anda kodo cider.`,
+        pass: ({ cards }) => `Bičhal o napaipe angle la ${cards}. Dosta si e majcikni so avel, le trumfurja arakhen pe.`,
+        add: ({ card }) => `Khel ${card} katar e rig: e majcikni karta so naj trumfo thaj naj la para. Le arakhitores si vi kartja te marel, anda kodo cider.`,
         skipAdd: "Na thov akana katar e rig. Garav le kartja pe majlačhi vrjama.",
         noAdd: "Naj tut karta savi šaj thos rigate. Muk o than te džal maj dur.",
       },

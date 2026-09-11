@@ -288,7 +288,7 @@ export const es = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Juega ${card}. Las cartas bajas primero. Guarda una carta puerta (6 u 8) en la mano como cerrojo y ábrela solo cuando ese palo tenga al menos dos cartas que no podrás jugar pronto.`,
+        play: ({ card }) => `Juega ${card}, la más baja jugable. Guarda una carta puerta (6 u 8) en la mano como cerrojo y ábrela solo cuando ese palo tenga al menos dos cartas que no podrás jugar pronto.`,
         playSeven: ({ card }) => `Juega ${card}. Abre un siete en el palo donde tienes más cartas.`,
         pass: "Ninguna de tus cartas sirve. Pasa.",
         give: ({ card }) => `Entrega ${card}, es la que está más lejos de ser jugable.`,
@@ -351,6 +351,10 @@ export const es = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Juega ${card}. Es la única carta que encaja.`,
+        playLeaveGroup: ({ card }) => `Juega ${card}. En la mano queda un grupo del mismo valor, que podrás jugar de una vez.`,
+        playNoPair: ({ card }) => `Juega ${card}, no tiene pareja en la mano. Las parejas se guardan para jugarlas en grupo.`,
+        playSeen: ({ card }) => `Juega ${card}. Su valor es el que más se ha visto, así que los demás tienen menos con qué responder.`,
         play: ({ cards, n }) => n > 1
           ? `Juega el grupo ${cards}. Varias cartas a la vez vacían la mano más rápido.`
           : `Juega ${cards}.`,
@@ -359,7 +363,7 @@ export const es = {
         playAce: ({ card }) => `Juega ${card}. El as hace robar a los demás y tú ganas un turno extra.`,
         draw: "Ninguna de tus cartas sirve. Roba del mazo.",
         endTurn: "Los robos se agotaron y nada sirve. El turno termina.",
-        aceBonusPlay: ({ cards }) => `Usa el turno extra: juega ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Usa el turno extra: juega ${cards}. Compensa cuando un grupo sale de una vez o la mano ya es pequeña y nadie está a una carta de ganar.`,
         aceBonusSkip: "Deja pasar el turno extra, ahora no compensa.",
       },
       altName: "Ocho loco",
@@ -423,13 +427,13 @@ export const es = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Captura ${targets} con ${card}. Reúne puntos: picas, ases y las cartas especiales.`,
+        capture: ({ card, targets }) => `Captura ${targets} con ${card}. La captura más valiosa: primero las cartas de puntos (♦10, ♠2, ases), luego las picas, luego la cantidad.`,
         captureMokki: ({ card }) => `Captura toda la mesa con ${card}. Es un barrido y da un punto extra.`,
         takeOwnBuild: ({ card }) => `Captura tu propia construcción con ${card}. Un rival puede tener una carta que te la robe.`,
         takeOwnBuildSafe: ({ card }) => `Captura tu propia construcción con ${card}. Ya nadie puede robarla, así que los puntos son seguros.`,
         stealBuild: ({ card }) => `Roba la construcción del rival con ${card}. Le quitas una captura ya lista.`,
         build: ({ card, value }) => `Construye el valor ${value} con ${card}. Tienes otra carta para capturarla en el próximo turno.`,
-        trail: ({ card }) => `Deja ${card} en la mesa. No hay captura provechosa ahora, y esta carta es la más segura de soltar.`,
+        trail: ({ card }) => `Deja ${card} en la mesa. No hay captura provechosa, y esta es la carta que el rival tiene menos probabilidad de capturar. Las cartas de puntos y los ases se quedan en la mano.`,
       },
       altName: "Casino",
       desc: 'Captura toda la mesa',
@@ -721,8 +725,8 @@ export const es = {
         attack: ({ cards }) => `Ataca con ${cards}. Elige el valor del que ya han salido más cartas, así habrá menos ataques laterales. Guarda los triunfos para la defensa.`,
         beat: ({ card, target }) => `Vence ${target} con ${card}. Basta la ganadora más baja, triunfos solo cuando no haya remedio.`,
         take: "No puedes vencer todas las cartas de la mesa. Recógelas en la mano.",
-        pass: ({ cards }) => `Pasa el ataque con ${cards}, y así te libras tú mismo.`,
-        add: ({ card }) => `Juega ${card} por el lado. El defensor aún tiene cartas que vencer, así que insiste.`,
+        pass: ({ cards }) => `Pasa el ataque con ${cards}. Basta la carta más baja que sirva, los triunfos se guardan.`,
+        add: ({ card }) => `Juega ${card} por el lado: la carta más baja que no es triunfo y no tiene pareja. El defensor aún tiene cartas que vencer, así que insiste.`,
         skipAdd: "No añadas por el lado ahora. Guarda tus cartas para un mejor momento.",
         noAdd: "No tienes ninguna carta que añadir por el lado. Deja que el turno siga.",
       },

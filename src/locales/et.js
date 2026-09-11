@@ -288,7 +288,7 @@ export const et = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Mängi ${card}. Väikesed kaardid enne. Hoia väravakaarti (6 või 8) käes lukuna ja ava see alles siis, kui samas mastis on vähemalt kaks kaarti, mida sa niipea mängida ei saa.`,
+        play: ({ card }) => `Mängi ${card}, väikseim mängitav. Hoia väravakaarti (6 või 8) käes lukuna ja ava see alles siis, kui samas mastis on vähemalt kaks kaarti, mida sa niipea mängida ei saa.`,
         playSeven: ({ card }) => `Mängi ${card}. Ava seitse mastis, kus sul on kõige rohkem kaarte.`,
         pass: "Ükski su kaart ei sobi. Passi.",
         give: ({ card }) => `Anna ${card}, see on mängitavusest kõige kaugemal.`,
@@ -351,6 +351,10 @@ export const et = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Mängi ${card}. See on ainus sobiv kaart.`,
+        playLeaveGroup: ({ card }) => `Mängi ${card}. Kätte jääb sama väärtusega rühm, mille saad korraga mängida.`,
+        playNoPair: ({ card }) => `Mängi ${card}, sellel pole käes paari. Paarid hoitakse rühmakäiguks.`,
+        playSeen: ({ card }) => `Mängi ${card}. Selle väärtust on nähtud kõige rohkem, nii et teistel on kõige vähem vastata.`,
         play: ({ cards, n }) => n > 1
           ? `Mängi grupp ${cards}. Mitu kaarti korraga tühjendab kätt kõige kiiremini.`
           : `Mängi ${cards}.`,
@@ -359,7 +363,7 @@ export const et = {
         playAce: ({ card }) => `Mängi ${card}. Äss paneb teised kaarte võtma ja sina saad boonuskäigu.`,
         draw: "Ükski su kaart ei sobi. Võta pakist.",
         endTurn: "Võtmised on otsas ja miski ei sobi. Käik lõpeb.",
-        aceBonusPlay: ({ cards }) => `Kasuta boonuskäiku: mängi ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Kasuta boonuskäiku: mängi ${cards}. Tasub ära, kui rühm läheb korraga või käsi on juba väike ja keegi pole ühe kaardi kaugusel võidust.`,
         aceBonusSkip: "Jäta boonuskäik vahele, praegu ei tasu see ära.",
       },
       altName: "Mau-Mau",
@@ -423,13 +427,13 @@ export const et = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Haara ${targets} kaardiga ${card}. Kogu punkte: potid, ässad ja erikaardid.`,
+        capture: ({ card, targets }) => `Haara ${targets} kaardiga ${card}. Kõige väärtuslikum haaramine: enne punktikaardid (♦10, ♠2, ässad), siis potid, siis arv.`,
         captureMokki: ({ card }) => `Haara kogu laud kaardiga ${card}. See on mökki ja annab lisapunkti.`,
         takeOwnBuild: ({ card }) => `Haara oma ehitis kaardiga ${card}. Vastasel võib olla kaart, millega ta selle varastab.`,
         takeOwnBuildSafe: ({ card }) => `Haara oma ehitis kaardiga ${card}. Keegi ei saa seda enam varastada, seega punktid on kindlad.`,
         stealBuild: ({ card }) => `Varasta vastase ehitis kaardiga ${card}. Võtad talt valmis haaramise ära.`,
         build: ({ card, value }) => `Ehita väärtus ${value} kaardiga ${card}. Sul on teine kaart, millega see järgmisel käigul haarata.`,
-        trail: ({ card }) => `Jäta ${card} lauale. Kasulikku haaramist praegu pole ja see kaart on kõige turvalisem maha jätta.`,
+        trail: ({ card }) => `Jäta ${card} lauale. Kasulikku haaramist pole ja see on kaart, mille vastane kõige ebatõenäolisemalt haarab. Punktikaardid ja ässad jäävad kätte.`,
       },
       altName: "Kasiino",
       desc: 'Haara kogu laud',
@@ -721,8 +725,8 @@ export const et = {
         attack: ({ cards }) => `Ründa kaardiga ${cards}. Vali väärtus, millest on juba kõige rohkem kaarte mängust väljas, siis on vähem kõrvalrünnakuid. Hoia trumbid kaitseks.`,
         beat: ({ card, target }) => `Löö ${target} kaardiga ${card}. Väikseim võitev piisab, trumbid alles sunni korral.`,
         take: "Sa ei suuda kõiki laual olevaid kaarte lüüa. Võta need kätte.",
-        pass: ({ cards }) => `Lükka rünnak edasi kaardiga ${cards}, nii pääsed ise puhtalt.`,
-        add: ({ card }) => `Mängi ${card} küljelt. Kaitsjal on veel kaarte lüüa, nii et suru peale.`,
+        pass: ({ cards }) => `Lükka rünnak edasi kaardiga ${cards}. Väikseim sobiv piisab, trumbid hoitakse alles.`,
+        add: ({ card }) => `Mängi ${card} küljelt: väikseim mittetrump, millel pole paari. Kaitsjal on veel kaarte lüüa, nii et suru peale.`,
         skipAdd: "Ära lisa praegu küljelt. Hoia kaardid parema hetke jaoks.",
         noAdd: "Sul pole ühtegi kaarti, mida kõrvalt juurde panna. Lase käigul jätkuda.",
       },

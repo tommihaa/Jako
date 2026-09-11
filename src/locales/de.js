@@ -288,7 +288,7 @@ export const de = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Spiele ${card}. Niedrige Karten zuerst. Behalte eine Torkarte (6 oder 8) als Sperre auf der Hand und öffne sie erst, wenn du in derselben Farbe mindestens zwei Karten hast, die du so bald nicht spielen kannst.`,
+        play: ({ card }) => `Spiele ${card}, die kleinste spielbare. Behalte eine Torkarte (6 oder 8) als Sperre auf der Hand und öffne sie erst, wenn du in derselben Farbe mindestens zwei Karten hast, die du so bald nicht spielen kannst.`,
         playSeven: ({ card }) => `Spiele ${card}. Eröffne eine Sieben in der Farbe, von der du am meisten hast.`,
         pass: "Keine deiner Karten passt. Passe.",
         give: ({ card }) => `Gib ${card}, sie ist am weitesten vom Spielbaren entfernt.`,
@@ -351,6 +351,10 @@ export const de = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Spiele ${card}. Es ist die einzige Karte, die passt.`,
+        playLeaveGroup: ({ card }) => `Spiele ${card}. Auf der Hand bleibt eine Gruppe gleichen Werts, die du auf einmal spielen kannst.`,
+        playNoPair: ({ card }) => `Spiele ${card}, sie hat kein Paar auf der Hand. Paare werden für ein Gruppenspiel aufgehoben.`,
+        playSeen: ({ card }) => `Spiele ${card}. Ihr Wert wurde am häufigsten gesehen, also haben die anderen am wenigsten zu antworten.`,
         play: ({ cards, n }) => n > 1
           ? `Spiele die Gruppe ${cards}. Mehrere Karten auf einmal leeren die Hand am schnellsten.`
           : `Spiele ${cards}.`,
@@ -359,7 +363,7 @@ export const de = {
         playAce: ({ card }) => `Spiele ${card}. Das Ass lässt die anderen ziehen und du bekommst einen Bonuszug.`,
         draw: "Keine deiner Karten passt. Ziehe vom Stapel.",
         endTurn: "Die Züge sind aufgebraucht und nichts passt. Der Zug endet.",
-        aceBonusPlay: ({ cards }) => `Nutze den Bonuszug: spiele ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Nutze den Bonuszug: spiele ${cards}. Es lohnt sich, wenn eine Gruppe auf einmal geht oder die Hand schon klein ist und niemand eine Karte vom Sieg entfernt ist.`,
         aceBonusSkip: "Lass den Bonuszug aus, er lohnt sich jetzt nicht.",
       },
       altName: "Mau-Mau",
@@ -423,13 +427,13 @@ export const de = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Erobere ${targets} mit ${card}. Sammle Punkte: Pik, Asse und die Sonderkarten.`,
+        capture: ({ card, targets }) => `Erobere ${targets} mit ${card}. Die wertvollste Eroberung: zuerst die Punktkarten (♦10, ♠2, Asse), dann Pik, dann die Anzahl.`,
         captureMokki: ({ card }) => `Erobere den ganzen Tisch mit ${card}. Das ist ein Fegen und bringt einen Extrapunkt.`,
         takeOwnBuild: ({ card }) => `Erobere deinen eigenen Aufbau mit ${card}. Ein Gegner könnte eine Karte haben, die ihn stiehlt.`,
         takeOwnBuildSafe: ({ card }) => `Erobere deinen eigenen Aufbau mit ${card}. Niemand kann ihn mehr stehlen, die Punkte sind also sicher.`,
         stealBuild: ({ card }) => `Stiehl den Aufbau des Gegners mit ${card}. Das nimmt ihm eine fertige Eroberung weg.`,
         build: ({ card, value }) => `Baue Wert ${value} mit ${card}. Du hast eine weitere Karte, um ihn nächste Runde zu erobern.`,
-        trail: ({ card }) => `Lege ${card} auf den Tisch. Es gibt jetzt keine lohnende Eroberung, und diese Karte ist am sichersten abzulegen.`,
+        trail: ({ card }) => `Lege ${card} auf den Tisch. Es gibt keine lohnende Eroberung, und diese Karte erobert der Gegner am unwahrscheinlichsten. Punktkarten und Asse bleiben auf der Hand.`,
       },
       altName: "Cassino",
       desc: 'Erobere den ganzen Tisch',
@@ -721,8 +725,8 @@ export const de = {
         attack: ({ cards }) => `Greife mit ${cards} an. Wähle den Wert, von dem schon die meisten Karten aus dem Spiel sind, dann gibt es weniger Seitenangriffe. Spare Trümpfe für die Verteidigung.`,
         beat: ({ card, target }) => `Schlage ${target} mit ${card}. Die kleinste gewinnende Karte reicht, Trümpfe erst wenn nötig.`,
         take: "Du kannst nicht alle Karten auf dem Tisch schlagen. Nimm sie auf die Hand.",
-        pass: ({ cards }) => `Schiebe den Angriff mit ${cards} weiter, dann bist du selbst aus dem Schneider.`,
-        add: ({ card }) => `Lege ${card} von der Seite. Der Verteidiger hat noch Karten zum Schlagen, also leg nach.`,
+        pass: ({ cards }) => `Schiebe den Angriff mit ${cards} weiter. Die kleinste passende Karte reicht, Trümpfe werden gespart.`,
+        add: ({ card }) => `Lege ${card} von der Seite: die kleinste Nicht-Trumpfkarte ohne Paar. Der Verteidiger hat noch Karten zum Schlagen, also leg nach.`,
         skipAdd: "Lege jetzt nicht von der Seite. Spare deine Karten für einen besseren Moment.",
         noAdd: "Du hast keine Karte, die du von der Seite nachlegen könntest. Lass den Zug weiterlaufen.",
       },

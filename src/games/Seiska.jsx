@@ -267,8 +267,29 @@ export function getAdvice(g) {
   if (play.length === 1) {
     const multi = findBestMulti(p.hand, g.discardTop, g.reqSuit);
     if (multi && !multi.find(c => c.id === play[0].id)) return { type: 'playSavePair', cards: play };
+    return { type: classifySingle(p.hand, play[0], g.discardTop, g.reqSuit), cards: play };
   }
   return { type: 'play', cards: play };
+}
+
+// Yksittäisen kortin haara luokitellaan jälkikäteen valitun kortin ehdoista (sääntötason
+// tekstit, docs/MESTARIN_OPASTUS.md 11.9.2026). Tämä ei valitse mitään, vaan nimeää säännön
+// jolla aiBestPlay erotti kortin vaihtoehdoista, joten Botbench ei liiku. Ehdot ovat samat
+// ja samassa järjestyksessä kuin aiBestPlay'n yksittäisen kortin haarassa.
+function classifySingle(hand, card, discardTop, reqSuit) {
+  // Botti valitsee vain ei-seiskojen joukosta, joten yksi ei-seiska on "ainoa käypä" myös
+  // silloin kun seiska olisi laillinen: seiskaa ei aiBestPlay koskaan suosi.
+  const non7 = validSingles(hand, discardTop, reqSuit).filter(c => c.r !== '7');
+  if (non7.length <= 1) return 'playOnly';
+  if (hand.length >= 3 && hand.length <= 5) {
+    const rest = hand.filter(h => h.id !== card.id);
+    const counts = {};
+    for (const h of rest) counts[h.r] = (counts[h.r] || 0) + 1;
+    if (Object.values(counts).some(n => n >= hand.length - 1)) return 'playLeaveGroup';
+  }
+  const paired = c => hand.filter(h => h.r === c.r).length > 1;
+  if (!paired(card) && non7.some(paired)) return 'playNoPair';
+  return 'playSeen';
 }
 
 const sortHand = hand => sortHandBy(hand, c => c.v);

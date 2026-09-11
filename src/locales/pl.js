@@ -297,7 +297,7 @@ export const pl = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Zagraj ${card}. Najpierw niskie karty. Trzymaj kartę-bramkę (6 lub 8) w ręce jako zamek i otwórz ją dopiero wtedy, gdy w tym samym kolorze masz co najmniej dwie karty, których szybko nie zagrasz.`,
+        play: ({ card }) => `Zagraj ${card}, najniższą grywalną. Trzymaj kartę-bramkę (6 lub 8) w ręce jako zamek i otwórz ją dopiero wtedy, gdy w tym samym kolorze masz co najmniej dwie karty, których szybko nie zagrasz.`,
         playSeven: ({ card }) => `Zagraj ${card}. Otwórz siódemkę w kolorze, którego masz najwięcej.`,
         pass: "Żadna z twoich kart nie pasuje. Spasuj.",
         give: ({ card }) => `Oddaj ${card}, jest najdalej od zagrania.`,
@@ -360,6 +360,10 @@ export const pl = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Zagraj ${card}. To jedyna karta, która pasuje.`,
+        playLeaveGroup: ({ card }) => `Zagraj ${card}. W ręce zostanie grupa tej samej wartości, którą zagrasz za jednym razem.`,
+        playNoPair: ({ card }) => `Zagraj ${card}, nie ma pary w ręce. Pary zachowuje się na zagranie grupą.`,
+        playSeen: ({ card }) => `Zagraj ${card}. Tę wartość widziano najczęściej, więc inni mają najmniej, czym odpowiedzieć.`,
         play: ({ cards, n }) => n > 1
           ? `Zagraj grupę ${cards}. Kilka kart naraz najszybciej opróżnia rękę.`
           : `Zagraj ${cards}.`,
@@ -368,7 +372,7 @@ export const pl = {
         playAce: ({ card }) => `Zagraj ${card}. As zmusza innych do dobierania, a ty dostajesz dodatkowy ruch.`,
         draw: "Żadna z twoich kart nie pasuje. Dobierz z talii.",
         endTurn: "Dobrania wyczerpane i nic nie pasuje. Ruch się kończy.",
-        aceBonusPlay: ({ cards }) => `Wykorzystaj dodatkowy ruch: zagraj ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Wykorzystaj dodatkowy ruch: zagraj ${cards}. Opłaca się, gdy grupa wychodzi za jednym razem albo ręka jest już mała i nikt nie jest o jedną kartę od wygranej.`,
         aceBonusSkip: "Odpuść dodatkowy ruch, teraz się nie opłaca.",
       },
       altName: "Makao",
@@ -432,13 +436,13 @@ export const pl = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Zgarnij ${targets} kartą ${card}. Zbieraj punkty: piki, asy i karty specjalne.`,
+        capture: ({ card, targets }) => `Zgarnij ${targets} kartą ${card}. Najcenniejsze zgarnięcie: najpierw karty punktowe (♦10, ♠2, asy), potem piki, potem liczba.`,
         captureMokki: ({ card }) => `Zgarnij cały stół kartą ${card}. To zamiatka i daje dodatkowy punkt.`,
         takeOwnBuild: ({ card }) => `Zgarnij własną budowlę kartą ${card}. Przeciwnik może mieć kartę, którą ją ukradnie.`,
         takeOwnBuildSafe: ({ card }) => `Zgarnij własną budowlę kartą ${card}. Nikt już jej nie ukradnie, więc punkty są pewne.`,
         stealBuild: ({ card }) => `Ukradnij budowlę przeciwnika kartą ${card}. Zabierasz mu gotowe zgarnięcie.`,
         build: ({ card, value }) => `Zbuduj wartość ${value} kartą ${card}. Masz drugą kartę, którą zgarniesz ją w następnej turze.`,
-        trail: ({ card }) => `Zostaw ${card} na stole. Nie ma teraz opłacalnego zgarnięcia, a ta karta jest najbezpieczniejsza do odłożenia.`,
+        trail: ({ card }) => `Zostaw ${card} na stole. Nie ma opłacalnego zgarnięcia, a tę kartę przeciwnik zgarnie najmniej prawdopodobnie. Karty punktowe i asy zostają w ręce.`,
       },
       altName: "Kasyno",
       desc: 'Zgarnij cały stół',
@@ -730,8 +734,8 @@ export const pl = {
         attack: ({ cards }) => `Atakuj kartą ${cards}. Wybierz figurę, której najwięcej kart już wyszło z gry, wtedy będzie mniej dorzucania. Zachowaj atuty do obrony.`,
         beat: ({ card, target }) => `Pobij ${target} kartą ${card}. Wystarczy najniższa wygrywająca, atuty dopiero gdy musisz.`,
         take: "Nie pobijesz wszystkich kart na stole. Weź je do ręki.",
-        pass: ({ cards }) => `Przekaż atak dalej kartą ${cards}, a sam się wywiniesz.`,
-        add: ({ card }) => `Dołóż ${card} z boku. Obrońca wciąż ma czym bić, więc naciskaj.`,
+        pass: ({ cards }) => `Przekaż atak dalej kartą ${cards}. Wystarczy najniższa pasująca, atuty się zachowuje.`,
+        add: ({ card }) => `Dołóż ${card} z boku: najniższa karta nieatutowa bez pary. Obrońca wciąż ma czym bić, więc naciskaj.`,
         skipAdd: "Nie dokładaj teraz z boku. Zachowaj karty na lepszą chwilę.",
         noAdd: "Nie masz żadnej karty, którą można dołożyć z boku. Niech tura toczy się dalej.",
       },

@@ -290,7 +290,7 @@ export const la = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Lude ${card}. Primum parvae chartae. Portam (6 vel 8) in manu sicut claustrum serva, eamque tunc demum aperi cum in eodem colore duas saltem chartas habes quas mox ludere non poteris.`,
+        play: ({ card }) => `Lude ${card}, minimam quae ludi potest. Portam (6 vel 8) in manu sicut claustrum serva, eamque tunc demum aperi cum in eodem colore duas saltem chartas habes quas mox ludere non poteris.`,
         playSeven: ({ card }) => `Lude ${card}. Aperi septenarium in colore cuius plurimas chartas habes.`,
         pass: "Nulla chartarum tuarum convenit. Cede vicem.",
         give: ({ card }) => `Da ${card}, ea longissime a ludendo abest.`,
@@ -353,6 +353,10 @@ export const la = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Lude ${card}. Sola charta est quae convenit.`,
+        playLeaveGroup: ({ card }) => `Lude ${card}. In manu manet grex eiusdem valoris, quem uno ictu ludere potes.`,
+        playNoPair: ({ card }) => `Lude ${card}, par in manu non habet. Paria ad gregem ludendum servantur.`,
+        playSeen: ({ card }) => `Lude ${card}. Eius valor saepissime visus est, itaque ceteri minimum habent quo respondeant.`,
         play: ({ cards, n }) => n > 1
           ? `Lude gregem ${cards}. Plures chartae simul manum celerrime vacuant.`
           : `Lude ${cards}.`,
@@ -361,7 +365,7 @@ export const la = {
         playAce: ({ card }) => `Lude ${card}. As ceteros trahere cogit et tibi datur iterum ludendi copia.`,
         draw: "Nulla chartarum tuarum convenit. Trahe e fasce.",
         endTurn: "Tractus consumpti sunt nec quidquam convenit. Vicis finitur.",
-        aceBonusPlay: ({ cards }) => `Utere praemio: lude ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Utere praemio: lude ${cards}. Expedit cum grex uno ictu abit aut manus iam parva est nec quisquam una charta a victoria abest.`,
         aceBonusSkip: "Praemium omitte, nunc non expedit.",
       },
       altName: 'Mau-Mau',
@@ -425,13 +429,13 @@ export const la = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Cape ${targets} charta ${card}. Puncta collige: picas, asses et chartas speciales.`,
+        capture: ({ card, targets }) => `Cape ${targets} charta ${card}. Captio pretiosissima: primum chartae punctorum (♦10, ♠2, asses), deinde picae, deinde numerus.`,
         captureMokki: ({ card }) => `Cape totam mensam charta ${card}. Casa est et punctum additum dat.`,
         takeOwnBuild: ({ card }) => `Cape structuram tuam charta ${card}. Adversarius chartam habere potest qua eam furetur.`,
         takeOwnBuildSafe: ({ card }) => `Cape structuram tuam charta ${card}. Nemo eam iam furari potest, ergo puncta certa sunt.`,
         stealBuild: ({ card }) => `Furare structuram adversarii charta ${card}. Captionem paratam ei aufers.`,
         build: ({ card, value }) => `Strue valorem ${value} charta ${card}. Alteram chartam habes qua eam proximo tractu capias.`,
-        trail: ({ card }) => `Relinque ${card} in mensa. Nulla captio utilis nunc est, et haec charta tutissime deponitur.`,
+        trail: ({ card }) => `Relinque ${card} in mensa. Nulla captio utilis est, et haec charta est quam adversarius minime capiet. Chartae punctorum et asses in manu manent.`,
       },
       altName: 'Cassino',
       desc: 'Cape totam mensam',
@@ -723,8 +727,8 @@ export const la = {
         attack: ({ cards }) => `Impugna cum ${cards}. Elige valorem cuius plurimae chartae iam e ludo exierunt, ita pauciores impetus laterales erunt. Serva triumphos defensioni.`,
         beat: ({ card, target }) => `Vince ${target} charta ${card}. Minima vincens sufficit, triumphi tantum coactus.`,
         take: "Non potes omnes chartas in mensa vincere. Sume eas in manum.",
-        pass: ({ cards }) => `Transfer impetum charta ${cards}, et ipse evades.`,
-        add: ({ card }) => `Lude ${card} a latere. Defensor adhuc chartas ad vincendum habet, ergo insta.`,
+        pass: ({ cards }) => `Transfer impetum charta ${cards}. Minima conveniens sufficit, triumphi servantur.`,
+        add: ({ card }) => `Lude ${card} a latere: minima charta non triumphalis sine pari. Defensor adhuc chartas ad vincendum habet, ergo insta.`,
         skipAdd: "Noli nunc a latere addere. Serva chartas in tempus melius.",
         noAdd: "Nullam chartam habes quam a latere addas. Sine vicem procedere.",
       },

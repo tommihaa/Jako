@@ -289,7 +289,7 @@ export const krl = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Lyö ${card}. Pienet kortit iel. Pie verräkortti (6 libo 8) käis lukkuna, avua se vaste sit, konzu sammas maas on kaksi libo enämbi korttii, kudamii et sua ruttoh lyvvä.`,
+        play: ({ card }) => `Lyö ${card}, pienin pelattavu. Pie verräkortti (6 libo 8) käis lukkuna, avua se vaste sit, konzu sammas maas on kaksi libo enämbi korttii, kudamii et sua ruttoh lyvvä.`,
         playSeven: ({ card }) => `Lyö ${card}. Avua seiččie muastih, kudamas sinul on enin kortiloi.`,
         pass: "Ni yksi korttilois ei päi. Passuiče.",
         give: ({ card }) => `Anna ${card}, se on loitombazennu pelattavas.`,
@@ -352,6 +352,10 @@ export const krl = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Lyö ${card}. Se on ainavo kortti, kudai käyt.`,
+        playLeaveGroup: ({ card }) => `Lyö ${card}. Käih jiäy samanarvoine joukko, kudaman voit lyvvä kerras.`,
+        playNoPair: ({ card }) => `Lyö ${card}, sil ei ole parua käis. Parat säilytetäh joukkolyöndih.`,
+        playSeen: ({ card }) => `Lyö ${card}. Sen arvuo on nähty enimyölleh, ga toizil on vähimyölleh vastattavua.`,
         play: ({ cards, n }) => n > 1
           ? `Lyö joukko ${cards}. Moni kortti kerralla tyhjendäy kätty terväzimäh.`
           : `Lyö ${cards}.`,
@@ -360,7 +364,7 @@ export const krl = {
         playAce: ({ card }) => `Lyö ${card}. Ässä panou toizet nostamah da sinä suat bonusvuoron.`,
         draw: "Ni yksi korttilois ei päi. Nosta pakas.",
         endTurn: "Nostot on käytetty eigo nimi päi. Vuoro loppuu.",
-        aceBonusPlay: ({ cards }) => `Käytä bonusvuoro: lyö ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Käytä bonusvuoro: lyö ${cards}. Kannattau, konzu joukko lähtöy kerras libo käzi on jo pieni eigo niken ole yhten kortin piäs.`,
         aceBonusSkip: "Jätä bonusvuoro välih, se ei kannata nygöi.",
       },
       altName: "Mau-Mau",
@@ -424,13 +428,13 @@ export const krl = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Kuapua ${targets} kortil ${card}. Keriä pisteitä: pajat, tuzat da erikoiskortit.`,
+        capture: ({ card, targets }) => `Kuapua ${targets} kortil ${card}. Kallehin kuapuandu: enzimäi pistekortit (♦10, ♠2, tuzat), sit pajat, sit miäry.`,
         captureMokki: ({ card }) => `Kuapua kogo stola kortil ${card}. Se on mökki da tuou liziä pisteh.`,
         takeOwnBuild: ({ card }) => `Kuapua oma raknelmas kortil ${card}. Vastustajal voi olla kortti, kudamal häi varrastau sen.`,
         takeOwnBuildSafe: ({ card }) => `Kuapua oma raknelmas kortil ${card}. Niken ei voi enämbi varrastua sidä, ga pisteet ollah varmat.`,
         stealBuild: ({ card }) => `Varrasta vastustajan raknelmu kortil ${card}. Otat hänel valmehen kuapuandan.`,
         build: ({ card, value }) => `Luaji arvo ${value} kortil ${card}. Sinul on toine kortti kudamal kuapuat sen jälgimäzel vuorol.`,
-        trail: ({ card }) => `Jätä ${card} stolah. Nygöi ei ole hyövykästä kuapuandua, da tämä kortti on turvallizin jättiä.`,
+        trail: ({ card }) => `Jätä ${card} stolah. Hyövykästy kuapuandua ei ole, da tämän kortin vastustai kuapuau vähimyölleh todennägözesti. Pistekortit da tuzat pyzytäh käis.`,
       },
       altName: "Cassino",
       desc: 'Kuapua koko stola',
@@ -722,8 +726,8 @@ export const krl = {
         attack: ({ cards }) => `Hyökkyä kortil ${cards}. Vallitse arvo, kudamua on jo enin pelattu poikes, sit sivus lyyväh harvemba. Säilytä valtit puolistukseh.`,
         beat: ({ card, target }) => `Kuada ${target} kortil ${card}. Pienin voittai riittäy, valtit vaste pakon ies.`,
         take: "Et voi kuadua kaikkii stolan kortiloi. Ota ne kädeh.",
-        pass: ({ cards }) => `Siirrä hyökkäy iel kortil ${cards}, ga iče piäzet pälkähäzes.`,
-        add: ({ card }) => `Lyö ${card} laijjas. Puolistajal on vie kortiloi kuadua, ga paina piäle.`,
+        pass: ({ cards }) => `Siirrä hyökkäy iel kortil ${cards}. Pienin sobii, valtit säilytetäh.`,
+        add: ({ card }) => `Lyö ${card} laijjas: pienin ei-valtti, kudamal ei ole parua. Puolistajal on vie kortiloi kuadua, ga paina piäle.`,
         skipAdd: "Elä lyö laijjas nygöi. Piä kortit parembah aigah.",
         noAdd: "Sinul ei ole yhty korttii, kudaman vois lyvvä sivus. Anna vuoron jatkuo.",
       },

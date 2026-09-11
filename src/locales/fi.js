@@ -374,7 +374,7 @@ export const fi = {
         upperShort: 'yläpino',
       },
       advice: {
-        play: ({ card }) => `Lyö ${card}. Pienet kortit pois alta. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan.`,
+        play: ({ card }) => `Lyö ${card}, pienin pelattava. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan.`,
         playSeven: ({ card }) => `Lyö ${card}. Seiska kannattaa avata maahan, jossa sinulla on eniten kortteja.`,
         pass: 'Mikään korttisi ei käy. Passaa.',
         give: ({ card }) => `Anna ${card}, se on kauimpana pelattavuudesta.`,
@@ -398,6 +398,10 @@ export const fi = {
     seiska: {
       desc: 'UNO-tyyppinen kilpajuoksu kortittomuuteen',
       advice: {
+        playOnly: ({ card }) => `Lyö ${card}. Se on ainoa käypä kortti.`,
+        playLeaveGroup: ({ card }) => `Lyö ${card}. Käteen jää samanarvoinen ryhmä, jonka voit lyödä kerralla.`,
+        playNoPair: ({ card }) => `Lyö ${card}, sillä ei ole paria kädessä. Parit säästetään ryhmälyöntiin.`,
+        playSeen: ({ card }) => `Lyö ${card}. Sen arvoa on nähty eniten, joten muilla on vähiten vastattavaa.`,
         play: ({ cards, n }) => n > 1
           ? `Lyö ryhmä ${cards}. Useampi kortti kerralla tyhjentää kättä nopeimmin.`
           : `Lyö ${cards}.`,
@@ -406,7 +410,7 @@ export const fi = {
         playAce: ({ card }) => `Lyö ${card}. Ässä nostattaa muita ja saat bonusvuoron.`,
         draw: 'Mikään korttisi ei käy. Nosta pakasta.',
         endTurn: 'Nostot on käytetty eikä mikään käy. Vuoro päättyy.',
-        aceBonusPlay: ({ cards }) => `Käytä bonusvuoro: lyö ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Käytä bonusvuoro: lyö ${cards}. Kannattaa kun ryhmä lähtee kerralla tai käsi on jo pieni eikä kukaan ole yhden kortin päässä.`,
         aceBonusSkip: 'Jätä bonusvuoro käyttämättä, se ei kannata nyt.',
       },
       msg: {
@@ -499,13 +503,13 @@ export const fi = {
         and: ' ja ',
       },
       advice: {
-        capture: ({ card, targets }) => `Kaappaa ${targets} kortilla ${card}. Kerää pisteitä: patoja, ässiä ja erikoiskortit talteen.`,
+        capture: ({ card, targets }) => `Kaappaa ${targets} kortilla ${card}. Arvokkain kaappaus: ensin pistekortit (♦10, ♠2, ässät), sitten padat, sitten määrä.`,
         captureMokki: ({ card }) => `Kaappaa koko pöytä kortilla ${card}. Se on mökki ja tuo lisäpisteen.`,
         takeOwnBuild: ({ card }) => `Kaappaa oma rakennelmasi kortilla ${card}. Vastustajalla voi olla kortti jolla hän varastaa sen.`,
         takeOwnBuildSafe: ({ card }) => `Kaappaa oma rakennelmasi kortilla ${card}. Kukaan ei voi enää varastaa sitä, joten pisteet ovat varmat.`,
         stealBuild: ({ card }) => `Varasta vastustajan rakennelma kortilla ${card}. Se vie häneltä valmiin kaappauksen.`,
         build: ({ card, value }) => `Rakenna arvo ${value} kortilla ${card}. Sinulla on toinen kortti jolla kaappaat sen seuraavaksi.`,
-        trail: ({ card }) => `Jätä ${card} pöytään. Nyt ei ole kannattavaa kaappausta, ja tämä kortti on turvallisin jättää.`,
+        trail: ({ card }) => `Jätä ${card} pöytään. Kannattavaa kaappausta ei ole, ja tämä on kortti jonka vastustaja epätodennäköisimmin kaappaa. Pistekortit ja ässät pysyvät kädessä.`,
       },
       hint: {
         emptyWith: 'Pöytä tyhjä. {parts}',
@@ -799,8 +803,8 @@ export const fi = {
         attackMulti: ({ cards }) => `Hyökkää korteilla ${cards}. Pakka on tyhjä eikä käsi enää täydenny, joten koko samanarvoinen ryhmä kannattaa lyödä kerralla.`,
         beat: ({ card, target }) => `Kaada ${target} kortilla ${card}. Pienin voittava riittää, valtit vasta pakon edessä.`,
         take: 'Et pysty kaatamaan kaikkia pöydän kortteja. Ota ne käteen.',
-        pass: ({ cards }) => `Siirrä hyökkäys eteenpäin kortilla ${cards}, niin pääset itse pälkähästä.`,
-        add: ({ card }) => `Lyö ${card} sivusta. Puolustajalla riittää kortteja kaadettavaksi, paina päälle.`,
+        pass: ({ cards }) => `Siirrä hyökkäys eteenpäin kortilla ${cards}. Pienin sopiva riittää, valtit säästetään.`,
+        add: ({ card }) => `Lyö ${card} sivusta: pienin ei-valtti, jolla ei ole paria. Puolustajalla riittää kortteja, paina päälle.`,
         skipAdd: 'Älä lyö sivusta nyt. Säästä kortit parempaan hetkeen.',
         noAdd: 'Sinulla ei ole yhtään korttia jonka voisi lyödä sivusta. Anna vuoron jatkua.',
       },

@@ -288,7 +288,7 @@ export const is = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Spilaðu ${card}. Lág spil fyrst. Haltu hliðspilinu (6 eða 8) á hendi sem lás og opnaðu það fyrst þegar sami litur geymir að minnsta kosti tvö spil sem þú getur ekki spilað á næstunni.`,
+        play: ({ card }) => `Spilaðu ${card}, lægsta spilanlega spilið. Haltu hliðspilinu (6 eða 8) á hendi sem lás og opnaðu það fyrst þegar sami litur geymir að minnsta kosti tvö spil sem þú getur ekki spilað á næstunni.`,
         playSeven: ({ card }) => `Spilaðu ${card}. Opnaðu sjöu í litnum þar sem þú átt flest spil.`,
         pass: "Ekkert spilanna þinna passar. Segðu pass.",
         give: ({ card }) => `Gefðu ${card}, það er lengst frá því að vera spilanlegt.`,
@@ -351,6 +351,10 @@ export const is = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Spilaðu ${card}. Það er eina spilið sem passar.`,
+        playLeaveGroup: ({ card }) => `Spilaðu ${card}. Eftir á hendi verður hópur af sama gildi sem þú getur spilað í einu.`,
+        playNoPair: ({ card }) => `Spilaðu ${card}, það á ekkert par á hendi. Pörin eru geymd fyrir hópspil.`,
+        playSeen: ({ card }) => `Spilaðu ${card}. Gildi þess hefur sést oftast, svo hinir hafa minnst til að svara með.`,
         play: ({ cards, n }) => n > 1
           ? `Spilaðu hópinn ${cards}. Fleiri spil í einu tæma höndina hraðast.`
           : `Spilaðu ${cards}.`,
@@ -359,7 +363,7 @@ export const is = {
         playAce: ({ card }) => `Spilaðu ${card}. Ásinn lætur hina draga og þú færð aukaumferð.`,
         draw: "Ekkert spilanna þinna passar. Dragðu úr stokknum.",
         endTurn: "Drættirnir eru búnir og ekkert passar. Umferðinni lýkur.",
-        aceBonusPlay: ({ cards }) => `Nýttu aukaumferðina: spilaðu ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Nýttu aukaumferðina: spilaðu ${cards}. Það borgar sig þegar hópur fer út í einu eða höndin er þegar lítil og enginn er einu spili frá sigri.`,
         aceBonusSkip: "Slepptu aukaumferðinni, hún borgar sig ekki núna.",
       },
       altName: "Olsen Olsen",
@@ -423,13 +427,13 @@ export const is = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Hremmdu ${targets} með ${card}. Safnaðu stigum: spaðar, ásar og sérspilin.`,
+        capture: ({ card, targets }) => `Hremmdu ${targets} með ${card}. Verðmætasta hremmingin: fyrst stigaspilin (♦10, ♠2, ásar), svo spaðar, svo fjöldi.`,
         captureMokki: ({ card }) => `Hremmdu allt borðið með ${card}. Það er sópun og gefur aukastig.`,
         takeOwnBuild: ({ card }) => `Hremmdu þína eigin byggingu með ${card}. Andstæðingur gæti átt spil sem stelur henni.`,
         takeOwnBuildSafe: ({ card }) => `Hremmdu þína eigin byggingu með ${card}. Enginn getur stolið henni lengur, svo stigin eru örugg.`,
         stealBuild: ({ card }) => `Stelu byggingu andstæðingsins með ${card}. Þú tekur tilbúna hremmingu frá honum.`,
         build: ({ card, value }) => `Byggðu gildið ${value} með ${card}. Þú átt annað spil til að hremma hana í næstu umferð.`,
-        trail: ({ card }) => `Skildu ${card} eftir á borðinu. Það er engin arðbær hremming núna og þetta spil er öruggast að leggja frá.`,
+        trail: ({ card }) => `Skildu ${card} eftir á borðinu. Það er engin arðbær hremming, og þetta er spilið sem andstæðingurinn hremmir síst. Stigaspil og ásar haldast á hendi.`,
       },
       altName: "Kasína",
       desc: 'Hremmdu allt borðið',
@@ -721,8 +725,8 @@ export const is = {
         attack: ({ cards }) => `Ráðstu með ${cards}. Veldu gildið sem flest spil eru þegar farin úr spilinu, þá verða hliðarárásir færri. Geymdu tromp í vörnina.`,
         beat: ({ card, target }) => `Sláðu ${target} með ${card}. Lægsta vinnandi dugar, tromp aðeins þegar þú neyðist.`,
         take: "Þú getur ekki slegið öll spilin á borðinu. Taktu þau á höndina.",
-        pass: ({ cards }) => `Sendu árásina áfram með ${cards}, þá sleppur þú sjálfur.`,
-        add: ({ card }) => `Leggðu ${card} frá hlið. Verjandinn á enn spil til að slá, svo þrýstu á.`,
+        pass: ({ cards }) => `Sendu árásina áfram með ${cards}. Lægsta spilið sem passar dugar, trompin eru geymd.`,
+        add: ({ card }) => `Leggðu ${card} frá hlið: lægsta spilið sem er ekki tromp og á ekkert par. Verjandinn á enn spil til að slá, svo þrýstu á.`,
         skipAdd: "Ekki bæta við frá hlið núna. Geymdu spilin fyrir betri stund.",
         noAdd: "Þú átt ekkert spil til að leggja við frá hlið. Láttu umferðina halda áfram.",
       },

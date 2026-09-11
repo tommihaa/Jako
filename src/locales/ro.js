@@ -290,7 +290,7 @@ export const ro = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Joacă ${card}. Întâi cărțile mici. Ține în mână o carte-poartă (6 sau 8) ca zăvor și deschide-o abia când în aceeași culoare ai cel puțin două cărți pe care nu le vei putea juca curând.`,
+        play: ({ card }) => `Joacă ${card}, cea mai mică jucabilă. Ține în mână o carte-poartă (6 sau 8) ca zăvor și deschide-o abia când în aceeași culoare ai cel puțin două cărți pe care nu le vei putea juca curând.`,
         playSeven: ({ card }) => `Joacă ${card}. Deschide un șapte în culoarea în care ai cele mai multe cărți.`,
         pass: "Nicio carte de-a ta nu se potrivește. Pasează.",
         give: ({ card }) => `Dă ${card}, e cea mai departe de a fi jucabilă.`,
@@ -353,6 +353,10 @@ export const ro = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Joacă ${card}. E singura carte care se potrivește.`,
+        playLeaveGroup: ({ card }) => `Joacă ${card}. În mână rămâne un grup de aceeași valoare, pe care îl poți juca dintr-odată.`,
+        playNoPair: ({ card }) => `Joacă ${card}, nu are pereche în mână. Perechile se păstrează pentru o jucare în grup.`,
+        playSeen: ({ card }) => `Joacă ${card}. Valoarea ei s-a văzut cel mai des, așa că ceilalți au cel mai puțin cu ce răspunde.`,
         play: ({ cards, n }) => n > 1
           ? `Joacă grupul ${cards}. Mai multe cărți deodată golesc mâna cel mai repede.`
           : `Joacă ${cards}.`,
@@ -361,7 +365,7 @@ export const ro = {
         playAce: ({ card }) => `Joacă ${card}. Asul îi pune pe ceilalți să tragă, iar tu primești o tură bonus.`,
         draw: "Nicio carte de-a ta nu se potrivește. Trage din pachet.",
         endTurn: "Tragerile s-au terminat și nimic nu se potrivește. Tura se încheie.",
-        aceBonusPlay: ({ cards }) => `Folosește tura bonus: joacă ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Folosește tura bonus: joacă ${cards}. Merită când un grup pleacă dintr-odată sau mâna e deja mică și nimeni nu e la o carte de victorie.`,
         aceBonusSkip: "Sari peste tura bonus, acum nu merită.",
       },
       altName: 'Septică',
@@ -425,13 +429,13 @@ export const ro = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Capturează ${targets} cu ${card}. Adună puncte: pică, așii și cărțile speciale.`,
+        capture: ({ card, targets }) => `Capturează ${targets} cu ${card}. Cea mai valoroasă capturare: întâi cărțile cu puncte (♦10, ♠2, așii), apoi pica, apoi numărul.`,
         captureMokki: ({ card }) => `Capturează toată masa cu ${card}. Este o mătură și aduce un punct în plus.`,
         takeOwnBuild: ({ card }) => `Capturează-ți propria construcție cu ${card}. Un adversar poate avea o carte cu care ți-o fură.`,
         takeOwnBuildSafe: ({ card }) => `Capturează-ți propria construcție cu ${card}. Nimeni nu o mai poate fura, deci punctele sunt sigure.`,
         stealBuild: ({ card }) => `Fură construcția adversarului cu ${card}. Îi iei o capturare gata făcută.`,
         build: ({ card, value }) => `Construiește valoarea ${value} cu ${card}. Ai altă carte cu care o capturezi la tura următoare.`,
-        trail: ({ card }) => `Lasă ${card} pe masă. Acum nu e nicio capturare avantajoasă, iar această carte e cea mai sigură de lăsat.`,
+        trail: ({ card }) => `Lasă ${card} pe masă. Nu e nicio capturare avantajoasă, iar aceasta e cartea pe care adversarul o capturează cel mai puțin probabil. Cărțile cu puncte și așii rămân în mână.`,
       },
       altName: 'Cassino',
       desc: 'Capturează toată masa',
@@ -723,8 +727,8 @@ export const ro = {
         attack: ({ cards }) => `Atacă cu ${cards}. Alege valoarea din care au ieșit deja cele mai multe cărți, vor fi mai puține atacuri laterale. Păstrează atuurile pentru apărare.`,
         beat: ({ card, target }) => `Bate ${target} cu ${card}. Ajunge cea mai mică câștigătoare, atuurile doar când ești silit.`,
         take: "Nu poți bate toate cărțile de pe masă. Ia-le în mână.",
-        pass: ({ cards }) => `Pasează atacul mai departe cu ${cards}, și scapi tu însuți.`,
-        add: ({ card }) => `Joacă ${card} din lateral. Apărătorul mai are cărți de bătut, așa că insistă.`,
+        pass: ({ cards }) => `Pasează atacul mai departe cu ${cards}. Ajunge cea mai mică potrivită, atuurile se păstrează.`,
+        add: ({ card }) => `Joacă ${card} din lateral: cea mai mică carte care nu e atu și nu are pereche. Apărătorul mai are cărți de bătut, așa că insistă.`,
         skipAdd: "Nu adăuga acum din lateral. Păstrează cărțile pentru un moment mai bun.",
         noAdd: "Nu ai nicio carte pe care să o adaugi din lateral. Lasă tura să continue.",
       },

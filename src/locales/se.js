@@ -290,7 +290,7 @@ export const se = {
     },
     ristiseiska: {
       advice: {
-        play: ({ card }) => `Speala ${card}. Vuos smávva goarttat. Doalat verráha (6 dahje 8) gieđas lohkkan, ja raba dan easkka go seamma ivnnis leat unnimusat guokte goartta maid it beasa fargga speallat.`,
+        play: ({ card }) => `Speala ${card}, unnimus speallanvejolaš. Doalat verráha (6 dahje 8) gieđas lohkkan, ja raba dan easkka go seamma ivnnis leat unnimusat guokte goartta maid it beasa fargga speallat.`,
         playSeven: ({ card }) => `Speala ${card}. Raba čiežá das gos dus leat eanemus goarttat.`,
         pass: "Ii oktage goarttastat heive. Passe.",
         give: ({ card }) => `Atte ${card}, dat lea guhkimusas speallamis.`,
@@ -353,6 +353,10 @@ export const se = {
     },
     seiska: {
       advice: {
+        playOnly: ({ card }) => `Speala ${card}. Dat lea áidna báktti mii heive.`,
+        playLeaveGroup: ({ card }) => `Speala ${card}. Gihtii báhcá seamma árvvu joavku, man sáhtát speallat oktanaga.`,
+        playNoPair: ({ card }) => `Speala ${card}, das ii leat bárra gieđas. Bárat seastojuvvojit joavkospeallamii.`,
+        playSeen: ({ card }) => `Speala ${card}. Dan árvu lea oidnojuvvon eanemusat, nu ahte earáin lea unnimusat maid vástidit.`,
         play: ({ cards, n }) => n > 1
           ? `Speala joavkku ${cards}. Máŋga goartta oktanaga gurrejit gieđa jođáneamosit.`
           : `Speala ${cards}.`,
@@ -361,7 +365,7 @@ export const se = {
         playAce: ({ card }) => `Speala ${card}. Ássa bágge earáid váldit goarttaid ja don oaččut liigevuoru.`,
         draw: "Ii oktage goarttastat heive. Váldde stohkosis.",
         endTurn: "Válddut leat nohkan iige mihkkege heive. Vuorru nohká.",
-        aceBonusPlay: ({ cards }) => `Geavat liigevuoru: speala ${cards}.`,
+        aceBonusPlay: ({ cards }) => `Geavat liigevuoru: speala ${cards}. Gánnáha go joavku manná oktanaga dahje giehta lea juo unni iige oktage leat ovtta báktti duohken vuoittus.`,
         aceBonusSkip: "Guođe liigevuoru, dat ii gánnát dál.",
       },
       altName: 'Mau-Mau',
@@ -425,13 +429,13 @@ export const se = {
     },
     kasino: {
       advice: {
-        capture: ({ card, targets }) => `Fáŋge ${targets} bákttiin ${card}. Čohkke poeaŋggaid: spáđut, ásat ja sierrabáktit.`,
+        capture: ({ card, targets }) => `Fáŋge ${targets} bákttiin ${card}. Árvvoleamos fáŋgen: vuos poeaŋgabáktit (♦10, ♠2, ásat), de spáđut, de lohku.`,
         captureMokki: ({ card }) => `Fáŋge olles beavddi bákttiin ${card}. Dat lea bartta ja addá liigepoeaŋgga.`,
         takeOwnBuild: ({ card }) => `Fáŋge iežat huksema bákttiin ${card}. Vuostebeallái sáhttá leat goarta mainna son suoládit dan.`,
         takeOwnBuildSafe: ({ card }) => `Fáŋge iežat huksema bákttiin ${card}. Ii oktage sáhte dan šat suoládit, danne čuoggát leat sihkkarat.`,
         stealBuild: ({ card }) => `Suoládit vuostebeali huksema bákttiin ${card}. Válddát sus gárvves fáŋgema eret.`,
         build: ({ card, value }) => `Hukse árvvu ${value} bákttiin ${card}. Dus lea nubbi báktti mainna fáŋggát dan boahtte vuorus.`,
-        trail: ({ card }) => `Guođe ${card} beavdái. Dál ii leat ávkkálaš fáŋgen, ja dát báktti lea sihkkarumos guođđit.`,
+        trail: ({ card }) => `Guođe ${card} beavdái. Ávkkálaš fáŋgen ii leat, ja dán báktti vuostálasti fáŋge unnimus jáhkehahtti. Poeaŋgabáktit ja ásat bissot gieđas.`,
       },
       altName: 'Kasino',
       desc: 'Fáŋge olles beavddi',
@@ -723,8 +727,8 @@ export const se = {
         attack: ({ cards }) => `Falle goarttain ${cards}. Vállje árvvu mas leat juo eanemus goarttat eret spealus, de šaddet unnit lievlafallehusat. Vurke duolbmasiid bealuštussii.`,
         beat: ({ card, target }) => `Vuoitte ${target} bákttiin ${card}. Unnimus vuoiti riekta, trumfat easkka go bággehallat.`,
         take: "It sáhte vuoitit buot bevddebáktiid. Váldde daid gihtii.",
-        pass: ({ cards }) => `Sádde fallehusa viidáseappot bákttiin ${cards}, de beasat ieš eret.`,
-        add: ({ card }) => `Čájet ${card} bealde. Bealuštusas leat ain báktit maid vuoitit, nappo deatte.`,
+        pass: ({ cards }) => `Sádde fallehusa viidáseappot bákttiin ${cards}. Unnimus heivvolaš riekta, trumfat seastojuvvojit.`,
+        add: ({ card }) => `Čájet ${card} bealde: unnimus ii-trumfa mas ii leat bárra. Bealuštusas leat ain báktit maid vuoitit, nappo deatte.`,
         skipAdd: "Ale lasit bealde dál. Seaille báktiid buoret bottui.",
         noAdd: "Dus ii leat goarta maid sáhtášit lasihit. Divtte vuoru joatkit.",
       },
