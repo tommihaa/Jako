@@ -117,11 +117,19 @@ pelitesti sulje sitä. Rivi kuitataan päivämäärällä ja sillä mitä pelatt
 | Seiska | 11.9. Claude, dev | 11.9. | 11.9. | |
 | Kultakala | 11.9. Claude, dev | 11.9. | | vaihto ja pysäytys |
 | Ristiseiska | 11.9. Claude, dev | 11.9. | 11.9. | pantti ja bonusvuoro eivät osuneet kohdalle 11.9. |
-| Koputus | | | | nosto, vaihto, koputus |
-| Maija | | | | hyökkäys, puolustus, otto |
+| Koputus | 11.9. Claude, dev | 11.9. | 11.9. | 11.9. nosto ja vaihto (heitto) toimivat; koputus ei osunut kohdalle |
+| Maija | 11.9. Claude, dev | 11.9. | 11.9. | 11.9. kaikki kolme vaihetta toimivat |
 | Moska | 11.9. Tommi, dev | 11.9. | 11.9. | 11.9. kaikki vaiheet toimivat |
-| Paskahousu | | | | vaihto, koputus, nosto |
-| Kasino | | | | kaappaus, rakennus, jättö, rakennelma |
+| Paskahousu | 11.9. Claude, dev | 11.9. | 11.9. | 11.9. lyönti toimii, varausteksti näkyy; vaihto, koputus ja nosto eivät osuneet kohdalle |
+| Kasino | 11.9. Claude, dev | 11.9. | 11.9. | 11.9. kaappaus ja rakennus toimivat, korostus osui rakennuksen kolmeen korttiin; jättö ja rakennelman kaappaus eivät osuneet kohdalle |
+
+Dev-kierros 11.9.2026 myöhäisillalla (Claude, 2 pelaajaa, Opasta-nappi): kaikissa neljässä
+opastuskupla tuli ilman purppuraa korostusta, eri valinta toi tekstin "Eri valinta. Ohje oli:"
+ja Mestarin kortin purppuralla (Koputuksessa nostopakan, Kasinossa käsikortin ja molemmat
+pöytäkortit), osuma toi kuittauksen "Sama valinta". Varausteksti näkyi Paskahousussa eikä
+muissa. Kohdalle osumattomat vaiheet ovat sattuman varassa (koputus, Paskahousun vaihto ja
+nosto, Kasinon jättö ja rakennelman kaappaus, Ristiseiskan pantti ja bonusvuoro) ja jäävät
+tuotantotestiin tai Tommin peleihin.
 
 Tuotantotesti on eri rivi kuin dev-testi, joten julkaisun jälkeen sama taulukko täytetään
 uudelleen livestä ainakin kolmen pelin osalta.
