@@ -1170,6 +1170,12 @@ olla oikea sääntö kaikille tasoille.
 Jokainen AI-muutos todennetaan ajamalla sama mittaus ja vertaamalla tähän
 tauluun. Päivitä taulu ja päivämäärä kun baseline muuttuu tarkoituksella.
 
+**Aseta aina `BOTBENCH_OUT`.** 11.9.2026 Seiskan N=400-ajo (17 min) ajettiin Bash-työkalusta
+tuloste tiedostoon ohjattuna, ja vitest jätti testin console.log-rivit kirjoittamatta, joten
+tulos katosi kokonaan. Konsoli on luotettava vain päätteessä; tiedostoon kirjattu JSON-rivi
+ei riipu raportoijasta. Esimerkki (PowerShell):
+`$env:BOTBENCH_OUT='docs/botbench-ajot.jsonl'` ennen ajoa, ja rivit luetaan sieltä.
+
 **Käytä N≥150 kun teet johtopäätöksiä tasoerosta.** N=30:n keskivirhe (±9 %-yks.)
 on niin suuri, että se peittää juuri sen kokoluokan eroja joita mittarilla haetaan.
 
