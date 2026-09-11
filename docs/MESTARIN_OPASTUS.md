@@ -125,3 +125,55 @@ pelitesti sulje sitä. Rivi kuitataan päivämäärällä ja sillä mitä pelatt
 
 Tuotantotesti on eri rivi kuin dev-testi, joten julkaisun jälkeen sama taulukko täytetään
 uudelleen livestä ainakin kolmen pelin osalta.
+
+## Osuma ja sääntötaso (Tommin päätös 11.9.2026: kaanoni, ei koodi)
+
+Seiskan testissä Tommi pelasi Mestarin ehdottaman maan eri kortin ja sai "Eri valinta".
+Mestarin mittarilla valinta oli eri (`aiBestPlay` suosii paritonta korttia ja sen jälkeen
+kortinlaskurin arvoa), mutta teksti "Lyö K♠." ei kertonut sääntöä, joten palaute rankaisi
+säännöstä jota ei opetettu.
+
+Vaihtoehdot olivat osuman löysentäminen koodissa (sama maa kelpaa) tai tekstien nosto
+sääntötasolle. **Päätös: kaanoni.** Osuma pysyy avainten yhtäsuuruutena, koska löysempi osuma
+olisi uusi arvostelukerros botin laskennan ulkopuolella ja sanoisi "sama valinta" silloinkin
+kun Mestarin laskuri sanoo toista. Sen sijaan jokainen kortin nimeävä teksti kertoo säännön
+jolla kortti valittiin vaihtoehtojen joukosta. Neuvossa kortin nimeäminen on jo nyt
+tarpeetonta (kortti korostuu), joten sääntöteksti palvelee molempia muotoja.
+
+### Auditointi 11.9.2026: 52 tekstiä sääntötason vaatimusta vasten
+
+Vaatimus on tiukempi kuin 18.8.2026 auditoinnin (oikea siirto oikealla syyllä): teksti ei saa
+vain olla väittämättä väärää, sen on nimettävä avain jolla kortti erottui vaihtoehdoista.
+
+| Peli | Teksti | Tila | Koodin avain |
+|---|---|---|---|
+| Seiska | `play` yksi kortti | **puuttuu** | 3–5 kortin käsi: jätä samanarvoinen ryhmä; muuten pariton kortti; loput kortinlaskuri (`pickBySeen`, arvo painaa 4×, maa 1×) |
+| Seiska | `aceBonusPlay` | **puuttuu** | ryhmä tai pieni käsi (≤ 2 jää) eikä kukaan yhden kortin päässä |
+| Moska | `add` | **puuttuu** | pienin ei-valtti, pariton ensin (`aiPickAddCard`) |
+| Moska | `pass` | **puuttuu** | pienin sopiva, valttia säästäen (`aiPickPass`) |
+| Kasino | `capture` | osittain | pistekortit (♦10 2, ♠2 1, A 1, mökki 1), sitten padat, sitten määrä (`aiCardScore`) |
+| Kasino | `trail` | osittain | pienin varastusriski, pistekortit ja ässät pois poolista (`pickTrail`) |
+| Ristiseiska | `play` | osittain | pienin arvo porttisäännön jälkeen (`aiBestCard`) |
+| muut 45 | | riittää | sääntö on tekstissä tai valinta on kaksiarvoinen |
+
+### Tekstiehdotukset (fi, odottaa Tommin kuittausta)
+
+Seiskan `play` jaetaan neljäksi, koska sääntö riippuu haarasta. Haara luetaan `getAdvice`ssa
+valitun kortin ehdoista jälkikäteen (ei uutta valintaa, vain luokittelu), joten `aiBestPlay`
+ei muutu eikä Botbench liiku.
+
+| Avain | Ehdotus |
+|---|---|
+| seiska `playOnly` | Lyö {card}. Se on ainoa käypä kortti. |
+| seiska `playLeaveGroup` | Lyö {card}. Käteen jää samanarvoinen ryhmä, jonka voit lyödä kerralla. |
+| seiska `playNoPair` | Lyö {card}, sillä ei ole paria kädessä. Parit säästetään ryhmälyöntiin. |
+| seiska `playSeen` | Lyö {card}. Sen arvoa on nähty eniten, joten muilla on vähiten vastattavaa. |
+| seiska `aceBonusPlay` | Käytä bonusvuoro: lyö {cards}. Kannattaa kun ryhmä lähtee kerralla tai käsi on jo pieni eikä kukaan ole yhden kortin päässä. |
+| moska `add` | Lyö {card} sivusta: pienin ei-valtti, jolla ei ole paria. Puolustajalla riittää kortteja, paina päälle. |
+| moska `pass` | Siirrä hyökkäys eteenpäin kortilla {cards}. Pienin sopiva riittää, valtit säästetään. |
+| kasino `capture` | Kaappaa {targets} kortilla {card}. Arvokkain kaappaus: ensin pistekortit (♦10, ♠2, ässät), sitten padat, sitten määrä. |
+| kasino `trail` | Jätä {card} pöytään. Kannattavaa kaappausta ei ole, ja tämä on kortti jonka vastustaja epätodennäköisimmin kaappaa. Pistekortit ja ässät pysyvät kädessä. |
+| ristiseiska `play` | Lyö {card}, pienin pelattava. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan. |
+
+Kuittauksen jälkeen: tekstit 23 kielelle, Seiskan `getAdvice` luokittelee haaran,
+`MESTARIN_NEUVO.md` saa merkinnän uudesta vaatimustasosta.
