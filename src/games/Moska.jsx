@@ -290,7 +290,9 @@ export function getAdvice(g, removed) {
   if (phase === 'defend' && defender === 0) {
     // Sama suunnitelma kuin Mestari-botilla: siirto ensin, sitten ahne kaato, muuten otto
     const plan = moskaPlanDefense(g, 0, 'hard');
-    if (plan.kind === 'pass') return { type: 'pass', cards: plan.cards };
+    // aiPickPass siirtää valtilla vain kun muuta samanarvoista ei ole; teksti nimeää sen
+    // (neuvoasemien läpikäynti 11.9.2026: "valtit säästetään" ei päde valtilla siirrettäessä).
+    if (plan.kind === 'pass') return { type: plan.cards[0].s === ts ? 'passTrump' : 'pass', cards: plan.cards };
     if (plan.kind === 'take') return { type: 'take' };
     if (!plan.beats.length) return null;
     const first = plan.beats[0];
@@ -379,7 +381,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     };
     const cardIds = a.card ? [a.card.id] : (a.cards ? a.cards.map(c => c.id) : []);
     const key = a.type === 'take' ? opastusAvain('take')
-      : a.type === 'pass' ? opastusAvain('pass', cardIds)
+      : (a.type === 'pass' || a.type === 'passTrump') ? opastusAvain('pass', cardIds)
       : (a.type === 'noAdd' || a.type === 'skipAdd') ? opastusAvain('skip')
       : opastusAvain('play', cardIds);
     return {

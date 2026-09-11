@@ -148,6 +148,28 @@ koska `aiPickPass` siirtää valtilla jos muuta samanarvoista ei ole. Teksti on 
 haarassa, ja korjaus odottaa Tommin läpikäyntiä (todennäköisesti kaksi avainta kuten
 Koputuksen `swapUnknown`).
 
+### Läpikäynti 11.9.2026 myöhäisillalla: neljä havaintoa, kaksi avainta jokaiseen
+
+Koko otos luettiin. Kaksi epäilyä osoittautuivat oikeiksi säännöiksi eivätkä vaadi mitään:
+Ristiseiskassa 8 vaatii 6:n ensin (`isPlayable`), ja Kasinossa 10♦ on kädessä 16, joten se ei
+kaappaa 10♣:ää. Neljässä kohdassa kortti oli oikea mutta teksti ei nimennyt sääntöä jolla se
+valittiin. Tommin päätös: kaksi avainta jokaiseen. Toteutettu samana iltana 23 kieleen.
+
+| Kohta | Otoksessa | Vanha teksti sanoi | Koodi teki | Uusi avain |
+|---|---|---|---|---|
+| Moska `pass` | 3/4 | valtit säästetään | siirto valtilla, koska muuta samanarvoista ei ollut | `passTrump` |
+| Seiska `playSeen` | 2/4 | nähty eniten | tasapeli, ja `pickBySeen` ottaa käden ensimmäisen | `playSeenTie` |
+| Seiska `playSavePair` | 2/4 | säästää parisi | yksittäisten välillä ratkaisi nähtyjen laskuri | `playSavePairSeen` |
+| Seiska `aceBonusSkip` | 1/4 | ei kannata | bonusmaan korttia ei ollut | `aceBonusNone` |
+
+Tasapelin tunnistus toistaa `pickBySeen`-pisteytyksen (`seenTie`) samoille ehdokkaille kuin
+`aiBestPlay`, eli se on samaa lajia kuin `classifySingle`: luokittelu eikä valinta ja sama
+ylläpitosääntö koskee sitä. Kaksi asiaa jää kirjattavaksi. `playSeenTie` sanoo "mikä tahansa
+käy", mutta opastuksen osuma on yhä avainten yhtäsuuruus, joten tasapelin toisella kortilla tulee
+"Eri valinta"; se on osuma-päätöksen tunnettu hinta eikä uusi. `pickBySeen` laskee nähtyihin myös
+oman käden samat arvot ja maat, joten "nähty" on tekstissä lavea muttei väärä. Regeneroitu otos
+(`NEUVOASEMAT.md`) näyttää jaon: `playSeenTie` osuu tasapeleihin ja `passTrump` valttisiirtoihin.
+
 ## Miksi tästä ei tehty konetarkistinta
 
 Neuvoteksti on proosaa ja sen väite on tarkoitus, ei merkkijono. `Kaanon/TYÖTAVAT.md`:n portin

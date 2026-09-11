@@ -402,16 +402,19 @@ export const fi = {
         playLeaveGroup: ({ card }) => `Lyö ${card}. Käteen jää samanarvoinen ryhmä, jonka voit lyödä kerralla.`,
         playNoPair: ({ card }) => `Lyö ${card}, sillä ei ole paria kädessä. Parit säästetään ryhmälyöntiin.`,
         playSeen: ({ card }) => `Lyö ${card}. Sen arvoa on nähty eniten, joten muilla on vähiten vastattavaa.`,
+        playSeenTie: ({ card }) => `Lyö ${card}. Nähdyissä ei ole eroa, joten näistä mikä tahansa käy.`,
         play: ({ cards, n }) => n > 1
           ? `Lyö ryhmä ${cards}. Useampi kortti kerralla tyhjentää kättä nopeimmin.`
           : `Lyö ${cards}.`,
         playSavePair: ({ cards }) => `Lyö ${cards}. Se säästää parisi myöhempään.`,
+        playSavePairSeen: ({ cards }) => `Lyö ${cards}. Se säästää parisi myöhempään ja sen arvoa on nähty eniten.`,
         playSeven: ({ card, suit }) => `Lyö ${card} ja vaadi maaksi ${suit}, sitä sinulla on eniten.`,
         playAce: ({ card }) => `Lyö ${card}. Ässä nostattaa muita ja saat bonusvuoron.`,
         draw: 'Mikään korttisi ei käy. Nosta pakasta.',
         endTurn: 'Nostot on käytetty eikä mikään käy. Vuoro päättyy.',
         aceBonusPlay: ({ cards }) => `Käytä bonusvuoro: lyö ${cards}. Kannattaa kun ryhmä lähtee kerralla tai käsi on jo pieni eikä kukaan ole yhden kortin päässä.`,
         aceBonusSkip: 'Jätä bonusvuoro käyttämättä, se ei kannata nyt.',
+        aceBonusNone: 'Jätä bonusvuoro käyttämättä. Kädessä ei ole bonusmaan korttia.',
       },
       msg: {
         lastSpecialDraw: "{name} lyö erikoiskortin viimeisenä ja nostaa {card}.",
@@ -806,6 +809,7 @@ export const fi = {
         beat: ({ card, target }) => `Kaada ${target} kortilla ${card}. Pienin voittava riittää, valtit vasta pakon edessä.`,
         take: 'Et pysty kaatamaan kaikkia pöydän kortteja. Ota ne käteen.',
         pass: ({ cards }) => `Siirrä hyökkäys eteenpäin kortilla ${cards}. Pienin sopiva riittää, valtit säästetään.`,
+        passTrump: ({ cards }) => `Siirrä hyökkäys eteenpäin valtilla ${cards}. Muuta samanarvoista ei ole kädessä ja siirto käy ennen kaatoa.`,
         add: ({ card }) => `Lyö ${card} sivusta: pienin ei-valtti, jolla ei ole paria. Puolustajalla riittää kortteja, paina päälle.`,
         skipAdd: 'Älä lyö sivusta nyt. Säästä kortit parempaan hetkeen.',
         noAdd: 'Sinulla ei ole yhtään korttia jonka voisi lyödä sivusta. Anna vuoron jatkua.',

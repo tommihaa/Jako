@@ -251,7 +251,11 @@ export function getAdvice(g) {
   if (!p) return null;
   if (g.aceBonus !== null) {
     const { useBonus, bonusGroup } = aiAceBonusDecision(p.hand, g.players, idx, g.finished, g.aceBonus, 'hard');
-    return useBonus ? { type: 'aceBonusPlay', cards: bonusGroup } : { type: 'aceBonusSkip' };
+    if (useBonus) return { type: 'aceBonusPlay', cards: bonusGroup };
+    // Kaksi eri syytä jättää bonus väliin: ei ole bonusmaan korttia (ei voi) tai on muttei
+    // kannata (aiAceBonusDecision). Teksti nimeää kumman (neuvoasemien läpikäynti 11.9.2026).
+    const bonusCard = p.hand.some(c => c.s === g.aceBonus && c.r !== '7' && c.r !== 'A');
+    return { type: bonusCard ? 'aceBonusSkip' : 'aceBonusNone' };
   }
   const opponents = g.players.filter((pl, i) => i !== idx && !g.finished.includes(i));
   let play = aiBestPlay(p.hand, g.discardTop, g.reqSuit, opponents, g.discardPile, 'hard');
@@ -267,8 +271,13 @@ export function getAdvice(g) {
   // "Säästää parisi" vain jos pari oli oikeasti pelattavissa ja jää lyömättä.
   if (play.length === 1) {
     const multi = findBestMulti(p.hand, g.discardTop, g.reqSuit);
-    if (multi && !multi.find(c => c.id === play[0].id)) return { type: 'playSavePair', cards: play };
-    return { type: classifySingle(p.hand, play[0], g.discardTop, g.reqSuit), cards: play };
+    if (multi && !multi.find(c => c.id === play[0].id)) {
+      // Parin säästö selittää miksi ei ryhmää; yksittäisten välillä ratkaisi nähtyjen laskuri,
+      // jos sillä oli eroa (neuvoasemien läpikäynti 11.9.2026).
+      const tie = seenTie(p.hand, g.discardTop, g.reqSuit, g.discardPile);
+      return { type: tie ? 'playSavePair' : 'playSavePairSeen', cards: play };
+    }
+    return { type: classifySingle(p.hand, play[0], g.discardTop, g.reqSuit, g.discardPile), cards: play };
   }
   return { type: 'play', cards: play };
 }
@@ -277,7 +286,25 @@ export function getAdvice(g) {
 // tekstit, docs/MESTARIN_OPASTUS.md 11.9.2026). Tämä ei valitse mitään, vaan nimeää säännön
 // jolla aiBestPlay erotti kortin vaihtoehdoista, joten Botbench ei liiku. Ehdot ovat samat
 // ja samassa järjestyksessä kuin aiBestPlay'n yksittäisen kortin haarassa.
-function classifySingle(hand, card, discardTop, reqSuit) {
+// Toistaa pickBySeen-pisteytyksen (hard) samoille ehdokkaille kuin aiBestPlay ja kertoo,
+// jäikö kärki tasan. Tasapelissä pickBySeen ottaa käden ensimmäisen, jolloin "nähty eniten"
+// ei ole valinnan syy. Ei muuta valintaa.
+function seenTie(hand, discardTop, reqSuit, seen) {
+  const non7 = validSingles(hand, discardTop, reqSuit).filter(c => c.r !== '7');
+  const nonPair = non7.filter(c => hand.filter(h => h.r === c.r).length === 1);
+  const cands = nonPair.length ? nonPair : non7;
+  if (cands.length < 2 || !seen || !seen.length) return true;
+  const score = c => {
+    const rankSeen = seen.filter(s => s.r === c.r).length + hand.filter(h => h.r === c.r).length;
+    const suitSeen = seen.filter(s => s.s === c.s).length + hand.filter(h => h.s === c.s).length;
+    return rankSeen * 4 + suitSeen;
+  };
+  const scores = cands.map(score);
+  const top = Math.max(...scores);
+  return scores.filter(x => x === top).length > 1;
+}
+
+function classifySingle(hand, card, discardTop, reqSuit, seen) {
   // Botti valitsee vain ei-seiskojen joukosta, joten yksi ei-seiska on "ainoa käypä" myös
   // silloin kun seiska olisi laillinen: seiskaa ei aiBestPlay koskaan suosi.
   const non7 = validSingles(hand, discardTop, reqSuit).filter(c => c.r !== '7');
@@ -290,7 +317,7 @@ function classifySingle(hand, card, discardTop, reqSuit) {
   }
   const paired = c => hand.filter(h => h.r === c.r).length > 1;
   if (!paired(card) && non7.some(paired)) return 'playNoPair';
-  return 'playSeen';
+  return seenTie(hand, discardTop, reqSuit, seen) ? 'playSeenTie' : 'playSeen';
 }
 
 const sortHand = hand => sortHandBy(hand, c => c.v);
@@ -412,7 +439,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       suit: a.suit,
     };
     const ids = a.cards ? a.cards.map(c => c.id) : [];
-    const key = a.type === 'aceBonusSkip' ? opastusAvain('skip')
+    const key = (a.type === 'aceBonusSkip' || a.type === 'aceBonusNone') ? opastusAvain('skip')
       : a.type === 'draw' ? opastusAvain('draw')
       : a.type === 'endTurn' ? opastusAvain('end')
       : opastusAvain('play', ids);

@@ -7,6 +7,20 @@ arvottu eikä pelattu, joten se voi olla pelissä epätodennäköinen; neuvo on 
 
 ## Seiska
 
+### `aceBonusNone` (4)
+
+**1.** Käsi: K♦ K♣ · Päällimmäinen: A♠ · Ässän bonusvuoro, bonusmaa ♠ · Nähty kasassa: 2♠ 7♦ 5♠ 3♦ 7♥ 9♦ · Vastustajilla 6 ja 1 korttia
+   Neuvo: Jätä bonusvuoro käyttämättä. Kädessä ei ole bonusmaan korttia.
+
+**2.** Käsi: 4♠ 9♥ K♥ 8♦ 10♦ · Päällimmäinen: A♣ · Ässän bonusvuoro, bonusmaa ♣ · Nähty kasassa: J♦ J♠ 5♦ 10♠ K♣ 2♥ 2♣ A♠ · Vastustajilla 7 ja 5 korttia
+   Neuvo: Jätä bonusvuoro käyttämättä. Kädessä ei ole bonusmaan korttia.
+
+**3.** Käsi: 8♠ 10♦ · Päällimmäinen: A♣ · Ässän bonusvuoro, bonusmaa ♣ · Nähty kasassa: K♥ 5♣ 2♣ 9♠ 8♦ · Vastustajilla 7 ja 4 korttia
+   Neuvo: Jätä bonusvuoro käyttämättä. Kädessä ei ole bonusmaan korttia.
+
+**4.** Käsi: 3♠ J♠ K♣ · Päällimmäinen: A♦ · Ässän bonusvuoro, bonusmaa ♦ · Nähty kasassa: 2♦ 7♦ 6♠ 4♠ 9♦ J♥ 10♥ 5♦ 7♥ · Vastustajilla 7 ja 4 korttia
+   Neuvo: Jätä bonusvuoro käyttämättä. Kädessä ei ole bonusmaan korttia.
+
 ### `aceBonusPlay` (4)
 
 **1.** Käsi: 4♠ 9♠ 10♠ 4♥ · Päällimmäinen: A♠ · Ässän bonusvuoro, bonusmaa ♠ · Nähty kasassa: 2♣ 10♦ K♠ 5♠ 8♠ 8♥ Q♣ · Vastustajilla 6 ja 3 korttia
@@ -23,16 +37,16 @@ arvottu eikä pelattu, joten se voi olla pelissä epätodennäköinen; neuvo on 
 
 ### `aceBonusSkip` (4)
 
-**1.** Käsi: K♦ K♣ · Päällimmäinen: A♠ · Ässän bonusvuoro, bonusmaa ♠ · Nähty kasassa: 2♠ 7♦ 5♠ 3♦ 7♥ 9♦ · Vastustajilla 6 ja 1 korttia
+**1.** Käsi: Q♥ J♦ 6♣ 10♣ · Päällimmäinen: A♥ · Ässän bonusvuoro, bonusmaa ♥ · Nähty kasassa: A♠ 6♥ 3♣ J♥ K♠ 2♣ 4♦ 3♥ · Vastustajilla 4 ja 1 korttia
    Neuvo: Jätä bonusvuoro käyttämättä, se ei kannata nyt.
 
-**2.** Käsi: 4♠ 9♥ K♥ 8♦ 10♦ · Päällimmäinen: A♣ · Ässän bonusvuoro, bonusmaa ♣ · Nähty kasassa: J♦ J♠ 5♦ 10♠ K♣ 2♥ 2♣ A♠ · Vastustajilla 7 ja 5 korttia
+**2.** Käsi: 4♠ 8♠ 7♥ 2♣ · Päällimmäinen: A♠ · Ässän bonusvuoro, bonusmaa ♠ · Nähty kasassa: 8♦ K♠ 4♥ 6♣ 3♦ 10♠ J♦ A♣ 3♣ · Vastustajilla 4 ja 1 korttia
    Neuvo: Jätä bonusvuoro käyttämättä, se ei kannata nyt.
 
-**3.** Käsi: 8♠ 10♦ · Päällimmäinen: A♣ · Ässän bonusvuoro, bonusmaa ♣ · Nähty kasassa: K♥ 5♣ 2♣ 9♠ 8♦ · Vastustajilla 7 ja 4 korttia
+**3.** Käsi: 9♠ 4♥ 2♦ 8♦ A♣ J♣ · Päällimmäinen: A♦ · Ässän bonusvuoro, bonusmaa ♦ · Nähty kasassa: J♠ A♠ Q♣ 8♠ 5♥ 10♥ 5♦ · Vastustajilla 3 ja 1 korttia
    Neuvo: Jätä bonusvuoro käyttämättä, se ei kannata nyt.
 
-**4.** Käsi: 3♠ J♠ K♣ · Päällimmäinen: A♦ · Ässän bonusvuoro, bonusmaa ♦ · Nähty kasassa: 2♦ 7♦ 6♠ 4♠ 9♦ J♥ 10♥ 5♦ 7♥ · Vastustajilla 7 ja 4 korttia
+**4.** Käsi: J♠ 2♥ 10♥ 10♦ 3♣ · Päällimmäinen: A♣ · Ässän bonusvuoro, bonusmaa ♣ · Nähty kasassa: 10♠ 3♦ A♦ 8♥ 8♣ K♣ · Vastustajilla 4 ja 6 korttia
    Neuvo: Jätä bonusvuoro käyttämättä, se ei kannata nyt.
 
 ### `draw` (4)
@@ -107,28 +121,56 @@ arvottu eikä pelattu, joten se voi olla pelissä epätodennäköinen; neuvo on 
 **1.** Käsi: J♠ J♥ Q♥ 6♦ 5♣ 6♣ Q♣ · Päällimmäinen: 3♣ · Nähty kasassa: 7♠ 4♦ 10♦ 10♥ 2♣ 9♦ Q♠ 4♠ J♣ 8♦ 9♠ · Vastustajilla 5 ja 2 korttia
    Neuvo: Lyö 5♣. Se säästää parisi myöhempään.
 
-**2.** Käsi: 3♠ 6♠ K♠ 3♥ 10♦ 9♣ Q♣ · Päällimmäinen: 5♠ · Nähty kasassa: 9♥ 5♥ 7♠ 8♥ 4♣ K♣ 8♦ A♥ A♦ K♦ · Vastustajilla 4 ja 5 korttia
-   Neuvo: Lyö K♠. Se säästää parisi myöhempään.
-
-**3.** Käsi: 3♥ 5♥ 5♦ Q♦ 9♣ · Päällimmäinen: 5♣ · Nähty kasassa: A♠ 4♥ 2♦ 10♣ 6♣ K♠ · Vastustajilla 6 ja 6 korttia
+**2.** Käsi: 3♥ 5♥ 5♦ Q♦ 9♣ · Päällimmäinen: 5♣ · Nähty kasassa: A♠ 4♥ 2♦ 10♣ 6♣ K♠ · Vastustajilla 6 ja 6 korttia
    Neuvo: Lyö 9♣. Se säästää parisi myöhempään.
 
-**4.** Käsi: 8♠ 10♠ K♠ 9♦ 10♦ 6♣ 10♣ · Päällimmäinen: 3♠ · Nähty kasassa: 2♦ 7♣ 8♦ 8♣ 3♦ 3♣ A♣ 6♥ A♥ 10♥ 7♥ Q♥ · Vastustajilla 3 ja 4 korttia
-   Neuvo: Lyö 8♠. Se säästää parisi myöhempään.
+**3.** Käsi: A♠ 10♠ Q♠ 10♥ 8♦ 6♣ · Päällimmäinen: 10♣ · Nähty kasassa: 4♦ 10♦ 4♥ · Vastustajilla 3 ja 5 korttia
+   Neuvo: Lyö 6♣. Se säästää parisi myöhempään.
+
+**4.** Käsi: 9♠ 5♥ 8♥ Q♥ 5♣ 7♣ 10♣ · Päällimmäinen: 4♣ · Nähty kasassa: ei mitään · Vastustajilla 6 ja 4 korttia
+   Neuvo: Lyö 10♣. Se säästää parisi myöhempään.
+
+### `playSavePairSeen` (4)
+
+**1.** Käsi: 3♠ 6♠ K♠ 3♥ 10♦ 9♣ Q♣ · Päällimmäinen: 5♠ · Nähty kasassa: 9♥ 5♥ 7♠ 8♥ 4♣ K♣ 8♦ A♥ A♦ K♦ · Vastustajilla 4 ja 5 korttia
+   Neuvo: Lyö K♠. Se säästää parisi myöhempään ja sen arvoa on nähty eniten.
+
+**2.** Käsi: 8♠ 10♠ K♠ 9♦ 10♦ 6♣ 10♣ · Päällimmäinen: 3♠ · Nähty kasassa: 2♦ 7♣ 8♦ 8♣ 3♦ 3♣ A♣ 6♥ A♥ 10♥ 7♥ Q♥ · Vastustajilla 3 ja 4 korttia
+   Neuvo: Lyö 8♠. Se säästää parisi myöhempään ja sen arvoa on nähty eniten.
+
+**3.** Käsi: 10♠ J♦ K♦ 3♣ 8♣ J♣ · Päällimmäinen: Q♣ · Nähty kasassa: A♦ 8♥ 5♥ K♥ 2♠ 9♠ A♠ 6♦ · Vastustajilla 3 ja 2 korttia
+   Neuvo: Lyö 8♣. Se säästää parisi myöhempään ja sen arvoa on nähty eniten.
+
+**4.** Käsi: 5♠ Q♠ 10♥ 5♦ 8♣ · Päällimmäinen: 8♠ · Nähty kasassa: Q♦ J♦ 2♥ J♠ 3♥ A♥ · Vastustajilla 3 ja 3 korttia
+   Neuvo: Lyö Q♠. Se säästää parisi myöhempään ja sen arvoa on nähty eniten.
 
 ### `playSeen` (4)
 
 **1.** Käsi: 3♠ 10♠ 7♥ A♦ 8♦ K♣ · Päällimmäinen: J♦ · Nähty kasassa: 9♥ K♠ 6♥ Q♣ 7♣ K♦ 3♦ Q♥ 6♠ 7♠ 3♣ 2♠ 10♦ 9♣ 8♣ · Vastustajilla 3 ja 3 korttia
    Neuvo: Lyö 8♦. Sen arvoa on nähty eniten, joten muilla on vähiten vastattavaa.
 
-**2.** Käsi: J♦ 2♣ 4♣ 10♣ · Päällimmäinen: 5♣ · Nähty kasassa: 7♣ · Vastustajilla 6 ja 3 korttia
-   Neuvo: Lyö 2♣. Sen arvoa on nähty eniten, joten muilla on vähiten vastattavaa.
-
-**3.** Käsi: Q♠ A♥ 3♥ 6♥ 7♥ 4♦ Q♣ · Päällimmäinen: 5♥ · Nähty kasassa: 2♠ 10♦ 4♣ 3♦ · Vastustajilla 6 ja 5 korttia
+**2.** Käsi: Q♠ A♥ 3♥ 6♥ 7♥ 4♦ Q♣ · Päällimmäinen: 5♥ · Nähty kasassa: 2♠ 10♦ 4♣ 3♦ · Vastustajilla 6 ja 5 korttia
    Neuvo: Lyö 3♥. Sen arvoa on nähty eniten, joten muilla on vähiten vastattavaa.
 
-**4.** Käsi: 6♠ 7♠ K♠ · Päällimmäinen: J♠ · Nähty kasassa: 5♥ A♠ K♦ 6♥ · Vastustajilla 7 ja 4 korttia
-   Neuvo: Lyö 6♠. Sen arvoa on nähty eniten, joten muilla on vähiten vastattavaa.
+**3.** Käsi: J♠ 10♥ 10♦ 2♣ · Päällimmäinen: 2♠ · Nähty kasassa: 10♠ 9♣ 3♣ 5♠ 3♠ Q♠ K♥ 3♦ A♠ 3♥ 9♠ 7♠ A♦ Q♥ 8♦ · Vastustajilla 7 ja 2 korttia
+   Neuvo: Lyö J♠. Sen arvoa on nähty eniten, joten muilla on vähiten vastattavaa.
+
+**4.** Käsi: 5♥ J♥ 10♦ · Päällimmäinen: 3♥ · Nähty kasassa: 7♠ 6♣ 10♠ Q♠ 6♠ 8♠ Q♥ 7♥ 3♠ 7♣ 5♠ 2♥ · Vastustajilla 5 ja 5 korttia
+   Neuvo: Lyö 5♥. Sen arvoa on nähty eniten, joten muilla on vähiten vastattavaa.
+
+### `playSeenTie` (4)
+
+**1.** Käsi: J♦ 2♣ 4♣ 10♣ · Päällimmäinen: 5♣ · Nähty kasassa: 7♣ · Vastustajilla 6 ja 3 korttia
+   Neuvo: Lyö 2♣. Nähdyissä ei ole eroa, joten näistä mikä tahansa käy.
+
+**2.** Käsi: 6♠ 7♠ K♠ · Päällimmäinen: J♠ · Nähty kasassa: 5♥ A♠ K♦ 6♥ · Vastustajilla 7 ja 4 korttia
+   Neuvo: Lyö 6♠. Nähdyissä ei ole eroa, joten näistä mikä tahansa käy.
+
+**3.** Käsi: 5♠ 9♠ 10♠ K♠ A♦ J♦ 8♣ · Päällimmäinen: 8♠ · Nähty kasassa: J♠ 8♥ 6♦ 4♣ A♥ 7♥ 5♦ 2♣ 3♦ 10♦ 4♥ 3♠ Q♥ · Vastustajilla 7 ja 2 korttia
+   Neuvo: Lyö 5♠. Nähdyissä ei ole eroa, joten näistä mikä tahansa käy.
+
+**4.** Käsi: 9♠ 5♣ 8♣ · Päällimmäinen: 9♣ · Nähty kasassa: K♣ 8♥ 5♥ 6♥ A♣ 4♥ · Vastustajilla 7 ja 1 korttia
+   Neuvo: Lyö 5♣. Nähdyissä ei ole eroa, joten näistä mikä tahansa käy.
 
 ### `playSeven` (4)
 
@@ -146,61 +188,58 @@ arvottu eikä pelattu, joten se voi olla pelissä epätodennäköinen; neuvo on 
 
 ## Ristiseiska (pelatut asemat, Hero paikalla 0)
 
-### `bonusEnd` (4)
+### `bonusEnd` (3)
 
-**1.** Käsi: K♦ · Tornit: ♠ 2–9, ♥ 1–13, ♦ 1–11, ♣ 1–10 · Pelattavissa: ei mitään · Bonusvuoro
+**1.** Käsi: A♠ Q♠ K♠ A♣ 2♣ 3♣ 4♣ Q♣ K♣ · Tornit: ♠ 4–8, ♥ 1–12, ♦ 1–13, ♣ 6–7 · Pelattavissa: ei mitään · Bonusvuoro
    Neuvo: Mikään korttisi ei käy bonusvuoroon. Lopeta vuoro.
 
-**2.** Käsi: 10♠ J♠ J♥ Q♥ 4♦ Q♦ 2♣ 8♣ · Tornit: ♠ 1–8, ♥ 4–8, ♦ 6–7, ♣ 7–7 · Pelattavissa: ei mitään · Bonusvuoro
+**2.** Käsi: Q♠ K♠ A♣ 2♣ 3♣ 4♣ Q♣ K♣ · Tornit: ♠ 1–9, ♥ 1–12, ♦ 1–13, ♣ 6–7 · Pelattavissa: ei mitään · Bonusvuoro
    Neuvo: Mikään korttisi ei käy bonusvuoroon. Lopeta vuoro.
 
-**3.** Käsi: 2♥ Q♥ A♣ 3♣ 10♣ Q♣ · Tornit: ♠ 1–13, ♥ 6–7, ♦ 1–12, ♣ 6–7 · Pelattavissa: ei mitään · Bonusvuoro
-   Neuvo: Mikään korttisi ei käy bonusvuoroon. Lopeta vuoro.
-
-**4.** Käsi: 10♥ J♣ · Tornit: ♠ 1–13, ♥ 5–8, ♦ 1–13, ♣ 1–8 · Pelattavissa: ei mitään · Bonusvuoro
+**3.** Käsi: Q♠ K♠ · Tornit: ♠ 1–10, ♥ 1–13, ♦ 1–10, ♣ 1–11 · Pelattavissa: ei mitään · Bonusvuoro
    Neuvo: Mikään korttisi ei käy bonusvuoroon. Lopeta vuoro.
 
 ### `pass` (4)
 
-**1.** Käsi: 5♠ 3♥ 8♥ J♥ A♦ 5♦ 8♦ 9♦ 10♦ K♦ 8♣ Q♣ · Tornit: ♠ kiinni, ♥ kiinni, ♦ 7–7, ♣ 7–7 · Pelattavissa: ei mitään
+**1.** Käsi: 9♠ 10♠ J♥ K♥ 2♦ 4♦ 10♦ Q♦ K♦ 3♣ 10♣ J♣ Q♣ · Tornit: ♠ 7–7, ♥ 7–7, ♦ kiinni, ♣ 7–7 · Pelattavissa: ei mitään
    Neuvo: Mikään korttisi ei käy. Passaa.
 
-**2.** Käsi: 5♠ 3♥ 8♥ J♥ A♦ 5♦ 8♦ 9♦ 10♦ K♦ Q♣ · Tornit: ♠ 7–7, ♥ 7–7, ♦ 7–7, ♣ 6–8 · Pelattavissa: ei mitään
+**2.** Käsi: 9♠ 10♠ J♥ K♥ 2♦ 4♦ 10♦ Q♦ K♦ 3♣ 10♣ J♣ Q♣ K♣ · Tornit: ♠ 7–7, ♥ 6–7, ♦ 7–7, ♣ 6–7 · Pelattavissa: ei mitään
    Neuvo: Mikään korttisi ei käy. Passaa.
 
-**3.** Käsi: 5♠ 3♥ 8♥ J♥ K♥ A♦ 5♦ 8♦ 9♦ 10♦ K♦ Q♣ · Tornit: ♠ 6–7, ♥ 7–7, ♦ 7–7, ♣ 5–9 · Pelattavissa: ei mitään
+**3.** Käsi: A♠ 9♠ 10♠ J♥ K♥ 2♦ 4♦ 10♦ Q♦ K♦ 3♣ 10♣ J♣ Q♣ K♣ · Tornit: ♠ 6–7, ♥ 6–7, ♦ 6–7, ♣ 6–8 · Pelattavissa: ei mitään
    Neuvo: Mikään korttisi ei käy. Passaa.
 
-**4.** Käsi: 5♠ A♥ 3♥ 8♥ J♥ K♥ A♦ 5♦ 8♦ 9♦ 10♦ K♦ Q♣ · Tornit: ♠ 6–7, ♥ 7–7, ♦ 7–7, ♣ 3–9 · Pelattavissa: ei mitään
+**4.** Käsi: A♠ 9♠ 10♠ J♥ Q♥ K♥ 2♦ 4♦ 10♦ Q♦ K♦ 3♣ 10♣ J♣ Q♣ K♣ · Tornit: ♠ 6–7, ♥ 6–8, ♦ 6–8, ♣ 5–8 · Pelattavissa: ei mitään
    Neuvo: Mikään korttisi ei käy. Passaa.
 
 ### `play` (4)
 
-**1.** Käsi: 5♠ 3♥ 8♥ J♥ A♦ 5♦ 8♦ 9♦ 10♦ K♦ 8♣ Q♣ · Tornit: ♠ 7–7, ♥ 7–7, ♦ 7–7, ♣ 6–7 · Pelattavissa: 8♣
-   Neuvo: Lyö 8♣, pienin pelattava. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan.
+**1.** Käsi: A♠ 9♠ 10♠ J♥ Q♥ K♥ 2♦ 4♦ 10♦ Q♦ K♦ 3♣ 10♣ J♣ Q♣ K♣ · Tornit: ♠ 6–8, ♥ 5–8, ♦ 6–8, ♣ 4–8 · Pelattavissa: 9♠ 3♣
+   Neuvo: Lyö 3♣, pienin pelattava. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan.
 
-**2.** Käsi: 5♠ A♥ 3♥ 8♥ J♥ K♥ A♦ 5♦ 8♦ 9♦ 10♦ K♦ Q♣ · Tornit: ♠ 6–9, ♥ 7–7, ♦ 7–7, ♣ 2–9 · Pelattavissa: 5♠
-   Neuvo: Lyö 5♠, pienin pelattava. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan.
+**2.** Käsi: A♠ 9♠ 10♠ J♥ Q♥ K♥ 2♦ 4♦ 10♦ Q♦ K♦ 10♣ J♣ Q♣ K♣ · Tornit: ♠ 6–8, ♥ 5–8, ♦ 6–8, ♣ 3–8 · Pelattavissa: 9♠
+   Neuvo: Lyö 9♠, pienin pelattava. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan.
 
-**3.** Käsi: Q♠ 2♥ 3♥ 8♥ J♥ A♦ 5♦ 8♦ 9♦ 10♦ K♦ Q♣ K♣ · Tornit: ♠ 1–11, ♥ 7–7, ♦ 7–7, ♣ 1–11 · Pelattavissa: Q♠ Q♣
-   Neuvo: Lyö Q♣, pienin pelattava. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan.
+**3.** Käsi: A♠ 9♠ 10♠ J♥ Q♥ K♥ 2♦ 10♦ Q♦ K♦ 10♣ J♣ Q♣ K♣ · Tornit: ♠ 6–8, ♥ 4–8, ♦ 4–8, ♣ 2–8 · Pelattavissa: 9♠
+   Neuvo: Lyö 9♠, pienin pelattava. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan.
 
-**4.** Käsi: Q♠ 2♥ 3♥ 8♥ J♥ A♦ 5♦ 8♦ 9♦ 10♦ K♦ K♣ · Tornit: ♠ 1–11, ♥ 7–7, ♦ 7–7, ♣ 1–12 · Pelattavissa: Q♠ K♣
-   Neuvo: Lyö Q♠, pienin pelattava. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan.
+**4.** Käsi: A♠ 10♠ J♥ Q♥ K♥ 2♦ 10♦ Q♦ K♦ 10♣ J♣ Q♣ K♣ · Tornit: ♠ 5–9, ♥ 2–8, ♦ 4–8, ♣ 1–8 · Pelattavissa: 10♠
+   Neuvo: Lyö 10♠, pienin pelattava. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan.
 
 ### `playSeven` (4)
 
-**1.** Käsi: 5♠ 3♥ 8♥ J♥ A♦ 5♦ 7♦ 8♦ 9♦ 10♦ K♦ 8♣ Q♣ · Tornit: ♠ kiinni, ♥ kiinni, ♦ kiinni, ♣ 7–7 · Pelattavissa: 7♦
-   Neuvo: Lyö 7♦. Seiska kannattaa avata maahan, jossa sinulla on eniten kortteja.
-
-**2.** Käsi: 5♠ Q♠ 2♥ 7♥ J♥ Q♥ 10♦ A♣ 8♣ 9♣ 10♣ J♣ Q♣ · Tornit: ♠ 7–7, ♥ kiinni, ♦ 7–7, ♣ 7–7 · Pelattavissa: 7♥
-   Neuvo: Lyö 7♥. Seiska kannattaa avata maahan, jossa sinulla on eniten kortteja.
-
-**3.** Käsi: 3♠ 4♠ 8♠ 9♠ J♠ 8♥ J♥ Q♥ 4♦ 5♦ 7♦ 10♦ K♣ · Tornit: ♠ kiinni, ♥ kiinni, ♦ kiinni, ♣ 7–7 · Pelattavissa: 7♦
-   Neuvo: Lyö 7♦. Seiska kannattaa avata maahan, jossa sinulla on eniten kortteja.
-
-**4.** Käsi: 7♠ 9♠ K♠ 3♥ 6♥ 9♥ J♥ K♥ 4♦ 6♦ K♦ 4♣ 5♣ · Tornit: ♠ kiinni, ♥ kiinni, ♦ kiinni, ♣ 7–7 · Pelattavissa: 7♠
+**1.** Käsi: 4♠ 5♠ 6♠ 7♠ 8♥ 9♥ 10♥ 3♦ K♦ 2♣ 9♣ Q♣ K♣ · Tornit: ♠ kiinni, ♥ kiinni, ♦ 7–7, ♣ 7–7 · Pelattavissa: 7♠
    Neuvo: Lyö 7♠. Seiska kannattaa avata maahan, jossa sinulla on eniten kortteja.
+
+**2.** Käsi: A♠ 3♠ 4♠ 5♠ 7♠ 9♠ Q♠ Q♥ 3♦ J♦ 2♣ 5♣ 10♣ · Tornit: ♠ kiinni, ♥ 6–7, ♦ kiinni, ♣ 7–7 · Pelattavissa: 7♠
+   Neuvo: Lyö 7♠. Seiska kannattaa avata maahan, jossa sinulla on eniten kortteja.
+
+**3.** Käsi: 3♠ 9♠ K♠ 3♥ 10♥ J♥ 2♦ 6♦ 7♦ 9♦ 10♦ 2♣ 5♣ · Tornit: ♠ 7–7, ♥ 7–7, ♦ kiinni, ♣ 7–7 · Pelattavissa: 7♦
+   Neuvo: Lyö 7♦. Seiska kannattaa avata maahan, jossa sinulla on eniten kortteja.
+
+**4.** Käsi: 7♠ K♠ 4♥ 5♥ 6♥ 10♥ Q♥ 6♦ 7♦ 9♦ 10♦ J♦ 3♣ · Tornit: ♠ kiinni, ♥ 7–7, ♦ kiinni, ♣ 7–7 · Pelattavissa: 7♠ 6♥ 7♦
+   Neuvo: Lyö 7♦. Seiska kannattaa avata maahan, jossa sinulla on eniten kortteja.
 
 ## Moska: sivustalyönti
 
@@ -250,17 +289,31 @@ arvottu eikä pelattu, joten se voi olla pelissä epätodennäköinen; neuvo on 
 
 ### `pass` (4)
 
-**1.** Hero puolustaa · Valtti: ♥ · Pöytä: Q♠, Q♣ · Käsi: 5♥ 9♥ Q♥ 4♦ 6♣ 9♣
-   Neuvo: Siirrä hyökkäys eteenpäin kortilla Q♥. Pienin sopiva riittää, valtit säästetään.
-
-**2.** Hero puolustaa · Valtti: ♥ · Pöytä: 5♦ · Käsi: 6♠ 10♠ 5♥ A♦ 2♣ 4♣
-   Neuvo: Siirrä hyökkäys eteenpäin kortilla 5♥. Pienin sopiva riittää, valtit säästetään.
-
-**3.** Hero puolustaa · Valtti: ♠ · Pöytä: 6♦ · Käsi: 6♥ 9♥ 10♥ J♣
+**1.** Hero puolustaa · Valtti: ♠ · Pöytä: 6♦ · Käsi: 6♥ 9♥ 10♥ J♣
    Neuvo: Siirrä hyökkäys eteenpäin kortilla 6♥. Pienin sopiva riittää, valtit säästetään.
 
-**4.** Hero puolustaa · Valtti: ♠ · Pöytä: J♦, J♣ · Käsi: 6♠ J♠ 5♦ 9♦
-   Neuvo: Siirrä hyökkäys eteenpäin kortilla J♠. Pienin sopiva riittää, valtit säästetään.
+**2.** Hero puolustaa · Valtti: ♥ · Pöytä: 6♥ · Käsi: 6♠ 9♥ J♦ A♣ 8♣ 10♣
+   Neuvo: Siirrä hyökkäys eteenpäin kortilla 6♠. Pienin sopiva riittää, valtit säästetään.
+
+**3.** Hero puolustaa · Valtti: ♥ · Pöytä: 2♥, 2♦ · Käsi: 3♥ 10♥ 3♦ 2♣ Q♣
+   Neuvo: Siirrä hyökkäys eteenpäin kortilla 2♣. Pienin sopiva riittää, valtit säästetään.
+
+**4.** Hero puolustaa · Valtti: ♠ · Pöytä: 2♣ · Käsi: 5♠ 2♥ 5♥ Q♥
+   Neuvo: Siirrä hyökkäys eteenpäin kortilla 2♥. Pienin sopiva riittää, valtit säästetään.
+
+### `passTrump` (4)
+
+**1.** Hero puolustaa · Valtti: ♥ · Pöytä: Q♠, Q♣ · Käsi: 5♥ 9♥ Q♥ 4♦ 6♣ 9♣
+   Neuvo: Siirrä hyökkäys eteenpäin valtilla Q♥. Muuta samanarvoista ei ole kädessä ja siirto käy ennen kaatoa.
+
+**2.** Hero puolustaa · Valtti: ♥ · Pöytä: 5♦ · Käsi: 6♠ 10♠ 5♥ A♦ 2♣ 4♣
+   Neuvo: Siirrä hyökkäys eteenpäin valtilla 5♥. Muuta samanarvoista ei ole kädessä ja siirto käy ennen kaatoa.
+
+**3.** Hero puolustaa · Valtti: ♠ · Pöytä: J♦, J♣ · Käsi: 6♠ J♠ 5♦ 9♦
+   Neuvo: Siirrä hyökkäys eteenpäin valtilla J♠. Muuta samanarvoista ei ole kädessä ja siirto käy ennen kaatoa.
+
+**4.** Hero puolustaa · Valtti: ♥ · Pöytä: Q♣, Q♦ · Käsi: 3♠ 5♥ 10♥ Q♥ 6♦ 9♦
+   Neuvo: Siirrä hyökkäys eteenpäin valtilla Q♥. Muuta samanarvoista ei ole kädessä ja siirto käy ennen kaatoa.
 
 ### `take` (4)
 
