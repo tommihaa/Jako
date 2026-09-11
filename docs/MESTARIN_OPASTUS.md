@@ -88,6 +88,9 @@ Koodissa samana päivänä kuin päätös, ei julkaistu. Runko on `src/shared/Me
   yhtäsuuruus, joten "Mestari olisi pelannut toisin" ei ole tulkinta vaan merkkijonovertailu.
 - Palaute on oma tilansa jota `G`:n muutos ei tyhjennä, koska bottien siirrot tulevat heti
   perään. Se kestää 8 sekuntia tai ✕:ään. Korostus tulee samasta `adv`-oliosta kuin neuvon.
+- Neuvo opastuksen päällä näyttää vain korostuksen. Tommin havainto Moska-testissä 11.9.2026:
+  🧙 opastuksen jälkeen toisti saman tekstin, ja siitä oli hyötyä vain korostus. Sääntöteksti
+  pysyy opastuskuplassa, ja opastus jää odottamaan valintaa. Todennettu Seiskassa devissä.
 
 Todennettu dev-palvelimella 11.9.2026: Seiskassa opastus ilman korostusta ja varausteksti,
 osuma, eri valinta jossa Mestarin kortti korostui purppuralla; Kultakalassa nostokohteen osuma.

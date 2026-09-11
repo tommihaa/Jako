@@ -621,7 +621,8 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       key,
     };
   }
-  function askAdvice() { setAdvice(computeAdvice()); }
+  // Opastuksen päällä neuvo näyttää vain korostuksen; sääntöteksti on jo opastuskuplassa.
+  function askAdvice() { const a = computeAdvice(); setAdvice(a && opastus.pending ? { ...a, text: null } : a); }
   function askGuide() { opastus.ask(computeAdvice()); }
   // Auto-advance kun showNextBtn=false tai allBots-tila ja kaappaus odottaa jatkoa
   useEffect(() => {

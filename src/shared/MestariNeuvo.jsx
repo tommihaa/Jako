@@ -71,7 +71,7 @@ export function GuideButton({ onClick }) {
 /**
  * @param {string} gameId
  * @param {any} G pelitila; opastus vanhenee siitä kuten neuvo
- * @returns {{ text: string|null, hl: any, ask: (a: any) => void, answer: (key: string) => void, dismiss: () => void }}
+ * @returns {{ text: string|null, hl: any, ask: (a: any) => void, answer: (key: string) => void, dismiss: () => void, pending: boolean }}
  *   text: kuplan teksti (odottava opastus tai palaute), hl: korostettava kohde palautteessa
  *   (sama muoto kuin neuvon tila, vain kun valinta erosi), ask: aloita opastus neuvo-oliolla
  *   jossa on `key`, answer: pelaajan valinnan avain.
@@ -108,5 +108,7 @@ export function useOpastus(gameId, G) {
   const varaus = OPASTUS_VARAUS.has(gameId) ? ' ' + t('ui.advice.flat') : '';
   const text = result ? result.text : pending ? pending.text + varaus : null;
   const hl = result && !result.hit ? result : null;
-  return { text, hl, ask, answer, dismiss };
+  // pending: opastus odottaa valintaa. Neuvo sen päällä näyttää vain korostuksen, koska
+  // teksti on jo kuplassa (Tommin havainto Moska-testissä 11.9.2026).
+  return { text, hl, ask, answer, dismiss, pending: !!pending };
 }

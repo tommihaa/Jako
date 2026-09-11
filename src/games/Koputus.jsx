@@ -360,7 +360,8 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       key,
     };
   }
-  function askAdvice() { setAdvice(computeAdvice()); }
+  // Opastuksen päällä neuvo näyttää vain korostuksen; sääntöteksti on jo opastuskuplassa.
+  function askAdvice() { const a = computeAdvice(); setAdvice(a && opastus.pending ? { ...a, text: null } : a); }
   function askGuide() { opastus.ask(computeAdvice()); }
   useEffect(() => {
     if (!G) { prevDeckRef.current = null; return; }

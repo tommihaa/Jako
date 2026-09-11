@@ -396,7 +396,8 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       : opastusAvain('play', ids);
     return { text: t('games.seiska.advice.' + a.type, params), cardIds: ids, key };
   }
-  function askAdvice() { setAdvice(computeAdvice()); }
+  // Opastuksen päällä neuvo näyttää vain korostuksen; sääntöteksti on jo opastuskuplassa.
+  function askAdvice() { const a = computeAdvice(); setAdvice(a && opastus.pending ? { ...a, text: null } : a); }
   function askGuide() { opastus.ask(computeAdvice()); }
 
   useEffect(() => {

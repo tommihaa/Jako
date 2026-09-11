@@ -378,7 +378,8 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       key,
     };
   }
-  function askAdvice() { setAdvice(computeAdvice()); }
+  // Opastuksen päällä neuvo näyttää vain korostuksen; sääntöteksti on jo opastuskuplassa.
+  function askAdvice() { const a = computeAdvice(); setAdvice(a && opastus.pending ? { ...a, text: null } : a); }
   function askGuide() { opastus.ask(computeAdvice()); }
   useEffect(() => { sndRef.current = soundOn; },  [soundOn]);
 
