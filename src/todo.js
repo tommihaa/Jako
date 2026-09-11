@@ -16,5 +16,5 @@ export const TODO = [
   { label: 'Tekoälyn vaikeustasojen hionta (uskottavammat aloittelijan virheet)', status: 'done' },
   { label: 'Kysy Mestarilta neuvoa -nappi viiteen peliin (Seiska, Ristiseiska, Kultakala, Koputus, Läpsy)', status: 'done' },
   { label: 'Mestarin neuvo monivaiheisiin peleihin (Moska, Paskahousu, Kasino, Maija)', status: 'done' },
-  { label: 'Mestarin opastus: 🎓-nappi kertoo säännön ilman korostusta, palaute vasta oman valinnan jälkeen', status: 'open' },
+  { label: 'Mestarin opastus: 🎓-nappi kertoo säännön ilman korostusta, palaute vasta oman valinnan jälkeen', status: 'done' },
 ];

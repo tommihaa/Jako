@@ -13,6 +13,14 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '11.9.2026',
+    items: [
+      'Mestarin opastus: 🧙-napin viereen tuli 🎓 Opasta. Se kertoo säännön mutta ei korosta korttia, joten päättelet siirron itse. Kun olet pelannut, näet osuiko valintasi Mestarin valintaan. Jos ei, Mestarin kortti korostuu purppuralla siinä paikassa jossa se oli. Opastus on kahdeksassa pelissä, Läpsyssä ei, koska sen neuvo ohjaa huomiota eikä valitse korttia. Seiskassa ja Paskahousussa opastus sanoo ääneen, ettei Mestari ole niissä mitatusti Kisälliä parempi.',
+      'Mestarin neuvot kertovat nyt säännön jolla kortti valittiin, eivät vain korttia. Seiskassa yksittäisen kortin neuvo sanoo onko se ainoa käypä, jättääkö se käteen ryhmän, säästääkö se parin vai onko sen arvoa nähty eniten. Moskan sivustalyönti ja siirto, Kasinon kaappaus ja jättö sekä Ristiseiskan lyönti saivat samanlaisen perustelun. Muutos koskee kaikkia 23 kieltä.',
+      'Seiskan sääntö tarkentui: seiskan tai ässän saa lyödä viimeisenä korttina vain saman erikoiskortin päälle ja silloin lyöjä nostaa heti yhden kortin, koska peli ei saa loppua erikoiskorttiin. Lisäksi ässän rangaistusnosto ei enää jää väliin kun pakka loppuu kesken: kasa sekoitetaan ja nosto jatkuu. Botit noudattavat samaa sääntöä ja 400 pelin mittaus näytti ettei se muuttanut tasojen voimasuhteita.',
+    ],
+  },
+  {
     date: '8.9.2026 ilta',
     items: [
       'Kaikki yhdeksän peliä käytiin läpi kysymyksellä: pääseekö botti tekemään jotain mikä sinulta on estetty, ja pääsetkö sinä kiertämään sääntöjä? Botin puolelta ei löytynyt yhtään etua. Sinun puoleltasi löytyi kolmetoista aukkoa, ja ne on nyt suljettu. Suurin osa oli samaa lajia: nopea toinen klikkaus ehti tehdä toisen siirron ennen kuin peli vaihtoi vaihetta. Koputuksessa saman kortin sai kahteen paikkaan, Seiskassa Lappu-ikkunan aikana sai lyödä toisen kortin ja voittaa, Moskassa oton jälkeen sai vielä siirtää tai kaataa. Kasinossa oman rakennelman sai jättää lunastamatta, Läpsyssä pudonnut pelaaja sai läpsäistä itsensä takaisin peliin, Paskahousussa punaisen ja mustan kakkosen sai lyödä yhtenä ryhmänä, ja Seiskassa ryhmälyönnin sai jättää väärän kortin päälle.',
