@@ -1,6 +1,6 @@
 # Mestarin opastus: neuvo opettelun välineenä
 
-**Mitä tämä dokumentti on.** Päätöskirjaus ominaisuudesta joka ei ole vielä koodissa. Se korvaa
+**Mitä tämä dokumentti on.** Päätöskirjaus ja toteutuksen tila (koodissa 11.9.2026, ks. Toteutus). Se korvaa
 Tulossa-listan rivin *Mestarin luento* (`src/locales/fi.js`, `todoItems`), joka oli neuvon
 rinnalle kirjoitettava selitys siitä miksi Mestari suosittelee siirtoa. Luento hylättiin
 11.9.2026, ja tilalle päätettiin opastus. Sopimusmuutos-protokollan mukaisesti päätös on
@@ -102,3 +102,23 @@ kahdeksaa valintapeliä, ja Läpsyllä on edelleen vain 🧙-neuvo.
 
 Tulossa-listan rivi on vaihdettu luennosta opastukseksi (`src/todo.js`, `fi.js`), tila `open`
 kunnes julkaistaan.
+
+## Testausvelka (Tommin merkintä 11.9.2026)
+
+Opastus on harppaus: yhdeksän tiedostoa, kahdeksan pelin käsittelijät ja uusi jaettu tila
+yhdessä sessiossa. Siksi tämä kohta pysyy auki kunnes alla oleva taulukko on täynnä, eikä yksi
+pelitesti sulje sitä. Rivi kuitataan päivämäärällä ja sillä mitä pelattiin.
+
+| Peli | Opastus ilman korostusta | Osuma | Eri valinta ja korostus | Vaiheet (jos on) |
+|---|---|---|---|---|
+| Seiska | 11.9. Claude, dev | 11.9. | 11.9. | |
+| Kultakala | 11.9. Claude, dev | 11.9. | | vaihto ja pysäytys |
+| Ristiseiska | | | | pantti ja bonusvuoro |
+| Koputus | | | | nosto, vaihto, koputus |
+| Maija | | | | hyökkäys, puolustus, otto |
+| Moska | | | | hyökkäys, puolustus, siirto, lisäys |
+| Paskahousu | | | | vaihto, koputus, nosto |
+| Kasino | | | | kaappaus, rakennus, jättö, rakennelma |
+
+Tuotantotesti on eri rivi kuin dev-testi, joten julkaisun jälkeen sama taulukko täytetään
+uudelleen livestä ainakin kolmen pelin osalta.
