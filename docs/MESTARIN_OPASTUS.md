@@ -156,7 +156,7 @@ vain olla väittämättä väärää, sen on nimettävä avain jolla kortti erot
 | Ristiseiska | `play` | osittain | pienin arvo porttisäännön jälkeen (`aiBestCard`) |
 | muut 45 | | riittää | sääntö on tekstissä tai valinta on kaksiarvoinen |
 
-### Tekstiehdotukset (fi, odottaa Tommin kuittausta)
+### Tekstiehdotukset (fi, Tommi kuittasi 11.9.2026, toteutus seuraavassa sessiossa)
 
 Seiskan `play` jaetaan neljäksi, koska sääntö riippuu haarasta. Haara luetaan `getAdvice`ssa
 valitun kortin ehdoista jälkikäteen (ei uutta valintaa, vain luokittelu), joten `aiBestPlay`
@@ -175,5 +175,21 @@ ei muutu eikä Botbench liiku.
 | kasino `trail` | Jätä {card} pöytään. Kannattavaa kaappausta ei ole, ja tämä on kortti jonka vastustaja epätodennäköisimmin kaappaa. Pistekortit ja ässät pysyvät kädessä. |
 | ristiseiska `play` | Lyö {card}, pienin pelattava. Portti (6 tai 8) jää käteen lukoksi, ja se avataan vasta kun samassa maassa on vähintään kaksi korttia joita et pääse pian pelaamaan. |
 
-Kuittauksen jälkeen: tekstit 23 kielelle, Seiskan `getAdvice` luokittelee haaran,
-`MESTARIN_NEUVO.md` saa merkinnän uudesta vaatimustasosta.
+Seuraavan session työlista (kaikki kuitattu 11.9.2026, mitään ei ole aloitettu koodissa):
+
+1. Nämä kymmenen tekstiä fi.js:ään ja 22 muuhun localeen (insert-after-anchor pelilohkon
+   `advice: {` sisään; Seiskan `play` jää ryhmätekstiksi).
+2. Seiskan `getAdvice` luokittelee yksittäisen kortin haaran jälkikäteen: ainoa käypä →
+   `playOnly`; 3–5 kortin käsi ja jää samanarvoinen ryhmä → `playLeaveGroup`; pariton
+   kandidaatti kun parillisiakin oli → `playNoPair`; muuten `playSeen`. Ei muutosta
+   `aiBestPlay`hin.
+3. `MESTARIN_NEUVO.md`: merkintä sääntötason vaatimuksesta ja tämä auditointi.
+4. Erillinen sääntötyö `SEISKA.md` (commit bc4de50): erikoiskortti viimeisenä vain saman
+   erikoiskortin päälle, lyöjä nostaa kortin. Koodi `canSingle` (isLast-haara katsoo
+   `discardTop.r`) ja `doPlay` (tyhjä käsi erikoiskortilla → nosto ennen voittotarkistusta,
+   sekoitus jos pakka tyhjä, uusi lokiviesti 23 kielelle). Koskee botteja, joten Seiska
+   mitataan Botbenchillä N=400 kolmella parilla ennen julkaisua.
+5. Sivulöydös samalta lukukerralta: `applyAcePenalty` sekoittaa pakan vain kerran ennen
+   nostosilmukkaa, joten pakan viimeisen kortin jälkeen loput rangaistusnostot jäävät
+   tekemättä vaikka lyöntipakassa olisi kortteja. Kanoni sanoo että nosto ei jää väliin.
+   Korjaus kuuluu samaan Seiska-erään.
