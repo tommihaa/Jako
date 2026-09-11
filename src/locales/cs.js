@@ -380,6 +380,8 @@ export const cs = {
       altName: 'Prší',
       desc: 'Závod ve stylu UNO k prázdné ruce',
       msg: {
+        lastSpecialDraw: "{name} hraje speciální kartu jako poslední a bere {card}.",
+        lastSpecialDrawNoCard: "{name} hraje speciální kartu jako poslední a bere kartu.",
         gameStart: 'Seiska začíná! Vrchní: {card}.',
         turnOf: 'Na tahu {name}.',
         yourTurnSuit: 'Na tahu Hero — {cl}',

@@ -369,6 +369,8 @@ export const sv = {
       altName: "Vändåtta",
       desc: 'En UNO-liknande kapplöpning att tömma handen',
       msg: {
+        lastSpecialDraw: "{name} spelar ett specialkort som sista kort och drar {card}.",
+        lastSpecialDrawNoCard: "{name} spelar ett specialkort som sista kort och drar ett kort.",
         gameStart: 'Seiska börjar! Översta kortet: {card}.',
         turnOf: '{name}s tur.',
         yourTurnSuit: 'Heros tur — {cl}',

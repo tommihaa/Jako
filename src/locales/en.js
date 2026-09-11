@@ -373,6 +373,8 @@ export const en = {
       desc: 'A UNO-style race to empty your hand',
       altName: "Crazy Eights",
       msg: {
+        lastSpecialDraw: "{name} plays a special card as the last one and draws {card}.",
+        lastSpecialDrawNoCard: "{name} plays a special card as the last one and draws a card.",
         gameStart: 'Seiska begins! Top card: {card}.',
         turnOf: "{name}'s turn.",
         yourTurnSuit: "Hero's turn: {cl}",

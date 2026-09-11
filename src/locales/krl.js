@@ -370,6 +370,8 @@ export const krl = {
       altName: "Mau-Mau",
       desc: 'UNO-tyyppini kilbajuokšu kortittomuoh',
       msg: {
+        lastSpecialDraw: "{name} lyöy erikoiskortin jälgimäzenny da nostau {card}.",
+        lastSpecialDrawNoCard: "{name} lyöy erikoiskortin jälgimäzenny da nostau kortin.",
         gameStart: 'Seiska alkau! Piällimmäini: {card}.',
         turnOf: 'Vuorossa {name}.',
         yourTurnSuit: 'Vuorossa Hero — {cl}',

@@ -369,6 +369,8 @@ export const fr = {
       altName: "Huit américain",
       desc: 'Une course de type UNO pour vider sa main',
       msg: {
+        lastSpecialDraw: "{name} joue une carte spéciale en dernier et pioche {card}.",
+        lastSpecialDrawNoCard: "{name} joue une carte spéciale en dernier et pioche une carte.",
         gameStart: 'Seiska commence ! Carte du dessus : {card}.',
         turnOf: 'Au tour de {name}.',
         yourTurnSuit: 'Au tour de Hero — {cl}',

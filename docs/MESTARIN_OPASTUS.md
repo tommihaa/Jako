@@ -116,7 +116,7 @@ pelitesti sulje sitä. Rivi kuitataan päivämäärällä ja sillä mitä pelatt
 |---|---|---|---|---|
 | Seiska | 11.9. Claude, dev | 11.9. | 11.9. | |
 | Kultakala | 11.9. Claude, dev | 11.9. | | vaihto ja pysäytys |
-| Ristiseiska | | | | pantti ja bonusvuoro |
+| Ristiseiska | 11.9. Claude, dev | 11.9. | 11.9. | pantti ja bonusvuoro eivät osuneet kohdalle 11.9. |
 | Koputus | | | | nosto, vaihto, koputus |
 | Maija | | | | hyökkäys, puolustus, otto |
 | Moska | 11.9. Tommi, dev | 11.9. | 11.9. | 11.9. kaikki vaiheet toimivat |

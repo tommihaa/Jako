@@ -378,6 +378,8 @@ export const uk = {
       altName: "карткова гра «Вісімки»",
       desc: 'Перегони до порожньої руки в стилі UNO',
       msg: {
+        lastSpecialDraw: "{name} грає особливу карту останньою і бере {card}.",
+        lastSpecialDrawNoCard: "{name} грає особливу карту останньою і бере карту.",
         gameStart: 'Seiska починається! Верхня: {card}.',
         turnOf: 'Хід {name}.',
         yourTurnSuit: 'Хід Hero — {cl}',

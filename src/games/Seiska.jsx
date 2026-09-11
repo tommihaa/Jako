@@ -22,8 +22,9 @@ const SUIT_SYMS = ['♠', '♥', '♦', '♣'];
 
 // Voidaanko yksittäinen kortti lyödä
 function canSingle(card, discardTop, reqSuit, isLast) {
-  if (card.r === '7' && isLast)            return false;
-  if (card.r === 'A' && isLast)            return false;
+  // Erikoiskortin (7, A) saa lyödä viimeisenä vain saman erikoiskortin päälle, ja lyöjä
+  // nostaa silloin kortin doPlay'ssa (SEISKA.md, Tommin päätös 11.9.2026).
+  if (isLast && (card.r === '7' || card.r === 'A') && discardTop.r !== card.r) return false;
   if (card.r === '7')                      return true;
   const suit = reqSuit || discardTop.s;
   if (card.s === suit)                     return true;
@@ -474,6 +475,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     turnOf:       name => t('games.seiska.msg.turnOf', { name }),
     yourTurnSuit: cl => t('games.seiska.msg.yourTurnSuit', { cl }),
     aceDrawn:     (isH, name, card) => card ? t('games.seiska.msg.aceDrawn', { name, card }) : t('games.seiska.msg.aceDrawnNoCard', { name }),
+    lastSpecialDraw: (name, card) => card ? t('games.seiska.msg.lastSpecialDraw', { name, card }) : t('games.seiska.msg.lastSpecialDrawNoCard', { name }),
     forgotLappu:  (name, count) => t('games.seiska.msg.forgotLappu', { name, count }),
     played:       (isH, name, cards) => t('games.seiska.msg.played', { name, cards }),
     won:          (isH, name, rank) => rank === 1 ? t('games.seiska.msg.winTop', { name }) : t('games.seiska.msg.winPlace', { name, rank }),
@@ -544,12 +546,21 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
   // Lokirivit kerätään `lines`-listaan eikä lokiteta täällä: tila kirjoitetaan ennen
   // lokiriviä (kompositioauditointi H4), ja kutsuja tietää milloin tila on valmis.
   function applyAcePenalty(g, fromIdx, lines = /** @type {string[]} */ ([])) {
-    let g2 = reshuffleIfNeeded(g);
+    const g2 = g;
     let deck = [...g2.deck];
+    let discardPile = g2.discardPile;
+    let reshuffleCount = g2.reshuffleCount || 0;
     const drew = new Set();
     const players = g2.players.map((p, i) => {
       if (i === fromIdx || g2.finished.includes(i)) return p;
-      if (!deck.length) return p;
+      if (!deck.length) {
+        // Sekoitus myös nostosilmukan sisällä: kanoni sanoo että nosto ei jää väliin, ja
+        // pakka voi loppua kesken rangaistuksen (löydös 11.9.2026, MESTARIN_OPASTUS.md).
+        const r = reshuffleIfNeeded({ ...g2, deck, discardPile, reshuffleCount });
+        if (!r.deck.length) return p;
+        deck = [...r.deck]; discardPile = r.discardPile; reshuffleCount = r.reshuffleCount;
+        lines.push(M.reshuffle);
+      }
       const drawn = deck.shift();
       drew.add(i);
       lines.push(M.aceDrawn(p.isHuman, p.name, (p.isHuman || revealAll) ? lblColored(drawn) : null));
@@ -558,7 +569,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     // Nostanut pelaaja sai +1 kortin (käsi > 1) → poista lappuSaid-joukosta,
     // jotta häneltä kysytään Lappu uudelleen kun hän pelaa itsensä takaisin yhteen korttiin.
     const lappuSaid = new Set([...g2.lappuSaid].filter(id => !drew.has(id)));
-    return { ...g2, players, deck, lappuSaid };
+    return { ...g2, players, deck, discardPile, reshuffleCount, lappuSaid };
   }
 
   // ── Lappu-tarkistus ennen seuraavaa vuoroa ──────────────────
@@ -646,7 +657,27 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     // Poista kädestä
     let players = g.players.map((pl, i) => i !== playerIdx ? pl
       : { ...pl, hand: pl.hand.filter(c => !cards.find(sc => sc.id === c.id)) });
-    const newHand = players[playerIdx].hand;
+    let newHand = players[playerIdx].hand;
+
+    // Erikoiskortti viimeisenä (canSingle sallii sen vain saman erikoiskortin päälle):
+    // lyöjä nostaa heti yhden kortin ennen voittotarkistusta, koska peli ei saa loppua
+    // erikoiskorttiin (SEISKA.md, Tommin päätös 11.9.2026). Sekoitus jos pakka on tyhjä.
+    // Lokirivit annetaan vasta lyönnin rivin jälkeen, kun tila on kirjoitettu.
+    let g0 = g;
+    const afterPlayLines = /** @type {string[]} */ ([]);
+    if (newHand.length === 0 && (card.r === '7' || card.r === 'A')) {
+      const gd = reshuffleIfNeeded(g0);
+      if (gd.deck.length) {
+        if (gd.reshuffleCount !== (g0.reshuffleCount || 0)) afterPlayLines.push(M.reshuffle);
+        const [drawn, ...deck] = gd.deck;
+        players = players.map((pl, i) => i !== playerIdx ? pl : { ...pl, hand: [drawn] });
+        newHand = players[playerIdx].hand;
+        // Käsi on taas yhden kortin, joten Lappu kysytään uudelleen (sama kuin doDraw'ssa).
+        const lappuSaid = new Set([...gd.lappuSaid].filter(id => id !== playerIdx));
+        g0 = { ...gd, deck, lappuSaid };
+        afterPlayLines.push(M.lastSpecialDraw(p.name, (isH || revealAll) ? lblColored(drawn) : null));
+      }
+    }
 
     // Tarkista voitto
     let finished = [...g.finished];
@@ -664,7 +695,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       }
     }
 
-    let g2 = { ...g, players, finished };
+    let g2 = { ...g0, players, finished };
 
     if (gameOver) {
       const ranking = finished.map((idx, pos) => ({
@@ -694,6 +725,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     const hadReqSuit = g2.reqSuit !== null;
     g2 = { ...g2, discardTop: card, discardPile: [...g2.discardPile, ...cards], reqSuit: null };
     commit(g2, playedMsg);
+    afterPlayLines.forEach(addLog);
     if (wonNow) {
       addLog(M.won(isH, p.name, finished.length));
       if (sndRef.current) SFX.capture();
@@ -955,6 +987,10 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     const idx = g.activePlayer;
     if (g.aceBonus !== null) {
       if (selected[0]?.s !== g.aceBonus) { addLog(M.wrongSuit); return; }
+      // Viimeisen kortin erikoiskorttisääntö pätee myös bonusvuorolla: päällimmäinen on ässä,
+      // joten ässä käy viimeisenä mutta seiska ei (SEISKA.md 11.9.2026). Botti ei koskaan
+      // lyö erikoiskorttia bonusvuorolla (aiAceBonusDecision), joten tämä koskee vain ihmistä.
+      if (!canGroup(selected, g.discardTop, g.reqSuit, g.players[idx].hand.length)) { addLog(M.badCards); return; }
       const cards = [...selected]; setSel([]);
       opastus.answer(opastusAvain('play', cards.map(c => c.id)));
       doPlay({ ...g, aceBonus: null }, idx, cards, null);

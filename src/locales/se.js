@@ -371,6 +371,8 @@ export const se = {
       altName: 'Mau-Mau',
       desc: 'UNO-lágan gilvojohtin goartahisvuhtii',
       msg: {
+        lastSpecialDraw: "{name} speallá sierrabáktti maŋimussan ja geassá {card}.",
+        lastSpecialDrawNoCard: "{name} speallá sierrabáktti maŋimussan ja geassá báktti.",
         gameStart: 'Seiska álgá! Bajimuš: {card}.',
         turnOf: 'Vuorus {name}.',
         yourTurnSuit: 'Vuorus Hero — {cl}',

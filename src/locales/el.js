@@ -369,6 +369,8 @@ export const el = {
       altName: "Οκτάρια (Crazy Eights)",
       desc: 'Αγώνας τύπου UNO για άδειασμα του χεριού',
       msg: {
+        lastSpecialDraw: "{name} παίζει ειδικό φύλλο ως τελευταίο και τραβάει {card}.",
+        lastSpecialDrawNoCard: "{name} παίζει ειδικό φύλλο ως τελευταίο και τραβάει ένα φύλλο.",
         gameStart: 'Η Seiska ξεκινά! Πάνω χαρτί: {card}.',
         turnOf: 'Σειρά του {name}.',
         yourTurnSuit: 'Σειρά του Hero — {cl}',

@@ -371,6 +371,8 @@ export const la = {
       altName: 'Mau-Mau',
       desc: 'Cursus genere UNO ad nullitatem chartarum',
       msg: {
+        lastSpecialDraw: "{name} chartam specialem ultimam ludit et {card} trahit.",
+        lastSpecialDrawNoCard: "{name} chartam specialem ultimam ludit et chartam trahit.",
         gameStart: 'Seiska incipit! Summa: {card}.',
         turnOf: 'Vices {name}.',
         yourTurnSuit: 'Vices Hero — {cl}',

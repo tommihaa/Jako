@@ -371,6 +371,8 @@ export const ro = {
       altName: 'Septică',
       desc: 'Cursă în stil UNO până la zero cărți',
       msg: {
+        lastSpecialDraw: "{name} joacă o carte specială ca ultima și trage {card}.",
+        lastSpecialDrawNoCard: "{name} joacă o carte specială ca ultima și trage o carte.",
         gameStart: 'Seiska începe! De deasupra: {card}.',
         turnOf: 'La rând {name}.',
         yourTurnSuit: 'La rând Hero — {cl}',

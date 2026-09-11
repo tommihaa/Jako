@@ -369,6 +369,8 @@ export const pt = {
       altName: "Mau-Mau",
       desc: 'Corrida estilo UNO para ficar sem cartas',
       msg: {
+        lastSpecialDraw: "{name} joga uma carta especial como última e compra {card}.",
+        lastSpecialDrawNoCard: "{name} joga uma carta especial como última e compra uma carta.",
         gameStart: 'Seiska começa! Carta de cima: {card}.',
         turnOf: 'É a vez de {name}.',
         yourTurnSuit: 'É a vez do Hero — {cl}',

@@ -372,6 +372,8 @@ export const hu = {
       altName: 'Makaó',
       desc: 'UNO-szerű verseny a lap nélküliségig',
       msg: {
+        lastSpecialDraw: "{name} különleges lapot játszik ki utolsóként, és húz: {card}.",
+        lastSpecialDrawNoCard: "{name} különleges lapot játszik ki utolsóként, és húz egy lapot.",
         gameStart: 'Seiska kezdődik! Felső: {card}.',
         turnOf: '{name} jön.',
         yourTurnSuit: 'Hero jön — {cl}',

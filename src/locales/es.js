@@ -369,6 +369,8 @@ export const es = {
       altName: "Ocho loco",
       desc: 'Una carrera estilo UNO para quedarte sin cartas',
       msg: {
+        lastSpecialDraw: "{name} juega una carta especial como última y roba {card}.",
+        lastSpecialDrawNoCard: "{name} juega una carta especial como última y roba una carta.",
         gameStart: '¡Empieza Seiska! Carta superior: {card}.',
         turnOf: 'Turno de {name}.',
         yourTurnSuit: 'Turno de Hero — {cl}',

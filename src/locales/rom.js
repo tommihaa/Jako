@@ -372,6 +372,8 @@ export const rom = {
       altName: 'Mau-Mau',
       desc: 'UNO-sko prastajipe ži ko bi-kartengo',
       msg: {
+        lastSpecialDraw: "{name} khelel jekh spečialno karta sar e palutni thaj lel {card}.",
+        lastSpecialDrawNoCard: "{name} khelel jekh spečialno karta sar e palutni thaj lel jekh karta.",
         gameStart: 'Seiska šuru! Opruni: {card}.',
         turnOf: 'Rindo {name}.',
         yourTurnSuit: 'Rindo Hero — {cl}',

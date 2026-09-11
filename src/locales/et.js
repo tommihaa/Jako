@@ -369,6 +369,8 @@ export const et = {
       altName: "Mau-Mau",
       desc: 'UNO-tüüpi võidujooks kaartidest vabanemiseks',
       msg: {
+        lastSpecialDraw: "{name} mängib erikaardi viimasena ja võtab {card}.",
+        lastSpecialDrawNoCard: "{name} mängib erikaardi viimasena ja võtab kaardi.",
         gameStart: 'Seiska algab! Pealmine: {card}.',
         turnOf: 'Kord on mängijal {name}.',
         yourTurnSuit: 'Kord on Herol — {cl}',

@@ -369,6 +369,8 @@ export const no = {
       altName: "Vri-åtter",
       desc: 'Et UNO-aktig kappløp mot tom hånd',
       msg: {
+        lastSpecialDraw: "{name} spiller et spesialkort som siste kort og trekker {card}.",
+        lastSpecialDrawNoCard: "{name} spiller et spesialkort som siste kort og trekker et kort.",
         gameStart: 'Seiska begynner! Øverste kort: {card}.',
         turnOf: '{name}s tur.',
         yourTurnSuit: 'Heros tur — {cl}',

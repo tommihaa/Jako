@@ -378,6 +378,8 @@ export const ru = {
       altName: "Восьмёрки",
       desc: 'Гонка к пустой руке в стиле UNO',
       msg: {
+        lastSpecialDraw: "{name} играет особую карту последней и берёт {card}.",
+        lastSpecialDrawNoCard: "{name} играет особую карту последней и берёт карту.",
         gameStart: 'Seiska начинается! Верхняя: {card}.',
         turnOf: 'Ход {name}.',
         yourTurnSuit: 'Ход Hero — {cl}',

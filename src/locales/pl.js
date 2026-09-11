@@ -378,6 +378,8 @@ export const pl = {
       altName: "Makao",
       desc: 'Wyścig do pustej ręki w stylu UNO',
       msg: {
+        lastSpecialDraw: "{name} zagrywa kartę specjalną jako ostatnią i dobiera {card}.",
+        lastSpecialDrawNoCard: "{name} zagrywa kartę specjalną jako ostatnią i dobiera kartę.",
         gameStart: 'Seiska się zaczyna! Wierzchnia: {card}.',
         turnOf: 'Kolej {name}.',
         yourTurnSuit: 'Kolej Hero — {cl}',

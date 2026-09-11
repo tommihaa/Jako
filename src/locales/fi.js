@@ -414,6 +414,8 @@ export const fi = {
         aceBonusSkip: 'Jätä bonusvuoro käyttämättä, se ei kannata nyt.',
       },
       msg: {
+        lastSpecialDraw: "{name} lyö erikoiskortin viimeisenä ja nostaa {card}.",
+        lastSpecialDrawNoCard: "{name} lyö erikoiskortin viimeisenä ja nostaa kortin.",
         gameStart: 'Seiska alkaa! Päällimmäinen: {card}.',
         turnOf: 'Vuorossa {name}.',
         yourTurnSuit: 'Vuorossa Hero: {cl}',

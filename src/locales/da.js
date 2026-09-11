@@ -369,6 +369,8 @@ export const da = {
       altName: "Ottefarve",
       desc: 'Et UNO-agtigt kapløb mod tom hånd',
       msg: {
+        lastSpecialDraw: "{name} spiller et specialkort som sidste kort og trækker {card}.",
+        lastSpecialDrawNoCard: "{name} spiller et specialkort som sidste kort og trækker et kort.",
         gameStart: 'Seiska begynder! Øverst: {card}.',
         turnOf: '{name}s tur.',
         yourTurnSuit: 'Heros tur — {cl}',

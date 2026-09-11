@@ -369,6 +369,8 @@ export const is = {
       altName: "Olsen Olsen",
       desc: 'UNO-líkt kapphlaup að tómri hendi',
       msg: {
+        lastSpecialDraw: "{name} spilar sérspili sem síðasta spili og dregur {card}.",
+        lastSpecialDrawNoCard: "{name} spilar sérspili sem síðasta spili og dregur spil.",
         gameStart: 'Seiska hefst! Efsta spil: {card}.',
         turnOf: 'Umferð {name}.',
         yourTurnSuit: 'Umferð Hero — {cl}',

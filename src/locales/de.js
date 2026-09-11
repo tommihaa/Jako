@@ -369,6 +369,8 @@ export const de = {
       altName: "Mau-Mau",
       desc: 'Ein UNO-artiges Wettrennen, die Hand zu leeren',
       msg: {
+        lastSpecialDraw: "{name} spielt eine Sonderkarte als letzte und zieht {card}.",
+        lastSpecialDrawNoCard: "{name} spielt eine Sonderkarte als letzte und zieht eine Karte.",
         gameStart: 'Seiska beginnt! Oberste Karte: {card}.',
         turnOf: '{name} ist am Zug.',
         yourTurnSuit: 'Hero ist am Zug — {cl}',

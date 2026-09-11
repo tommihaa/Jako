@@ -369,6 +369,8 @@ export const it = {
       altName: "Otto matto",
       desc: 'Una corsa in stile UNO a svuotare la mano',
       msg: {
+        lastSpecialDraw: "{name} gioca una carta speciale come ultima e pesca {card}.",
+        lastSpecialDrawNoCard: "{name} gioca una carta speciale come ultima e pesca una carta.",
         gameStart: 'Seiska comincia! Carta in cima: {card}.',
         turnOf: 'Tocca a {name}.',
         yourTurnSuit: 'Tocca a Hero — {cl}',
