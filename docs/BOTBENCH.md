@@ -1165,6 +1165,25 @@ nyt kolme (kutonen ja lukumääräsääntö 20.8.2026, ryhmän säästäminen 7.
 7.9.2026 löydös ei siis yleisty: taso-sokea säännöstö ei ole automaattisesti puute, vaan se voi
 olla oikea sääntö kaikille tasoille.
 
+## Seiska 11.9.2026 (N=400): erikoiskorttisääntö ja sekoituskorjaus ovat nollatulos
+
+Mitattu commitin `4939e39` jälkeen: erikoiskortin saa lyödä viimeisenä vain saman erikoiskortin
+päälle ja lyöjä nostaa kortin, ja `applyAcePenalty`n sekoitus korjattiin. Sääntö koskee kaikkia
+tasoja samalla tavalla, joten odotus oli nollatulos, ja sitä se on. Vertailuluku hakasulkeissa
+on 8.9.2026 myöhäisillan mittaus samalle parille. Tulosrivit ovat tiedostossa
+`docs/botbench-ajot.jsonl`, joka on tästä ajosta alkaen mittarin pysyvä kirjanpito
+(ks. Käyttö jatkossa).
+
+| Peli | hard vs beginner | hard vs normal | normal vs beginner |
+|------|-----------------:|---------------:|-------------------:|
+| Seiska | 76,8 % (307/93/0) [76,0] | 52,3 % (209/191/0) [53,5] | 66,0 % (264/136/0) [64,5] |
+
+Muutokset edelliseen ovat z 0,25 / -0,35 / 0,45, kaikki kohinan sisällä. Porras on edelleen
+`beginner << normal ≈ hard`, eli sääntömuutos ei liikuttanut yhtään portaikon askelmaa.
+Mestarin porras Kisälliin (52,3 %) on samantasoinen kuten 20.7.2026 alkaen. Ajo kesti 18 min,
+`stalled: 0`, `unmapped: 0`. Tämä on toinen yritys: ensimmäisen tulos katosi 11.9. illalla
+(ks. Käyttö jatkossa), ja se on syy siihen että tulostiedosto on nyt versioitu.
+
 ## Käyttö jatkossa
 
 Jokainen AI-muutos todennetaan ajamalla sama mittaus ja vertaamalla tähän
