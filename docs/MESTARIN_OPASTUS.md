@@ -116,7 +116,7 @@ pelitesti sulje sitä. Rivi kuitataan päivämäärällä ja sillä mitä pelatt
 | Ristiseiska | | | | pantti ja bonusvuoro |
 | Koputus | | | | nosto, vaihto, koputus |
 | Maija | | | | hyökkäys, puolustus, otto |
-| Moska | | | | hyökkäys, puolustus, siirto, lisäys |
+| Moska | 11.9. Tommi, dev | 11.9. | 11.9. | 11.9. kaikki vaiheet toimivat |
 | Paskahousu | | | | vaihto, koputus, nosto |
 | Kasino | | | | kaappaus, rakennus, jättö, rakennelma |
 
