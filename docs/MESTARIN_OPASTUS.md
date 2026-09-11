@@ -134,6 +134,17 @@ tuotantotestiin tai Tommin peleihin.
 Tuotantotesti on eri rivi kuin dev-testi, joten julkaisun jälkeen sama taulukko täytetään
 uudelleen livestä ainakin kolmen pelin osalta.
 
+Tuotantorivi 12.9.2026 yöllä (Claude, versio 1.2.228, tommi-jako.vercel.app, 2 pelaajaa):
+
+| Peli | Opastus ilman korostusta | Osuma | Eri valinta ja korostus | Vaiheet |
+|---|---|---|---|---|
+| Koputus | 12.9. Claude, live | 12.9. | 12.9. (poistopakan 9♣ purppuralla) | nosto ja heitto |
+| Maija | 12.9. Claude, live | 12.9. | 12.9. | hyökkäys ja puolustus (kaato) |
+| Seiska | 12.9. Claude, live, varausteksti näkyi | 12.9. | 12.9. (A♦ purppuralla) | uusi `playSeenTie`-haara osui kohdalle (6♣, J♣, K♣ tasan) |
+
+Tuotannossa opastus toimi samoin kuin devissä. Jaosta riippuvat vaiheet ovat yhä sattuman
+varassa ja jäävät Tommin peleihin.
+
 ## Osuma ja sääntötaso (Tommin päätös 11.9.2026: kaanoni, ei koodi)
 
 Seiskan testissä Tommi pelasi Mestarin ehdottaman maan eri kortin ja sai "Eri valinta".
