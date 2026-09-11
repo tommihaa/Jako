@@ -24,12 +24,19 @@ Tavoite: pääse eroon käsikorteista ensimmäisenä.
 ### Ässä (A)
 - Lyödessä ässää kaikki **muut pelaajat nostavat pakasta yhden kortin** (rangaistus)
 - Ässää lyönyt saa **bonusvuoron** samaa maata
-- Ässää ei voi lyödä **viimeisenä korttina**
+- Ässää ei voi lyödä **viimeisenä korttina**, paitsi toisen ässän päälle (ks. alla)
 - Toisen ässän päälle voi lyödä ässän: bonusmaa on jälkimmäisen ässän maa
+- **Ässän saa lyödä viimeisenä korttina vain toisen ässän päälle** (Tommin päätös 11.9.2026).
+  Silloin lyöjä nostaa heti pakasta yhden kortin, koska peli ei saa loppua erikoiskorttiin.
+  Muuten ässän lyönyt ei nosta. Rangaistus muille ja bonusvuoro toimivat kuten muutenkin, ja
+  nostettu kortti on bonusvuorolla käytettävissä jos se on bonusmaata.
 
 ### Seiska (7)
 - **Villikortti**: pelaaja saa **valita seuraavan maan vapaasti**
 - Jos seuraava pelaaja lyö toisen seiskan toisen päälle, vaadittu maa on sen toisen seiskan maa
+- **Seiskan saa lyödä viimeisenä korttina vain toisen seiskan päälle** (Tommin päätös 11.9.2026).
+  Silloin lyöjä nostaa heti pakasta yhden kortin, koska peli ei saa loppua erikoiskorttiin.
+  Maa valitaan normaalisti.
 - Seiskaa **ei voi lyödä viimeisenä korttina**
 
 ## Lappu-sääntö
