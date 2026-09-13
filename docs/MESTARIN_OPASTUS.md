@@ -120,8 +120,8 @@ pelitesti sulje sitä. Rivi kuitataan päivämäärällä ja sillä mitä pelatt
 | Koputus | 11.9. Claude, dev | 11.9. | 11.9. | 11.9. nosto ja vaihto (heitto) toimivat; koputus ei osunut kohdalle |
 | Maija | 11.9. Claude, dev | 11.9. | 11.9. | 11.9. kaikki kolme vaihetta toimivat |
 | Moska | 11.9. Tommi, dev | 11.9. | 11.9. | 11.9. kaikki vaiheet toimivat |
-| Paskahousu | 11.9. Claude, dev | 11.9. | 11.9. | 11.9. lyönti toimii, varausteksti näkyy; vaihto, koputus ja nosto eivät osuneet kohdalle |
-| Kasino | 11.9. Claude, dev | 11.9. | 11.9. | 11.9. kaappaus ja rakennus toimivat, korostus osui rakennuksen kolmeen korttiin; jättö ja rakennelman kaappaus eivät osuneet kohdalle |
+| Paskahousu | 11.9. Claude, dev | 11.9. | 11.9. | 11.9. lyönti toimii, varausteksti näkyy; vaihto, koputus ja nosto eivät osuneet kohdalle. **Tuotannossa 13.9. kaikki vaiheet osuivat** (tuotantorivi alla) |
+| Kasino | 11.9. Claude, dev | 11.9. | 11.9. | 11.9. kaappaus ja rakennus toimivat, korostus osui rakennuksen kolmeen korttiin; jättö ja rakennelman kaappaus eivät osuneet kohdalle. **Tuotannossa 13.9. molemmat osuivat** (tuotantorivi alla) |
 
 Dev-kierros 11.9.2026 myöhäisillalla (Claude, 2 pelaajaa, Opasta-nappi): kaikissa neljässä
 opastuskupla tuli ilman purppuraa korostusta, eri valinta toi tekstin "Eri valinta. Ohje oli:"
@@ -141,9 +141,40 @@ Tuotantorivi 12.9.2026 yöllä (Claude, versio 1.2.228, tommi-jako.vercel.app, 2
 | Koputus | 12.9. Claude, live | 12.9. | 12.9. (poistopakan 9♣ purppuralla) | nosto ja heitto |
 | Maija | 12.9. Claude, live | 12.9. | 12.9. | hyökkäys ja puolustus (kaato) |
 | Seiska | 12.9. Claude, live, varausteksti näkyi | 12.9. | 12.9. (A♦ purppuralla) | uusi `playSeenTie`-haara osui kohdalle (6♣, J♣, K♣ tasan) |
+| Paskahousu | 13.9. Claude, live, varausteksti näkyi | 13.9. | 13.9. (3♥ purppuralla) | lyönti, koputus, vaihto, ohitettu vaihto, nosto, nelosdumppi ja kaatokortti, kaikki osuivat kohdalle (alla) |
+| Kasino | 13.9. Claude, live | 13.9. | 13.9. (2♣ purppuralla) | rakennus, oman rakennelman kaappaus ja jättö osuivat kohdalle (alla) |
 
 Tuotannossa opastus toimi samoin kuin devissä. Jaosta riippuvat vaiheet ovat yhä sattuman
 varassa ja jäävät Tommin peleihin.
+
+**Paskahousu ja Kasino 13.9.2026 (Claude, live, versio 1.2.228, 2 pelaajaa).** Sattumasta
+riippuvat vaiheet ajettiin loppuun niin, että pelattiin kunnes kukin vaihe osui kohdalle;
+vaihtoa ja nostoa autettiin pelaamalla Mestarin vastaisesti (korkea kortti tyhjään kasaan,
+kasan nosto koputuksen sijasta). Kasinon vaiheet ajettiin yhden pelin alusta.
+
+| Peli ja vaihe | Opastuksen teksti | Osuma | Eri valinta |
+|---|---|---|---|
+| Paskahousu, lyönti | "Lyö 3♥. Pelaa pienimmät ensin…" | 3♥, 9♣ 9♥, J♣, 2♥, 7♦, 8♠, 4♦, 3♠, 9♠ | 9♥ (3♥ purppuralla), Q♠ Q♣ Q♥, J♦, 4♥, 9♦ |
+| Paskahousu, koputus | "Kädestä ei löydy sopivaa. Koputa ja nosta sokkokortti pakasta." | koputus (10♦ ei käynyt, kasa käteen) | kasan nosto, kupla ilman korostusta |
+| Paskahousu, vaihto | "Vaihda 9♠, 9♦ kasaan. Se on pienempi kuin juuri pelattu…" | vaihto | |
+| Paskahousu, ohitettu vaihto | "Älä vaihda. Kätesi kortit ovat parempia pitää." | | vaihto 10♣ ja 10♥ (kaatoivat kasan), kupla "Eri valinta. Ohje oli: Älä vaihda." |
+| Paskahousu, nosto | "Kädestä ei löydy sopivaa eikä pakassa ole kortteja. Joudut ottamaan kasan." | kasan nosto (peli päättyi samaan) | |
+| Paskahousu, nelosdumppi | "Lyö K♣, K♥, K♠ ja täydennä neljä samaa. Kasa katoaa…" | K K K | |
+| Paskahousu, kaatokortti | "Lyö 10♦. Se siivoaa kasan pois…" ja sama A♠:lle | 10♦, A♠ | 4♥ ja kasan nosto A♥:n sijasta |
+| Kasino, rakennus | "Rakenna arvo 11 kortilla 3♦. Sinulla on toinen kortti jolla kaappaat sen seuraavaksi." | 3♦ + A♥ + A♦ + 6♠ | |
+| Kasino, oman rakennelman kaappaus | "Kaappaa oma rakennelmasi kortilla J♦. Vastustajalla voi olla kortti jolla hän varastaa sen." | J♦ | |
+| Kasino, jättö | "Jätä 2♣ pöytään. Kannattavaa kaappausta ei ole…" | 2♣ | 9♦ (2♣ purppuralla) |
+
+Tuotantotestissä ei käynyt vielä kohdalle: Paskahousun `playQuad` eri valintana, Kasinon
+`stealBuild`, `takeOwnBuildSafe` ja `captureMokki`, sekä Koputuksen koputus ja Ristiseiskan
+pantti ja bonusvuoro. Ne jäävät Tommin peleihin.
+
+**Havainto vaihtoikkunasta (13.9.2026, ei korjattu).** Paskahousun vaihtotarjous sulkeutuu
+kolmessa sekunnissa (`Ohita (3s)`). Ensimmäisellä kerralla ikkuna ehti sulkeutua ennen
+kuin Opasta oli painettu. Testissä nappi painettiin ohjelmallisesti heti tarjouksen tultua;
+ihmispelaaja ei ehdi painaa Opastaa, lukea sääntöä ja valita kolmessa sekunnissa. Se on
+opastuksen ja vaihtoikkunan yhteinen rajoite eikä vika kummassakaan. Tommi päättää kumpaa
+muutetaan, jos kumpaakaan.
 
 ## Osuma ja sääntötaso (Tommin päätös 11.9.2026: kaanoni, ei koodi)
 
