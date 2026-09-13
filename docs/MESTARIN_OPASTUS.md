@@ -169,6 +169,22 @@ Tuotantotestissä ei käynyt vielä kohdalle: Paskahousun `playQuad` eri valinta
 `stealBuild`, `takeOwnBuildSafe` ja `captureMokki`, sekä Koputuksen koputus ja Ristiseiskan
 pantti ja bonusvuoro. Ne jäävät Tommin peleihin.
 
+**Loput vaiheet: kahden erillisen arvion protokolla (Tommin päätös 13.9.2026).** Kohdalle
+osumattomat vaiheet jäävät Tommin peleihin, eikä niitä metsästetä Clauden ajoina. Kun
+sellainen asema tulee vastaan, se käsitellään näin:
+
+1. Tommi tuo aseman lokirivinä (kädet ja pöytä riittävät) ja oman arvionsa siirrosta.
+2. Claude arvioi aseman itsenäisesti korttilogiikalla **ennen kuin katsoo Mestarin valintaa**,
+   eli ei lue `getAdvice`a, valintafunktiota eikä opastuksen kuplaa ennen omaa arviotaan.
+3. Vasta sitten verrataan kolmea: Tommin siirto, Clauden siirto ja Mestarin siirto tekstiineen.
+4. Yksimielisyys täyttää taulukon rivin päivämäärällä. Erimielisyys kirjataan tähän
+   dokumenttiin asemineen ja perusteluineen, samaan tapaan kuin Seiskan K♠-tapaus 11.9.2026,
+   josta syntyi sääntötason tekstipäätös.
+
+Peruste on sama kuin opastuksella itsellään: palaute vasta oman arvion jälkeen. Kahden
+erillisen arvion vertailu Mestariin on ajautuman testi sääntötekstille (oikea siirto oikealla
+syyllä), ja se kestää vain jos kumpikaan arvio ei ole nähnyt Mestarin vastausta ensin.
+
 **Havainto vaihtoikkunasta (13.9.2026, ei korjattu).** Paskahousun vaihtotarjous sulkeutuu
 kolmessa sekunnissa (`Ohita (3s)`). Ensimmäisellä kerralla ikkuna ehti sulkeutua ennen
 kuin Opasta oli painettu. Testissä nappi painettiin ohjelmallisesti heti tarjouksen tultua;
