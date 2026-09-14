@@ -44,6 +44,7 @@ Nämä eivät koske yhtä peliä vaan toistuvat samanlaisina useassa, joten ne o
 | Paskahousu | `handSize` | 6 | käden koko muuttuu |
 | Paskahousu | `hardTwos` | false | kaikki kakkoset saavat arvon 15 (kotisääntö) |
 | Paskahousu | `faceMin` | 7 | kuvakortin alaraja muuttuu |
+| Paskahousu | `singleTwos` | false | kovista kakkosista lyödään yksi per lyönti (kotisääntö, lisätty 14.9.2026 kanoniin ja koodiin samana päivänä) |
 | Ristiseiska | `randomPantti` | false | panttikortti arvotaan myös ihmiseltä |
 | Kasino | `specialBuilds` | false | rakennelman maksimiarvo 13 → 16 |
 

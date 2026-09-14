@@ -698,6 +698,9 @@ export const la = {
       opts: {
         handSize: 'CHARTAE',
         hardTwos: 'DURI BINI',
+        singleTwos: "DURI BINI LUDUNTUR",
+        together: "Simul",
+        oneAtATime: "Singillatim",
         all: 'Omnes',
         faceMin: 'CHARTA IMAGINIS MIN.',
       },

@@ -696,6 +696,9 @@ export const sv = {
       opts: {
         handSize: 'KORT',
         hardTwos: 'HÅRDA TVÅOR',
+        singleTwos: "HÅRDA TVÅOR SPELAS",
+        together: "Tillsammans",
+        oneAtATime: "En i taget",
         all: 'Alla',
         faceMin: 'KLÄTT KORT MIN.',
       },

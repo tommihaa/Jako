@@ -705,6 +705,9 @@ export const uk = {
       opts: {
         handSize: 'КАРТИ',
         hardTwos: 'ТВЕРДІ ДВІЙКИ',
+        singleTwos: "ТВЕРДІ ДВІЙКИ ХОДЯТЬ",
+        together: "Разом",
+        oneAtATime: "По одній",
         all: 'Усі',
         faceMin: 'ФІГУРНА КАРТА МІН.',
       },

@@ -696,6 +696,9 @@ export const da = {
       opts: {
         handSize: 'KORT',
         hardTwos: 'HÅRDE TOERE',
+        singleTwos: "HÅRDE TOERE SPILLES",
+        together: "Samlet",
+        oneAtATime: "Én ad gangen",
         all: 'Alle',
         faceMin: 'BILLEDKORT MIN.',
       },

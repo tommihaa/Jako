@@ -696,6 +696,9 @@ export const pt = {
       opts: {
         handSize: 'CARTAS',
         hardTwos: 'DOIS DUROS',
+        singleTwos: "DOIS DUROS JOGAM-SE",
+        together: "Juntos",
+        oneAtATime: "Um de cada vez",
         all: 'Todos',
         faceMin: 'FIGURA MÍN.',
       },

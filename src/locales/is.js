@@ -696,6 +696,9 @@ export const is = {
       opts: {
         handSize: 'SPIL',
         hardTwos: 'HÖRÐ TVÖ',
+        singleTwos: "HÖRÐ TVÖ SPILUÐ",
+        together: "Saman",
+        oneAtATime: "Eitt í einu",
         all: 'Öll',
         faceMin: 'MANNSPIL LÁGM.',
       },

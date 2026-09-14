@@ -39,9 +39,23 @@ const LOW        = new Set(['3','4','5','6','7','8','9']);
 const FACES      = new Set(['J','Q','K']);
 // Kaikki kortit käyvät tyhjälle pöydälle (STARTERS-rajoitus poistettu)
 
-// Sääntövalinnat (aloitusnäytöltä): käsikoko 5/6, kovat kakkoset, kuvakortin minimikynnys 7/8/9
+// Sääntövalinnat (aloitusnäytöltä): käsikoko 5/6, kovat kakkoset, kuvakortin minimikynnys 7/8/9,
+// kovat kakkoset kerralla vai yksi kerrallaan
 // hardTwos=false (oletus/vakio): ♠2/♣2 = 15, ♥2/♦2 = 2 · hardTwos=true (kotisääntö): kaikki 2 = 15
-const DEFAULT_RULES = { handSize: 6, hardTwos: false, faceMin: 7 };
+// singleTwos=false (vakio): arvon 15 kakkoset saa lyödä ryhmänä · singleTwos=true (kotisääntö): yksi per lyönti
+const DEFAULT_RULES = { handSize: 6, hardTwos: false, faceMin: 7, singleTwos: false };
+
+// Arvon 15 kakkonen: vakiona mustat, kotisäännöllä (hardTwos) kaikki
+function isKova(c, rules = DEFAULT_RULES) {
+  return c.r === '2' && (rules.hardTwos || c.s === '♠' || c.s === '♣');
+}
+
+// Kotisääntö singleTwos: kovista kakkosista lyödään vain yksi kerralla. Sama rajoitus
+// botille (aiCards), pelaajan valinnalle (toggleCard) ja vaihdolle (aiSwapChoice, defaultSwap).
+function limitTwos(cards, rules = DEFAULT_RULES) {
+  if (!rules.singleTwos || cards.length <= 1 || !isKova(cards[0], rules)) return cards;
+  return [cards[0]];
+}
 
 function cardVal(card, hardTwos = false) {
   if (card.r !== '2') return BASE_VAL[card.r];
@@ -142,11 +156,15 @@ function fillHand(hand, draw, handSize = HAND_SZ) {
 // clearedCards = kasatut/poistetut kortit (inferenssiä varten)
 // activePlayers = aktiivisten (ei finished) pelaajien määrä
 function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null, clearedCards = null, activePlayers = 4, rules = DEFAULT_RULES) {
+  const cards = aiCardsRaw(hand, top, pile, drawLength, level, allCards, clearedCards, activePlayers, rules);
+  return cards ? limitTwos(cards, rules) : cards;
+}
+
+function aiCardsRaw(hand, top, pile, drawLength, level, allCards, clearedCards, activePlayers, rules) {
   const opts = hand.filter(c => canPlay(c, top, rules));
   if (!opts.length) return null;
 
   const isHard  = level === 'hard';
-  const isKova  = c => c.r === '2' && (rules.hardTwos || c.s === '♠' || c.s === '♣'); // arvo-15 kakkonen: vakiona mustat, kotisäännöllä kaikki
 
   // Täydelliset tiedot: Mestari (hard) + kaksinpeli + pakka tyhjä
   // Vastustajan käsi = kaikki kortit − oma käsi − kasa − kasatut kortit
@@ -181,7 +199,7 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
     const distinctInPile = new Set(pile.map(c => c.r)).size;
     if (distinctInPile > 2) {
       const lowThreshold = 1; // Mestari (hard): riittää ≥1 pieni kortti kädessä
-      const lowInHand   = hand.filter(c => c.v <= 6 && !isKova(c)).length;
+      const lowInHand   = hand.filter(c => c.v <= 6 && !isKova(c, rules)).length;
       const facesInHand = hand.filter(c => FACES.has(c.r)).length;
 
       // 10-kaato: top ≤ 9, kädessä pieniä + kuvia
@@ -224,7 +242,7 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
 
     // Säästä: kova kakkonen (suurin), 10 (tyhjentää), A (kaataa kuvakortit), 9 (varmuus)
     const save = new Set(['10', 'A', '9']);
-    const notSaved = opts.filter(c => !save.has(c.r) && !isKova(c));
+    const notSaved = opts.filter(c => !save.has(c.r) && !isKova(c, rules));
 
     // Pelaa ensin pienin kuvakortti (J < Q < K) — K on joustavampi myöhemmin, käy korkeammille
     const faces = notSaved.filter(c => FACES.has(c.r));
@@ -242,7 +260,7 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
     // Vain säästettäviä jäljellä — pelaa 9 ensin, sitten 10/A, viimeisenä kova kakkonen
     const nine = opts.find(c => c.r === '9');
     if (nine) return opts.filter(c => c.r === '9');
-    const nonKova = opts.filter(c => !isKova(c));
+    const nonKova = opts.filter(c => !isKova(c, rules));
     if (nonKova.length > 0) return [nonKova.reduce((a, b) => a.v < b.v ? a : b)];
     return [opts[0]];
   }
@@ -266,13 +284,13 @@ function aiCards(hand, top, pile, drawLength, level = 'normal', allCards = null,
 
 // Vaihtotarjouksen paras vaihdettava ryhmä: kortit joiden arvo < pienin pelattu,
 // pienimmästä ryhmästä. Palauttaa ryhmän tai null (ei kannata vaihtaa).
-function aiSwapChoice(playedCards, eligible) {
+function aiSwapChoice(playedCards, eligible, rules = DEFAULT_RULES) {
   const minPlayed = Math.min(...playedCards.map(c => c.v));
   const beneficial = eligible.filter(c => c.v < minPlayed);
   if (!beneficial.length) return null;
   const ranked = {};
   beneficial.forEach(c => { (ranked[c.r] = ranked[c.r] || []).push(c); });
-  return Object.values(ranked).reduce((a, b) => a[0].v <= b[0].v ? a : b);
+  return limitTwos(Object.values(ranked).reduce((a, b) => a[0].v <= b[0].v ? a : b), rules);
 }
 
 // Mestarin neuvo Herolle (pelaaja 0): hard-tason logiikka, vain julkinen tieto
@@ -281,7 +299,7 @@ function aiSwapChoice(playedCards, eligible) {
 export function getAdvice(g) {
   if (!g) return null;
   if (g.phase === 'swap_offer' && g.swapData?.pidx === 0) {
-    const grp = aiSwapChoice(g.swapData.playedCards, g.swapData.eligible);
+    const grp = aiSwapChoice(g.swapData.playedCards, g.swapData.eligible, g.rules);
     return grp ? { type: 'swap', cards: grp } : { type: 'swapSkip' };
   }
   if (g.phase !== 'play' || g.turn !== 0) return null;
@@ -316,7 +334,8 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
   const t = useT();
   const [screen,   setScreen]  = useState('select');
   const [nP,       setNP]      = useState(playerCount);
-  const [rules,    setRules]   = useStickySetting('paskahousu:rules', DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä; muistetaan
+  const [storedRules, setRules] = useStickySetting('paskahousu:rules', DEFAULT_RULES); // sääntövalinnat aloitusnäytöltä; muistetaan
+  const rules = { ...DEFAULT_RULES, ...storedRules }; // selaimeen tallennettu vanha valinta voi olla vailla uudempaa avainta (singleTwos 14.9.2026)
   const cardBack = 'ilves';
   const { G, gRef, setGS } = useGameState(/** @type {PeliTila|null} */ (null));
   const [msg,      setMsg_]    = useState('');
@@ -585,7 +604,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       const minPlayed = Math.min(...cards.map(c => c.v));
       const baseEligible = newlyDrawn.filter(c =>
         canPlay(c, topBefore, g.rules) &&
-        (c.v < minPlayed || pileClears([c], topBefore) || (c.r === '2' && (g.rules.hardTwos || c.s === '♠' || c.s === '♣')))
+        (c.v < minPlayed || pileClears([c], topBefore) || isKova(c, g.rules))
       );
       // Lisää käden samanarvoisia — jos vedät 8:n ja sinulla on toinen 8, voit lyödä molemmat
       // Verrataan todellista arvoa (c.v), ei numeromerkintää — ♥2/♦2 (arvo 2) ja ♠2/♣2 (arvo 15)
@@ -844,7 +863,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     if (!g) g = gRef.current;
     if (!g || g.phase !== 'swap_offer') return;
     const { playedCards, eligible } = g.swapData;
-    const bestGroup = aiSwapChoice(playedCards, eligible);
+    const bestGroup = aiSwapChoice(playedCards, eligible, g.rules);
     if (bestGroup) {
       addLog(M.aiSwaps(g.players[pidx].name));
       applySwap(g, bestGroup);
@@ -910,7 +929,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         const has = prev.find(c => c.id === card.id);
         if (has) return prev.filter(c => c.id !== card.id);
         if (prev.length > 0 && (prev[0].r !== card.r || prev[0].v !== card.v)) return [card];
-        return [...prev, card];
+        return limitTwos([card, ...prev], G.rules); // singleTwos: uusi kova kakkonen korvaa edellisen
       });
       return;
     }
@@ -921,14 +940,14 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       const has = prev.find(c => c.id === card.id);
       if (has) return prev.filter(c => c.id !== card.id);
       if (prev.length > 0 && (prev[0].r !== card.r || prev[0].v !== card.v)) return [card];
-      return [...prev, card];
+      return limitTwos([card, ...prev], G.rules); // singleTwos: uusi kova kakkonen korvaa edellisen
     });
   }
 
   // P-2 (8.9.2026): vaihdon oletus on yhden arvon ryhmä, kuten botilla (aiSwapChoice).
   function defaultSwap(eligible) {
     if (!eligible?.length) return [];
-    return eligible.filter(c => c.r === eligible[0].r && c.v === eligible[0].v);
+    return limitTwos(eligible.filter(c => c.r === eligible[0].r && c.v === eligible[0].v), G.rules);
   }
 
   function humanPlay() {
@@ -938,7 +957,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       addLog(M.badCard);
       return;
     }
-    const cards = [...selected];
+    const cards = limitTwos([...selected], G.rules);
     setSel([]);
     opastus.answer(opastusAvain('play', cards.map(c => c.id)));
     applyPlay(gRef.current, 0, cards);
@@ -968,6 +987,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
             { key: 'handSize', label: t('games.paskahousu.opts.handSize'), opts: [5, 6] },
             { key: 'hardTwos', label: t('games.paskahousu.opts.hardTwos'), opts: [[t('games.paskahousu.opts.all'), true], [<span><span style={{ color: SUIT_COLOR['♠'] }}>♠2</span> <span style={{ color: SUIT_COLOR_DARK['♣'] }}>♣2</span></span>, false]] },
             { key: 'faceMin',  label: t('games.paskahousu.opts.faceMin'), opts: [0, 6, 7, 8, 9] },
+            { key: 'singleTwos', label: t('games.paskahousu.opts.singleTwos'), opts: [[t('games.paskahousu.opts.together'), false], [t('games.paskahousu.opts.oneAtATime'), true]] },
           ].map(row => (
             <div key={row.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
               <span style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5 }}>{row.label}</span>

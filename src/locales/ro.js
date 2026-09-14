@@ -698,6 +698,9 @@ export const ro = {
       opts: {
         handSize: 'CĂRȚI',
         hardTwos: 'DOIARI TARI',
+        singleTwos: "DOIARII TARI SE JOACĂ",
+        together: "Împreună",
+        oneAtATime: "Unul câte unul",
         all: 'Toate',
         faceMin: 'CARTE FIGURĂ MIN.',
       },

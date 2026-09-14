@@ -698,6 +698,9 @@ export const se = {
       opts: {
         handSize: 'GOARTTAT',
         hardTwos: 'GARRA GUOKTÁT',
+        singleTwos: "GARRA GUOKTÁT SPEALLOJIT",
+        together: "Oktanaga",
+        oneAtATime: "Okta hávil",
         all: 'Buot',
         faceMin: 'GOVVAGOARTTA UNN.',
       },

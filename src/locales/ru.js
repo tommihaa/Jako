@@ -705,6 +705,9 @@ export const ru = {
       opts: {
         handSize: 'КАРТ',
         hardTwos: 'СИЛЬНЫЕ ДВОЙКИ',
+        singleTwos: "СИЛЬНЫЕ ДВОЙКИ ХОДЯТ",
+        together: "Вместе",
+        oneAtATime: "По одной",
         all: 'Все',
         faceMin: 'ФИГУРНАЯ КАРТА МИН.',
       },

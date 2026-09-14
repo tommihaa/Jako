@@ -704,6 +704,9 @@ export const en = {
       opts: {
         handSize: 'CARDS',
         hardTwos: 'HARD TWOS',
+        singleTwos: "HARD TWOS PLAYED",
+        together: "Together",
+        oneAtATime: "One at a time",
         all: 'All',
         faceMin: 'FACE CARD MIN.',
       },

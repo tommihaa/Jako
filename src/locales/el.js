@@ -696,6 +696,9 @@ export const el = {
       opts: {
         handSize: 'ΧΑΡΤΙΑ',
         hardTwos: 'ΔΥΝΑΤΑ ΔΥΑΡΙΑ',
+        singleTwos: "ΔΥΝΑΤΑ ΔΥΑΡΙΑ ΠΑΙΖΟΝΤΑΙ",
+        together: "Μαζί",
+        oneAtATime: "Ένα τη φορά",
         all: 'Όλα',
         faceMin: 'ΕΛΑΧ. ΦΙΓΟΥΡΑ',
       },

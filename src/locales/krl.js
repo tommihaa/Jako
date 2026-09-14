@@ -697,6 +697,9 @@ export const krl = {
       opts: {
         handSize: 'KORTTIE',
         hardTwos: 'KOVAT KAKKOZET',
+        singleTwos: "KOVAT KAKKOZET LYÖVVÄH",
+        together: "Kerdah",
+        oneAtATime: "Yksitellen",
         all: 'Kaikki',
         faceMin: 'KUVAKORTTI VÄH.',
       },

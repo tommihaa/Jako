@@ -696,6 +696,9 @@ export const fr = {
       opts: {
         handSize: 'CARTES',
         hardTwos: 'DEUX FORTS',
+        singleTwos: "DEUX FORTS JOUÉS",
+        together: "Ensemble",
+        oneAtATime: "Un à la fois",
         all: 'Tous',
         faceMin: 'FIGURE MIN.',
       },

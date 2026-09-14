@@ -699,6 +699,9 @@ export const rom = {
       opts: {
         handSize: 'KARTI',
         hardTwos: 'ZORALE DUJA',
+        singleTwos: "ZORALE DUJA KHELEN PE",
+        together: "Jekhetane",
+        oneAtATime: "Jekh po jekh",
         all: 'Sa',
         faceMin: 'KARTA-MOS MIN.',
       },

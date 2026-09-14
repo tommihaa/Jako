@@ -699,6 +699,9 @@ export const hu = {
       opts: {
         handSize: 'LAPOK',
         hardTwos: 'KEMÉNY KETTESEK',
+        singleTwos: "KEMÉNY KETTESEK KIJÁTSZÁSA",
+        together: "Egyszerre",
+        oneAtATime: "Egyesével",
         all: 'Mind',
         faceMin: 'FIGURÁS MIN.',
       },

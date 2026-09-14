@@ -741,6 +741,9 @@ export const fi = {
       opts: {
         handSize: 'KORTTEJA',
         hardTwos: 'KOVAT KAKKOSET',
+        singleTwos: "KOVAT KAKKOSET LYÖDÄÄN",
+        together: "Kerralla",
+        oneAtATime: "Yksi kerrallaan",
         all: 'Kaikki',
         faceMin: 'KUVAKORTTI VÄH.',
       },

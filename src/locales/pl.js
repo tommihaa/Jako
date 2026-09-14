@@ -705,6 +705,9 @@ export const pl = {
       opts: {
         handSize: 'KART',
         hardTwos: 'MOCNE DWÓJKI',
+        singleTwos: "MOCNE DWÓJKI ZAGRYWA SIĘ",
+        together: "Razem",
+        oneAtATime: "Pojedynczo",
         all: 'Wszystkie',
         faceMin: 'FIGURA MIN.',
       },

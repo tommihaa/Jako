@@ -696,6 +696,9 @@ export const et = {
       opts: {
         handSize: 'KAARTE',
         hardTwos: 'KÕVAD KAHED',
+        singleTwos: "KÕVAD KAHED KÄIAKSE",
+        together: "Korraga",
+        oneAtATime: "Ükshaaval",
         all: 'Kõik',
         faceMin: 'PILDIKAART VÄH.',
       },

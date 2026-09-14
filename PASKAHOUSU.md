@@ -34,7 +34,7 @@ Tavoite: pääse eroon käsikorteista, viimeinen on **Paskahousu**.
 
 ## Sääntövalinnat aloitusnäytöltä
 
-Kolme yllä olevaa lukua on **valittavissa ennen pelin alkua**, ja valinta muistetaan selaimessa.
+Neljä sääntöä on **valittavissa ennen pelin alkua**, ja valinta muistetaan selaimessa.
 Vakioasento on se jota tämä kanoni muuten kuvaa.
 
 | Valinta | Vakio | Muut asennot | Mitä se muuttaa |
@@ -42,6 +42,7 @@ Vakioasento on se jota tämä kanoni muuten kuvaa.
 | Käden koko | 6 | 5 | Kuinka moneen korttiin käsi täydennetään |
 | Kakkoset | ♠2 ja ♣2 kovia | kaikki kovia | Kotisäännöllä myös ♥2 ja ♦2 saavat arvon 15 |
 | Kuvakortin alaraja | 7 | 0, 6, 8, 9 | Minkä arvon päälle kuvakortin saa lyödä (0 = ei rajaa) |
+| Kovat kakkoset lyödään | kerralla | yksi kerrallaan | Saako arvon 15 kakkoset lyödä yhtenä ryhmänä vai vain yhden per lyönti (14.9.2026). Koskee myös vaihtoa. Punaiset arvon 2 kakkoset eivät ole rajoituksen piirissä |
 
 ## Sokkopakasta nosto
 

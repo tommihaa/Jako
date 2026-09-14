@@ -696,6 +696,9 @@ export const no = {
       opts: {
         handSize: 'KORT',
         hardTwos: 'HARDE TOERE',
+        singleTwos: "HARDE TOERE SPILLES",
+        together: "Samlet",
+        oneAtATime: "Én om gangen",
         all: 'Alle',
         faceMin: 'BILDEKORT MIN.',
       },

@@ -707,6 +707,9 @@ export const cs = {
       opts: {
         handSize: 'KARTY',
         hardTwos: 'TVRDÉ DVOJKY',
+        singleTwos: "TVRDÉ DVOJKY SE HRAJÍ",
+        together: "Najednou",
+        oneAtATime: "Po jedné",
         all: 'Všechny',
         faceMin: 'OBRÁZKOVÁ MIN.',
       },

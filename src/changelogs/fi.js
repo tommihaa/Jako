@@ -13,6 +13,12 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '14.9.2026',
+    items: [
+      'Paskahousun aloitusnäytölle tuli neljäs sääntövalinta: kovat kakkoset lyödään joko kerralla tai yksi kerrallaan. Vakio on kerralla, kuten tähänkin asti. Yksi kerrallaan tarkoittaa että arvon 15 kakkosista lyö vain yhden per lyönti, ja sama koskee vaihtoa sekä botteja. Punaiset arvon 2 kakkoset eivät ole rajoituksen piirissä. Valinta muistetaan selaimessa muiden sääntövalintojen tapaan.',
+    ],
+  },
+  {
     date: '11.9.2026',
     items: [
       'Mestarin opastus: 🧙-napin viereen tuli 🎓 Opasta. Se kertoo säännön mutta ei korosta korttia, joten päättelet siirron itse. Kun olet pelannut, näet osuiko valintasi Mestarin valintaan. Jos ei, Mestarin kortti korostuu purppuralla siinä paikassa jossa se oli. Opastus on kahdeksassa pelissä, Läpsyssä ei, koska sen neuvo ohjaa huomiota eikä valitse korttia. Seiskassa ja Paskahousussa opastus sanoo ääneen, ettei Mestari ole niissä mitatusti Kisälliä parempi.',

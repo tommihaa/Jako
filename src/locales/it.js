@@ -696,6 +696,9 @@ export const it = {
       opts: {
         handSize: 'CARTE',
         hardTwos: 'DUE DURI',
+        singleTwos: "DUE DURI SI GIOCANO",
+        together: "Insieme",
+        oneAtATime: "Uno alla volta",
         all: 'Tutti',
         faceMin: 'FIGURA MIN.',
       },

@@ -696,6 +696,9 @@ export const de = {
       opts: {
         handSize: 'KARTEN',
         hardTwos: 'HARTE ZWEIEN',
+        singleTwos: "HARTE ZWEIEN SPIELEN",
+        together: "Zusammen",
+        oneAtATime: "Einzeln",
         all: 'Alle',
         faceMin: 'BILDKARTE MIN.',
       },
