@@ -19,10 +19,8 @@ Responsive: Portrait phone (~375px) + tablet landscape (~768px+)
 ## Sääntölogiikan muokkaus
 **Ennen minkään pelin näkyvyys-, vaihto- tai muun sääntölogiikan muokkaamista lue ensin kyseisen pelin `PELI.md` ja toista sääntö minulle vahvistettavaksi** (suunnat, mitkä kortit pysyvät piilossa, kynnykset). Säännöt ovat hienovaraisia ja niitä on luettu väärin, esim. Kultakalassa pelaaja EI näe omia pöytäkorttejaan alussa, hän oppii kunkin paikan (1–5) vasta vaihtaessaan kortin siihen (vaihtoketju oikealta vasemmalle 5→4→3→2→1); tuntematon (paikka 0) ei ole vaihdettavissa ja paljastuu vain lopussa. Älä päättele sääntöä koodista tai muistista, kun dokumentti on olemassa.
 
-**Sopimusmuutos-protokolla:** jos tilanne (bugi, pelitestilöytö, ideakysymys) rikkoo PELI.md:n
-sääntökaanonia, älä oleta kumpaakaan osapuolta automaattisesti oikeaksi. Nosta eksplisiittisesti
-pohdittavaksi: pitääkö koodi korjata kaanonin mukaiseksi VAI pitääkö kaanonia muuttaa?
-Kaanonmuutos kirjataan ensin PELI.md:hen ja vahvistetaan käyttäjällä, vasta sitten koodiin.
+**Sopimusmuutos:** kokoelman sääntö (`TYÖTAVAT.md`, "korjataanko koodi vai kaanoni") pätee
+sellaisenaan, ja kaanoni on tässä projektissa kyseisen pelin `PELI.md`.
 
 **Mestarin neuvon tekstit ovat oma pintansa:** `getAdvice` kutsuu samaa valintafunktiota kuin
 botti, joten neuvon **siirto** ei voi ajautua, mutta neuvon **perustelu** voi. Tarkastuskirjanpito
@@ -105,27 +103,17 @@ Pelikohtaiset (vain osa ottaa):
 - **Mestari** = täysi strategia + muistaa pelattuja kortteja (aiempi "Yliluonnollinen"-logiikka)
 - Sisäiset avaimet: `'beginner'` | `'normal'` | `'hard'`
 
-## Session start
-At the start of every session run `npm run dev` in the background so the dev server is available at http://localhost:5173/ for preview verification during development.
-
 ## Verifiointi
 - **Jos muutos ei näy previewissä, epäile ensin vanhentunutta dev-palvelinta tai välimuistia: älä muokkaa jo oikeaa koodia.** Käynnistä dev-palvelin uudelleen + kova reload (ja tarkista `vite-error-overlay`) ennen kuin oletat koodin olevan vialla. Kerro mitä kokeilit.
 - HMR-virheet konsolipuskurissa ovat usein vanhentuneita välitiloja kaksivaiheisten editien ajalta: täysi reload on luotettava totuus.
 
 ## Deploy
-**Ennen deployta (käsin, ei automatisoitua):**
-- Lisää `CHANGELOG`-merkintä `src/changelogs/fi.js`:ään (näkyy Info → Muutosloki). **Vain suomeksi** (päätös 3.7.2026: 22 kielen käännös per julkaisu paisutti tiedostomäärää ~450 kt duplikaattidataa ja toisti saman käännöstyön joka deployssa ilman käännösmuistia; selaimen natiivi Käännä-toiminto kattaa muut kielet kiinnostuneille, samoin kuin PWA-sovelluksissa Itu/Superjatsi joissa ei ole omaa käännösmekanismia lainkaan). Julkaisu EI päivitä tätä automaattisesti. **Poikkeus (16.8.2026): muutos joka ei näy pelaajalle ei saa merkintää.** Muutosloki on pelaajalle näkyvä Info-välilehdellä, joten se kertoo pelattavista muutoksista eikä ole per-deploy-loki; testit, sisäiset korjaukset ja käytöksen kannalta neutraalit datamuutokset jäävät committiviestiin. **Versiobumppi tehdään silti**, koska bundle muuttuu ja leiman on erotettava se edellisestä. Ennakkotapaus: 1.2.206, sanaston vartalomuutos ja termimoduulin testi.
-- Päivitä `TODO`-taulukko `src/App.jsx`:ssä (Asetukset → Tulossa), jos jokin kohta valmistui tai lisättiin.
-- **Bumppaa `package.json`in `version`-kenttä** (patch +1). `vite.config.js` lukee `__APP_VERSION__`-arvon suoraan siitä. Build EI enää laske versiota gitistä: `git rev-list --count HEAD` palautti Vercelin matalassa (shallow) kloonissa ~10, joten tuotannossa näkyi 1.2.010 kun lokaali build antoi 1.2.201 (todennettu 21.7.2026).
-
-Production deploy: **`git push origin main`**, Vercelin git-integraatio deployaa tuotantoon automaattisesti (todennettu 25.6.2026). Koko protokolla: `deploy`-skill (`.claude/skills/deploy/SKILL.md`).
-Hätävara, vain jos git-integraatio irtoaa eikä push päivitä tuotantoa: `npm run deploy` (= `vercel build --prod && vercel deploy --prebuilt --prod`); kertasetup per kone `npx vercel pull --yes --environment production`.
-Live URL: https://tommi-jako.vercel.app  (ensisijainen)
-Vanha URL: https://tommi-jako52.vercel.app  (yhä voimassa, jaettu linkki kesälomalaisille; molemmat ovat tuotantodomaineja ja päivittyvät joka deployssa)
-
-**Varoitukset:**
-- Deploy vain git push -reittiä (hätävarana `npm run deploy`). **ÄLÄ käytä `vercel alias set`** julkista domainia varten: se luo suojatun 401-aliaksen; domain-aliasointi hoidetaan Vercel-dashboardista.
-- Deployn jälkeen huomioi välimuisti-/aikavyöhykeviive ennen kuin tulkitset, ettei muutos mennyt perille. Todenna tuotanto hakemalla bundle (`assets/index-*.js`) ja vertaamalla hash lokaaliin buildiin, älä pelkästä selaimen näkymästä.
+Julkaisu on `git -C Jako push origin main` (Vercelin git-integraatio, todennettu 25.6.2026).
+Ennen sitä käsin: changelog `src/changelogs/fi.js` vain suomeksi ja vain pelaajalle näkyvistä
+muutoksista, `TODO`-taulukko `src/App.jsx`:ssä ja `package.json`in `version` patch +1 aina.
+Perustelut, todennus tuotantobundlesta, hätävara ja `vercel alias` -kielto: `deploy`-skill
+(`.claude/skills/deploy/SKILL.md`). Tuotantodomainit https://tommi-jako.vercel.app (ensisijainen)
+ja https://tommi-jako52.vercel.app (jaettu linkki, päivittyy samasta deploysta).
 
 ## Games & Terminology
 Nine games with unified Finnish UI terms:
@@ -158,11 +146,6 @@ Erikoistapaukset (silti yllä olevissa luokissa):
 - **Koputus**: Koputus käynnistää viimeisen kierroksen, nostopakkaa voi jäädä huomiotta
 - **Seiska**: Voittaja pääsee korteistaan eroon ensin, nostopakkaa voi jäädä huomiotta
 - **Kasino**: 16 pistettä ensin saanut voittaa; pisteet lasketaan nostopakan ehdyttyä pelatun kierroksen päätyttyä; tasapeli on mahdollinen
-
-## Modes
-- **Opetustila** – `hints=true`, move hints visible, tapahtumaloki auki oletuksena
-- **Vapaa tila** – `hints=false`, ei ohjeviestejä, loki kiinni oletuksena
-- Toggle-napit pelin aikana oikeassa yläkulmassa (menu ← | pelinimi)
 
 ## SFX (`src/shared/audio.js`: `SFX` objekti)
 Korttitoiminnot:
@@ -204,20 +187,9 @@ Virstanpylväät:
 - Nimiryhmiä on kuusi (`porukka`, `jumalat`, `puolue`, `kansa`, `meme`, `goauld`). Viidellä on
   lyhyt selite `App.jsx`:n `GROUP_BLURB`issa, ja se **näytetään aina englanniksi eikä sitä
   käännetä**, koska se on käyttäjän oma ääni.
-- **`porukka` on kunnianosoitus oikeille ihmisille, ei arkkityyppiryhmä (kirjattu 19.8.2026).**
-  Nimet ovat niiden ihmisten nimiä joiden parissa Tommi oppi monet kokoelman peleistä, ja
-  hänen omin sanoin 19.5.2026: *ne on vain nimiä että niille ei ole mitään persoonallisuuksia
-  mutta kunniaosoituksena.* **Seuraus koodiin:** ryhmälle ei anneta persoonallisuuksia,
-  puhetyylejä eikä pelitapaeroja, toisin kuin `meme`lle tai `goauld`ille. Se on ainoa ryhmä
-  jonka merkitys katoaa jos siihen lisätään luonnetta. Muiden ryhmien alkuperää ei ole kirjattu
-  eikä tarvitse kirjata. Lähde: `Lahteet/louhinnat/04-pelit-ja-pelisuunnittelu.md` kohta 6.
-- **Avain vaihtui 21.8.2026 (`laituri` → `porukka`), ja syy on eri kuin kunnianosoitus.** Vanha
-  avain ja nimilappu (*Laiturin tyypit* ja sen 22 käännöstä) kertoivat julkisessa repossa myös
-  **missä** nuo ihmiset on tavattu, ja `SUBSTANSSI.md` kertoo Laiturista muuta. Nimet ovat
-  oikeita, eivätkä nuo ihmiset ole itse kirjanneet mitään mihinkään, joten linkki katkaistiin
-  ryhmän nimestä. **Nimilista itse ei muuttunut**, eikä kunnianosoitus muutu: se muuttuu
-  yksityiseksi. Vanha avain migratoidaan `App.jsx`:ssä, koska se voi olla localStoragessa.
-  Tätä ei pidä yhtenäistää takaisin.
+- **`porukka`:** ei persoonallisuuksia, puhetyylejä eikä pelitapaeroja (kunnianosoitus oikeille
+  ihmisille, 19.8.2026). Vanha avain `laituri` migratoidaan `App.jsx`:ssä eikä sitä yhtenäistetä
+  takaisin (21.8.2026). Perustelut: `docs/NIMIRYHMAT.md`.
 
 ## Tech
 - React functional components + hooks only (no class components)
@@ -256,8 +228,8 @@ Portti ajaa tämän ennen testejä (`.github/workflows/testit.yml`).
 - **Tapahtumailmoitukset kolmannessa persoonassa** kaikille pelaajille, myös ihmiselle: `${name}: ...`, `Vuorossa ${name}.`, `${name} vei voiton`. Ihmisen nimi on aina `Hero`, joten "Vuorossa Hero.", "Hero: 7♣". Ei erillistä `isHuman ? 'Sinä…' : '${name}…'` -haaraa: yksi käännösmalli per viesti.
 - **Poikkeus: säilytä toimintaohjeet/vihjeet 2. persoonassa** kun ne neuvovat ihmistä tekemään jotain (esim. Koputus/Kultakala "Nostit X. Vaihda…", Kasinon dynaaminen vihje, Ristiseiskan "…joten Passaa"). Nämä eivät ole ilmoituksia vaan ohjeita.
 
-## DO NOT
-- Break single-file structure without asking
+## Rajoitukset (kysy ennen kuin rikot)
+- Single-file structure per game
 - Add npm packages beyond what's in current prototype
 - Assume desktop viewport: always design for ~1200px landscape tablet
 

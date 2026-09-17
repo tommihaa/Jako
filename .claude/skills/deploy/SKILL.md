@@ -15,6 +15,10 @@ description: Julkaise Jako täysimääräisesti niin että SEKÄ GitHub ETTÄ Ve
 
 2. **Changelog + TODO (käsin, build EI tee tätä).**
    - **CHANGELOG:** `src/changelogs/fi.js` = ainoa tiedosto (vain suomeksi, päätös 3.7.2026: 22 kielen käännös per julkaisu paisutti tiedostomäärää turhaan ~450 kt duplikaattidataa, selain kääntää tarvittaessa Käännä-toiminnollaan). Lisää uusin `{ date, items }` taulukon alkuun, pelaajaystävällisesti suomeksi ilman jargonia. Lue teksti huolella, typot näkyvät suoraan käyttäjälle.
+     **Poikkeus (16.8.2026): muutos joka ei näy pelaajalle ei saa merkintää.** Muutosloki kertoo
+     pelattavista muutoksista eikä ole per-deploy-loki; testit, sisäiset korjaukset ja käytöksen
+     kannalta neutraalit datamuutokset jäävät committiviestiin. Versiobumppi tehdään silti, koska
+     bundle muuttuu. Ennakkotapaus 1.2.206, sanaston vartalomuutos ja termimoduulin testi.
    - **TODO** (`src/App.jsx`, `const TODO`): valmistunut kohta → `status: 'done'`, tai lisää rivi. Näkyvät rivit tulevat `ui.infoPanel.todoItems`-taulukoista (`src/locales/fi.js` + `en.js`) **indeksijärjestyksessä**: jos muutat rivejä, päivitä molemmat taulukot samaan järjestykseen, muuten EN näyttää väärän rivin.
    - **VERSIO (käsin: build EI enää laske tätä).** Bumppaa `package.json`in `version`-kentän patch-numeroa yhdellä (esim. `1.2.202` → `1.2.203`) ja committaa se samassa julkaisucommitissa. `vite.config.js` lukee luvun suoraan package.jsonista, joten committoitu luku on se mitä käyttäjä näkee.
      **Miksi käsin:** aiemmin versio johdettiin komennosta `git rev-list --count HEAD`, mutta Vercel kloonaa repon matalasti (shallow), joten laskuri palautti tuotannossa ~10 todellisen commit-määrän sijaan. Tuotannossa luki 1.2.010 kun lokaali build antoi 1.2.201, eikä mikään huutanut virhettä (todennettu 21.7.2026). Committoitu luku ei voi erota ympäristön mukaan.
