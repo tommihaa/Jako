@@ -26,3 +26,11 @@ Tämä tiedosto pidetään tarkoituksella ohuena. Elävä tieto asuu ylläpidety
 | Mitä on muuttunut | sovelluksen muutosloki (Info → Muutosloki) tai `git log` |
 | Pelien lista + esittely | itse sovellus (live-linkki yllä) |
 | Julkaisu | `.claude/skills/deploy` |
+
+## Lisenssi
+
+**GNU GPL v3 tai myöhempi**, ks. [LICENSE](LICENSE). Copyright (C) 2026 Tommi Haanranta.
+Poikkeus: äänitiedostot `public/sfx/` ovat CC0 1.0, ks. [CREDITS.md](public/sfx/CREDITS.md).
+
+Copyleft valittiin siksi, että Jako pysyy annettavana: muokattu versio on jaettava samalla
+lisenssillä, joten kukaan ei voi sulkea sitä. Valittu 27.9.2026.
