@@ -50,6 +50,10 @@ vaihe-ehdon todeksi ikkunan ajaksi. Löydökset luokittain, kuusi Tommille osoit
 kaanonikysymystä ja mitä ei tarkistettu: `docs/AUDITOINTI-PORSAANREIAT.md`. Lue se ennen
 kuin ajastat tilasiirtymän `tm`:llä tai lisäät pelaajalle klikattavan polun.
 
+**Katselmointikriteerit (29.9.2026):** kahdeksan kriteeriä (K1–K8), jotka on johdettu Jaon
+omista fix-commiteista, ja taulukko siitä mitä testit jo vartioivat. Lue `docs/KATSELMOINTI.md`
+ennen kuin katselmoit diffin (`/code-review` tai käsin), ja merkitse löydös kriteerin tunnuksella.
+
 **Ristiseiska on rakenteeltaan eri kuin muut kahdeksan (4.9.2026).** Sen säännöt, AI-valinta
 ja siirtymät asuvat `src/games/ristiseiskaEngine.js`:ssä, ja komponentti on niiden kuljettaja
 joka kääntää moottorin askeleet lokiriveiksi, ääniksi ja ajastimiksi. Sääntömuutos tehdään
