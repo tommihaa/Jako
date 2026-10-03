@@ -235,7 +235,7 @@ Portti ajaa tämän ennen testejä (`.github/workflows/testit.yml`).
 ## Rajoitukset (kysy ennen kuin rikot)
 - Splitting a game into several files (Ristiseiska's engine is the documented exception)
 - Adding npm packages beyond the current `package.json`
-- Designing for a desktop viewport: the targets are phone portrait (~375px) and tablet landscape (~768px+)
+- Designing desktop-first: the app is designed for mobile (phone portrait ~375px, tablet landscape ~768px+), but as a browser app it must also work on a desktop screen
 
 **Poikkeus pakettikieltoon (17.8.2026): tyyppitarkistuksen työkalut.** `typescript`,
 `@types/react`, `@types/react-dom` ja `@types/node` ovat devDependencyjä, eivätkä ne päädy
