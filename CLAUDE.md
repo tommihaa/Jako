@@ -199,7 +199,7 @@ Virstanpylväät:
 - React functional components + hooks only (no class components)
 - Tailwind core utilities only (no custom compiler)
 - localStorage asetuksille (lupa laajentaa 2026-06-19, kumoaa aiemman "preferenssit-vain"-linjan): kaikki Asetukset-paneelin togglet (`jako:showLog`, `jako:soundOn`, `jako:twoColorDeck`, `jako:showLastPlay`, `jako:showIntention`, `jako:showNextBtn`, `jako:showAIKnown`), näkyvyysesiasetus (`jako:uiPreset` = `beginner`|`experienced`|`custom`, ks. Global settings), AI-taso (`jako:aiLevel`), nimiryhmä (`jako:playerGroup`) sekä pelikohtaiset sääntövalinnat (`jako:paskahousu:rules`, `jako:ristiseiska:rules`, `jako:kasino:rules`) persistoidaan `useStickySetting`-hookilla (`src/shared/storage.js`, `loadPref`/`savePref`, try/catch-suojattu). Lisäksi **pelikohtaiset tilastot** (`jako:stats`: pelatut/voitot/sijoitusjakauma/vaikeustaso-erittely per peli) persistoidaan suoraan `loadPref`/`savePref`-parilla (`useStickySetting` ei sovi, koska tallenne pitää yhdistää oletuksiin `normalizeStats`-migraatiolla; ks. `StatsPanel.jsx` ja 📊-nappi). **POIKKEUKSET (eivät tallennu):** `seeAll` (cheat, nollautuu joka latauksessa tahallaan) ja `godMode` (disabloitu placeholder).
-- Single-file artifacts (.jsx): no separate CSS/JS files
+- One `.jsx` component per game in `src/games/`; shared code lives in `src/shared/` (Ristiseiska also has `ristiseiskaEngine.js`)
 - Touch + stylus primary input (phone + tablet), no hover-dependent interactions
 - Responsive: `window.innerWidth < 600` = mobile, else tablet
 - Mobile: 1-col game grid, smaller fonts (11-12px), reduced padding
@@ -233,9 +233,9 @@ Portti ajaa tämän ennen testejä (`.github/workflows/testit.yml`).
 - **Poikkeus: säilytä toimintaohjeet/vihjeet 2. persoonassa** kun ne neuvovat ihmistä tekemään jotain (esim. Koputus/Kultakala "Nostit X. Vaihda…", Kasinon dynaaminen vihje, Ristiseiskan "…joten Passaa"). Nämä eivät ole ilmoituksia vaan ohjeita.
 
 ## Rajoitukset (kysy ennen kuin rikot)
-- Single-file structure per game
-- Add npm packages beyond what's in current prototype
-- Assume desktop viewport: always design for ~1200px landscape tablet
+- Splitting a game into several files (Ristiseiska's engine is the documented exception)
+- Adding npm packages beyond the current `package.json`
+- Designing for a desktop viewport: the targets are phone portrait (~375px) and tablet landscape (~768px+)
 
 **Poikkeus pakettikieltoon (17.8.2026): tyyppitarkistuksen työkalut.** `typescript`,
 `@types/react`, `@types/react-dom` ja `@types/node` ovat devDependencyjä, eivätkä ne päädy
