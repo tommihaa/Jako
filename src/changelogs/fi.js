@@ -13,6 +13,12 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '8.10.2026',
+    items: [
+      'Kaikki pelit toimivat nyt ilman verkkoa heti ensimmäisen avauksen jälkeen, myös ne joita et ole vielä avannut. Ennen vain avatut pelit tallentuivat, ja päivityksen jälkeen peli saattoi avautua ilman verkkoa tyhjänä ruutuna. Tallennus vie noin 1,7 Mt.',
+    ],
+  },
+  {
     date: '14.9.2026',
     items: [
       'Paskahousun aloitusnäytölle tuli neljäs sääntövalinta: kovat kakkoset lyödään joko kerralla tai yksi kerrallaan. Vakio on kerralla, kuten tähänkin asti. Yksi kerrallaan tarkoittaa että arvon 15 kakkosista lyö vain yhden per lyönti, ja sama koskee vaihtoa sekä botteja. Punaiset arvon 2 kakkoset eivät ole rajoituksen piirissä. Valinta muistetaan selaimessa muiden sääntövalintojen tapaan.',
