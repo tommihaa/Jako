@@ -73,7 +73,7 @@ export const se = {
       changelogTranslateHint: 'Rievdadanlogga lea dušše suomagillii — geavat neahttalogana jorgalanfunkšuvnna vai sáhtát lohkat dan iežat gillii.',
       a2hs: {
         title: 'Lasit Jako⁹ álgomuitui 📲',
-        intro: 'Lasit speallu telefovnna álgomuitui dahje dihtora bargobeavdái, de dat rahppo iežas govažis dego prográmma — telefovnna holggaid haga. Oktii rahppojuvvon spealut doibmet maiddái fierpmádaga haga.',
+        intro: 'Lasit speallu telefovnna álgomuitui dahje dihtora bargobeavdái, de dat rahppo iežas govažis dego prográmma — telefovnna holggaid haga. Vuosttaš rahpama maŋŋil buot spealut doibmet maiddái fierpmádaga haga.',
         mobile: '📱 Telefovdna ja tablehtta',
         desktop: '💻 Dihtor',
         mobileRows: [

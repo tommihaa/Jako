@@ -75,7 +75,7 @@ export const krl = {
       changelogTranslateHint: 'Vajehtelulogi on vaiku suomekse — käytä brauzerin kiändö-funktiedu, ku tahtot lukie sidä omal kielel.',
       a2hs: {
         title: 'Ližiä Jako⁹ algunäytöllä 📲',
-        intro: 'Ližiä kiza telefonan algunäytöllä tahi tiedokonehen työpövvällä, ka še avauduu omašta kuvakkehešta kuin sovellus — ilmain selaimen palkkija. Kerran avatut kizat toimitah i ilmain verkkuo.',
+        intro: 'Ližiä kiza telefonan algunäytöllä tahi tiedokonehen työpövvällä, ka še avauduu omašta kuvakkehešta kuin sovellus — ilmain selaimen palkkija. Enžimäizen avuamizen jälkeh kai kizat toimitah i ilmain verkkuo.',
         mobile: '📱 Telefona da tabletti',
         desktop: '💻 Tiedokoneh',
         mobileRows: [

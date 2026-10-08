@@ -83,7 +83,7 @@ export const pl = {
       changelogTranslateHint: 'Dziennik zmian jest dostępny tylko po fińsku — użyj funkcji Tłumacz w przeglądarce, aby przeczytać go w swoim języku.',
       a2hs: {
         title: 'Dodaj Jako⁹ do ekranu głównego 📲',
-        intro: 'Dodaj grę do ekranu głównego telefonu lub pulpitu komputera — będzie się otwierać z własnej ikony jak aplikacja, bez pasków przeglądarki. Raz otwarte gry działają też offline.',
+        intro: 'Dodaj grę do ekranu głównego telefonu lub pulpitu komputera — będzie się otwierać z własnej ikony jak aplikacja, bez pasków przeglądarki. Po pierwszym otwarciu wszystkie gry działają też offline.',
         mobile: '📱 Telefon i tablet',
         desktop: '💻 Komputer',
         mobileRows: [

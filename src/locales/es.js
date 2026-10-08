@@ -74,7 +74,7 @@ export const es = {
       changelogTranslateHint: 'El registro de cambios solo está en finés — usa la función Traducir de tu navegador para leerlo en tu idioma.',
       a2hs: {
         title: 'Añadir Jako⁹ a la pantalla de inicio 📲',
-        intro: 'Añade el juego a la pantalla de inicio del móvil o al escritorio del ordenador: se abrirá desde su propio icono como una app — sin barras del navegador. Los juegos ya abiertos funcionan también sin conexión.',
+        intro: 'Añade el juego a la pantalla de inicio del móvil o al escritorio del ordenador: se abrirá desde su propio icono como una app — sin barras del navegador. Tras la primera apertura, todos los juegos funcionan también sin conexión.',
         mobile: '📱 Móvil y tableta',
         desktop: '💻 Ordenador',
         mobileRows: [

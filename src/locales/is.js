@@ -74,7 +74,7 @@ export const is = {
       changelogTranslateHint: 'Breytingaskráin er aðeins til á finnsku — notaðu þýðingaeiginleika vafrans til að lesa hana á þínu tungumáli.',
       a2hs: {
         title: 'Setja Jako⁹ á heimaskjá 📲',
-        intro: 'Settu leikinn á heimaskjá símans eða skjáborð tölvunnar — þá opnast hann af eigin tákni eins og app, án vafrastiku. Leikir sem hafa verið opnaðir einu sinni virka líka án nettengingar.',
+        intro: 'Settu leikinn á heimaskjá símans eða skjáborð tölvunnar — þá opnast hann af eigin tákni eins og app, án vafrastiku. Eftir fyrstu opnun virka allir leikirnir líka án nettengingar.',
         mobile: '📱 Sími og spjaldtölva',
         desktop: '💻 Tölva',
         mobileRows: [

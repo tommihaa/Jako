@@ -74,7 +74,7 @@ export const sv = {
       changelogTranslateHint: 'Ändringsloggen finns endast på finska — använd webbläsarens Översätt-funktion för att läsa den på ditt språk.',
       a2hs: {
         title: 'Lägg till Jako⁹ på hemskärmen 📲',
-        intro: 'Lägg till spelet på telefonens hemskärm eller datorns skrivbord, så öppnas det från en egen ikon som en app — utan webbläsarens fält. Spel som öppnats en gång fungerar även offline.',
+        intro: 'Lägg till spelet på telefonens hemskärm eller datorns skrivbord, så öppnas det från en egen ikon som en app — utan webbläsarens fält. Efter första öppningen fungerar alla spel även offline.',
         mobile: '📱 Telefon och surfplatta',
         desktop: '💻 Dator',
         mobileRows: [

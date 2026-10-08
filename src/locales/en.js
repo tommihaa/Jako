@@ -75,7 +75,7 @@ export const en = {
       changelogTranslateHint: 'The changelog is only in Finnish. Use your browser\'s Translate feature to read it in your language.',
       a2hs: {
         title: 'Add Jako⁹ to Home Screen 📲',
-        intro: 'Add the game to your phone’s home screen or your computer’s desktop and it opens from its own icon like an app, without browser bars. Once-opened games also work offline.',
+        intro: 'Add the game to your phone’s home screen or your computer’s desktop and it opens from its own icon like an app, without browser bars. After the first visit, all games also work offline.',
         mobile: '📱 Phone and tablet',
         desktop: '💻 Computer',
         mobileRows: [

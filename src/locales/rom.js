@@ -74,7 +74,7 @@ export const rom = {
       changelogTranslateHint: 'O lil vaš parudimata si ferdi pe finikane ćhib — ćer buti e brauzerosko parhuvibnasko funkcia te genes les ande ćiri ćhib.',
       a2hs: {
         title: 'Tho Jako⁹ ko ekrano-šerutno 📲',
-        intro: 'Tho o khelipe ko ekrano-šerutno le telefonosko vaj ko skafidi le kompjuterosko, kaj te putardol pesko ikonosa sar aplikacija — bi le brauzeroske bareske. Khelimata jekh data putarde keren vi bi internetosko.',
+        intro: 'Tho o khelipe ko ekrano-šerutno le telefonosko vaj ko skafidi le kompjuterosko, kaj te putardol pesko ikonosa sar aplikacija — bi le brauzeroske bareske. Pala o jekhto putaripe sa e khelimata keren vi bi internetosko.',
         mobile: '📱 Telefono thaj tableta',
         desktop: '💻 Kompjutero',
         mobileRows: [

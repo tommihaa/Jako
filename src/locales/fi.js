@@ -103,7 +103,7 @@ export const fi = {
       changelogTranslateHint: 'Muutosloki on vain suomeksi. Käytä selaimen Käännä-toimintoa lukeaksesi sen omalla kielelläsi.',
       a2hs: {
         title: 'Lisää Jako⁹ aloitusnäytölle 📲',
-        intro: 'Lisää peli puhelimen aloitusnäytölle tai tietokoneen työpöydälle, niin se avautuu omasta kuvakkeestaan kuin sovellus, ilman selaimen palkkeja. Kerran avatut pelit toimivat myös ilman verkkoa.',
+        intro: 'Lisää peli puhelimen aloitusnäytölle tai tietokoneen työpöydälle, niin se avautuu omasta kuvakkeestaan kuin sovellus, ilman selaimen palkkeja. Ensimmäisen avauksen jälkeen kaikki pelit toimivat myös ilman verkkoa.',
         mobile: '📱 Puhelin ja tabletti',
         desktop: '💻 Tietokone',
         mobileRows: [

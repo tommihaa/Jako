@@ -73,7 +73,7 @@ export const la = {
       changelogTranslateHint: 'Index mutationum tantum lingua Finnica exstat — utere instrumento translationis navigatri tui ut eam lingua tua legas.',
       a2hs: {
         title: 'Adde Jako⁹ ad initialem 📲',
-        intro: 'Adde lusum ad initialem telephoni vel mensam computatri, ut suo ipsius signo aperiatur quasi applicatio — sine navigatri vittis. Lusus semel aperti etiam sine rete operantur.',
+        intro: 'Adde lusum ad initialem telephoni vel mensam computatri, ut suo ipsius signo aperiatur quasi applicatio — sine navigatri vittis. Post primam aperitionem omnes lusus etiam sine rete operantur.',
         mobile: '📱 Telephonum et tabella',
         desktop: '💻 Computatrum',
         mobileRows: [

@@ -3,6 +3,8 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { precachePlugin } from './scripts/precache.mjs';
 
 // Versio luetaan package.jsonista, EI gitistä. Aiemmin tässä oli
 // `git rev-list --count HEAD`, mutta Vercel kloonaa matalasti (shallow):
@@ -12,7 +14,8 @@ import { readFileSync } from 'fs';
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf-8'));
 
 export default defineConfig({
-  plugins: [react()],
+  // precache.json: kaikki pelit ja kielet SW:n esitallennukseen (scripts/precache.mjs)
+  plugins: [react(), precachePlugin(fileURLToPath(new URL('./public', import.meta.url)))],
   server: { port: 5174 },
   // Vitest: jsdom-ympäristö (React-savutestit + i18n-parity). Ei vaikuta prod-buildiin.
   test: {

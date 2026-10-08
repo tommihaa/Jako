@@ -73,7 +73,7 @@ export const ro = {
       changelogTranslateHint: 'Jurnalul de modificări este disponibil doar în finlandeză — folosește funcția de traducere a browserului pentru a-l citi în limba ta.',
       a2hs: {
         title: 'Adaugă Jako⁹ pe ecranul de pornire 📲',
-        intro: 'Adaugă jocul pe ecranul de pornire al telefonului sau pe desktopul calculatorului, ca să se deschidă din propria pictogramă ca o aplicație — fără barele browserului. Jocurile deschise o dată funcționează și fără rețea.',
+        intro: 'Adaugă jocul pe ecranul de pornire al telefonului sau pe desktopul calculatorului, ca să se deschidă din propria pictogramă ca o aplicație — fără barele browserului. După prima deschidere, toate jocurile funcționează și fără rețea.',
         mobile: '📱 Telefon și tabletă',
         desktop: '💻 Calculator',
         mobileRows: [

@@ -42,6 +42,11 @@ sivun uudelleenlatauksen yli ja nollautuu välilehden sulkeutuessa.
 (hashatut `assets`-tiedostot, `index.html`, manifesti, ikoni) ja on olemassa offline-käyttöä
 varten. Lähdekarttoja ei tallenneta.
 
+Kaikki pelit, kielet, muutosloki ja äänet tallennetaan ensimmäisellä avauksella, eikä vasta
+kun peli avataan (8.10.2026 alkaen). Lista on buildin `precache.json` (`scripts/precache.mjs`),
+ja se haetaan jokaisella verkon kanssa tehdyllä avauksella, jolloin julkaisun uudet tiedostot
+tallentuvat ja vanhat poistuvat. Koko on noin 1,7 Mt.
+
 ## Mitä ei tallennu eikä lähde
 
 - **Ei evästeitä.** `document.cookie` ei esiinny lähdekoodissa kertaakaan.
