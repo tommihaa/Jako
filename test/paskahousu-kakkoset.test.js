@@ -7,6 +7,9 @@ import { getAdvice } from '../src/games/Paskahousu.jsx';
 const mk = (r, s, v) => ({ r, s, v, id: `${r}${s}` });
 const RULES = { handSize: 6, hardTwos: false, faceMin: 7, singleTwos: false };
 
+// Tyyppi kirjoitetaan auki: oletusarvosta `= {}` päätelty tyyppi ei tunne `hand`ia,
+// koska sillä ei ole omaa oletusta, ja tyyppitarkistus hylkäsi jokaisen kutsun.
+/** @param {{ rules?: typeof RULES, hand?: object[], top?: object | null, draw?: number }} [o] */
 function state({ rules = RULES, hand, top = mk('9', '♣', 9), draw = 5 } = {}) {
   return {
     phase: 'play', turn: 0, finished: [], rules,
