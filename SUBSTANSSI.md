@@ -4215,3 +4215,32 @@ kohde on epävarma. Sovellus ei siis kadota kanavaa vaan kohinan.
 kirjattu ratkeamattomaksi. Ratkeamattomuus ei siis ole pysyvä tila: kysymys jonka lähde ei
 tavoita muotoiltuna abstraktina voi aueta kun se kysytään konkreettisena tilanteena. Tämä on
 kirjoittajan päätelmä eikä Tommin lause, ja se on menetelmähavainto eikä substanssia.
+
+## 101. Uutta peliä opetellessa tarvittiin taho joka oli totuus
+
+Tommi 12.10.2026, omasta aloitteestaan eikä kysymykseen:
+
+> *uutta peliä opetellessa oli tärkeää, että oli taho joka oli totuus*
+
+Lause koskee oppimisvaihetta. Se ei kerro kuka tai mikä taho oli, eikä sitä täydennetä tässä.
+
+**Jännite kohtien 17 ja 96 kanssa, ja se nostetaan tässä jännitteenä eikä ristiriitana.**
+Kohdissa 17 ja 96 sääntöriita ratkesi useimmiten yhteisymmärryksellä ilman ratkaisijaa, ja
+pöydässä ei ollut standardia jota vasten tarkistaa. Tämä kohta sanoo että opetellessa
+auktoriteetti oli tärkeä. Ne eivät kumoa toisiaan, jos ne koskevat eri vaihetta: riita käytiin
+osaavien kesken, ja oppija ei voi argumentoida säännöstä jota ei vielä tunne.
+
+**Seuraus** *(kirjoittajan päätelmä)*: teesi *siksi ei standardia vaan vaihtoehtoja* koskee
+silloin osaavaa pöytää. Oppija tarvitsee ensin yhden version, ja vaihtoehdot ovat mahdollisia
+vasta kun jokin versio on opittu. Kohdan 11 pöydän opetustapa (säännöt ensin ja täydennystä kun
+keksi kysyä) edellyttää jo jotakuta joka kertoo ja vastaa, ja tämä kohta nimeää sen roolin.
+
+**Seuraus sovellukseen** *(kirjoittajan päätelmä)*: kohta 17 sanoi että sovelluksessa
+kumpaakaan pöydän auktoriteettia ei ole, koska koodi ratkaisee jokaisen sääntötilanteen. Tämän
+kohdan valossa se ei ole pöydän menetys vaan oppijan tarve täytettynä: koodi on taho joka on
+totuus, ja Mestarin neuvo vastaa kun pelaaja keksii kysyä. Päätelmä nojaa siihen että koodi ja
+kanoni sanovat saman, ja `docs/PELIKANONIT.md` kirjaa seitsemässä kanonissa nimettyjä
+ristiriitoja.
+
+**Avoin:** kuka taho oli pöydässä (opettaja, järjestäjä vai sääntöteksti), ja koskeeko lause
+myös sovelluksen tekemistä, jossa Kasinon säännöistä otettiin tarkasti selvää (kohta 97).
