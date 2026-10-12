@@ -4242,5 +4242,26 @@ totuus, ja Mestarin neuvo vastaa kun pelaaja keksii kysyä. Päätelmä nojaa si
 kanoni sanovat saman, ja `docs/PELIKANONIT.md` kirjaa seitsemässä kanonissa nimettyjä
 ristiriitoja.
 
-**Avoin:** kuka taho oli pöydässä (opettaja, järjestäjä vai sääntöteksti), ja koskeeko lause
-myös sovelluksen tekemistä, jossa Kasinon säännöistä otettiin tarkasti selvää (kohta 97).
+~~**Avoin:** kuka taho oli pöydässä (opettaja, järjestäjä vai sääntöteksti), ja koskeeko lause
+myös sovelluksen tekemistä, jossa Kasinon säännöistä otettiin tarkasti selvää (kohta 97).~~
+*(Vastattu samana päivänä, ks. alla.)*
+
+Tommi 12.10.2026, kumpaankin avoimeen:
+
+> *Ohjaaja. Kasino oli pesäpallo-termein kärkkymistä, en osannut rakennelmia ja viimeisestä
+> pelikerrasta oli vuosia, mutta halusin pelin mukaan.*
+
+**Taho oli ohjaaja.** Kohdan 17 täydennyksen mukaan ohjaaja on sama henkilö kuin järjestäjä,
+joka kohdassa 17 oli riidan varamenettely. Sama ihminen oli siis oppijalle totuus ja osaavien
+riidassa vasta toissijainen ratkaisija. Tämä tukee yllä olevaa vaiheluentaa: rooli riippui
+siitä oliko pelaaja oppimassa vai osasiko hän jo.
+
+**Kasinossa tahoa ei ollut, ja peli otettiin mukaan silti.** Tommi ei osannut rakennelmia
+(sama kuin kohta 35), viimeisestä pelikerrasta oli vuosia, ja kokoelmaan peli tuli koska Tommi
+halusi sen. Kärkkyminen on Tommin oma pesäpallotermi, eikä sitä avata tässä pidemmälle kuin
+lauseen muu osa avaa.
+
+**Seuraus** *(kirjoittajan päätelmä)*: kohdan 97 sääntötyö oli tahon puuttumisen hinta. Kun
+oppimisvaiheen totuutta ei ollut pöydässä eikä muistissa, se piti koota kirjoitetuista
+säännöistä (kohta 8), ja tuloksena oleva kanoni ja koodi ovat nyt sovelluksen pelaajalle se
+taho jota Tommilla itsellään Kasinossa ei ollut.
