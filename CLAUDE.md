@@ -61,11 +61,6 @@ moottoriin eikä komponenttiin. Muoto syntyi kysymyksen 4 kokeesta, ja `test/ris
 vaatii että moottorin oma silmukka (`runHeadless`) ja komponentti pelaavat samasta siemenestä
 saman pelin. Muissa kahdeksassa pelissä säännöt ovat yhä komponentin sisällä.
 
-## Navigation
-Valikko (päävalikko) → Peli (suoraan, ei välinäyttöä)
-- `playerCount` valitaan kunkin pelin aloitusnäytöllä (Pelaajia 2/3/4); App.jsx välittää vain oletuksen (4) propsina, ei globaalia säädintä. Asetukset → Pelaajat sisältää enää vastustajien nimiryhmän valinnan.
-- Ristiseiska: `Math.max(playerCount, game.minPlayers)` varmistaa min 3 pelaajaa
-
 ## Global settings (App.jsx → props to all games)
 | Prop | Default | Selitys |
 |---|---|---|
@@ -86,10 +81,6 @@ kuin `seeAll`.** Pelissä on oma `revealAll`-tila jonka `startGame` asettaa arvo
 `seeAll || allBotsMode`, joten Bottien Taistelu paljastaa kortit koskematta asetukseen.
 Aiemmin peli kopioi kaikki kolme omaan tilaansa `init`-etuliitteisestä propsista, jolloin
 pelin nappi ei tallentunut eikä Asetusten muutos kuulunut peliin.
-
-**Näkyvyysesiasetus (`uiPreset`):** Peliasetusten alussa segmented-valinta *Aloittelija/Kokenut* asettaa kuusi opastustoggea kerralla (`UI_PRESETS`-kartta App.jsx:ssä); yksittäiset togglet ovat "Lisäasetukset"-taitoksen takana (`showLisaasetukset`). Manuaalinen toggle-muutos → `uiPreset='custom'`.
-
-**Intuitiivisuus-UI (kesäkuu 2026):** Päävalikon pelikorteissa suosikit (`g.suosikki`) merkitään ★:llä + ensikäynnin "aloita tästä" -vyö (näkyy kun yhtään peliä ei pelattu, `stats`-summasta). Säännöt avautuvat selkeästä "Säännöt"-pillistä (ei enää matalakontrastinen ℹ, sillä ℹ tarkoittaa nyt vain yläpalkin sovellus-Infoa); laajennuksessa linkki Sanastoon. Jaetut komponentit: `shared/GroupPicker.jsx` (vastustajaryhmän valinta jokaisen pelin aloitusnäytöllä, data `shared/playerGroups.js` = `NAME_GROUPS`/`POOL_BY_GROUP`; App välittää `playerGroup`+`onPlayerGroupChange` kaikille peleille) ja `shared/TurnPrompt.jsx` (pysyvä "👉 Sinun vuorosi: <toiminto>" -banneri pelinäkymän yläosassa, kytketty kunkin pelin ihmisvuoro-ehtoon; tekstit `ui.turn.*`).
 
 ## Component props (kaikki 9 peliä)
 App.jsx välittää saman propsijoukon kaikille peleille, mutta **jokainen peli destrukturoi vain tarvitsemansa**, yhtä kanonista signatuuria ei ole. Kaikille välitetään: `onResult, onSnapshot, game, showLog, soundOn, seeAll, onSoundOnChange, onSeeAllChange, onShowLogChange, showLastPlay, showIntention, showNextBtn, showAIKnown, isMobile, playerCount, playerNames, playerGroup, onPlayerGroupChange, aiLevel, onAiLevelChange`. `hints` on ollut listalla mutta sitä ei välitetä eikä lueta missään (kompositioauditointi H6).
@@ -136,53 +127,10 @@ Nine games with unified Finnish UI terms:
 
 Key terms: kortti, käsi, pino, nosto, lasku, pistelasku, kierros, vuoro, jako
 
-## Pakkatyypit
-
-Kolme tyyppiä, näkyy päävalikossa pelikorteissa:
-
-| Tyyppi | Koodi | Pelit |
-|---|---|---|
-| Täysin jaettu | `jaettu` | Läpsy, Ristiseiska |
-| Täydennetty | `taydennetty` | Kultakala, Maija, Moska, Paskahousu, Koputus, Kasino |
-| Kierrätetty | `kierratetty` | Seiska |
-
-Erikoistapaukset (silti yllä olevissa luokissa):
-- **Koputus**: Koputus käynnistää viimeisen kierroksen, nostopakkaa voi jäädä huomiotta
-- **Seiska**: Voittaja pääsee korteistaan eroon ensin, nostopakkaa voi jäädä huomiotta
-- **Kasino**: 16 pistettä ensin saanut voittaa; pisteet lasketaan nostopakan ehdyttyä pelatun kierroksen päätyttyä; tasapeli on mahdollinen
-
-## SFX (`src/shared/audio.js`: `SFX` objekti)
-Korttitoiminnot:
-| Funktio | Käyttötilanne |
-|---|---|
-| `flip` | nosto / käännös |
-| `play` | kortin pelaus, hyökkäys |
-| `capture` | korttien otto pöydältä |
-| `leave` | lasku / syöttö / passi |
-| `swap` | korttien vaihto |
-| `reveal` | piilokorttien paljastus |
-| `take` | pakkootto (tappio) |
-| `beat` | torjunta onnistuu |
-| `build` | rakennus (Kasino) |
-
-Erityistapahtumat:
-| Funktio | Käyttötilanne |
-|---|---|
-| `tikki` | mokki / tikki (Kasino) |
-| `maija` | Maija-kortti (Maija) |
-| `slap` | läpsäys (Läpsy) |
-| `wrongSlap` | väärä läpsäys (Läpsy) |
-| `winPile` | pino voitettu |
-| `challenge` | haaste (Läpsy) |
-| `reactWin` | reaktio onnistui |
-| `reactWrong` | reaktio epäonnistui |
-| `lastCardWin` | viimeinen kortti pelattu voittoon |
-
-Virstanpylväät:
-| Funktio | Käyttötilanne |
-|---|---|
-| `score` | pistemerkki |
-| `fanfare` | voitto |
+## Koodiviite
+Navigointi, näkyvyysesiasetus (`uiPreset`), intuitiivisuus-UI, pakkatyypit ja `SFX`-äänitaulukot
+ovat `docs/KOODIVIITE.md`:ssä (siirretty 12.10.2026). Nouda kun kosket valikkoon, esiasetuksiin,
+pakkaluokkaan tai ääniin.
 
 ## Players
 - Human player: "Hero"
@@ -198,7 +146,7 @@ Virstanpylväät:
 ## Tech
 - React functional components + hooks only (no class components)
 - Tailwind core utilities only (no custom compiler)
-- localStorage asetuksille (lupa laajentaa 2026-06-19, kumoaa aiemman "preferenssit-vain"-linjan): kaikki Asetukset-paneelin togglet (`jako:showLog`, `jako:soundOn`, `jako:twoColorDeck`, `jako:showLastPlay`, `jako:showIntention`, `jako:showNextBtn`, `jako:showAIKnown`), näkyvyysesiasetus (`jako:uiPreset` = `beginner`|`experienced`|`custom`, ks. Global settings), AI-taso (`jako:aiLevel`), nimiryhmä (`jako:playerGroup`) sekä pelikohtaiset sääntövalinnat (`jako:paskahousu:rules`, `jako:ristiseiska:rules`, `jako:kasino:rules`) persistoidaan `useStickySetting`-hookilla (`src/shared/storage.js`, `loadPref`/`savePref`, try/catch-suojattu). Lisäksi **pelikohtaiset tilastot** (`jako:stats`: pelatut/voitot/sijoitusjakauma/vaikeustaso-erittely per peli) persistoidaan suoraan `loadPref`/`savePref`-parilla (`useStickySetting` ei sovi, koska tallenne pitää yhdistää oletuksiin `normalizeStats`-migraatiolla; ks. `StatsPanel.jsx` ja 📊-nappi). **POIKKEUKSET (eivät tallennu):** `seeAll` (cheat, nollautuu joka latauksessa tahallaan) ja `godMode` (disabloitu placeholder).
+- localStorage asetuksille (lupa laajentaa 2026-06-19, kumoaa aiemman "preferenssit-vain"-linjan): kaikki Asetukset-paneelin togglet (`jako:showLog`, `jako:soundOn`, `jako:twoColorDeck`, `jako:showLastPlay`, `jako:showIntention`, `jako:showNextBtn`, `jako:showAIKnown`), näkyvyysesiasetus (`jako:uiPreset` = `beginner`|`experienced`|`custom`, ks. `docs/KOODIVIITE.md`), AI-taso (`jako:aiLevel`), nimiryhmä (`jako:playerGroup`) sekä pelikohtaiset sääntövalinnat (`jako:paskahousu:rules`, `jako:ristiseiska:rules`, `jako:kasino:rules`) persistoidaan `useStickySetting`-hookilla (`src/shared/storage.js`, `loadPref`/`savePref`, try/catch-suojattu). Lisäksi **pelikohtaiset tilastot** (`jako:stats`: pelatut/voitot/sijoitusjakauma/vaikeustaso-erittely per peli) persistoidaan suoraan `loadPref`/`savePref`-parilla (`useStickySetting` ei sovi, koska tallenne pitää yhdistää oletuksiin `normalizeStats`-migraatiolla; ks. `StatsPanel.jsx` ja 📊-nappi). **POIKKEUKSET (eivät tallennu):** `seeAll` (cheat, nollautuu joka latauksessa tahallaan) ja `godMode` (disabloitu placeholder).
 - One `.jsx` component per game in `src/games/`; shared code lives in `src/shared/` (Ristiseiska also has `ristiseiskaEngine.js`)
 - Touch + stylus primary input (phone + tablet), no hover-dependent interactions
 - Responsive: `window.innerWidth < 600` = mobile, else tablet
