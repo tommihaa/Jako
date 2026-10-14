@@ -147,6 +147,9 @@ export function LangProvider({ children }) {
   // sanakirja on ladattu, setLoaded triggeröi re-renderin jolloin tr() löytää tekstit.
   const [, setLoaded] = useState(false);
   useEffect(() => { loadLocale(currentLang).then(() => setLoaded(true)).catch(() => {}); }, []);
+  // Ruudunlukija valitsee puheäänen <html lang>:sta (WCAG 3.1.1). index.html:n "fi" on vain
+  // ensilatauksen arvo, joten aktiivinen kieli kirjoitetaan sinne joka vaihdossa.
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
   // Kielen vaihto: sanakirja ladataan ENNEN aktivointia, jottei UI välähdä fallbackia.
   // Jos chunkin haku epäonnistuu (esim. offline), kieli ei vaihdu — preferenssi on
   // silti tallessa ja lataus onnistuu seuraavalla käynnillä.

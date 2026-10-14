@@ -15,6 +15,8 @@ export const CHANGELOG = [
   {
     date: '14.10.2026',
     items: [
+      'Saavutettavuus: ruudunlukija lukee nyt valitsemasi kielen sen kielen ääntämyksellä. Ennen sivu ilmoitti kieleksi aina suomen, joten esimerkiksi ruotsi ja englanti luettiin suomalaisella äänellä.',
+      'Saavutettavuus: Kasinon Vaihtoehdot-ikkuna vie kohdistuksen mukanaan. Ruudunlukija ja näppäimistö siirtyvät ikkunaan sen auetessa, Tab kiertää ikkunan sisällä ja sulkemisen jälkeen palataan Vaihtoehdot-napille. Napilla on nyt nimi myös puhelimella, jossa siinä näkyy pelkkä kuvake.',
       'Saavutettavuus: ruudunlukija ilmoittaa nyt pelin tapahtumat myös omassa pelissäsi. Kesäkuun merkintä lupasi tämän jokaiseen peliin, mutta ilmoitukset kuuluivat vain Bottien Taistelussa. Kortit sanotaan nimillä ("risti 7") eikä maamerkkeinä, koska TalkBack luki ♣:n emojina.',
       'Saavutettavuus: pelin alussa ruudunlukija kertoo vastustajien nimet vuorojärjestyksessä, jotta tiedät keiden siirtoja odottaa. Tapahtumat kuuluvat yksi kerrallaan tauon kanssa eivätkä yhtenä virtana.',
       'Saavutettavuus: ruudunlukijalle tuli Tilanne-nappi, joka kertoo koko pöydän kerralla: vuoron, oman kätesi, pöydän kortit ja muiden korttimäärät. Maijassa ja Moskassa se kertoo hyökkääjän ja puolustajan. Nappi näkyy vain ruudunlukijalle ja näppäimistön kohdistukselle. Näppäimistöllä saman saa H-näppäimellä. Tilanne kertoo vain sen minkä näkevä pelaaja näkee, joten Koputuksessa muistamasi kortin arvoa ei sanota. Ohje on Infossa kohdassa Ruudunlukijalle.',

@@ -569,12 +569,28 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
   const [lastPlay, setLastPlay] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-  // Esc sulkee vaihtoehdot-modaalin
+  // Vaihtoehdot-modaali APG:n dialog-mallilla: kohdistus siirtyy ikkunaan avattaessa, Tab
+  // kiertää ikkunan sisällä, Esc sulkee ja kohdistus palaa avausnappiin. Ilman siirtoa
+  // ruudunlukija jää ikkunan taakse, jota aria-modal käskee olemaan lukematta.
+  const optionsDialogRef = useRef(null);
   useEffect(() => {
     if (!showOptions) return;
-    const onEsc = e => { if (e.key === 'Escape') setShowOptions(false); };
-    window.addEventListener('keydown', onEsc);
-    return () => window.removeEventListener('keydown', onEsc);
+    const opener = /** @type {HTMLElement|null} */ (document.activeElement);
+    optionsDialogRef.current?.focus();
+    const onKey = e => {
+      if (e.key === 'Escape') { setShowOptions(false); return; }
+      if (e.key !== 'Tab' || !optionsDialogRef.current) return;
+      const f = optionsDialogRef.current.querySelectorAll('button:not([disabled])');
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === optionsDialogRef.current)) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      if (opener?.isConnected) opener.focus();
+    };
   }, [showOptions]);
   const [helpTerm, setHelpTerm] = useState(null); // 'kaappaus' | 'rakennus'
   const [advice, setAdvice] = useState(null); // { text, handCardId, tableCardIds, buildId } | null
@@ -1605,6 +1621,8 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
         {!allBots && isMyTurn && !pendingCapture && (
           <button
             onClick={() => setShowOptions(v => !v)}
+            aria-label={t('games.kasino.ui.options')}
+            aria-haspopup="dialog"
             style={{ background: showOptions ? `${C.gold}18` : 'transparent', border: `1px solid ${showOptions ? C.gold : C.dim + '66'}`, borderRadius: 9, padding: '8px 14px', color: showOptions ? C.gold : C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}
           >
             📋{isMobile ? '' : ' ' + t('games.kasino.ui.options')}
@@ -1731,7 +1749,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
 
         return (
           <div style={{ position: 'fixed', inset: 0, zIndex: 400, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }} onClick={() => setShowOptions(false)}>
-            <div role="dialog" aria-modal="true" aria-label={t('games.kasino.ui.options')} style={{ background: C.bg, border: `1px solid ${C.panelBorder}`, borderRadius: '16px 16px 0 0', padding: '16px', maxHeight: '65vh', overflowY: 'auto', maxWidth: 560, width: '100%', margin: '0 auto' }} onClick={e => e.stopPropagation()}>
+            <div ref={optionsDialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={t('games.kasino.ui.options')} style={{ background: C.bg, border: `1px solid ${C.panelBorder}`, borderRadius: '16px 16px 0 0', padding: '16px', maxHeight: '65vh', overflowY: 'auto', maxWidth: 560, width: '100%', margin: '0 auto', outline: 'none' }} onClick={e => e.stopPropagation()}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                 <span style={{ fontFamily: 'Georgia,serif', fontSize: 14, color: C.gold, letterSpacing: 1 }}>{t('games.kasino.ui.optionsTitle')}</span>
                 <button onClick={() => setShowOptions(false)} aria-label={t('ui.shared.close')} style={{ background: 'transparent', border: 'none', color: C.dim, fontSize: 18, cursor: 'pointer', lineHeight: 1 }}>✕</button>
