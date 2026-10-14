@@ -110,6 +110,8 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   useEffect(() => { sndRef.current = soundOn; }, [soundOn]);
 
   const { log, logRef, addLog, commit, resetLog } = useGameLog({
+    // Läpsyssä pelaajat ovat pakkoja; ihminen on pakka 0 ja vuoro kiertää indeksin mukaan.
+    opponents: () => (gRef.current?.piles ?? []).slice(1).map((_, i) => pName(i + 1)),
     onMessage: setMsg, onSnapshot, setGS,
     isBotBattle: () => allBotsRef.current,
     snapshot: () => ({

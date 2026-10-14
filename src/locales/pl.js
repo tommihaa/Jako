@@ -13,6 +13,7 @@ const plural = (n, one, few, many) => {
 
 export const pl = {
   ui: {
+    a11y: { opponents: ({ names }) => `Przeciwnicy w kolejności ruchów: ${names}.` },
     advice: {
       guide: "Prowadź mnie",
       hit: "Ten sam wybór.",

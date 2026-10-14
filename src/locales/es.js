@@ -4,6 +4,7 @@
 // solo se traducen las descripciones y las reglas.
 export const es = {
   ui: {
+    a11y: { opponents: ({ names }) => `Rivales en orden de turno: ${names}.` },
     advice: {
       guide: "Guíame",
       hit: "Misma elección.",

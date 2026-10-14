@@ -2,6 +2,7 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const la = {
   ui: {
+    a11y: { opponents: ({ names }) => `Adversarii ordine: ${names}.` },
     advice: {
       guide: "Duc me",
       hit: "Eadem electio.",

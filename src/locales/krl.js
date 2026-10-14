@@ -5,6 +5,7 @@
 // rules are translated. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const krl = {
   ui: {
+    a11y: { opponents: ({ names }) => `Vastuštajat vuoron mukah: ${names}.` },
     advice: {
       guide: "Opasta",
       hit: "Sama valličus.",

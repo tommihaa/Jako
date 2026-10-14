@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { LOG_MAX } from './helpers.js';
-import { announce } from './Announcer.jsx';
+import { announce, clearAnnouncements } from './Announcer.jsx';
+import { tr } from './i18n.jsx';
 
 // Tapahtumaloki ja katselutilan snapshot yhdessä paikassa.
 //
@@ -21,25 +22,34 @@ import { announce } from './Announcer.jsx';
 //   snapshot    — () => ({ players, tableCards, extraText? }) pelin omasta tilasta,
 //                 tai null jos tilaa ei vielä ole. Hook lisää step- ja logText-kentät.
 //   setGS       — useGameState:n tilan asetin; tarvitaan vain commitia varten.
+//   opponents   — () => vastustajien nimet vuorojärjestyksessä ihmisestä seuraavana
+//                 alkaen. Ruudunlukija kuulee ne ennen pelin ensimmäistä tapahtumaa,
+//                 jotta pelaaja tietää keiden siirtoja odottaa (Tommin tilaus
+//                 14.10.2026). Ei katselutilassa, koska siellä ei ole ihmistä.
 /**
  * @param {{ onMessage?: (m: string) => void, skipEmpty?: boolean,
  *           onSnapshot?: (frame: any) => void, isBotBattle?: () => boolean,
- *           snapshot?: () => any, setGS?: (g: any) => void }} opts
+ *           snapshot?: () => any, setGS?: (g: any) => void,
+ *           opponents?: () => string[] }} opts
  */
-export function useGameLog({ onMessage, skipEmpty = false, onSnapshot, isBotBattle, snapshot, setGS } = {}) {
+export function useGameLog({ onMessage, skipEmpty = false, onSnapshot, isBotBattle, snapshot, setGS, opponents } = {}) {
   const [log, setLog] = useState(/** @type {Array<{t: string, m: string}>} */ ([]));
   const logRef = useRef(/** @type {Array<{t: string, m: string}>} */ ([]));
 
   // Optiot refin takana, jotta addLog pysyy samana funktiona koko elinkaaren ajan.
   // Läpsy antaa sen useEffectin riippuvuuslistalle, ja uusi identiteetti joka
   // renderillä ajaisi efektin uudelleen.
-  const optsRef = useRef({ onMessage, skipEmpty, onSnapshot, isBotBattle, snapshot, setGS });
-  optsRef.current = { onMessage, skipEmpty, onSnapshot, isBotBattle, snapshot, setGS };
+  const optsRef = useRef({ onMessage, skipEmpty, onSnapshot, isBotBattle, snapshot, setGS, opponents });
+  optsRef.current = { onMessage, skipEmpty, onSnapshot, isBotBattle, snapshot, setGS, opponents };
 
   const addLog = useCallback(m => {
     const o = optsRef.current;
     o.onMessage?.(m);
     if (o.skipEmpty && !m) return;
+    if (logRef.current.length === 0 && o.opponents && !o.isBotBattle?.()) {
+      const names = o.opponents().filter(Boolean);
+      if (names.length) announce(tr('ui.a11y.opponents', { names: names.join(', ') }));
+    }
     announce(m);
     const t = new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     logRef.current = [{ t, m }, ...logRef.current].slice(0, LOG_MAX);
@@ -58,7 +68,7 @@ export function useGameLog({ onMessage, skipEmpty = false, onSnapshot, isBotBatt
     if (msg !== undefined) addLog(msg);
   }), [addLog]);
 
-  const resetLog = useCallback(() => { logRef.current = []; setLog([]); }, []);
+  const resetLog = useCallback(() => { logRef.current = []; setLog([]); clearAnnouncements(); }, []);
 
   return { log, logRef, addLog, commit, resetLog };
 }

@@ -4,6 +4,7 @@
 // regler oversættes. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const da = {
   ui: {
+    a11y: { opponents: ({ names }) => `Modstandere i turrækkefølge: ${names}.` },
     advice: {
       guide: "Vejled mig",
       hit: "Samme valg.",

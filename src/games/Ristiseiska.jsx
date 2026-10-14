@@ -3,7 +3,7 @@ import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import GameStartScreen from '../shared/GameStartScreen.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, SUITS, truncName, sortHand as sortHandBy, lblColored, BOT_RESULT_DELAY } from '../shared/helpers.js';
+import { lbl, korttia, SUITS, truncName, sortHand as sortHandBy, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
 import {
   RANK_VAL, isPlayable, hasAnyPlay, DEFAULT_RULES, initGame,
   chooseMove, applyMove, applyGiveCard, getAdvice,
@@ -283,6 +283,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
   function askGuide() { opastus.ask(computeAdvice()); }
 
   const { log, logRef, addLog, commit, resetLog } = useGameLog({
+    opponents: () => opponentsInTurnOrder(gRef.current?.players),
     setGS,
     onMessage: setMsg_, onSnapshot,
     isBotBattle: () => allBotsRef.current,

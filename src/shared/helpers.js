@@ -67,6 +67,14 @@ const slavicPlural = (n, one, few, many) => {
   if (m10 >= 2 && m10 <= 4 && !(m100 >= 12 && m100 <= 14)) return few;
   return many;
 };
+// Vastustajien nimet vuorojärjestyksessä ihmisestä seuraavana alkaen (useGameLog,
+// optio `opponents`). Taulukon järjestys on istumajärjestys.
+/** @param {Array<{ name: string, isHuman?: boolean }> | undefined | null} players */
+export const opponentsInTurnOrder = players => {
+  if (!players?.length) return [];
+  const h = Math.max(0, players.findIndex(p => p.isHuman));
+  return [...players.slice(h + 1), ...players.slice(0, h)].filter(p => !p.isHuman).map(p => p.name);
+};
 /** @param {string} s maasymboli (♠ ♥ ♦ ♣) */
 export const suitName = s => SUIT_NAME[getLang()]?.[s] || SUIT_NAME.fi[s] || s;
 export const cardName = c => {

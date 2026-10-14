@@ -13,6 +13,7 @@ const plural = (n, one, few, many) => {
 
 export const uk = {
   ui: {
+    a11y: { opponents: ({ names }) => `Суперники в порядку ходу: ${names}.` },
     advice: {
       guide: "Спрямовуй мене",
       hit: "Той самий вибір.",

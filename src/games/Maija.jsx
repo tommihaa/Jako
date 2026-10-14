@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
-import { SUITS, RANKS, lbl, korttia, kortin, shuffle, cardName, sortHand as sortHandBy, shuffledAINames, lblColored, BOT_RESULT_DELAY } from '../shared/helpers.js';
+import { SUITS, RANKS, lbl, korttia, kortin, shuffle, cardName, sortHand as sortHandBy, shuffledAINames, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -348,6 +348,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   }, [G?.deck?.length]);
 
   const { log, logRef, addLog, commit, resetLog } = useGameLog({
+    opponents: () => opponentsInTurnOrder(gRef.current?.players),
     setGS,
     onMessage: setMsg_, onSnapshot,
     isBotBattle: () => allBotsRef.current,

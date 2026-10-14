@@ -7,6 +7,8 @@
 // tai taulukko/objekti (esim. sääntölistat) — t() palauttaa ei-string-arvot sellaisenaan.
 export const fi = {
   ui: {
+    // Vain ruudunlukijalle (Announcer), ei näy ruudulla.
+    a11y: { opponents: ({ names }) => `Vastustajat vuorojärjestyksessä: ${names}.` },
     loading: 'Ladataan…',
     info: { title: 'ℹ Info', close: '✕ Sulje' },
     lang: { label: 'Kieli', tested: 'Testatut', untested: 'Testaamattomat', note: '✓ natiivi · web = konevarmistettu (ei natiivitarkistusta)' },

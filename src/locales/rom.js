@@ -3,6 +3,7 @@
 // Pelien erisnimet pidetään suomeksi (altName).
 export const rom = {
   ui: {
+    a11y: { opponents: ({ names }) => `Le riventa: ${names}.` },
     advice: {
       guide: "Sikav man",
       hit: "Sa jekh alosaripe.",

@@ -4,6 +4,7 @@
 // kirjeldused ja reeglid. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const et = {
   ui: {
+    a11y: { opponents: ({ names }) => `Vastased käigujärjekorras: ${names}.` },
     advice: {
       guide: "Juhenda",
       hit: "Sama valik.",

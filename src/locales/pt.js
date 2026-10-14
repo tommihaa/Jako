@@ -4,6 +4,7 @@
 // descrições e regras são traduzidas. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const pt = {
   ui: {
+    a11y: { opponents: ({ names }) => `Adversários por ordem de jogada: ${names}.` },
     advice: {
       guide: "Guia-me",
       hit: "Mesma escolha.",

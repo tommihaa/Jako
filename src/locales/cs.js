@@ -11,6 +11,7 @@ const plural = (n, one, few, many) => {
 
 export const cs = {
   ui: {
+    a11y: { opponents: ({ names }) => `Soupeři v pořadí tahů: ${names}.` },
     advice: {
       guide: "Veď mě",
       hit: "Stejná volba.",

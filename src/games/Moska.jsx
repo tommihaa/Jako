@@ -4,7 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, kortin, SUITS, aiShouldFumble, sortHand as sortHandBy, shuffledAINames, lblColored, newDeck, BOT_RESULT_DELAY } from '../shared/helpers.js';
+import { lbl, korttia, kortin, SUITS, aiShouldFumble, sortHand as sortHandBy, shuffledAINames, lblColored, newDeck, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -412,6 +412,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   // Kielioppiapuri: Hero = 2. persoona, AI = nimi + 3. persoona
 
   const { log, logRef, addLog, commit, resetLog } = useGameLog({
+    opponents: () => opponentsInTurnOrder(gRef.current?.players),
     setGS,
     onMessage: setMsg_, onSnapshot,
     isBotBattle: () => allBotsRef.current,

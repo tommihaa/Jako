@@ -16,6 +16,7 @@ export const CHANGELOG = [
     date: '14.10.2026',
     items: [
       'Saavutettavuus: ruudunlukija ilmoittaa nyt pelin tapahtumat myös omassa pelissäsi. Kesäkuun merkintä lupasi tämän jokaiseen peliin, mutta ilmoitukset kuuluivat vain Bottien Taistelussa. Kortit sanotaan nimillä ("risti 7") eikä maamerkkeinä, koska TalkBack luki ♣:n emojina.',
+      'Saavutettavuus: pelin alussa ruudunlukija kertoo vastustajien nimet vuorojärjestyksessä, jotta tiedät keiden siirtoja odottaa. Tapahtumat kuuluvat yksi kerrallaan tauon kanssa eivätkä yhtenä virtana.',
     ],
   },
   {

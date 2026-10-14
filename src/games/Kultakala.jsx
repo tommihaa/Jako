@@ -4,7 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, truncName, newDeck, cardName, shuffledAINames, lblColored, BOT_RESULT_DELAY, UNKNOWN_EV } from '../shared/helpers.js';
+import { isRed, lbl, truncName, newDeck, cardName, shuffledAINames, lblColored, BOT_RESULT_DELAY, UNKNOWN_EV, opponentsInTurnOrder } from '../shared/helpers.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -302,6 +302,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   }
 
   const { log, logRef, addLog, commit, resetLog } = useGameLog({
+    opponents: () => opponentsInTurnOrder(gRef.current?.players),
     setGS,
     onMessage: setMsg_, onSnapshot,
     isBotBattle: () => allBotsRef.current,

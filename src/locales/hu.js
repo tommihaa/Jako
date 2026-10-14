@@ -3,6 +3,7 @@
 // Unkarissa lukusanan jälkeen yksikkö: "2 kártya" (ei monikkoa).
 export const hu = {
   ui: {
+    a11y: { opponents: ({ names }) => `Ellenfelek a lépések sorrendjében: ${names}.` },
     advice: {
       guide: "Vezess",
       hit: "Ugyanaz a választás.",

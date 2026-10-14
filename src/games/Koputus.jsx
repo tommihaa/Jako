@@ -4,7 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, newDeck, shuffledAINames, lblColored, BOT_RESULT_DELAY, UNKNOWN_EV } from '../shared/helpers.js';
+import { lbl, newDeck, shuffledAINames, lblColored, BOT_RESULT_DELAY, UNKNOWN_EV, opponentsInTurnOrder } from '../shared/helpers.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -317,6 +317,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
     useAIScheduler({ extraIntervalRefs: [reactInt] });
 
   const { log, logRef, addLog: setMsg, commit, resetLog } = useGameLog({
+    opponents: () => opponentsInTurnOrder(gRef.current?.players),
     setGS,
     onMessage: setMsg_, skipEmpty: true, onSnapshot,
     isBotBattle: () => allBotsRef.current,
