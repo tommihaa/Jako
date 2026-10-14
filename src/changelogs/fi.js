@@ -15,6 +15,8 @@ export const CHANGELOG = [
   {
     date: '14.10.2026',
     items: [
+      'Saavutettavuus: ruudunlukija kertoo nyt mitkä kortit olet valinnut. Valittu kortti nousee näkyvästi, mutta ruudunlukija ei ennen kertonut sitä, joten esimerkiksi Paskahousussa ja Kasinossa et kuullut mitkä kortit olivat valittuina.',
+      'Saavutettavuus: kielivalitsin toimii nyt ruudunlukijalla ja näppäimistöllä kuten tavallinen lista nappeja. Ruudunlukija ilmoitti sen ennen valintalistaksi, jossa liikutaan nuolinäppäimillä, vaikka nuolet eivät toimineet. Kielet ovat yhä kahdessa ryhmässä, ja valittu kieli kerrotaan.',
       'Saavutettavuus: ruudunlukija lukee nyt valitsemasi kielen sen kielen ääntämyksellä. Ennen sivu ilmoitti kieleksi aina suomen, joten esimerkiksi ruotsi ja englanti luettiin suomalaisella äänellä.',
       'Saavutettavuus: Kasinon Vaihtoehdot-ikkuna vie kohdistuksen mukanaan. Ruudunlukija ja näppäimistö siirtyvät ikkunaan sen auetessa, Tab kiertää ikkunan sisällä ja sulkemisen jälkeen palataan Vaihtoehdot-napille. Napilla on nyt nimi myös puhelimella, jossa siinä näkyy pelkkä kuvake.',
       'Saavutettavuus: ruudunlukija ilmoittaa nyt pelin tapahtumat myös omassa pelissäsi. Kesäkuun merkintä lupasi tämän jokaiseen peliin, mutta ilmoitukset kuuluivat vain Bottien Taistelussa. Kortit sanotaan nimillä ("risti 7") eikä maamerkkeinä, koska TalkBack luki ♣:n emojina.',

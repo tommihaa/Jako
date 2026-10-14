@@ -386,7 +386,6 @@ function LangSelector({ lang, setLang, t, isMobile }) {
     <div style={{ position: 'relative', flexShrink: 0 }}>
       <button
         onClick={() => setOpen(o => !o)}
-        aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={`${t('ui.lang.label')}: ${current.name}`}
         title={current.name}
@@ -405,7 +404,9 @@ function LangSelector({ lang, setLang, t, isMobile }) {
       {open && (
         <>
           <div onClick={() => setOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 590 }} />
-          <div role="listbox" aria-label={t('ui.lang.label')} style={{
+          {/* APG:n disclosure eikä listbox: listbox lupaa nuolinäppäimet ja yhden kohdistuksen,
+              mutta kielet ovat tavallisia nappeja joihin siirrytään Tabilla (auditointi J-3). */}
+          <div style={{
             position: 'absolute', top: '100%', right: 0,
             marginTop: 6, zIndex: 591,
             background: '#0f2419', border: `1px solid ${C.panelBorder}`, borderRadius: 10,
@@ -413,15 +414,15 @@ function LangSelector({ lang, setLang, t, isMobile }) {
             boxShadow: '0 8px 24px rgba(0,0,0,0.45)',
           }}>
             {groups.map(({ key, langs }) => langs.length > 0 && (
-              <div key={key} style={{ marginBottom: 6 }}>
-                <div style={{ fontFamily: 'Georgia,serif', fontSize: 10, color: C.dim, opacity: 0.6, letterSpacing: 1.5, margin: '2px 4px 4px', textTransform: 'uppercase' }}>
+              <div key={key} role="group" aria-label={t(`ui.lang.${key}`)} style={{ marginBottom: 6 }}>
+                <div aria-hidden="true" style={{ fontFamily: 'Georgia,serif', fontSize: 10, color: C.dim, opacity: 0.6, letterSpacing: 1.5, margin: '2px 4px 4px', textTransform: 'uppercase' }}>
                   {t(`ui.lang.${key}`)}
                 </div>
                 {langs.map(({ code, name, status }) => {
                   const active = lang === code;
                   return (
                     <button
-                      key={code} role="option" aria-selected={active} title={name}
+                      key={code} aria-current={active ? 'true' : undefined} title={name}
                       onClick={() => { setLang(code); setOpen(false); }}
                       style={{
                         display: 'flex', alignItems: 'center', gap: 8, width: '100%',

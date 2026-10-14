@@ -66,7 +66,11 @@ export default function Card({
 
   // Ruudunlukija/näppäimistö: klikattava kortti = nappi, paljas kortti = kuva, selkäpuoli piiloon
   const a11y = clickable
+    // Valinta kerrotaan tilana (APG toggle button): kortti nousee näkyvästi, ja ilman tätä
+    // ruudunlukija ei kuule monivalinnassa mitkä kortit ovat valittuina. Vain kun peli antaa
+    // selected-propsin, koska suoraan pelattava kortti ei ole kytkin.
     ? { role: 'button', tabIndex: 0, 'aria-label': faceUp && card ? cardName(card) : 'kortti', 'aria-disabled': disabled || undefined,
+        'aria-pressed': selected === undefined ? undefined : !!selected,
         onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
     : faceUp && card
       ? { role: 'img', 'aria-label': cardName(card) }
