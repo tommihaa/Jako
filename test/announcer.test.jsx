@@ -17,14 +17,14 @@ describe('Announcer', () => {
   beforeEach(() => { vi.useFakeTimers(); });
   afterEach(() => { cleanup(); vi.useRealTimers(); });
 
-  it('kokoaa samassa tahdissa syntyneet viestit yhdeksi ilmoitukseksi', () => {
+  it('kokoaa samassa tahdissa syntyneet viestit yhdeksi ilmoitukseksi, pisteellä erotettuna', () => {
     const { container } = render(<Announcer />);
     act(() => {
-      announce('Hero: <b>7♣</b>');
-      announce('Vuorossa AFK.');
+      announce('Random: <b>7♥</b> (avaa maan)');
+      announce('Vuorossa Troll.');
       vi.runOnlyPendingTimers();
     });
-    expect(liveText(container)).toBe('Hero: risti 7 Vuorossa AFK.');
+    expect(liveText(container)).toBe('Random: hertta 7 (avaa maan). Vuorossa Troll.');
   });
 
   it('kirjoittaa maasymbolit sanoiksi, koska TalkBack lukee ne emojeina', () => {
@@ -33,7 +33,7 @@ describe('Announcer', () => {
       announce('Hero aloittaa 7♣:llä. NPC: Q♥, 10♦️. Avattu ♠');
       vi.runOnlyPendingTimers();
     });
-    expect(liveText(container)).toBe('Hero aloittaa risti 7:llä. NPC: hertta rouva, ruutu 10. Avattu pata');
+    expect(liveText(container)).toBe('Hero aloittaa risti 7:llä. NPC: hertta rouva, ruutu 10. Avattu pata.');
   });
 
   it('toistaa saman viestin muuttamalla aluetta', () => {

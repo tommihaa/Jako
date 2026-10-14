@@ -33,11 +33,14 @@ function toPlain(message) {
 
 // Samassa tahdissa syntyneet viestit (esim. siirto ja sitä seuraava "Vuorossa X.")
 // kootaan yhdeksi ilmoitukseksi, koska React näyttäisi niistä vain viimeisen.
+// Jokainen viesti päättyy välimerkkiin, jotta puhe pysähtyy viestien välissä:
+// ilman sitä "Random: hertta 7 (avaa maan)" ja "Vuorossa Troll." kuuluivat yhtenä
+// virkkeenä (Tommin kuuntelu 14.10.2026).
 /** @param {unknown} message */
 export function announce(message) {
   const plain = toPlain(message);
   if (!plain) return;
-  pending.push(plain);
+  pending.push(/[.!?…]$/.test(plain) ? plain : plain + '.');
   if (flushScheduled) return;
   flushScheduled = true;
   setTimeout(() => {
