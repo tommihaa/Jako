@@ -5,6 +5,7 @@ import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle, aiShouldFumble, truncName, shuffledAINames, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
@@ -1296,6 +1297,14 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         soundOn={soundOn} onSoundToggle={() => onSoundOnChange?.(!soundOn)}
         revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
         isMobile={isMobile}
+        status={allBots || !G ? undefined : () => statusText({
+          turn: G.players[G.turn]?.name,
+          hand: G.players[0].hand,
+          top: G.top ?? undefined,
+          pile: G.pile.length,
+          deck: G.draw.length,
+          counts: G.players.slice(1).map(p => ({ name: p.name, n: p.hand.length })),
+        })}
       >
         <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.paskahousu.ui.goal')}
       </GameStatusBar>

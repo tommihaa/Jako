@@ -3,7 +3,26 @@
 // Pelien erisnimet pidetään suomeksi (altName).
 export const rom = {
   ui: {
-    a11y: { opponents: ({ names }) => `Le riventa: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Le riventa: ${names}.`,
+      statusButton: 'Situacija',
+      turn: ({ name }) => `Avel o rindo ${name}.`,
+      hand: ({ cards }) => `Vast: ${cards}.`,
+      none: 'naj karti',
+      slots: ({ list }) => `Than: ${list}.`,
+      unknown: 'garadi',
+      remembered: 'ando gođi',
+      holding: ({ card }) => `Lilji: ${card}.`,
+      table: ({ cards }) => `Pe skamind: ${cards}.`,
+      top: ({ card }) => `Opre: ${card}.`,
+      trump: ({ suit }) => `Trumfo: ${suit}.`,
+      suitReq: ({ suit }) => `Mangli farba: ${suit}.`,
+      deck: ({ n }) => `Ando pako: ${n}.`,
+      pile: ({ n }) => `Ando kup: ${n}.`,
+      counts: ({ list }) => `Karti: ${list}.`,
+      build: ({ value, cards }) => `kerimos ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, učhardi ${def}`,
+    },
     advice: {
       guide: "Sikav man",
       hit: "Sa jekh alosaripe.",

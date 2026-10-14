@@ -4,7 +4,26 @@
 // solo se traducen las descripciones y las reglas.
 export const es = {
   ui: {
-    a11y: { opponents: ({ names }) => `Rivales en orden de turno: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Rivales en orden de turno: ${names}.`,
+      statusButton: 'Situación',
+      turn: ({ name }) => `Turno de ${name}.`,
+      hand: ({ cards }) => `Mano: ${cards}.`,
+      none: 'sin cartas',
+      slots: ({ list }) => `Puestos: ${list}.`,
+      unknown: 'oculta',
+      remembered: 'memorizada',
+      holding: ({ card }) => `Robada: ${card}.`,
+      table: ({ cards }) => `En la mesa: ${cards}.`,
+      top: ({ card }) => `Arriba: ${card}.`,
+      trump: ({ suit }) => `Triunfo: ${suit}.`,
+      suitReq: ({ suit }) => `Palo exigido: ${suit}.`,
+      deck: ({ n }) => `En el mazo: ${n}.`,
+      pile: ({ n }) => `En el montón: ${n}.`,
+      counts: ({ list }) => `Cartas: ${list}.`,
+      build: ({ value, cards }) => `construcción ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, cubierta por ${def}`,
+    },
     advice: {
       guide: "Guíame",
       hit: "Misma elección.",

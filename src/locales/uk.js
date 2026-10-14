@@ -13,7 +13,26 @@ const plural = (n, one, few, many) => {
 
 export const uk = {
   ui: {
-    a11y: { opponents: ({ names }) => `Суперники в порядку ходу: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Суперники в порядку ходу: ${names}.`,
+      statusButton: 'Ситуація',
+      turn: ({ name }) => `Ходить: ${name}.`,
+      hand: ({ cards }) => `Рука: ${cards}.`,
+      none: 'немає карт',
+      slots: ({ list }) => `Місця: ${list}.`,
+      unknown: 'прихована',
+      remembered: 'у пам’яті',
+      holding: ({ card }) => `Взята: ${card}.`,
+      table: ({ cards }) => `На столі: ${cards}.`,
+      top: ({ card }) => `Зверху: ${card}.`,
+      trump: ({ suit }) => `Козир: ${suit}.`,
+      suitReq: ({ suit }) => `Потрібна масть: ${suit}.`,
+      deck: ({ n }) => `У колоді: ${n}.`,
+      pile: ({ n }) => `У стосі: ${n}.`,
+      counts: ({ list }) => `Карти: ${list}.`,
+      build: ({ value, cards }) => `будова ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, побита ${def}`,
+    },
     advice: {
       guide: "Спрямовуй мене",
       hit: "Той самий вибір.",

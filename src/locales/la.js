@@ -2,7 +2,26 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const la = {
   ui: {
-    a11y: { opponents: ({ names }) => `Adversarii ordine: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Adversarii ordine: ${names}.`,
+      statusButton: 'Status',
+      turn: ({ name }) => `Vicis ${name}.`,
+      hand: ({ cards }) => `Manus: ${cards}.`,
+      none: 'nullae chartae',
+      slots: ({ list }) => `Loca: ${list}.`,
+      unknown: 'occulta',
+      remembered: 'memoria',
+      holding: ({ card }) => `Ducta: ${card}.`,
+      table: ({ cards }) => `In mensa: ${cards}.`,
+      top: ({ card }) => `Summa: ${card}.`,
+      trump: ({ suit }) => `Triumphus: ${suit}.`,
+      suitReq: ({ suit }) => `Color requisitus: ${suit}.`,
+      deck: ({ n }) => `In fasce: ${n}.`,
+      pile: ({ n }) => `In acervo: ${n}.`,
+      counts: ({ list }) => `Chartae: ${list}.`,
+      build: ({ value, cards }) => `structura ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, tecta ${def}`,
+    },
     advice: {
       guide: "Duc me",
       hit: "Eadem electio.",

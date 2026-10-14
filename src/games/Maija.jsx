@@ -3,6 +3,7 @@ import { C, SUIT_COLOR } from '../shared/colors.js';
 import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { SUITS, RANKS, lbl, korttia, kortin, shuffle, cardName, sortHand as sortHandBy, shuffledAINames, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -900,6 +901,13 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
         soundOn={soundOn} onSoundToggle={() => onSoundOnChange?.(!soundOn)}
         revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
         isMobile={isMobile}
+        status={allBots || !G ? undefined : () => statusText({
+          hand: G.players[0].hand,
+          table: G.table.map(r => r.def ? t('ui.a11y.covered', { atk: spokenCard(r.atk), def: spokenCard(r.def) }) : spokenCard(r.atk)),
+          trump: G.trump,
+          deck: G.deck.length,
+          counts: G.players.slice(1).map(p => ({ name: p.name, n: p.hand.length })),
+        })}
       >
         <span style={{ color:C.gold, fontWeight:700 }}>{t('ui.shared.goal')}</span> {t('games.maija.ui.goal')}
       </GameStatusBar>

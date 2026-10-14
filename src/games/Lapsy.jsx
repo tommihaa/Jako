@@ -5,6 +5,7 @@ import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, newDeck, korttia, shuffledAINames, lblColored, BOT_RESULT_DELAY } from '../shared/helpers.js';
+import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import FanStack from '../shared/FanStack.jsx';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -704,7 +705,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-          <button onClick={humanSlap} style={{ width: isMobile ? 110 : 108, height: isMobile ? 110 : 108, borderRadius: isMobile ? 55 : 54, background: isMatch ? `radial-gradient(circle at 40% 35%,${C.red}dd,#7a1500)` : `radial-gradient(circle at 40% 35%,#2a4a32,#0d2118)`, border: `3px solid ${isMatch ? C.red : C.panelBorder}`, color: isMatch ? C.text : C.dim, fontSize: isMobile ? 24 : 32, cursor: 'pointer', boxShadow: isMatch ? `0 0 32px ${C.red}88` : '0 4px 14px rgba(0,0,0,0.4)', transition: 'all 0.15s', animation: isMatch ? 'slapPulse 0.7s ease infinite' : 'none' }}>👋</button>
+          <button onClick={humanSlap} aria-label={t('games.lapsy.ui.slapIdle')} style={{ width: isMobile ? 110 : 108, height: isMobile ? 110 : 108, borderRadius: isMobile ? 55 : 54, background: isMatch ? `radial-gradient(circle at 40% 35%,${C.red}dd,#7a1500)` : `radial-gradient(circle at 40% 35%,#2a4a32,#0d2118)`, border: `3px solid ${isMatch ? C.red : C.panelBorder}`, color: isMatch ? C.text : C.dim, fontSize: isMobile ? 24 : 32, cursor: 'pointer', boxShadow: isMatch ? `0 0 32px ${C.red}88` : '0 4px 14px rgba(0,0,0,0.4)', transition: 'all 0.15s', animation: isMatch ? 'slapPulse 0.7s ease infinite' : 'none' }}>👋</button>
           <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isMatch ? C.red : C.dim, letterSpacing: 1.5, fontWeight: isMatch ? 700 : 400 }}>{isMatch ? t('games.lapsy.ui.slap') : t('games.lapsy.ui.slapIdle')}</span>
         </div>
       </div>
@@ -742,6 +743,12 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
         soundOn={soundOn} onSoundToggle={() => onSoundOnChange?.(!soundOn)}
         revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
         isMobile={isMobile}
+        status={allBots || !G ? undefined : () => statusText({
+          turn: pName(G.cur),
+          table: (G.center ?? []).slice(-2).map(spokenCard),
+          pile: (G.center ?? []).length,
+          counts: (G.piles ?? []).map((p, i) => ({ name: pName(i), n: p.length })),
+        })}
         accent={C.red}
         borderTop={false}
       >

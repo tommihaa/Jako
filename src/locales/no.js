@@ -4,7 +4,26 @@
 // regler oversettes. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const no = {
   ui: {
-    a11y: { opponents: ({ names }) => `Motstandere i turrekkefølge: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Motstandere i turrekkefølge: ${names}.`,
+      statusButton: 'Status',
+      turn: ({ name }) => `Tur: ${name}.`,
+      hand: ({ cards }) => `Hånd: ${cards}.`,
+      none: 'ingen kort',
+      slots: ({ list }) => `Plasser: ${list}.`,
+      unknown: 'skjult',
+      remembered: 'husket',
+      holding: ({ card }) => `Trukket: ${card}.`,
+      table: ({ cards }) => `På bordet: ${cards}.`,
+      top: ({ card }) => `Øverst: ${card}.`,
+      trump: ({ suit }) => `Trumf: ${suit}.`,
+      suitReq: ({ suit }) => `Påkrevd farge: ${suit}.`,
+      deck: ({ n }) => `I stokken: ${n}.`,
+      pile: ({ n }) => `I haugen: ${n}.`,
+      counts: ({ list }) => `Kort: ${list}.`,
+      build: ({ value, cards }) => `bygg ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, dekket av ${def}`,
+    },
     advice: {
       guide: "Veiled meg",
       hit: "Samme valg.",

@@ -5,7 +5,26 @@
 // rules are translated. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const krl = {
   ui: {
-    a11y: { opponents: ({ names }) => `Vastuštajat vuoron mukah: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Vastuštajat vuoron mukah: ${names}.`,
+      statusButton: 'Tilanne',
+      turn: ({ name }) => `Vuoros ${name}.`,
+      hand: ({ cards }) => `Käzi: ${cards}.`,
+      none: 'ei korttiloi',
+      slots: ({ list }) => `Kohat: ${list}.`,
+      unknown: 'peitos',
+      remembered: 'mieles',
+      holding: ({ card }) => `Nostettu: ${card}.`,
+      table: ({ cards }) => `Stolal: ${cards}.`,
+      top: ({ card }) => `Päällimäine: ${card}.`,
+      trump: ({ suit }) => `Valtti: ${suit}.`,
+      suitReq: ({ suit }) => `Pidäy mašti: ${suit}.`,
+      deck: ({ n }) => `Pakas: ${n}.`,
+      pile: ({ n }) => `Kazas: ${n}.`,
+      counts: ({ list }) => `Korttiloi: ${list}.`,
+      build: ({ value, cards }) => `rakendus ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, piällä ${def}`,
+    },
     advice: {
       guide: "Opasta",
       hit: "Sama valličus.",

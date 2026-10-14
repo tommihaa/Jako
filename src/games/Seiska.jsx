@@ -5,6 +5,7 @@ import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, shuffle, aiShouldFumble, truncName, sortHand as sortHandBy, lblColored, newDeck, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -1408,6 +1409,14 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
         soundOn={soundOn} onSoundToggle={() => onSoundOnChange?.(!soundOn)}
         revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
         isMobile={isMobile}
+        status={allBots || !G ? undefined : () => statusText({
+          turn: G.players[G.activePlayer]?.name,
+          hand: G.players[0].hand,
+          top: G.discardTop,
+          suitReq: G.reqSuit ?? undefined,
+          deck: G.deck.length,
+          counts: G.players.slice(1).map(p => ({ name: p.name, n: p.hand.length })),
+        })}
       >
         <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('ui.shared.firstOutWins')}
         {' · '}

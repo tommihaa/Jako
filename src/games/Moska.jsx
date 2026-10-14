@@ -5,6 +5,7 @@ import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, kortin, SUITS, aiShouldFumble, sortHand as sortHandBy, shuffledAINames, lblColored, newDeck, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -1395,6 +1396,13 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         soundOn={soundOn} onSoundToggle={() => onSoundOnChange?.(!soundOn)}
         revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
         isMobile={isMobile}
+        status={allBots || !G ? undefined : () => statusText({
+          hand: G.players[0].hand,
+          table: G.table.map(r => r.def ? t('ui.a11y.covered', { atk: spokenCard(r.atk), def: spokenCard(r.def) }) : spokenCard(r.atk)),
+          trump: G.ts,
+          deck: G.deck.length,
+          counts: G.players.slice(1).map(p => ({ name: p.name, n: p.hand.length })),
+        })}
       >
         <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.moska.ui.goal')}
       </GameStatusBar>

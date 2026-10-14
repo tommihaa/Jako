@@ -4,7 +4,26 @@
 // kirjeldused ja reeglid. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const et = {
   ui: {
-    a11y: { opponents: ({ names }) => `Vastased käigujärjekorras: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Vastased käigujärjekorras: ${names}.`,
+      statusButton: 'Seis',
+      turn: ({ name }) => `Käigul: ${name}.`,
+      hand: ({ cards }) => `Käsi: ${cards}.`,
+      none: 'kaarte pole',
+      slots: ({ list }) => `Kohad: ${list}.`,
+      unknown: 'peidus',
+      remembered: 'meeles',
+      holding: ({ card }) => `Tõmmatud: ${card}.`,
+      table: ({ cards }) => `Laual: ${cards}.`,
+      top: ({ card }) => `Pealmine: ${card}.`,
+      trump: ({ suit }) => `Trump: ${suit}.`,
+      suitReq: ({ suit }) => `Nõutud mast: ${suit}.`,
+      deck: ({ n }) => `Pakis: ${n}.`,
+      pile: ({ n }) => `Hunnikus: ${n}.`,
+      counts: ({ list }) => `Kaarte: ${list}.`,
+      build: ({ value, cards }) => `ehitis ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, kaetud ${def}`,
+    },
     advice: {
       guide: "Juhenda",
       hit: "Sama valik.",

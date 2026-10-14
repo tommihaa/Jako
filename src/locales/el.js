@@ -4,7 +4,26 @@
 // rules are translated. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const el = {
   ui: {
-    a11y: { opponents: ({ names }) => `Αντίπαλοι με σειρά παιχνιδιού: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Αντίπαλοι με σειρά παιχνιδιού: ${names}.`,
+      statusButton: 'Κατάσταση',
+      turn: ({ name }) => `Σειρά: ${name}.`,
+      hand: ({ cards }) => `Χέρι: ${cards}.`,
+      none: 'καμία κάρτα',
+      slots: ({ list }) => `Θέσεις: ${list}.`,
+      unknown: 'κρυφή',
+      remembered: 'στη μνήμη',
+      holding: ({ card }) => `Τραβηγμένη: ${card}.`,
+      table: ({ cards }) => `Στο τραπέζι: ${cards}.`,
+      top: ({ card }) => `Πάνω: ${card}.`,
+      trump: ({ suit }) => `Ατού: ${suit}.`,
+      suitReq: ({ suit }) => `Απαιτούμενο χρώμα: ${suit}.`,
+      deck: ({ n }) => `Στην τράπουλα: ${n}.`,
+      pile: ({ n }) => `Στη στοίβα: ${n}.`,
+      counts: ({ list }) => `Κάρτες: ${list}.`,
+      build: ({ value, cards }) => `κατασκευή ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, καλυμμένη από ${def}`,
+    },
     advice: {
       guide: "Καθοδήγησέ με",
       hit: "Ίδια επιλογή.",

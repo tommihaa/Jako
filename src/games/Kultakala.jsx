@@ -5,6 +5,7 @@ import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { isRed, lbl, truncName, newDeck, cardName, shuffledAINames, lblColored, BOT_RESULT_DELAY, UNKNOWN_EV, opponentsInTurnOrder } from '../shared/helpers.js';
+import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -664,7 +665,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>{t('ui.shared.deck')}</div>
           <div onClick={canDraw ? () => humanDraw(false) : undefined}
-            {...(canDraw ? { role: 'button', tabIndex: 0, 'aria-label': 'Nosta pakasta', onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); humanDraw(false); } } } : {})}>
+            {...(canDraw ? { role: 'button', tabIndex: 0, 'aria-label': t('ui.shared.drawDeckAria'), onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); humanDraw(false); } } } : {})}>
             <FanStack
               count={G.deck.length}
               w={pw} h={ph}
@@ -769,6 +770,14 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
         soundOn={soundOn} onSoundToggle={() => onSoundOnChange?.(!soundOn)}
         revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
         isMobile={isMobile}
+        status={allBots || !G ? undefined : () => statusText({
+          turn: G.players[G.cur]?.name,
+          // Paikka 0 on tuntematon loppuun asti, ja rivin kortti näkyy vasta kun se on vaihdettu.
+          slots: [`0 ${t('ui.a11y.unknown')}`, ...G.players[0].row.map((c, i) => `${i + 1} ${G.players[0].known.has(i) ? spokenCard(c) : t('ui.a11y.unknown')}`)],
+          holding: G.held ?? undefined,
+          top: G.discard[G.discard.length - 1],
+          deck: G.deck.length,
+        })}
       >
         <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.kultakala.ui.goal')}
       </GameStatusBar>

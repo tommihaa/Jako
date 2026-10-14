@@ -2,7 +2,26 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const se = {
   ui: {
-    a11y: { opponents: ({ names }) => `Vuostebealit vuoru mielde: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Vuostebealit vuoru mielde: ${names}.`,
+      statusButton: 'Dilli',
+      turn: ({ name }) => `Vuorus ${name}.`,
+      hand: ({ cards }) => `Giehta: ${cards}.`,
+      none: 'ii karttat',
+      slots: ({ list }) => `Sajit: ${list}.`,
+      unknown: 'čihkosis',
+      remembered: 'muittus',
+      holding: ({ card }) => `Gessojuvvon: ${card}.`,
+      table: ({ cards }) => `Beavddi alde: ${cards}.`,
+      top: ({ card }) => `Bajimusas: ${card}.`,
+      trump: ({ suit }) => `Trumfa: ${suit}.`,
+      suitReq: ({ suit }) => `Gáibiduvvon šládja: ${suit}.`,
+      deck: ({ n }) => `Pákkas: ${n}.`,
+      pile: ({ n }) => `Rogis: ${n}.`,
+      counts: ({ list }) => `Karttat: ${list}.`,
+      build: ({ value, cards }) => `huksen ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, badjelis ${def}`,
+    },
     advice: {
       guide: "Bagat mu",
       hit: "Seamma válljen.",

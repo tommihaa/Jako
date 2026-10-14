@@ -3,7 +3,26 @@
 // Unkarissa lukusanan jälkeen yksikkö: "2 kártya" (ei monikkoa).
 export const hu = {
   ui: {
-    a11y: { opponents: ({ names }) => `Ellenfelek a lépések sorrendjében: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Ellenfelek a lépések sorrendjében: ${names}.`,
+      statusButton: 'Helyzet',
+      turn: ({ name }) => `Soron: ${name}.`,
+      hand: ({ cards }) => `Kéz: ${cards}.`,
+      none: 'nincs lap',
+      slots: ({ list }) => `Helyek: ${list}.`,
+      unknown: 'rejtett',
+      remembered: 'megjegyzett',
+      holding: ({ card }) => `Húzott: ${card}.`,
+      table: ({ cards }) => `Az asztalon: ${cards}.`,
+      top: ({ card }) => `Felül: ${card}.`,
+      trump: ({ suit }) => `Adu: ${suit}.`,
+      suitReq: ({ suit }) => `Kért szín: ${suit}.`,
+      deck: ({ n }) => `A pakliban: ${n}.`,
+      pile: ({ n }) => `A kupacban: ${n}.`,
+      counts: ({ list }) => `Lapok: ${list}.`,
+      build: ({ value, cards }) => `építmény ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, ütve: ${def}`,
+    },
     advice: {
       guide: "Vezess",
       hit: "Ugyanaz a választás.",

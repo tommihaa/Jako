@@ -11,7 +11,26 @@ const plural = (n, one, few, many) => {
 
 export const cs = {
   ui: {
-    a11y: { opponents: ({ names }) => `Soupeři v pořadí tahů: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Soupeři v pořadí tahů: ${names}.`,
+      statusButton: 'Situace',
+      turn: ({ name }) => `Na tahu: ${name}.`,
+      hand: ({ cards }) => `Ruka: ${cards}.`,
+      none: 'žádné karty',
+      slots: ({ list }) => `Místa: ${list}.`,
+      unknown: 'skrytá',
+      remembered: 'zapamatovaná',
+      holding: ({ card }) => `Líznutá: ${card}.`,
+      table: ({ cards }) => `Na stole: ${cards}.`,
+      top: ({ card }) => `Navrchu: ${card}.`,
+      trump: ({ suit }) => `Trumf: ${suit}.`,
+      suitReq: ({ suit }) => `Požadovaná barva: ${suit}.`,
+      deck: ({ n }) => `V balíčku: ${n}.`,
+      pile: ({ n }) => `Na hromádce: ${n}.`,
+      counts: ({ list }) => `Karty: ${list}.`,
+      build: ({ value, cards }) => `stavba ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, přebitá ${def}`,
+    },
     advice: {
       guide: "Veď mě",
       hit: "Stejná volba.",

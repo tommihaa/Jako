@@ -2,7 +2,26 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const ro = {
   ui: {
-    a11y: { opponents: ({ names }) => `Adversari în ordinea mutărilor: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Adversari în ordinea mutărilor: ${names}.`,
+      statusButton: 'Situația',
+      turn: ({ name }) => `La rând: ${name}.`,
+      hand: ({ cards }) => `Mână: ${cards}.`,
+      none: 'nicio carte',
+      slots: ({ list }) => `Locuri: ${list}.`,
+      unknown: 'ascunsă',
+      remembered: 'reținută',
+      holding: ({ card }) => `Trasă: ${card}.`,
+      table: ({ cards }) => `Pe masă: ${cards}.`,
+      top: ({ card }) => `Deasupra: ${card}.`,
+      trump: ({ suit }) => `Atu: ${suit}.`,
+      suitReq: ({ suit }) => `Culoare cerută: ${suit}.`,
+      deck: ({ n }) => `În pachet: ${n}.`,
+      pile: ({ n }) => `În grămadă: ${n}.`,
+      counts: ({ list }) => `Cărți: ${list}.`,
+      build: ({ value, cards }) => `construcție ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, acoperită de ${def}`,
+    },
     advice: {
       guide: "Îndrumă-mă",
       hit: "Aceeași alegere.",

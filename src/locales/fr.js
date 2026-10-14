@@ -4,7 +4,26 @@
 // descriptions et les règles sont traduites. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const fr = {
   ui: {
-    a11y: { opponents: ({ names }) => `Adversaires dans l'ordre de jeu : ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Adversaires dans l'ordre de jeu : ${names}.`,
+      statusButton: 'Situation',
+      turn: ({ name }) => `Au tour de ${name}.`,
+      hand: ({ cards }) => `Main: ${cards}.`,
+      none: 'aucune carte',
+      slots: ({ list }) => `Places: ${list}.`,
+      unknown: 'cachée',
+      remembered: 'mémorisée',
+      holding: ({ card }) => `Piochée: ${card}.`,
+      table: ({ cards }) => `Sur la table: ${cards}.`,
+      top: ({ card }) => `Dessus: ${card}.`,
+      trump: ({ suit }) => `Atout: ${suit}.`,
+      suitReq: ({ suit }) => `Couleur demandée: ${suit}.`,
+      deck: ({ n }) => `Dans le paquet: ${n}.`,
+      pile: ({ n }) => `Dans la pile: ${n}.`,
+      counts: ({ list }) => `Cartes: ${list}.`,
+      build: ({ value, cards }) => `construction ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, couverte par ${def}`,
+    },
     advice: {
       guide: "Guide-moi",
       hit: "Même choix.",

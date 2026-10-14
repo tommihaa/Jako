@@ -4,6 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, SUITS, truncName, sortHand as sortHandBy, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import {
   RANK_VAL, isPlayable, hasAnyPlay, DEFAULT_RULES, initGame,
   chooseMove, applyMove, applyGiveCard, getAdvice,
@@ -735,6 +736,12 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
         soundOn={soundOn} onSoundToggle={() => onSoundOnChange?.(!soundOn)}
         revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
         isMobile={isMobile}
+        status={allBots || !G ? undefined : () => statusText({
+          turn: G.players[G.activePlayer]?.name,
+          hand: G.players[0].hand,
+          table: Object.entries(G.rows).filter(([, r]) => r.active).map(([s, r]) => spokenRange(s, r.low, r.high)),
+          counts: G.players.slice(1).map(p => ({ name: p.name, n: p.hand.length })),
+        })}
       >
         <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('ui.shared.firstOutWins')} · {t('games.ristiseiska.ui.openings')} {SUITS.filter(s => G.rows[s].active).length}/4
       </GameStatusBar>

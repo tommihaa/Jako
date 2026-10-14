@@ -13,7 +13,26 @@ const plural = (n, one, few, many) => {
 
 export const ru = {
   ui: {
-    a11y: { opponents: ({ names }) => `Соперники в порядке хода: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Соперники в порядке хода: ${names}.`,
+      statusButton: 'Ситуация',
+      turn: ({ name }) => `Ходит: ${name}.`,
+      hand: ({ cards }) => `Рука: ${cards}.`,
+      none: 'нет карт',
+      slots: ({ list }) => `Места: ${list}.`,
+      unknown: 'скрыта',
+      remembered: 'в памяти',
+      holding: ({ card }) => `Взята: ${card}.`,
+      table: ({ cards }) => `На столе: ${cards}.`,
+      top: ({ card }) => `Сверху: ${card}.`,
+      trump: ({ suit }) => `Козырь: ${suit}.`,
+      suitReq: ({ suit }) => `Нужная масть: ${suit}.`,
+      deck: ({ n }) => `В колоде: ${n}.`,
+      pile: ({ n }) => `В стопке: ${n}.`,
+      counts: ({ list }) => `Карты: ${list}.`,
+      build: ({ value, cards }) => `постройка ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, побита ${def}`,
+    },
     advice: {
       guide: "Направляй меня",
       hit: "Тот же выбор.",

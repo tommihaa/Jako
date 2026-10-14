@@ -8,7 +8,26 @@
 export const fi = {
   ui: {
     // Vain ruudunlukijalle (Announcer), ei näy ruudulla.
-    a11y: { opponents: ({ names }) => `Vastustajat vuorojärjestyksessä: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Vastustajat vuorojärjestyksessä: ${names}.`,
+      statusButton: 'Tilanne',
+      turn: ({ name }) => `Vuorossa ${name}.`,
+      hand: ({ cards }) => `Käsi: ${cards}.`,
+      none: 'ei kortteja',
+      slots: ({ list }) => `Paikat: ${list}.`,
+      unknown: 'piilossa',
+      remembered: 'muistissa',
+      holding: ({ card }) => `Nostettu: ${card}.`,
+      table: ({ cards }) => `Pöydällä: ${cards}.`,
+      top: ({ card }) => `Päällimmäisenä: ${card}.`,
+      trump: ({ suit }) => `Valtti: ${suit}.`,
+      suitReq: ({ suit }) => `Vaadittu maa: ${suit}.`,
+      deck: ({ n }) => `Pakassa: ${n}.`,
+      pile: ({ n }) => `Kasassa: ${n}.`,
+      counts: ({ list }) => `Kortteja: ${list}.`,
+      build: ({ value, cards }) => `rakennelma ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, päällä ${def}`,
+    },
     loading: 'Ladataan…',
     info: { title: 'ℹ Info', close: '✕ Sulje' },
     lang: { label: 'Kieli', tested: 'Testatut', untested: 'Testaamattomat', note: '✓ natiivi · web = konevarmistettu (ei natiivitarkistusta)' },

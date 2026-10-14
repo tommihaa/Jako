@@ -13,7 +13,26 @@ const plural = (n, one, few, many) => {
 
 export const pl = {
   ui: {
-    a11y: { opponents: ({ names }) => `Przeciwnicy w kolejności ruchów: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Przeciwnicy w kolejności ruchów: ${names}.`,
+      statusButton: 'Sytuacja',
+      turn: ({ name }) => `Ruch: ${name}.`,
+      hand: ({ cards }) => `Ręka: ${cards}.`,
+      none: 'brak kart',
+      slots: ({ list }) => `Miejsca: ${list}.`,
+      unknown: 'ukryta',
+      remembered: 'zapamiętana',
+      holding: ({ card }) => `Dobrana: ${card}.`,
+      table: ({ cards }) => `Na stole: ${cards}.`,
+      top: ({ card }) => `Na wierzchu: ${card}.`,
+      trump: ({ suit }) => `Atut: ${suit}.`,
+      suitReq: ({ suit }) => `Wymagany kolor: ${suit}.`,
+      deck: ({ n }) => `W talii: ${n}.`,
+      pile: ({ n }) => `Na stosie: ${n}.`,
+      counts: ({ list }) => `Karty: ${list}.`,
+      build: ({ value, cards }) => `budowla ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, przykryta przez ${def}`,
+    },
     advice: {
       guide: "Prowadź mnie",
       hit: "Ten sam wybór.",

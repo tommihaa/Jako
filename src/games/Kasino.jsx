@@ -5,6 +5,7 @@ import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, korttia, kortin, SUITS, RANKS, VAL, newDeck, sortHand as sortHandBy, shuffledAINames, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
@@ -1627,6 +1628,13 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
         soundOn={soundOn} onSoundToggle={() => onSoundOnChange?.(!soundOn)}
         revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
         isMobile={isMobile}
+        status={allBots || !G ? undefined : () => statusText({
+          turn: G.players[G.cur]?.name,
+          hand: G.players[0].hand,
+          table: [...G.table.map(spokenCard), ...G.builds.map(b => t('ui.a11y.build', { value: b.value, cards: spokenCards(b.cards) }))],
+          deck: G.deck.length,
+          counts: G.players.slice(1).map(p => ({ name: p.name, n: p.hand.length })),
+        })}
         extras={
           <button onClick={() => setShowInfo(v => !v)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${showInfo ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: showInfo ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
             ℹ {t('games.kasino.ui.points')}

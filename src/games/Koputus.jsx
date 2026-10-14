@@ -5,6 +5,7 @@ import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import { lbl, newDeck, shuffledAINames, lblColored, BOT_RESULT_DELAY, UNKNOWN_EV, opponentsInTurnOrder } from '../shared/helpers.js';
+import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
@@ -997,6 +998,15 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
         soundOn={soundOn} onSoundToggle={() => onSoundOnChange?.(!soundOn)}
         revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
         isMobile={isMobile}
+        status={allBots || !G ? undefined : () => statusText({
+          turn: G.players[G.cur]?.name,
+          // Muistipeli: muistetun kortin arvoa ei sanota, koska näkevänkin on muistettava se.
+          slots: G.players[0].cards.map((c, i) => `${i + 1} ${c === null ? t('ui.a11y.none') : tempPeek?.has(i) ? spokenCard(c) : G.players[0].known.has(i) ? t('ui.a11y.remembered') : t('ui.a11y.unknown')}`),
+          holding: drawn && showDrawn ? drawn : undefined,
+          top: G.discard[G.discard.length - 1],
+          deck: G.deck.length,
+          counts: G.players.slice(1).map(p => ({ name: p.name, n: p.cards.filter(c => c !== null).length })),
+        })}
       >
         <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('games.koputus.ui.goal')}
       </GameStatusBar>

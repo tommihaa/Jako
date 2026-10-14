@@ -4,7 +4,26 @@
 // reglur eru þýddar. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const is = {
   ui: {
-    a11y: { opponents: ({ names }) => `Andstæðingar í röð: ${names}.` },
+    a11y: {
+      opponents: ({ names }) => `Andstæðingar í röð: ${names}.`,
+      statusButton: 'Staða',
+      turn: ({ name }) => `Að gera: ${name}.`,
+      hand: ({ cards }) => `Hönd: ${cards}.`,
+      none: 'engin spil',
+      slots: ({ list }) => `Sæti: ${list}.`,
+      unknown: 'falið',
+      remembered: 'í minni',
+      holding: ({ card }) => `Dregið: ${card}.`,
+      table: ({ cards }) => `Á borðinu: ${cards}.`,
+      top: ({ card }) => `Efst: ${card}.`,
+      trump: ({ suit }) => `Tromp: ${suit}.`,
+      suitReq: ({ suit }) => `Krafin sort: ${suit}.`,
+      deck: ({ n }) => `Í stokknum: ${n}.`,
+      pile: ({ n }) => `Í bunkanum: ${n}.`,
+      counts: ({ list }) => `Spil: ${list}.`,
+      build: ({ value, cards }) => `bygging ${value}: ${cards}`,
+      covered: ({ atk, def }) => `${atk}, þakið með ${def}`,
+    },
     advice: {
       guide: "Leiðbeina",
       hit: "Sama val.",
