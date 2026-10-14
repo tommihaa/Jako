@@ -13,6 +13,12 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '14.10.2026',
+    items: [
+      'Saavutettavuus: ruudunlukija ilmoittaa nyt pelin tapahtumat myös omassa pelissäsi. Kesäkuun merkintä lupasi tämän jokaiseen peliin, mutta ilmoitukset kuuluivat vain Bottien Taistelussa. Kortit sanotaan nimillä ("risti 7") eikä maamerkkeinä, koska TalkBack luki ♣:n emojina.',
+    ],
+  },
+  {
     date: '8.10.2026',
     items: [
       'Kaikki pelit toimivat nyt ilman verkkoa heti ensimmäisen avauksen jälkeen, myös ne joita et ole vielä avannut. Ennen vain avatut pelit tallentuivat, ja päivityksen jälkeen peli saattoi avautua ilman verkkoa tyhjänä ruutuna. Tallennus vie noin 1,7 Mt.',

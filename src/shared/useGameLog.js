@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { LOG_MAX } from './helpers.js';
+import { announce } from './Announcer.jsx';
 
 // Tapahtumaloki ja katselutilan snapshot yhdessä paikassa.
 //
@@ -39,6 +40,7 @@ export function useGameLog({ onMessage, skipEmpty = false, onSnapshot, isBotBatt
     const o = optsRef.current;
     o.onMessage?.(m);
     if (o.skipEmpty && !m) return;
+    announce(m);
     const t = new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     logRef.current = [{ t, m }, ...logRef.current].slice(0, LOG_MAX);
     setLog([...logRef.current]);

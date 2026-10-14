@@ -67,6 +67,8 @@ const slavicPlural = (n, one, few, many) => {
   if (m10 >= 2 && m10 <= 4 && !(m100 >= 12 && m100 <= 14)) return few;
   return many;
 };
+/** @param {string} s maasymboli (♠ ♥ ♦ ♣) */
+export const suitName = s => SUIT_NAME[getLang()]?.[s] || SUIT_NAME.fi[s] || s;
 export const cardName = c => {
   const L = getLang();
   if (!c) return EMPTY[L] || EMPTY.fi;

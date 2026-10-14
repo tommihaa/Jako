@@ -1349,7 +1349,7 @@ export default function App() {
 
     return (
       <div style={{ maxWidth: maxW, margin: '0 auto' }}>
-        <Announcer message={siirtorekisteri[siirtorekisteri.length - 1]?.logText} />
+        <Announcer />
         {replayOpen && siirtorekisteri.length > 0 && (
           <ReplayView frames={siirtorekisteri} onClose={() => setReplayOpen(false)} isMobile={isMobile} />
         )}
