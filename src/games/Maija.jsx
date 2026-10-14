@@ -902,6 +902,8 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
         revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
         isMobile={isMobile}
         status={allBots || !G ? undefined : () => statusText({
+          // Vuoro ei ole yhden pelaajan, joten sanotaan molemmat roolit.
+          roles: t('games.maija.msg.newAttack', { attacker: G.players[G.attackerIdx]?.name, defender: G.players[G.defenderIdx]?.name }),
           hand: G.players[0].hand,
           table: G.table.map(r => r.def ? t('ui.a11y.covered', { atk: spokenCard(r.atk), def: spokenCard(r.def) }) : spokenCard(r.atk)),
           trump: G.trump,

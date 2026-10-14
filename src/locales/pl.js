@@ -101,6 +101,14 @@ export const pl = {
       glossaryLink: 'Słownik i symbole 📖',
       changelog: 'Lista zmian 📋',
       changelogTranslateHint: 'Dziennik zmian jest dostępny tylko po fińsku — użyj funkcji Tłumacz w przeglądarce, aby przeczytać go w swoim języku.',
+      screenReader: {
+        title: 'Dla czytników ekranu 🔊',
+        body: ({ button, remembered }) => [
+          'Gra sama mówi czytnikowi ekranu, co się dzieje: kto zagrał jaką kartę i czyja jest kolej. Karty są wymawiane nazwami, a nie jako symbole kolorów.',
+          `Przycisk „${button}” odczytuje cały stół naraz: czyja kolej, twoją rękę, karty na stole i ile kart mają pozostali. Jest na pasku stanu gry i widać go tylko dla czytników ekranu i fokusu klawiatury. Na klawiaturze to samo robi klawisz H.`,
+          `„${button}” mówi tylko to, co widzi widzący gracz. W Koputus karta, którą pamiętasz, jest „${remembered}” i jej wartość nie jest wymawiana, bo widzący też musi ją zapamiętać sam.`,
+        ],
+      },
       a2hs: {
         title: 'Dodaj Jako⁹ do ekranu głównego 📲',
         intro: 'Dodaj grę do ekranu głównego telefonu lub pulpitu komputera — będzie się otwierać z własnej ikony jak aplikacja, bez pasków przeglądarki. Po pierwszym otwarciu wszystkie gry działają też offline.',

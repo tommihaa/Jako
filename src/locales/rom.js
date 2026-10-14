@@ -92,6 +92,14 @@ export const rom = {
       glossaryLink: 'Alavari & Simbule 📖',
       changelog: 'Logo le parugimatengo 📋',
       changelogTranslateHint: 'O lil vaš parudimata si ferdi pe finikane ćhib — ćer buti e brauzerosko parhuvibnasko funkcia te genes les ande ćiri ćhib.',
+      screenReader: {
+        title: 'Vaś o ekranoskoro drabaripe 🔊',
+        body: ({ button, remembered }) => [
+          'O khelipe korkoro phenel e ekranoskere drabaripnaske so kerdol: kon khelda savi karta thaj kasko si o rindo. E karte phenen pe anavença, na sar simbolura.',
+          `O butono ${button} drabarel sasti mesal jekhvareste: kasko si o rindo, ćiro vast, e karte pe mesal thaj keti karte si le averen. Si ando statusoskoro rindo e khelipnasko thaj dikhol ferdi e ekranoskere drabaripnaske thaj e klaviaturaki fokusoske. Klaviaturaça o H kerel o isto.`,
+          `${button} phenel ferdi so dikhel jekh dikhindo khelitori. Ando Koputus jekh karta savi tu gođi tut si ”${remembered}” thaj lako mol na phenel pe, kaj vi o dikhindo trubul te gođi la korkoro.`,
+        ],
+      },
       a2hs: {
         title: 'Tho Jako⁹ ko ekrano-šerutno 📲',
         intro: 'Tho o khelipe ko ekrano-šerutno le telefonosko vaj ko skafidi le kompjuterosko, kaj te putardol pesko ikonosa sar aplikacija — bi le brauzeroske bareske. Pala o jekhto putaripe sa e khelimata keren vi bi internetosko.',

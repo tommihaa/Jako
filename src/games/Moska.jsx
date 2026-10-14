@@ -1397,6 +1397,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         revealAll={revealAll} onRevealToggle={() => { const v = !revealAll; setRevealAll(v); onSeeAllChange?.(v); }}
         isMobile={isMobile}
         status={allBots || !G ? undefined : () => statusText({
+          // Maijan lause eikä Moskan oma nextRound, jonka nuolen (→) ruudunlukija lukisi ääneen.
+          roles: t('games.maija.msg.newAttack', { attacker: G.attackers.map(i => G.players[i].name).join(', '), defender: G.players[G.defender]?.name }),
           hand: G.players[0].hand,
           table: G.table.map(r => r.def ? t('ui.a11y.covered', { atk: spokenCard(r.atk), def: spokenCard(r.def) }) : spokenCard(r.atk)),
           trump: G.ts,

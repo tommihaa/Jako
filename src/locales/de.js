@@ -92,6 +92,14 @@ export const de = {
       glossaryLink: 'Glossar & Symbole 📖',
       changelog: 'Änderungsprotokoll 📋',
       changelogTranslateHint: 'Das Änderungsprotokoll gibt es nur auf Finnisch — nutze die Übersetzungsfunktion deines Browsers, um es in deiner Sprache zu lesen.',
+      screenReader: {
+        title: 'Für Screenreader 🔊',
+        body: ({ button, remembered }) => [
+          'Das Spiel sagt dem Screenreader selbst, was passiert: wer welche Karte gespielt hat und wer am Zug ist. Karten werden mit Namen genannt, nicht als Farbsymbole.',
+          `Die Schaltfläche ${button} liest den ganzen Tisch auf einmal vor: wer am Zug ist, deine Hand, die Karten auf dem Tisch und wie viele Karten die anderen haben. Sie liegt in der Statusleiste des Spiels und ist nur für Screenreader und den Tastaturfokus sichtbar. Mit der Tastatur bewirkt H dasselbe.`,
+          `${button} sagt nur, was eine sehende Person sieht. In Koputus ist eine Karte, die du dir merkst, „${remembered}“, und ihr Wert wird nicht genannt, weil auch Sehende sie sich selbst merken müssen.`,
+        ],
+      },
       a2hs: {
         title: 'Jako⁹ zum Startbildschirm hinzufügen 📲',
         intro: 'Füge das Spiel dem Startbildschirm deines Handys oder dem Desktop deines Computers hinzu — es öffnet sich dann über ein eigenes Symbol wie eine App, ohne Browserleisten. Nach dem ersten Öffnen funktionieren alle Spiele auch offline.',

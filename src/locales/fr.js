@@ -92,6 +92,14 @@ export const fr = {
       glossaryLink: 'Glossaire et symboles 📖',
       changelog: 'Journal des modifications 📋',
       changelogTranslateHint: 'Le journal des modifications n\'existe qu\'en finnois — utilisez la fonction Traduire de votre navigateur pour le lire dans votre langue.',
+      screenReader: {
+        title: 'Pour les lecteurs d’écran 🔊',
+        body: ({ button, remembered }) => [
+          'Le jeu annonce lui-même au lecteur d’écran ce qui se passe : qui a joué quelle carte et à qui c’est le tour. Les cartes sont dites par leur nom, pas comme symboles de couleur.',
+          `Le bouton ${button} lit toute la table d’un coup : à qui c’est le tour, ta main, les cartes sur la table et combien de cartes ont les autres. Il se trouve dans la barre d’état du jeu et n’est visible que pour les lecteurs d’écran et le focus clavier. Au clavier, la touche H fait de même.`,
+          `${button} ne dit que ce qu’un joueur voyant peut voir. Dans Koputus, une carte dont tu te souviens est « ${remembered} » et sa valeur n’est pas dite, car un joueur voyant doit aussi s’en souvenir lui-même.`,
+        ],
+      },
       a2hs: {
         title: 'Ajouter Jako⁹ à l’écran d’accueil 📲',
         intro: 'Ajoute le jeu à l’écran d’accueil de ton téléphone ou au bureau de ton ordinateur : il s’ouvrira depuis sa propre icône comme une appli — sans barres du navigateur. Après la première ouverture, tous les jeux fonctionnent aussi hors ligne.',

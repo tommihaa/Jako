@@ -91,6 +91,14 @@ export const la = {
       glossaryLink: 'Glossarium & Signa 📖',
       changelog: 'Acta mutationum 📋',
       changelogTranslateHint: 'Index mutationum tantum lingua Finnica exstat — utere instrumento translationis navigatri tui ut eam lingua tua legas.',
+      screenReader: {
+        title: 'Lectoribus scrinii 🔊',
+        body: ({ button, remembered }) => [
+          'Ludus ipse lectori scrinii narrat quid fiat: quis quam chartam lusit et cuius sit vicis. Chartae nominibus dicuntur, non signis colorum.',
+          `Globulus ${button} totam mensam simul legit: cuius sit vicis, manum tuam, chartas in mensa et quot chartas ceteri habeant. In linea status ludi est et tantum lectoribus scrinii et foco claviaturae videtur. In claviatura H idem facit.`,
+          `${button} tantum dicit quod lusor videns videt. In Koputus charta quam meministi est „${remembered}“ neque eius valor dicitur, quia etiam videns eam ipse meminisse debet.`,
+        ],
+      },
       a2hs: {
         title: 'Adde Jako⁹ ad initialem 📲',
         intro: 'Adde lusum ad initialem telephoni vel mensam computatri, ut suo ipsius signo aperiatur quasi applicatio — sine navigatri vittis. Post primam aperitionem omnes lusus etiam sine rete operantur.',

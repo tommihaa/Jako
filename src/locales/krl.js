@@ -93,6 +93,14 @@ export const krl = {
       glossaryLink: 'Šanasto & Merkistö 📖',
       changelog: 'Muutosloki 📋',
       changelogTranslateHint: 'Vajehtelulogi on vaiku suomekse — käytä brauzerin kiändö-funktiedu, ku tahtot lukie sidä omal kielel.',
+      screenReader: {
+        title: 'Ruutulugijale 🔊',
+        body: ({ button, remembered }) => [
+          'Peli sanou ičeh ruutulugijale, mi tapahtuu: ken pani min kortan da kenen vuoro on. Kortat sanotah nimilöil eigo maamerkilöil.',
+          `${button}-nappi sanou kaiken pöüvän kerral: vuoron, sinun käin, pöüvän kortat da toizien korttulugut. Nappi on pelin tilarivil da nävüü vaigu ruutulugijale da näppäimistön kohtistukseh. Näppäimistöl sen saat H-näppäimel.`,
+          `${button} sanou vaigu sen, min nägii nägijü pelaiju. Koputukses kortta, kudaman muistat, on ”${remembered}”, eigo sen arvuo sanota, ku nägijängi pidäü muistua se iče.`,
+        ],
+      },
       a2hs: {
         title: 'Ližiä Jako⁹ algunäytöllä 📲',
         intro: 'Ližiä kiza telefonan algunäytöllä tahi tiedokonehen työpövvällä, ka še avauduu omašta kuvakkehešta kuin sovellus — ilmain selaimen palkkija. Enžimäizen avuamizen jälkeh kai kizat toimitah i ilmain verkkuo.',

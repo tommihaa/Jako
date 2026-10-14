@@ -92,6 +92,14 @@ export const sv = {
       glossaryLink: 'Ordlista & Symboler 📖',
       changelog: 'Ändringslogg 📋',
       changelogTranslateHint: 'Ändringsloggen finns endast på finska — använd webbläsarens Översätt-funktion för att läsa den på ditt språk.',
+      screenReader: {
+        title: 'För skärmläsare 🔊',
+        body: ({ button, remembered }) => [
+          'Spelet berättar själv för skärmläsaren vad som händer: vem som spelade vilket kort och vems tur det är. Korten sägs med namn, inte som färgsymboler.',
+          `Knappen ${button} läser upp hela bordet på en gång: vems tur det är, din hand, korten på bordet och hur många kort de andra har. Den finns i spelets statusrad och syns bara för skärmläsare och tangentbordsfokus. Med tangentbord ger H samma sak.`,
+          `${button} berättar bara det som en seende spelare ser. I Koputus är ett kort du minns ”${remembered}” och dess värde sägs inte, eftersom även en seende måste minnas det själv.`,
+        ],
+      },
       a2hs: {
         title: 'Lägg till Jako⁹ på hemskärmen 📲',
         intro: 'Lägg till spelet på telefonens hemskärm eller datorns skrivbord, så öppnas det från en egen ikon som en app — utan webbläsarens fält. Efter första öppningen fungerar alla spel även offline.',

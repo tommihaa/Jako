@@ -9,11 +9,12 @@ import { tr } from './i18n.jsx';
 // näkevänkin on muistettava ne itse.
 //
 // Peli antaa osat, ja tämä kokoaa niistä yhden lauseen. Järjestys on aina sama:
-// vuoro, oma käsi, pöytä, muut pinot ja korttimäärät. Puuttuva osa jää pois.
+// vuoro (tai hyökkääjä ja puolustaja), oma käsi, pöytä, muut pinot ja korttimäärät. Puuttuva osa jää pois.
 
 /**
  * @typedef {{ r: string, s: string }} Kortti
  * @typedef {object} StatusParts
+ * @property {string} [roles]                      Hyökkääjä ja puolustaja valmiiksi sanottuna (Maija, Moska)
  * @property {string} [turn]                       Vuorossa olevan nimi
  * @property {Kortti[]} [hand]                     Oma käsi, kaikki näkyvissä
  * @property {string[]} [slots]                    Oma rivi paikoittain, valmiiksi sanottuna
@@ -42,6 +43,7 @@ export const spokenRange = (s, lo, hi) => {
 /** @param {StatusParts} p */
 export function statusText(p) {
   const out = [];
+  if (p.roles) out.push(p.roles);
   if (p.turn) out.push(tr('ui.a11y.turn', { name: p.turn }));
   if (p.hand) out.push(tr('ui.a11y.hand', { cards: p.hand.length ? spokenCards(p.hand) : tr('ui.a11y.none') }));
   if (p.slots) out.push(tr('ui.a11y.slots', { list: p.slots.join(', ') }));

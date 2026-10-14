@@ -100,6 +100,14 @@ export const cs = {
       glossaryLink: 'Slovník & Symboly 📖',
       changelog: 'Seznam změn 📋',
       changelogTranslateHint: 'Seznam změn je k dispozici pouze ve finštině — použij funkci Přeložit ve svém prohlížeči, abys ho mohl číst ve svém jazyce.',
+      screenReader: {
+        title: 'Pro čtečky obrazovky 🔊',
+        body: ({ button, remembered }) => [
+          'Hra sama říká čtečce obrazovky, co se děje: kdo zahrál kterou kartu a kdo je na tahu. Karty se říkají jménem, ne jako symboly barev.',
+          `Tlačítko „${button}“ přečte celý stůl najednou: kdo je na tahu, tvou ruku, karty na stole a kolik karet mají ostatní. Je ve stavovém řádku hry a vidí ho jen čtečky obrazovky a fokus klávesnice. Na klávesnici totéž udělá klávesa H.`,
+          `„${button}“ říká jen to, co vidí vidící hráč. V Koputus je karta, kterou si pamatuješ, „${remembered}“ a její hodnota se neříká, protože i vidící si ji musí pamatovat sám.`,
+        ],
+      },
       a2hs: {
         title: 'Přidat Jako⁹ na domovskou obrazovku 📲',
         intro: 'Přidej hru na domovskou obrazovku telefonu nebo na plochu počítače, aby se otvírala z vlastní ikony jako aplikace — bez lišt prohlížeče. Po prvním otevření fungují všechny hry i bez sítě.',

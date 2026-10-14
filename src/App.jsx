@@ -549,6 +549,7 @@ export default function App() {
   }, [showChangelog]);
   const [showTodo, setShowTodo]                 = useState(false);
   const [showA2hs, setShowA2hs]                 = useState(false); // "Lisää aloitusnäytölle" -ohje
+  const [showSrHelp, setShowSrHelp]             = useState(false); // Ruudunlukija-ohje
   const [showPeliasetukset, setShowPeliasetukset] = useState(false);
   const [showLisaasetukset, setShowLisaasetukset] = useState(false); // yksittäiset togglet preset-valinnan takana
   const [showKonealy, setShowKonealy]           = useState(false);
@@ -1137,6 +1138,26 @@ export default function App() {
           <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.glossaryLink')}</span>
           <span style={{ color: C.gold, fontSize: 16 }}>›</span>
         </button>
+
+        {/* Ruudunlukija: ohje nimeää Tilanne-napin ja muistissa-sanan samoista avaimista
+            joita peli käyttää, jotta ohje ei voi erota käyttöliittymästä. */}
+        <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>
+          <button
+            onClick={() => setShowSrHelp(v => !v)}
+            aria-expanded={showSrHelp}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+          >
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.screenReader.title')}</span>
+            <span aria-hidden="true" style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showSrHelp ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+          </button>
+          {showSrHelp && (
+            <div style={{ padding: '0 14px 14px' }}>
+              {t('ui.infoPanel.screenReader.body', { button: t('ui.a11y.statusButton'), remembered: t('ui.a11y.remembered') }).map((para, i) => (
+                <p key={i} style={{ margin: '0 0 10px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>{para}</p>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Lisää aloitusnäytölle — ohje yleisimmille selaimille (mobiili + tietokone) */}
         <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', overflow: 'hidden' }}>

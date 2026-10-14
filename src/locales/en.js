@@ -93,6 +93,14 @@ export const en = {
       glossaryLink: 'Glossary & Symbols 📖',
       changelog: 'Changelog 📋',
       changelogTranslateHint: 'The changelog is only in Finnish. Use your browser\'s Translate feature to read it in your language.',
+      screenReader: {
+        title: 'For screen readers 🔊',
+        body: ({ button, remembered }) => [
+          'The game tells your screen reader what happens: who played which card and whose turn it is. Cards are spoken by name, not as suit symbols.',
+          `The ${button} button reads the whole table at once: whose turn it is, your hand, the cards on the table and how many cards the others hold. It sits in the game status bar and is visible only to screen readers and keyboard focus. On a keyboard, press H for the same.`,
+          `${button} tells only what a sighted player can see. In Koputus a card you remember is “${remembered}” and its value is not said, because a sighted player has to remember it too.`,
+        ],
+      },
       a2hs: {
         title: 'Add Jako⁹ to Home Screen 📲',
         intro: 'Add the game to your phone’s home screen or your computer’s desktop and it opens from its own icon like an app, without browser bars. After the first visit, all games also work offline.',

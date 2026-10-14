@@ -122,6 +122,14 @@ export const fi = {
       glossaryLink: 'Sanasto & Merkistö 📖',
       changelog: 'Muutosloki 📋',
       changelogTranslateHint: 'Muutosloki on vain suomeksi. Käytä selaimen Käännä-toimintoa lukeaksesi sen omalla kielelläsi.',
+      screenReader: {
+        title: 'Ruudunlukijalle 🔊',
+        body: ({ button, remembered }) => [
+          'Peli kertoo tapahtumat ruudunlukijalle itse: kuka pelasi minkä kortin ja kenen vuoro on. Kortit sanotaan nimillä eikä maamerkkeinä.',
+          `${button}-nappi kertoo koko pöydän kerralla: vuoron, oman kätesi, pöydän kortit ja muiden korttimäärät. Nappi on pelinäkymän tilarivillä. Se näkyy vain ruudunlukijalle ja näppäimistön kohdistukselle. Näppäimistöllä saman saa H-näppäimellä.`,
+          `${button} kertoo vain sen, minkä näkevä pelaaja näkee. Koputuksessa muistamasi kortti on ”${remembered}” eikä sen arvoa sanota, koska näkevänkin on muistettava se itse.`,
+        ],
+      },
       a2hs: {
         title: 'Lisää Jako⁹ aloitusnäytölle 📲',
         intro: 'Lisää peli puhelimen aloitusnäytölle tai tietokoneen työpöydälle, niin se avautuu omasta kuvakkeestaan kuin sovellus, ilman selaimen palkkeja. Ensimmäisen avauksen jälkeen kaikki pelit toimivat myös ilman verkkoa.',

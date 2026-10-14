@@ -92,6 +92,14 @@ export const is = {
       glossaryLink: 'Orðasafn & Tákn 📖',
       changelog: 'Breytingaskrá 📋',
       changelogTranslateHint: 'Breytingaskráin er aðeins til á finnsku — notaðu þýðingaeiginleika vafrans til að lesa hana á þínu tungumáli.',
+      screenReader: {
+        title: 'Fyrir skjálesara 🔊',
+        body: ({ button, remembered }) => [
+          'Leikurinn segir skjálesaranum sjálfur hvað gerist: hver spilaði hvaða spili og hver á leik. Spilin eru nefnd með nafni, ekki sem litatákn.',
+          `Hnappurinn ${button} les allt borðið í einu: hver á leik, höndina þína, spilin á borðinu og hve mörg spil hinir hafa. Hann er í stöðustiku leiksins og sést aðeins skjálesurum og lyklaborðsfókus. Á lyklaborði gefur H það sama.`,
+          `${button} segir aðeins það sem sjáandi leikmaður sér. Í Koputus er spil sem þú manst „${remembered}“ og gildi þess er ekki sagt, því sjáandi þarf líka að muna það sjálfur.`,
+        ],
+      },
       a2hs: {
         title: 'Setja Jako⁹ á heimaskjá 📲',
         intro: 'Settu leikinn á heimaskjá símans eða skjáborð tölvunnar — þá opnast hann af eigin tákni eins og app, án vafrastiku. Eftir fyrstu opnun virka allir leikirnir líka án nettengingar.',

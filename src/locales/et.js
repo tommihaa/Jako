@@ -92,6 +92,14 @@ export const et = {
       glossaryLink: 'Sõnastik & Tähistik 📖',
       changelog: 'Muutuste logi 📋',
       changelogTranslateHint: 'Muudatuste logi on saadaval ainult soome keeles — kasuta oma brauseri tõlkefunktsiooni, et lugeda seda oma keeles.',
+      screenReader: {
+        title: 'Ekraanilugejale 🔊',
+        body: ({ button, remembered }) => [
+          'Mäng ütleb ekraanilugejale ise, mis toimub: kes mängis millise kaardi ja kelle käik on. Kaardid öeldakse nimega, mitte mastisümbolitena.',
+          `Nupp „${button}” loeb kogu laua korraga ette: kelle käik on, sinu käe, laua kaardid ja mitu kaarti teistel on. See on mängu olekuribal ning nähtav ainult ekraanilugejale ja klaviatuuri fookusele. Klaviatuuril teeb sama H-klahv.`,
+          `„${button}” ütleb ainult seda, mida nägija mängija näeb. Koputuses on kaart, mida mäletad, „${remembered}” ja selle väärtust ei öelda, sest ka nägija peab selle ise meeles pidama.`,
+        ],
+      },
       a2hs: {
         title: 'Lisa Jako⁹ avakuvale 📲',
         intro: 'Lisa mäng telefoni avakuvale või arvuti töölauale — see avaneb oma ikoonilt nagu rakendus, ilma brauseri ribadeta. Pärast esimest avamist töötavad kõik mängud ka võrguta.',

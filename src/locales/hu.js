@@ -92,6 +92,14 @@ export const hu = {
       glossaryLink: 'Szótár & Jelek 📖',
       changelog: 'Változásnapló 📋',
       changelogTranslateHint: 'A változásnapló csak finnül érhető el — a saját nyelveden való olvasáshoz használd a böngésződ Fordítás funkcióját.',
+      screenReader: {
+        title: 'Képernyőolvasóknak 🔊',
+        body: ({ button, remembered }) => [
+          'A játék maga mondja el a képernyőolvasónak, mi történik: ki melyik lapot játszotta, és ki következik. A lapokat névvel mondja, nem színszimbólumként.',
+          `A(z) „${button}” gomb egyszerre felolvassa az egész asztalt: ki következik, a kezedet, az asztalon lévő lapokat és hogy a többieknél hány lap van. A játék állapotsorában van, és csak a képernyőolvasók és a billentyűzetfókusz látja. Billentyűzeten a H ugyanezt teszi.`,
+          `A(z) „${button}” csak azt mondja el, amit egy látó játékos lát. A Koputusban egy lap, amire emlékszel, „${remembered}”, és az értékét nem mondja, mert a látónak is magának kell emlékeznie rá.`,
+        ],
+      },
       a2hs: {
         title: 'Jako⁹ hozzáadása a kezdőképernyőhöz 📲',
         intro: 'Add hozzá a játékot a telefon kezdőképernyőjéhez vagy a számítógép asztalához, hogy saját ikonjáról nyíljon, mint egy alkalmazás — böngészősávok nélkül. Az első megnyitás után minden játék hálózat nélkül is működik.',
