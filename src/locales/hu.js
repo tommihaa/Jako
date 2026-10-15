@@ -6,7 +6,7 @@ export const hu = {
     a11y: {
       opponents: ({ names }) => `Ellenfelek a lépések sorrendjében: ${names}.`,
       statusButton: 'Helyzet',
-      turn: ({ name }) => `Soron: ${name}.`,
+      turn: ({ name }) => `Következik: ${name}.`,
       hand: ({ cards }) => `Kéz: ${cards}.`,
       none: 'nincs lap',
       slots: ({ list }) => `Helyek: ${list}.`,

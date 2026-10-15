@@ -5,12 +5,12 @@ export const la = {
     a11y: {
       opponents: ({ names }) => `Adversarii ordine: ${names}.`,
       statusButton: 'Status',
-      turn: ({ name }) => `Vicis ${name}.`,
+      turn: ({ name }) => `Ludit: ${name}.`,
       hand: ({ cards }) => `Manus: ${cards}.`,
       none: 'nullae chartae',
       slots: ({ list }) => `Loca: ${list}.`,
       unknown: 'occulta',
-      remembered: 'memoria',
+      remembered: 'in memoria',
       holding: ({ card }) => `Ducta: ${card}.`,
       table: ({ cards }) => `In mensa: ${cards}.`,
       top: ({ card }) => `Summa: ${card}.`,
@@ -20,7 +20,7 @@ export const la = {
       pile: ({ n }) => `In acervo: ${n}.`,
       counts: ({ list }) => `Chartae: ${list}.`,
       build: ({ value, cards }) => `structura ${value}: ${cards}`,
-      covered: ({ atk, def }) => `${atk}, tecta ${def}`,
+      covered: ({ atk, def }) => `${atk}, tecta: ${def}`,
     },
     advice: {
       guide: "Duc me",
@@ -94,8 +94,8 @@ export const la = {
       screenReader: {
         title: 'Lectoribus scrinii 🔊',
         body: ({ button, remembered }) => [
-          'Ludus ipse lectori scrinii narrat quid fiat: quis quam chartam lusit et cuius sit vicis. Chartae nominibus dicuntur, non signis colorum.',
-          `Globulus ${button} totam mensam simul legit: cuius sit vicis, manum tuam, chartas in mensa et quot chartas ceteri habeant. In linea status ludi est et tantum lectoribus scrinii et foco claviaturae videtur. In claviatura H idem facit.`,
+          'Ludus ipse lectori scrinii narrat quid fiat: quis quam chartam lusit et quis nunc ludat. Chartae nominibus dicuntur, non signis colorum.',
+          `Globulus ${button} totam mensam simul legit: quis nunc ludat, manum tuam, chartas in mensa et quot chartas ceteri habeant. In linea status ludi est et tantum lectoribus scrinii et foco claviaturae videtur. In claviatura H idem facit.`,
           `${button} tantum dicit quod lusor videns videt. In Koputus charta quam meministi est „${remembered}“ neque eius valor dicitur, quia etiam videns eam ipse meminisse debet.`,
         ],
       },

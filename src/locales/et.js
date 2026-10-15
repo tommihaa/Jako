@@ -22,7 +22,7 @@ export const et = {
       pile: ({ n }) => `Hunnikus: ${n}.`,
       counts: ({ list }) => `Kaarte: ${list}.`,
       build: ({ value, cards }) => `ehitis ${value}: ${cards}`,
-      covered: ({ atk, def }) => `${atk}, kaetud ${def}`,
+      covered: ({ atk, def }) => `${atk}, peal ${def}`,
     },
     advice: {
       guide: "Juhenda",

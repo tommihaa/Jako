@@ -7,7 +7,7 @@ export const is = {
     a11y: {
       opponents: ({ names }) => `Andstæðingar í röð: ${names}.`,
       statusButton: 'Staða',
-      turn: ({ name }) => `Að gera: ${name}.`,
+      turn: ({ name }) => `Á leik: ${name}.`,
       hand: ({ cards }) => `Hönd: ${cards}.`,
       none: 'engin spil',
       slots: ({ list }) => `Sæti: ${list}.`,
