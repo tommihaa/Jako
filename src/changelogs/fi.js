@@ -15,6 +15,18 @@ export const CHANGELOG = [
   {
     date: '15.10.2026',
     items: [
+      'Saavutettavuus: valittavat kortit kertovat taas nimensä ruudunlukijalle. Eilinen korjaus kertoi valitun kortin tilan, mutta Androidin Chromessa se samalla vei kortilta nimen. Ruudunlukija ei siis kertonut, mikä kortti oli kyseessä.',
+      'Saavutettavuus: maat sanotaan ruudunlukijalle sanoina kaikkialla, myös napeissa, vihjeissä, pöydän riveissä, valttimaassa, säännöissä ja tulosruudussa. Esimerkiksi nappi kuuluu "Pelaa (hertta 10)" eikä maamerkkiä lueta emojina.',
+      'Saavutettavuus: aloitusnäytön valinnat kertovat valitun vaihtoehdon. Pelaajamäärä, vastustajaryhmä ja pelien sääntövalinnat näkyivät valittuina vain kultaisena kehyksenä.',
+      'Saavutettavuus: pelin alussa ei enää kuulu "nimetön, nimetön". Korttien sekoitusanimaatio ja kortinselät on piilotettu ruudunlukijalta.',
+      'Saavutettavuus: viimeisin ilmoitus ei enää kuulu toiseen kertaan, kun selaat sivua pyyhkäisemällä.',
+      'Saavutettavuus: kielivalitsimen ryhmien nimet (Testatut ja Testaamattomat) kuuluvat, ja valikon alalaidan versioleima luetaan selkeänä lauseena eikä numerosarjana.',
+      'Saavutettavuus: kun kieli on vaihdettu ja sivu ladattu uudelleen, myös otsikkorivi luetaan valitun kielen äänellä.',
+    ],
+  },
+  {
+    date: '15.10.2026',
+    items: [
       'Saavutettavuus: Tilanne-napin teksti on korjattu ranskaksi, latinaksi, unkariksi, islanniksi ja viroksi. Esimerkiksi latinaksi vuoro luettiin kieliopittomasti, ja ranskasta puuttui välilyönti kaksoispisteen edestä.',
     ],
   },
