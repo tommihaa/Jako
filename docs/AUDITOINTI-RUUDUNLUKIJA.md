@@ -44,7 +44,7 @@ Tommi kuunteli tuotantoversion 1.2.235 TalkBackilla Pixelillä, pystytilassa.
 
 *Toimii:* kielivalitsin kertoo valitun kielen (J-3:n `aria-current`).
 
-**J-5. Kieliryhmien nimet eivät kuulu.** Tila: korjattu 15.10.2026, ei julkaistu. J-3:n
+**J-5. Kieliryhmien nimet eivät kuulu.** Tila: korjattu 15.10.2026, julkaistu 1.2.236. J-3:n
 korjaus antoi ryhmälle nimen `aria-label`illa ja piilotti näkyvän otsikon (`aria-hidden`),
 jottei nimi kuuluisi kahdesti. TalkBack ei sano ryhmän nimeä ollenkaan, joten nimi ei kuulunut
 kertaakaan. Korjaus: näkyvä otsikko on luettava teksti, ja ryhmä viittaa siihen
@@ -52,7 +52,7 @@ kertaakaan. Korjaus: näkyvä otsikko on luettava teksti, ja ryhmä viittaa siih
 vérifiées" näkyvissä saavutettavuuspuulle. Ei kuunneltu.
 
 **J-6. Ranska valittuna otsikkorivi kuuluu suomalaisella äänellä.** Tila: korjattu
-15.10.2026, ei julkaistu. Osa teksteistä (esim. vinkki uudelle) kuului ranskaksi, mutta
+15.10.2026, julkaistu 1.2.236. Osa teksteistä (esim. vinkki uudelle) kuului ranskaksi, mutta
 otsikkorivi suomeksi, myös sivun uudelleenlatauksen jälkeen. Syy (päätelmä, ei mitattu):
 J-1:n korjaus kirjoittaa kielen `<html lang>`:iin efektissä eli ensimmäisen renderin jälkeen,
 ja TalkBack pitää jo piirretyille teksteille niiden alkuperäisen kielen. Uudelleen piirretyt
@@ -60,7 +60,7 @@ tekstit saavat uuden kielen. Korjaus: kieli kirjoitetaan `<html lang>`:iin moduu
 ennen ensimmäistä renderiä. Rajoitus: kesken käynnin tehty kielenvaihto ei välttämättä vaihda
 ääntä teksteille, joita ei piirretä uudelleen. Uudelleenlataus vaihtaa. Ei kuunneltu.
 
-**J-7. Versioleima kuuluu numerosarjana.** Tila: korjattu 15.10.2026, ei julkaistu. Valikon
+**J-7. Versioleima kuuluu numerosarjana.** Tila: korjattu 15.10.2026, julkaistu 1.2.236. Valikon
 alalaidan "v1.2.235 · 15.10.2026 16.05" kuului numeromössönä ilman kontekstia. Korjaus:
 ruudunlukijalle oma teksti `ui.a11y.version` 23 kielellä ("Versio 1.2.235, julkaistu
 15.10.2026 klo 16.05"), ja näkyvä leima on `aria-hidden`. Todennettu dev-previewissä. Ei
@@ -68,7 +68,7 @@ kuunneltu.
 
 *Paskahousu:* kortin valinta kertoo tilan (J-2 toimii), ja kohdistus jää korttiin.
 
-**J-8. Maa kuuluu "emojina" näkyvissä teksteissä.** Tila: korjattu 15.10.2026, ei julkaistu.
+**J-8. Maa kuuluu "emojina" näkyvissä teksteissä.** Tila: korjattu 15.10.2026, julkaistu 1.2.236.
 Kortit ja ilmoitukset sanoivat maan nimeltä (`cardName`, `Announcer.toPlain`), mutta muu näkyvä
 teksti kirjoitti kortin symbolilla ja TalkBack luki symbolin "emojiksi". Dev-previewin haku
 (pelin alku ja yksi valinta, 15.10.2026) löysi symbolin ainakin näistä: Paskahousun Pelaa-nappi
@@ -100,8 +100,8 @@ Todennettu dev-previewissä 15.10.2026 (Chrome, äänet pois): Paskahousun alku,
 korttivalinta sekä Ristiseiskan alku ilman yhtään paljasta symbolia. Pelaa-nappi on
 näkyvästi "Pelaa (10♥)" ja ruudunlukijalle "Pelaa (hertta 10)". Ulkoasu ennallaan. Ei kuunneltu.
 
-**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: korjattu 15.10.2026, ei
-julkaistu. Live-alueeseen ilmoitus menee kerran (todennettu previewissä). Syy (päätelmä, ei
+**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: korjattu 15.10.2026,
+julkaistu 1.2.236. Live-alueeseen ilmoitus menee kerran (todennettu previewissä). Syy (päätelmä, ei
 mitattu): ilmoitusalue jäi sisältöineen saavutettavuuspuuhun, joten sivun läpi pyyhkäisy luki
 viimeisimmän ilmoituksen uudelleen. Korjaus: alue tyhjenee arvioidun puheajan jälkeen
 (`Announcer.jsx`), ennen seuraavaa ilmoitusta. Todennettu dev-previewissä: alue vuorottelee
@@ -109,7 +109,7 @@ ilmoituksen ja tyhjän välillä. Testi `announcer.test.jsx` › "tyhjentää al
 Ei kuunneltu, joten päätelmä vahvistuu vasta kun toistoa ei enää kuulu.
 
 **J-10. Pelin alussa "nimetön, nimetön…" muiden pelaajien korttien kohdalla.** Tila:
-korjattu 15.10.2026, ei julkaistu. Syy (päätelmä, ei mitattu): pelin alun sekoitusanimaatio
+korjattu 15.10.2026, julkaistu 1.2.236. Syy (päätelmä, ei mitattu): pelin alun sekoitusanimaatio
 (`ShuffleOverlay`) piirtää kymmenen kortinselkää SVG-kuvina ilman nimeä ja niistä neljä lentää
 pelaajien paikoille. Chrome antaa nimettömän SVG:n ruudunlukijalle kuvana, jonka TalkBack lukee
 "nimetön". Aiempi haku etsi rooleja ja klikattavia elementtejä, eikä SVG:n implisiittinen
@@ -117,8 +117,8 @@ kuvarooli osunut siihen. Korjaus: animaatio on `aria-hidden` ja kortinselkien SV
 (`BACKS.jsx`) ovat `aria-hidden` kaikkialla, myös pinoissa (`FanStack`). Todennettu
 dev-previewissä: jaon aikana ja sen jälkeen piilottamattomia SVG:itä on nolla. Ei kuunneltu.
 
-**J-11. Aloitusnäytön valinnat eivät kerro valittua.** Tila: korjattu 15.10.2026, ei
-julkaistu. Paskahousun sääntörivit kuuluivat, mutta ei sitä, mikä vaihtoehto on valittuna:
+**J-11. Aloitusnäytön valinnat eivät kerro valittua.** Tila: korjattu 15.10.2026,
+julkaistu 1.2.236. Paskahousun sääntörivit kuuluivat, mutta ei sitä, mikä vaihtoehto on valittuna:
 valinta näkyi vain kultaisena kehyksenä. Sama rakenne oli Kasinon ja Ristiseiskan
 sääntövalinnoissa sekä yhteisen aloitusnäytön (`GameStartScreen.jsx`, `GroupPicker.jsx`)
 pelaajamäärässä ja nimiryhmissä. Korjaus: jokaisessa vaihtoehdossa on `aria-pressed`
@@ -153,8 +153,8 @@ Raakadata: `raakasivut/talkback-15-10/` (ei versioida). Tulokset:
 oli vielä "Vuorossa Fortuna." (`05-kortit-korjattu.xml`), koska ilmoitukset jonotetaan
 arvioidun puheajan mukaan. Ei korjattu. Kuuntelu kertoo, häiritseekö viive.
 
-**J-12. Pelattavalla kortilla ei ole nimeä TalkBackissa.** Tila: korjattu 15.10.2026, ei
-julkaistu. Laitemittauksessa pelattavat kortit olivat nimettömiä ToggleButtoneita (NAF), kun
+**J-12. Pelattavalla kortilla ei ole nimeä TalkBackissa.** Tila: korjattu 15.10.2026,
+julkaistu 1.2.236. Laitemittauksessa pelattavat kortit olivat nimettömiä ToggleButtoneita (NAF), kun
 taas pelaamattomat kortit (`role="img"`) kantoivat nimeään. Koesivu erotti syyn: Chrome
 Androidilla `aria-pressed` tekee elementistä ToggleButtonin ja silloin `aria-label` putoaa
 puusta. Näin kävi myös natiivilla `<button>`illa ja silloin, kun lapsi oli näkyvissä. Nimi
