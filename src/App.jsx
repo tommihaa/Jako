@@ -414,8 +414,10 @@ function LangSelector({ lang, setLang, t, isMobile }) {
             boxShadow: '0 8px 24px rgba(0,0,0,0.45)',
           }}>
             {groups.map(({ key, langs }) => langs.length > 0 && (
-              <div key={key} role="group" aria-label={t(`ui.lang.${key}`)} style={{ marginBottom: 6 }}>
-                <div aria-hidden="true" style={{ fontFamily: 'Georgia,serif', fontSize: 10, color: C.dim, opacity: 0.6, letterSpacing: 1.5, margin: '2px 4px 4px', textTransform: 'uppercase' }}>
+              // Ryhmän nimi on luettava teksti eikä pelkkä aria-label: TalkBack ei sano
+              // ryhmän nimeä ollenkaan (kuunneltu 15.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md › J-5).
+              <div key={key} role="group" aria-labelledby={`lang-group-${key}`} style={{ marginBottom: 6 }}>
+                <div id={`lang-group-${key}`} style={{ fontFamily: 'Georgia,serif', fontSize: 10, color: C.dim, opacity: 0.6, letterSpacing: 1.5, margin: '2px 4px 4px', textTransform: 'uppercase' }}>
                   {t(`ui.lang.${key}`)}
                 </div>
                 {langs.map(({ code, name, status }) => {

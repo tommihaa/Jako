@@ -37,3 +37,28 @@ nappeja, valittu `aria-current="true"`, ja ryhmät `role="group"` + `aria-label`
 [dialog-malli](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) vaatii lisäksi, että
 kohdistus siirtyy ikkunaan avattaessa ja palaa avausnappiin suljettaessa. Nyt ruudunlukija jää
 ikkunan taakse, jota `aria-modal` käskee olemaan lukematta.
+
+## Kuuntelu 15.10.2026
+
+Tommi kuunteli tuotantoversion 1.2.235 TalkBackilla Pixelillä, pystytilassa.
+
+*Toimii:* kielivalitsin kertoo valitun kielen (J-3:n `aria-current`).
+
+**J-5. Kieliryhmien nimet eivät kuulu.** Tila: korjattu 15.10.2026, ei julkaistu. J-3:n
+korjaus antoi ryhmälle nimen `aria-label`illa ja piilotti näkyvän otsikon (`aria-hidden`),
+jottei nimi kuuluisi kahdesti. TalkBack ei sano ryhmän nimeä ollenkaan, joten nimi ei kuulunut
+kertaakaan. Korjaus: näkyvä otsikko on luettava teksti, ja ryhmä viittaa siihen
+(`aria-labelledby`). Todennettu dev-previewissä: kaksi ryhmää, nimet "Vérifiées" ja "Non
+vérifiées" näkyvissä saavutettavuuspuulle. Ei kuunneltu.
+
+**J-6. Ranska valittuna otsikkorivi kuuluu suomalaisella äänellä.** Tila: korjattu
+15.10.2026, ei julkaistu. Osa teksteistä (esim. vinkki uudelle) kuului ranskaksi, mutta
+otsikkorivi suomeksi, myös sivun uudelleenlatauksen jälkeen. Syy (päätelmä, ei mitattu):
+J-1:n korjaus kirjoittaa kielen `<html lang>`:iin efektissä eli ensimmäisen renderin jälkeen,
+ja TalkBack pitää jo piirretyille teksteille niiden alkuperäisen kielen. Uudelleen piirretyt
+tekstit saavat uuden kielen. Korjaus: kieli kirjoitetaan `<html lang>`:iin moduulin latautuessa
+ennen ensimmäistä renderiä. Rajoitus: kesken käynnin tehty kielenvaihto ei välttämättä vaihda
+ääntä teksteille, joita ei piirretä uudelleen. Uudelleenlataus vaihtaa. Ei kuunneltu.
+
+*Havainto:* Tommin mukaan TalkBackin ranskalainen ääni kuulostaa paljon luontevammalta kuin
+suomalainen. Se on puhemoottorin ominaisuus eikä Jaon.

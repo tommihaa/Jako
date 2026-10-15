@@ -126,6 +126,10 @@ function initialLang() {
   return detectLang();
 }
 let currentLang = initialLang();
+// Kieli <html lang>:iin ennen ensimmäistä renderiä eikä vasta efektissä: TalkBack otti
+// efektiä ennen piirretyille teksteille (otsikkorivi) suomen äänen myös uudelleenlatauksen
+// jälkeen (kuunneltu 15.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md › J-6).
+if (typeof document !== 'undefined') document.documentElement.lang = currentLang;
 export function getLang() { return currentLang; }
 
 // Hook-vapaa käännösfunktio — käytä moduulitason koodissa (M-katalogit, helpers).
