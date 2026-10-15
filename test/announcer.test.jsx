@@ -39,7 +39,7 @@ describe('Announcer', () => {
     expect(liveText(container)).toBe('Random: hertta 7 (avaa maan).');
     act(() => { vi.advanceTimersByTime(1000); });
     expect(liveText(container)).toBe('Random: hertta 7 (avaa maan).');
-    act(() => { vi.advanceTimersByTime(5000); });
+    act(() => { vi.advanceTimersByTime(2500); });
     expect(liveText(container)).toBe('Vuorossa Troll.');
   });
 
@@ -52,12 +52,13 @@ describe('Announcer', () => {
     expect(liveText(container)).toBe('Hero aloittaa risti 7:llä. NPC: hertta rouva, ruutu 10. Avattu pata.');
   });
 
-  it('toistaa saman viestin muuttamalla aluetta', () => {
+  it('toistaa saman viestin, koska alue tyhjenee välissä', () => {
     const { container } = render(<Announcer />);
     act(() => { announce('Vuorossa Hero.'); vi.advanceTimersByTime(0); });
-    const first = liveText(container);
-    act(() => { announce('Vuorossa Hero.'); vi.advanceTimersByTime(10000); });
-    expect(liveText(container)).not.toBe(first);
+    expect(liveText(container)).toBe('Vuorossa Hero.');
+    act(() => { announce('Vuorossa Hero.'); vi.advanceTimersByTime(1050); });
+    expect(liveText(container)).toBe('');
+    act(() => { vi.advanceTimersByTime(750); });
     expect(liveText(container).trim()).toBe('Vuorossa Hero.');
   });
 
@@ -78,7 +79,16 @@ describe('Announcer', () => {
     });
     expect(liveText(container)).toBe('Uusi peli.');
     act(() => { vi.advanceTimersByTime(10000); });
-    expect(liveText(container)).toBe('Uusi peli.');
+    expect(liveText(container)).toBe('');
+  });
+
+  // J-9: viimeisin ilmoitus jäi alueeseen ja pyyhkäisy luki sen toiseen kertaan.
+  it('tyhjentää alueen puheajan jälkeen', () => {
+    const { container } = render(<Announcer />);
+    act(() => { announce('Vastustajat vuorojärjestyksessä: A, B.'); vi.advanceTimersByTime(0); });
+    expect(liveText(container)).toBe('Vastustajat vuorojärjestyksessä: A, B.');
+    act(() => { vi.advanceTimersByTime(38 * 75); });
+    expect(liveText(container)).toBe('');
   });
 });
 

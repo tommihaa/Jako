@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { C } from './colors.js';
 import { useT } from './i18n.jsx';
 import { NAME_GROUPS } from './playerGroups.js';
@@ -8,19 +9,21 @@ import { NAME_GROUPS } from './playerGroups.js';
 // virkistyy reaktiivisesti. Kompakti: napit kietoutuvat usealle riville pienellä näytöllä.
 export default function GroupPicker({ value, onChange }) {
   const t = useT();
+  const labelId = useId();
   if (!onChange) return null;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center', maxWidth: 360, width: '100%' }}>
-      <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>
+      <p id={labelId} style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>
         {t('ui.start.opponents')}
       </p>
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
+      <div role="group" aria-labelledby={labelId} style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
         {NAME_GROUPS.map(({ key, pool }) => {
           const active = value === key;
           return (
             <button
               key={key}
               onClick={() => onChange(key)}
+              aria-pressed={active}
               style={{
                 padding: '6px 10px', borderRadius: 9, cursor: 'pointer',
                 fontFamily: 'sans-serif', fontSize: 12, lineHeight: 1.2,

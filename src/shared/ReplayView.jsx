@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { C, SUIT_COLOR } from './colors.js';
 import { useT } from './i18n.jsx';
+import { cardName, spokenHtml } from './helpers.js';
 
 // ── Replay: mini-kortti ──────────────────────────────────────────────────────
 function MiniCard({ card }) {
@@ -12,7 +13,7 @@ function MiniCard({ card }) {
   );
   const color = SUIT_COLOR[card.s] ?? '#ccc';
   return (
-    <span style={{ display:'inline-block', background:'rgba(255,255,255,0.9)', color, borderRadius:3, padding:'0 4px', fontSize:11, fontFamily:'sans-serif', fontWeight:700, margin:1, border:'1px solid rgba(0,0,0,0.15)', lineHeight:'18px', minWidth:20, textAlign:'center' }}>
+    <span role="img" aria-label={cardName(card)} style={{ display:'inline-block', background:'rgba(255,255,255,0.9)', color, borderRadius:3, padding:'0 4px', fontSize:11, fontFamily:'sans-serif', fontWeight:700, margin:1, border:'1px solid rgba(0,0,0,0.15)', lineHeight:'18px', minWidth:20, textAlign:'center' }}>
       {card.r}{card.s}
     </span>
   );
@@ -73,8 +74,8 @@ export default function ReplayView({ frames, onClose, isMobile }) {
       <div style={{ padding: isMobile ? '12px 10px' : '16px 20px', display:'flex', flexDirection:'column', gap:10 }}>
         {/* Lokiteksti — logText voi olla HTML-string tai React-node */}
         {typeof frame.logText === 'string'
-          ? <div style={{ background:'rgba(255,255,255,0.04)', border:`1px solid ${C.panelBorder}`, borderRadius:10, padding:'12px 14px', fontFamily:'sans-serif', fontSize: isMobile ? 13 : 14, color:C.text, lineHeight:1.5 }}
-              dangerouslySetInnerHTML={{ __html: frame.logText }} />
+          ? <><span className="sr-only">{spokenHtml(frame.logText)}</span><div aria-hidden="true" style={{ background:'rgba(255,255,255,0.04)', border:`1px solid ${C.panelBorder}`, borderRadius:10, padding:'12px 14px', fontFamily:'sans-serif', fontSize: isMobile ? 13 : 14, color:C.text, lineHeight:1.5 }}
+              dangerouslySetInnerHTML={{ __html: frame.logText }} /></>
           : <div style={{ background:'rgba(255,255,255,0.04)', border:`1px solid ${C.panelBorder}`, borderRadius:10, padding:'12px 14px', fontFamily:'sans-serif', fontSize: isMobile ? 13 : 14, color:C.text, lineHeight:1.5 }}>
               {frame.logText}
             </div>

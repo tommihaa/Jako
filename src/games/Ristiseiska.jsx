@@ -3,7 +3,7 @@ import { C, SUIT_COLOR, suitColor } from '../shared/colors.js';
 import GameStartScreen from '../shared/GameStartScreen.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, SUITS, truncName, sortHand as sortHandBy, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { lbl, cardName, suitName, korttia, SUITS, truncName, sortHand as sortHandBy, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import {
   RANK_VAL, isPlayable, hasAnyPlay, DEFAULT_RULES, initGame,
@@ -14,6 +14,7 @@ import { useStickySetting } from '../shared/storage.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
@@ -126,9 +127,11 @@ function StackRow({ suit, G, isMobile, cardBack, t }) {
   // Aputext: näytä pelattavat kortit väreillä
   let helpText = '';
   let helpElements = null;
+  let helpSpoken = '';
   if (!row.active) {
     // Vain ♣7 voidaan pelata ensin, sitten muut 7:t
     if (suit === '♣' || G.rows['♣'].active) {
+      helpSpoken = `${t('games.ristiseiska.ui.playPrompt')} ${cardName({ r: '7', s: suit })}`;
       helpElements = (
         <>
           {t('games.ristiseiska.ui.playPrompt')}{' '}
@@ -157,6 +160,7 @@ function StackRow({ suit, G, isMobile, cardBack, t }) {
       }
     }
     if (playable.length > 0) {
+      helpSpoken = `${t('games.ristiseiska.ui.playPrompt')} ${playable.map(r => cardName({ r, s: suit })).join(', ')}`;
       helpElements = (
         <>
           {t('games.ristiseiska.ui.playPrompt')}{' '}
@@ -177,7 +181,10 @@ function StackRow({ suit, G, isMobile, cardBack, t }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
+      {/* Rivi kuuluu yhtenä tekstinä ("risti 5–9"), koska pinot ovat kortin kuvia ilman nimeä
+          ja maa luettiin emojina (auditointi J-8). */}
+      <span className="sr-only">{row.active ? spokenRange(suit, row.low, row.high) : `${suitName(suit)}: ${t('ui.shared.emptyLower')}`}</span>
+      <div aria-hidden="true" style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
         {upperPile}
         {row.active ? (
           <div style={{
@@ -214,7 +221,7 @@ function StackRow({ suit, G, isMobile, cardBack, t }) {
       </div>
       {(helpText || helpElements) && (
         <span style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', opacity: 0.7, textAlign: 'center' }}>
-          {helpElements || helpText}
+          {helpElements ? <Spoken say={helpSpoken}>{helpElements}</Spoken> : helpText}
         </span>
       )}
     </div>
@@ -534,7 +541,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
               {[[t('games.ristiseiska.opts.chosen'), false], [t('games.ristiseiska.opts.random'), true]].map(([lab, val]) => {
                 const active = rules.randomPantti === val;
                 return (
-                  <button key={lab} onClick={() => setRules(r => ({ ...r, randomPantti: val }))}
+                  <button key={lab} onClick={() => setRules(r => ({ ...r, randomPantti: val }))} aria-pressed={active}
                     style={{ minWidth: 40, height: 36, padding: '0 12px', borderRadius: 9, cursor: 'pointer', fontSize: 13, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${active ? C.gold : '#2a4a32'}`, background: active ? C.gold + '18' : 'transparent', color: active ? C.gold : C.dim, transition: 'all 0.2s' }}>
                     {lab}
                   </button>
@@ -578,8 +585,8 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 16, flexShrink: 0, color: C.gold }}>♣</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
+        <span aria-hidden="true" style={{ fontSize: 16, flexShrink: 0, color: C.gold }}>♣</span>
+        <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} html={msg} />
       </div>
 
       {/* AI-kädet — viuhka */}
@@ -636,7 +643,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
       {/* Viimeisin lyönti -badge — kiinteä 36px wrapper, ei nytkähtelyä */}
       <div style={{ position: 'relative', height: 0 }}>
         {showLastPlay && lastPlay && (
-          <div key={lastPlay.card.id}
+          <div aria-hidden="true" key={lastPlay.card.id}
             style={{
               position: 'absolute', bottom: 4, left: 0, zIndex: 5,
               display: 'flex', alignItems: 'center', gap: 8,
@@ -701,7 +708,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
           <>
             <button onClick={humanPlay} disabled={!selCard}
               style={{ background: selCard ? `linear-gradient(135deg,${C.gold},#a07830)` : 'rgba(255,255,255,0.04)', border: `1px solid ${selCard ? C.gold : C.panelBorder}`, borderRadius: 10, padding: '10px 20px', color: selCard ? '#0d2118' : C.dim, fontSize: 13, cursor: selCard ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
-              {t('ui.action.play')} {selCard ? lbl(selCard) : ''}
+              <Spoken>{`${t('ui.action.play')} ${selCard ? lbl(selCard) : ''}`}</Spoken>
             </button>
             {!isBonusTurn && (
               <button onClick={humanPass} disabled={iCanPlay}
@@ -721,7 +728,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
           <>
             <button onClick={humanGiveCard} disabled={!selCard}
               style={{ background: selCard ? `linear-gradient(135deg,${C.gold},#a07830)` : 'rgba(255,255,255,0.04)', border: `1px solid ${selCard ? C.gold : C.panelBorder}`, borderRadius: 10, padding: '10px 20px', color: selCard ? '#0d2118' : C.dim, fontSize: 13, cursor: selCard ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
-              {t('ui.action.give')} {selCard ? lbl(selCard) : t('ui.action.card')}
+              <Spoken>{`${t('ui.action.give')} ${selCard ? lbl(selCard) : t('ui.action.card')}`}</Spoken>
             </button>
             {selCard && (
               <button onClick={() => setSel(null)} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>

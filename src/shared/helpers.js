@@ -82,6 +82,22 @@ export const cardName = c => {
   if (!c) return EMPTY[L] || EMPTY.fi;
   return `${SUIT_NAME[L][c.s] || ''} ${RANK_NAME[L][c.r] || c.r}`.trim();
 };
+// Emojin esitysvalitsin (U+FE0F) koodina, koska näkymätöntä merkkiä ei erota lähdekoodista.
+const VS16 = new RegExp(String.fromCharCode(0xfe0f), 'g');
+// Näkyvä teksti ruudunlukijan sanoiksi: kortit nimiksi ("2♠" ja "♠2" → "pata 2") ja yksinäiset
+// maat sanoiksi, koska TalkBack lukee maasymbolin emojina eikä maana (Tommin kuuntelu
+// Pixelillä 14. ja 15.10.2026, auditointi J-8). Live-alue (`Announcer`) ja `Spoken` käyttävät tätä.
+/** @param {string} text */
+export const spokenSuits = text => text
+  .replace(VS16, '')
+  .replace(/(10|[2-9AJQK])([♠♥♦♣])/g, (_, r, s) => cardName({ r, s }))
+  .replace(/([♠♥♦♣])(10|[2-9AJQK])(?![\p{L}\d])/gu, (_, s, r) => cardName({ r, s }))
+  .replace(/[♠♥♦♣]/g, s => suitName(s));
+/** @param {string} text */
+export const hasSuit = text => /[♠♥♦♣]/.test(text);
+// Lokirivi (HTML-string `lblColored`ista) ruudunlukijan tekstiksi: tagit pois, maat sanoiksi.
+/** @param {string} html */
+export const spokenHtml = html => spokenSuits(html.replace(/<[^>]*>/g, '')).replace(/\s+/g, ' ').trim();
 // Taivutusapurit: suomessa partitiivi/genetiivi, muissa kielissä kieliopillinen monikko
 // (ruotsin "kort" muuttumaton: ett kort / två kort; saksa: 1 Karte / n Karten).
 // Korttimäärä lokalisoituna. korttia = partitiivi (suomi), kortin = genetiivi (suomi);

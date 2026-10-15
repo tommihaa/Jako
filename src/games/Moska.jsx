@@ -9,6 +9,7 @@ import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11y
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -1141,14 +1142,14 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       {/* Viestikupla */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0 }}>⚔️</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
+        <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} html={msg} />
       </div>
 
       {/* Yläpalkki: valtti */}
       <div style={{ display: 'flex', gap: 6, marginBottom: isMobile ? 4 : 10, alignItems: 'center', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 10px', borderRadius: 20, border: `1px solid ${C.trump}55`, background: `${C.trump}0d` }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim }}>{t('ui.shared.trump')}</span>
-          <span style={{ fontSize: 18, color: SUIT_COLOR[G.ts], fontWeight: 700 }}>{G.ts}</span>
+          <span style={{ fontSize: 18, color: SUIT_COLOR[G.ts], fontWeight: 700 }}><Spoken>{G.ts}</Spoken></span>
           {G.trumpCard && <Card card={G.trumpCard} small backStyle={BACKS[cardBack]} />}
         </div>
       </div>
@@ -1264,15 +1265,15 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
           {isMyDef && !selDefTarget && !selPass.length && (canPassNow
             ? t('games.moska.ui.hintDefendCanPass')
             : t('games.moska.ui.hintDefend'))}
-          {isMyDef && selDefTarget && <span dangerouslySetInnerHTML={{ __html: t('games.moska.ui.hintDefendTarget', { card: lblColored(selDefTarget.atk) }) }} />}
-          {isMyDef && selPass.length > 0 && t('games.moska.ui.hintPass', { cards: selPass.map(lbl).join(',') })}
+          {isMyDef && selDefTarget && <SpokenHtml html={t('games.moska.ui.hintDefendTarget', { card: lblColored(selDefTarget.atk) })} />}
+          {isMyDef && selPass.length > 0 && <Spoken>{t('games.moska.ui.hintPass', { cards: selPass.map(lbl).join(',') })}</Spoken>}
         </div>
       )}
 
       {/* Viimeisin siirto */}
       <div style={{ position: 'relative', height: 0 }}>
         {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+          <div aria-hidden="true" key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
             {lastPlay.cards.map(c => (
               <span key={c.id} style={{ background: C.card, borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
@@ -1340,7 +1341,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
           <>
             <button onClick={humanConfirmAttack} disabled={!selAtk.length}
               style={{ background: selAtk.length ? `linear-gradient(135deg,${C.red},#b83020)` : 'rgba(255,255,255,0.04)', border: `1px solid ${selAtk.length ? C.red : C.panelBorder}`, borderRadius: 10, padding: '10px 20px', color: selAtk.length ? '#fff' : C.dim, fontSize: 13, cursor: selAtk.length ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
-              {t('games.moska.ui.attack')} {selAtk.length > 0 ? `(${selAtk.map(lbl).join(',')})` : ''}
+              <Spoken>{`${t('games.moska.ui.attack')} ${selAtk.length > 0 ? `(${selAtk.map(lbl).join(',')})` : ''}`}</Spoken>
             </button>
             {selAtk.length > 0 && (
               <button onClick={() => setSelAtk([])} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
@@ -1352,7 +1353,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
             {selPass.length > 0 && (
               <button onClick={humanConfirmPass}
                 style={{ background: `rgba(201,168,76,0.12)`, border: `1px solid ${C.gold}55`, borderRadius: 10, padding: '10px 18px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-                {t('games.moska.ui.passOn')} ({selPass.map(lbl).join(',')}) →
+                <Spoken>{`${t('games.moska.ui.passOn')} (${selPass.map(lbl).join(',')}) →`}</Spoken>
               </button>
             )}
             {!awaitingPlayerContinue && (
@@ -1371,7 +1372,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
           <>
             <button onClick={humanConfirmAdd} disabled={!selAdd.length}
               style={{ background: selAdd.length ? `linear-gradient(135deg,${C.gold},#a07830)` : 'rgba(255,255,255,0.04)', border: `1px solid ${selAdd.length ? C.gold : C.panelBorder}`, borderRadius: 10, padding: '10px 18px', color: selAdd.length ? '#0d2118' : C.dim, fontSize: 13, cursor: selAdd.length ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
-              {t('games.moska.ui.addSide')} {selAdd.length > 0 ? `(${selAdd.map(lbl).join(',')})` : ''}
+              <Spoken>{`${t('games.moska.ui.addSide')} ${selAdd.length > 0 ? `(${selAdd.map(lbl).join(',')})` : ''}`}</Spoken>
             </button>
             <button onClick={humanSkipAdd}
               style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 14px', color: C.dim, fontSize: 12, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>

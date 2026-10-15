@@ -4,12 +4,13 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, newDeck, korttia, shuffledAINames, lblColored, BOT_RESULT_DELAY } from '../shared/helpers.js';
+import { lbl, cardName, newDeck, korttia, shuffledAINames, lblColored, BOT_RESULT_DELAY } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import FanStack from '../shared/FanStack.jsx';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
@@ -574,7 +575,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
       <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 12, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, height: isMobile ? 44 : 60, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 15, flexShrink: 0 }}>👋</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
+        <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.55, color: C.text }} html={msg} />
       </div>
 
       {allBots
@@ -647,7 +648,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
         {failReveal && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 14px', background: 'rgba(224,92,59,0.08)', border: `1px solid ${C.red}44`, borderRadius: 10, animation: 'fadeIn 0.25s ease' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.red, flexShrink: 0 }}>{t('games.lapsy.ui.wonChallenge', { winner: pName(failReveal.winner), cards: korttia(failReveal.n) })}</span>
-            <span style={{ background: C.card, borderRadius: 5, padding: '2px 8px', fontFamily: 'Georgia,serif', fontWeight: 700, fontSize: 16, color: SUIT_COLOR[failReveal.card.s] }}>{failReveal.card.r}{failReveal.card.s}</span>
+            <span role="img" aria-label={cardName(failReveal.card)} style={{ background: C.card, borderRadius: 5, padding: '2px 8px', fontFamily: 'Georgia,serif', fontWeight: 700, fontSize: 16, color: SUIT_COLOR[failReveal.card.s] }}>{failReveal.card.r}{failReveal.card.s}</span>
           </div>
         )}
       </div>
@@ -658,7 +659,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
           <div style={{ position: 'relative', width: 82, height: 130, margin: '0 auto' }}>
             {/* Flippaaja-animaatio */}
             {flipAnim && (
-              <div key={flipAnim.card.id} style={{
+              <div key={flipAnim.card.id} aria-hidden="true" style={{
                 position: 'absolute',
                 left: '50%',
                 top: flipAnim.playerIdx === 0 ? 'auto' : '-44px',
@@ -687,7 +688,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
             {center.length > 2 && <div style={{ position: 'absolute', top: 0, left: 0, width: 82, height: 112, borderRadius: 9, background: '#f0eadc', border: '1px solid #ccc', transform: 'rotate(-5deg)', transformOrigin: 'bottom center', zIndex: 0 }} />}
             {top2.length > 1 && (
               <div style={{ position: 'absolute', top: 18, left: 2, width: 82, height: 112, borderRadius: 9, background: C.card, border: `2px solid ${isMatch ? C.red + 'bb' : '#bbb'}`, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: 6, zIndex: 1 }}>
-                <div style={{ textAlign: 'center', color: SUIT_COLOR[top2[1].s], fontFamily: 'Georgia,serif', lineHeight: 1, opacity: 0.7 }}>
+                <div role="img" aria-label={cardName(top2[1])} style={{ textAlign: 'center', color: SUIT_COLOR[top2[1].s], fontFamily: 'Georgia,serif', lineHeight: 1, opacity: 0.7 }}>
                   <div style={{ fontSize: 16, fontWeight: 700 }}>{top2[1].r}</div>
                   <div style={{ fontSize: 18 }}>{top2[1].s}</div>
                 </div>
@@ -695,7 +696,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
             )}
             {center.length > 0
               ? <div style={{ position: 'absolute', top: 0, left: 0, width: 82, height: 112, borderRadius: 9, background: C.card, border: `2px solid ${isMatch ? C.red : '#aaa'}`, boxShadow: isMatch ? `0 0 22px ${C.red}88` : '0 2px 8px rgba(0,0,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2, animation: isMatch ? 'cardMatch 0.4s ease infinite' : 'none' }}>
-                <div style={{ textAlign: 'center', color: SUIT_COLOR[center[0].s], fontFamily: 'Georgia,serif', lineHeight: 1.1, pointerEvents: 'none' }}>
+                <div role="img" aria-label={cardName(center[0])} style={{ textAlign: 'center', color: SUIT_COLOR[center[0].s], fontFamily: 'Georgia,serif', lineHeight: 1.1, pointerEvents: 'none' }}>
                   <div style={{ fontSize: 24, fontWeight: 700 }}>{center[0].r}</div>
                   <div style={{ fontSize: 28 }}>{center[0].s}</div>
                 </div>

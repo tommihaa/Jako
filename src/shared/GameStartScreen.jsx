@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { C, SUIT_COLOR } from './colors.js';
 import { useT } from './i18n.jsx';
 import GroupPicker from './GroupPicker.jsx';
@@ -38,21 +39,22 @@ export default function GameStartScreen({
   isMobile = false, children,
 }) {
   const t = useT();
+  const countLabelId = useId();
   return (
     <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28, paddingTop: isMobile ? 24 : 32, fontFamily: 'Georgia,serif', color: C.text }}>
       <div style={{ textAlign: 'center' }}>
-        {icon && <div style={{ fontSize: 48, marginBottom: 8 }}>{icon}</div>}
+        {icon && <div aria-hidden="true" style={{ fontSize: 48, marginBottom: 8 }}>{icon}</div>}
         <h1 style={{ fontSize: titleSize, letterSpacing, margin: 0, background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h1>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8 }}>
+        <div aria-hidden="true" style={{ display: 'flex', gap: 10, justifyContent: 'center', fontSize: 16, marginTop: 8 }}>
           {['♠', '♥', '♦', '♣'].map(s => <span key={s} style={{ color: SUIT_COLOR[s] }}>{s}</span>)}
         </div>
       </div>
 
       <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-        <p style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>{t('ui.start.players')}</p>
-        <div style={{ display: 'flex', gap: 10 }}>
+        <p id={countLabelId} style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 11, margin: 0, letterSpacing: 2 }}>{t('ui.start.players')}</p>
+        <div role="group" aria-labelledby={countLabelId} style={{ display: 'flex', gap: 10 }}>
           {counts.map(n => (
-            <button key={n} onClick={() => onCountChange(n)} style={{ width: 54, height: 54, borderRadius: 10, cursor: 'pointer', fontSize: 20, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${value === n ? C.gold : '#2a4a32'}`, background: value === n ? C.gold + '18' : 'transparent', color: value === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
+            <button key={n} onClick={() => onCountChange(n)} aria-pressed={value === n} style={{ width: 54, height: 54, borderRadius: 10, cursor: 'pointer', fontSize: 20, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${value === n ? C.gold : '#2a4a32'}`, background: value === n ? C.gold + '18' : 'transparent', color: value === n ? C.gold : C.dim, transition: 'all 0.2s' }}>{n}</button>
           ))}
         </div>
       </div>

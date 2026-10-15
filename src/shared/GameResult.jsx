@@ -1,6 +1,8 @@
 import { C, SUIT_COLOR } from './colors.js';
 import Card from './Card.jsx';
 import { useT } from './i18n.jsx';
+import Spoken from './Spoken.jsx';
+import { spokenSuits } from './helpers.js';
 
 // ranking:        [{name, place, score?, isHuman}]  – sorted by place asc
 // revealCards:    [{name, cards: [...], label}]       – Koputus, Kultakala
@@ -20,7 +22,8 @@ function colorLabel(label) {
       else parts.push(ch);
     }
   }
-  return parts.length === 1 && typeof parts[0] === 'string' ? label : <>{parts}</>;
+  // Maa näkyy symbolina mutta kuuluu sanana (auditointi J-8).
+  return parts.length === 1 && typeof parts[0] === 'string' ? label : <Spoken say={spokenSuits(label)}>{parts}</Spoken>;
 }
 
 function placeLabel(place) {

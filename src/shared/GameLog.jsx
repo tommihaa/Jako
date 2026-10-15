@@ -1,5 +1,6 @@
 import { C } from './colors.js';
 import { useT } from './i18n.jsx';
+import { hasSuit, spokenHtml } from './helpers.js';
 
 // Tapahtumalokin paneeli: otsikkorivi joka avaa ja sulkee, ja rivit uusin ensin.
 //
@@ -45,14 +46,21 @@ export default function GameLog({
       </button>
       {open && (
         <div>
-          {log.map((e, i) => (
-            <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: rowBorder, background: i === 0 ? accentBg : 'transparent' }}>
-              <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
-              {renderMessage
-                ? <div style={{ fontSize: 12, color: i === 0 ? firstColor : restColor, fontFamily: 'sans-serif', lineHeight: 1.5 }}>{renderMessage(e.m)}</div>
-                : <span style={{ fontSize: 12, color: i === 0 ? firstColor : restColor, fontFamily: 'sans-serif', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: e.m }}></span>}
-            </div>
-          ))}
+          {log.map((e, i) => {
+            // Rivi jossa on kortti näkyy symbolein, mutta ruudunlukija saa sen sanoina
+            // (auditointi J-8), samassa muodossa kuin live-alue sen ilmoitti.
+            const said = typeof e.m === 'string' && hasSuit(e.m) ? spokenHtml(e.m) : null;
+            const hide = said ? /** @type {const} */ ('true') : undefined;
+            return (
+              <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: rowBorder, background: i === 0 ? accentBg : 'transparent' }}>
+                <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
+                {said && <span className="sr-only">{said}</span>}
+                {renderMessage
+                  ? <div aria-hidden={hide} style={{ fontSize: 12, color: i === 0 ? firstColor : restColor, fontFamily: 'sans-serif', lineHeight: 1.5 }}>{renderMessage(e.m)}</div>
+                  : <span aria-hidden={hide} style={{ fontSize: 12, color: i === 0 ? firstColor : restColor, fontFamily: 'sans-serif', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: e.m }}></span>}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

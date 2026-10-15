@@ -42,8 +42,11 @@ export default function ShuffleOverlay({ visible, onDone, nPlayers = 4 }) {
 
   if (!visible && phase === 0) return null;
 
+  // Koristeanimaatio piilotetaan ruudunlukijalta. Sen kymmenen kortinselkää ovat
+  // SVG-kuvia ilman nimeä ja TalkBack luki ne pelin alussa "nimetön, nimetön…"
+  // (auditointi J-10). Jaon tapahtumat kuuluvat ilmoitusalueelta.
   return (
-    <div style={{
+    <div aria-hidden="true" style={{
       position: 'fixed', inset: 0, zIndex: 999,
       background: 'rgba(5,14,9,0.87)',
       display: 'flex', flexDirection: 'column',

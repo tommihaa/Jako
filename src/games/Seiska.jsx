@@ -4,11 +4,12 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle, aiShouldFumble, truncName, sortHand as sortHandBy, lblColored, newDeck, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { lbl, suitName, korttia, shuffle, aiShouldFumble, truncName, sortHand as sortHandBy, lblColored, newDeck, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -1148,7 +1149,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 18, flexShrink: 0, color: C.gold }}>7</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
+        <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} html={msg} />
       </div>
 
       {/* Muut pelaajat — kortit selkäpuolella tai cheat-tilassa avattuina */}
@@ -1225,7 +1226,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
         {G.reqSuit && (
           <div style={{ padding: '10px 18px', borderRadius: 12, background: 'rgba(201,168,76,0.1)', border: `2px solid ${C.gold}66`, textAlign: 'center' }}>
             <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, marginBottom: 4, letterSpacing: 1.5 }}>{t('games.seiska.ui.requiredSuit')}</div>
-            <div style={{ fontSize: isMobile ? 32 : 48, color: SUIT_COLOR[G.reqSuit], lineHeight: 1 }}>{G.reqSuit}</div>
+            <div style={{ fontSize: isMobile ? 32 : 48, color: SUIT_COLOR[G.reqSuit], lineHeight: 1 }}><Spoken>{G.reqSuit}</Spoken></div>
           </div>
         )}
         {G.drawsThisTurn > 0 && (
@@ -1241,7 +1242,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
           <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.gold, marginBottom: 10 }}>{t('games.seiska.ui.chooseSuitLabel')}</div>
           <div style={{ display: 'flex', gap: 10 }}>
             {SUIT_SYMS.map(s => (
-              <button key={s} onClick={() => humanChooseSuit(s)}
+              <button key={s} onClick={() => humanChooseSuit(s)} aria-label={suitName(s)}
                 style={{ width: 52, height: 52, fontSize: 26, borderRadius: 10, cursor: 'pointer', background: 'rgba(255,255,255,0.04)', border: `2px solid ${C.gold}55`, color: SUIT_COLOR[s], transition: 'all 0.15s' }}>
                 {s}
               </button>
@@ -1253,8 +1254,8 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       {/* Ässä-bonusvuoro */}
       {G.aceBonus !== null && activeP?.isHuman && !handoff && (
         <div style={{ background: 'rgba(91,168,212,0.1)', border: `1px solid ${C.blue}55`, borderRadius: 12, padding: '10px 16px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ fontSize: 30, color: SUIT_COLOR[G.aceBonus], lineHeight: 1 }}>{G.aceBonus}</span>
-          <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.text, flex: 1 }}>{t('games.seiska.ui.aceBonusHint', { suit: G.aceBonus })}</span>
+          <span aria-hidden="true" style={{ fontSize: 30, color: SUIT_COLOR[G.aceBonus], lineHeight: 1 }}>{G.aceBonus}</span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.text, flex: 1 }}><Spoken>{t('games.seiska.ui.aceBonusHint', { suit: G.aceBonus })}</Spoken></span>
           <button onClick={humanSkipAceBonus} style={{ background: 'transparent', border: `1px solid ${C.dim}55`, borderRadius: 8, padding: '7px 14px', color: C.dim, fontSize: 12, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('ui.action.end')}</button>
         </div>
       )}
@@ -1271,7 +1272,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       {/* Viimeisin siirto */}
       <div style={{ position: 'relative', height: 0 }}>
         {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+          <div aria-hidden="true" key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
             {lastPlay.cards.map(c => (
               <span key={c.id} style={{ background: C.card, borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
@@ -1387,7 +1388,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
               <>
                 <button onClick={humanPlay}
                   style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 20px', color: '#0d2118', fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-                  {t('ui.action.play')} ({selected.map(lbl).join(', ')})
+                  <Spoken>{`${t('ui.action.play')} (${selected.map(lbl).join(', ')})`}</Spoken>
                 </button>
                 <button onClick={() => setSel([])} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
               </>
@@ -1426,7 +1427,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
           animation: pakaAnim ? 'pakkaFlash 2.5s ease forwards' : undefined }}>
           {G.deck.length === 0 && G.discardPile.length <= 1 ? t('games.seiska.ui.deckEmpty') : t('games.seiska.ui.deckCount', { n: G.deck.length })}
         </span>
-        {' · '}{G.reqSuit ? t('games.seiska.ui.required', { suit: G.reqSuit }) : t('games.seiska.ui.topCard', { card: lbl(G.discardTop) })}
+        {' · '}<Spoken>{G.reqSuit ? t('games.seiska.ui.required', { suit: G.reqSuit }) : t('games.seiska.ui.topCard', { card: lbl(G.discardTop) })}</Spoken>
       </GameStatusBar>
 
       {/* Loki */}

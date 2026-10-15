@@ -8,6 +8,7 @@ import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -23,8 +24,9 @@ const isMaija = c => c && c.r === 'Q' && c.s === '♠';
 
 // Q♠-minikortti (sama ulkoasu kuin valikon CardIcon, App.jsx) — korvaa Unicode-
 // korttiglyyfin 🂭, joka renderöityy monella laitteella tofu-laatikkona. s = skaala.
+// Koriste: Maijan tunnus otsikossa ja viestikuplassa, ruudunlukijalle piilossa (J-8).
 const QCard = ({ s = 1 }) => (
-  <span style={{ display:'inline-flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
+  <span aria-hidden="true" style={{ display:'inline-flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
     width:26*s, height:34*s, background:'#f6efdd', borderRadius:Math.max(3, 4*s), lineHeight:1.05,
     boxShadow:'0 1px 3px rgba(0,0,0,0.4)', fontFamily:'Georgia,serif', flexShrink:0, verticalAlign:'middle' }}>
     <span style={{ fontSize:13*s, fontWeight:700, color:'#1a1a1a' }}>Q</span>
@@ -699,14 +701,14 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
         borderRadius:14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12,
         minHeight: isMobile ? 44 : 60, display:'flex', alignItems:'center', gap:10 }}>
         <QCard s={0.7} />
-        <p style={{ margin:0, fontFamily:'sans-serif', fontSize:13, lineHeight:1.55, color:C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
+        <SpokenHtml as="p" style={{ margin:0, fontFamily:'sans-serif', fontSize:13, lineHeight:1.55, color:C.text }} html={msg} />
       </div>
 
       {/* Valtti */}
       <div style={{ display:'flex', gap:6, marginBottom: isMobile ? 4 : 10, alignItems:'center', flexWrap:'wrap' }}>
         <div style={{ display:'flex', alignItems:'center', gap:6, padding:'3px 10px', borderRadius:20, border:`1px solid ${C.trump}55`, background:`${C.trump}0d` }}>
           <span style={{ fontFamily:'sans-serif', fontSize:11, color:C.dim }}>{t('ui.shared.trump')}</span>
-          <span style={{ fontSize:18, color:SUIT_COLOR[G.trump], fontWeight:700 }}>{G.trump}</span>
+          <span style={{ fontSize:18, color:SUIT_COLOR[G.trump], fontWeight:700 }}><Spoken>{G.trump}</Spoken></span>
           {G.trumpCard && <Card card={G.trumpCard} small backStyle={BACKS[cardBack]} />}
         </div>
       </div>
@@ -799,7 +801,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       {/* Viimeisin siirto — kelluva, ei varaa korkeutta */}
       <div style={{ position: 'relative', height: 0 }}>
         {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+          <div aria-hidden="true" key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
             {lastPlay.cards.map(c => (
               <span key={c.id} style={{ background: C.card, borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
@@ -818,7 +820,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
           {allBots ? '🤖' : '👤'} {G.players[0].name} {G.attackerIdx===0 ? '⚔️' : G.defenderIdx===0 ? '🛡️' : ''}
           {!allBots && isHumanAttacker && <span style={{ color:C.dim, fontSize:11, marginLeft:8 }}>{t('games.maija.ui.attackHint2')}</span>}
           {!allBots && isHumanDefender && !selDefTargetRow && <span style={{ color:C.dim, fontSize:11, marginLeft:8 }}>{t('games.maija.ui.defendHint1')}</span>}
-          {!allBots && isHumanDefender && selDefTargetRow && <span style={{ color:C.gold, fontSize:11, marginLeft:8 }}>{t('games.maija.ui.defendHint2', { card: lbl(selDefTargetRow.att) })}</span>}
+          {!allBots && isHumanDefender && selDefTargetRow && <span style={{ color:C.gold, fontSize:11, marginLeft:8 }}><Spoken>{t('games.maija.ui.defendHint2', { card: lbl(selDefTargetRow.att) })}</Spoken></span>}
         </div>
         <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
           {sortHand(G.players[0].hand).map(c => {

@@ -4,7 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, kortin, SUITS, RANKS, VAL, newDeck, sortHand as sortHandBy, shuffledAINames, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { lbl, spokenSuits, hasSuit, korttia, kortin, SUITS, RANKS, VAL, newDeck, sortHand as sortHandBy, shuffledAINames, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
@@ -13,6 +13,7 @@ import { useGameLog } from '../shared/useGameLog.js';
 import { useGameState } from '../shared/useGameState.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import Spoken from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -1272,7 +1273,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
               {[[t('games.kasino.opts.yes'), true], [t('games.kasino.opts.no'), false]].map(([lab, val]) => {
                 const active = rules.specialBuilds === val;
                 return (
-                  <button key={lab} onClick={() => setRules(r => ({ ...r, specialBuilds: val }))}
+                  <button key={lab} onClick={() => setRules(r => ({ ...r, specialBuilds: val }))} aria-pressed={active}
                     style={{ minWidth: 48, height: 36, padding: '0 12px', borderRadius: 9, cursor: 'pointer', fontSize: 13, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${active ? C.gold : '#2a4a32'}`, background: active ? C.gold + '18' : 'transparent', color: active ? C.gold : C.dim, transition: 'all 0.2s' }}>
                     {lab}
                   </button>
@@ -1281,7 +1282,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
             </div>
           </div>
           <span style={{ color: C.dim, fontFamily: 'sans-serif', fontSize: 10, opacity: 0.7, textAlign: 'center', lineHeight: 1.4 }}>
-            {t('games.kasino.opts.hint')}
+            <Spoken>{t('games.kasino.opts.hint')}</Spoken>
           </span>
         </div>
     </GameStartScreen>
@@ -1342,14 +1343,14 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
             <span style={{ color: C.gold, fontWeight: 700, fontSize: 12, flex: 1 }}>{t('games.kasino.ui.scoringTitle')}</span>
             <button onClick={() => setShowInfo(false)} style={{ background: 'transparent', border: 'none', color: C.dim, fontSize: 18, cursor: 'pointer', padding: '0 4px', lineHeight: 1 }}>✕</button>
           </div>
-          {t('games.kasino.ui.scoring')}
+          <Spoken>{t('games.kasino.ui.scoring')}</Spoken>
         </div>
       )}
 
       {/* Viestikupla */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 60 : 70, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 15, flexShrink: 0 }}>🪙</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{renderLogMessage(msg)}</p>
+        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{hasSuit(msg) ? <Spoken say={spokenSuits(msg)}>{renderLogMessage(msg)}</Spoken> : msg}</p>
       </div>
 
       {/* Pisteet + pakka */}
@@ -1436,12 +1437,12 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
           <PakkaCount count={G.deck.length} flash={pakaAnim} />
           {(selTable.length > 0 || selBuilds.length > 0) && (
             <span style={{ color: selBuilds.length > 0 ? '#e05c3b' : multiGroupDisplay ? C.gold : C.blue }}>
-              {selBuilds.length > 0
+              <Spoken>{selBuilds.length > 0
                 ? `Rakennelma: ${G.builds.filter(b => selBuilds.includes(b.id)).map(b => b.value).join('+')}${selTable.length > 0 ? ` + ${selTable.map(lbl).join('+')}` : ''}`
                 : multiGroupDisplay
                   ? `Multi: ${multiGroupDisplay}`
                   : `Valittu: ${selTable.map(lbl).join('+')} = ${selSum}`
-              }
+              }</Spoken>
             </span>
           )}
         </>}>
@@ -1514,7 +1515,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       {/* Viimeisin siirto */}
       <div style={{ position: 'relative', height: 0 }}>
         {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+          <div aria-hidden="true" key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
             {lastPlay.cards.map(c => (
               <span key={c.id} style={{ background: C.card, borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>

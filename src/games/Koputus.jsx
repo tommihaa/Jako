@@ -4,11 +4,12 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, newDeck, shuffledAINames, lblColored, BOT_RESULT_DELAY, UNKNOWN_EV, opponentsInTurnOrder } from '../shared/helpers.js';
+import { lbl, cardName, newDeck, shuffledAINames, lblColored, BOT_RESULT_DELAY, UNKNOWN_EV, opponentsInTurnOrder } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -849,7 +850,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       <AdviceBubble text={advice?.text || opastus.text} onDismiss={() => { setAdvice(null); opastus.dismiss(); }} />
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 66 : 72, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 17, flexShrink: 0 }}>🤜</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text, overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: msg }}></p>
+        <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text, overflow: 'hidden' }} html={msg} />
       </div>
       {knockedBy !== null && (
         <div style={{ marginBottom: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -945,7 +946,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
             {!discardTop
               ? <div style={{ width: cw, height: ch, borderRadius: 9, border: '1.5px dashed #1a3a22', opacity: 0.25 }} />
               : <div style={{ position: 'absolute', top: 0, left: 0, width: cw, height: ch, borderRadius: 9, background: C.card, border: `2px solid ${adv?.target === 'discard' ? C.botMode : isHuman && phase === 'draw' ? C.gold : '#aaa'}`, boxShadow: adv?.target === 'discard' ? '0 0 18px rgba(192,132,252,0.65)' : isHuman && phase === 'draw' ? `0 0 18px rgba(201,168,76,0.55)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ color: SUIT_COLOR[discardTop.s], fontFamily: 'Georgia,serif', textAlign: 'center', lineHeight: 1.1, pointerEvents: 'none' }}>
+                <div role="img" aria-label={cardName(discardTop)} style={{ color: SUIT_COLOR[discardTop.s], fontFamily: 'Georgia,serif', textAlign: 'center', lineHeight: 1.1, pointerEvents: 'none' }}>
                   <div style={{ fontSize: isMobile ? 17 : 22, fontWeight: 700 }}>{discardTop.r}</div>
                   <div style={{ fontSize: isMobile ? 20 : 26 }}>{discardTop.s}</div>
                 </div>
@@ -967,14 +968,14 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: drawn && showDrawn ? 'rgba(255,255,255,0.022)' : 'transparent', border: `1px solid ${drawn && showDrawn ? '#2a4a32' : 'transparent'}`, borderRadius: 10, marginBottom: isMobile ? 4 : 12, minHeight: isMobile ? 36 : 50, transition: 'background 0.2s' }}>
         {drawn && showDrawn
-          ? <><span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flexShrink: 0 }}>{t('games.koputus.ui.drawnLabel')}</span><Card card={drawn} faceUp small /><span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}>{drawn.r}{drawn.s} · <span style={{ color: C.gold, fontWeight: 700 }}>{drawn.v} p</span></span></>
+          ? <><span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, flexShrink: 0 }}>{t('games.koputus.ui.drawnLabel')}</span><Card card={drawn} faceUp small /><span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}><Spoken>{lbl(drawn)}</Spoken> · <span style={{ color: C.gold, fontWeight: 700 }}>{drawn.v} p</span></span></>
           : <span style={{ color: 'transparent', userSelect: 'none' }}>·</span>}
       </div>
       {phase === 'spec_k_confirm' && specState?.tgtCard && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'rgba(201,168,76,0.06)', border: `1px solid ${C.gold}44`, borderRadius: 10, marginBottom: 12 }}>
           <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold, flexShrink: 0 }}>{t('games.koputus.ui.opponentCardLabel')}</span>
           <Card card={specState.tgtCard} faceUp small />
-          <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}>{specState.tgtCard.r}{specState.tgtCard.s} · <span style={{ color: C.gold, fontWeight: 700 }}>{specState.tgtCard.v} p</span></span>
+          <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}><Spoken>{lbl(specState.tgtCard)}</Spoken> · <span style={{ color: C.gold, fontWeight: 700 }}>{specState.tgtCard.v} p</span></span>
         </div>
       )}
 

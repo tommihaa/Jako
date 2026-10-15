@@ -68,30 +68,64 @@ kuunneltu.
 
 *Paskahousu:* kortin valinta kertoo tilan (J-2 toimii), ja kohdistus jää korttiin.
 
-**J-8. Maa kuuluu "emojina" näkyvissä teksteissä.** Tila: auki. Kortit ja ilmoitukset
-sanovat maan nimeltä (`cardName`, `Announcer.toPlain`), mutta muu näkyvä teksti kirjoittaa
-kortin symbolilla, ja TalkBack lukee symbolin "emojiksi". Dev-previewin haku (pelin alku ja
-yksi valinta, 15.10.2026) löysi symbolin ainakin näistä: Paskahousun Pelaa-nappi ("Pelaa
-(2♠)") ja kasan päällimmäinen, Kultakalan Vaihda- ja Heitä-napit, Ristiseiskan pöydän rivit,
-Seiskan Lyö-nappi, tavoiterivi ja vaadittu maa, Kasinon pöytä ja "Valittu: 4♠ = 4", Maijan ja
-Moskan valttimaa. Koputuksesta ja Läpsystä ei löytynyt. Lista ei ole täydellinen, koska haku
-näki vain alkutilanteen.
+**J-8. Maa kuuluu "emojina" näkyvissä teksteissä.** Tila: korjattu 15.10.2026, ei julkaistu.
+Kortit ja ilmoitukset sanoivat maan nimeltä (`cardName`, `Announcer.toPlain`), mutta muu näkyvä
+teksti kirjoitti kortin symbolilla ja TalkBack luki symbolin "emojiksi". Dev-previewin haku
+(pelin alku ja yksi valinta, 15.10.2026) löysi symbolin ainakin näistä: Paskahousun Pelaa-nappi
+("Pelaa (2♠)") ja kasan päällimmäinen, Kultakalan Vaihda- ja Heitä-napit, Ristiseiskan pöydän
+rivit, Seiskan Lyö-nappi, tavoiterivi ja vaadittu maa, Kasinon pöytä ja "Valittu: 4♠ = 4",
+Maijan ja Moskan valttimaa.
 
-**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: auki. Live-alueeseen
-ilmoitus menee kerran (todennettu previewissä). Päätelmä, ei mitattu: ilmoitusalue jää sisältöineen
-saavutettavuuspuuhun, joten sivun läpi pyyhkäisy lukee viimeisimmän ilmoituksen uudelleen.
+Korjaus: näkyvä symboli on `aria-hidden` ja ruudunlukija saa saman tekstin sanoina
+(`shared/Spoken.jsx`: `Spoken` tekstille ja `SpokenHtml` pelien HTML-viesteille, muunnos
+`helpers.spokenSuits`, jota myös live-alue käyttää). Itse piirretyt kortinkuvat saivat kortin
+nimen samoin kuin `Card` (`role="img"`). Ohimenevä "viimeisin siirto" -merkki ja Läpsyn
+käännön animaatio ovat `aria-hidden`, koska live-alue on jo sanonut saman. Koristesymbolit
+(aloitusnäytön maarivi, pelien tunnukset valikossa, Maijan Q♠-kuvake ja Ristiseiskan ♣
+viestilaatikossa) ovat `aria-hidden`. Ristiseiskan pöydän rivi kuuluu yhtenä tekstinä ("risti
+5–9"). Pelien ulkopuolelta korjattiin lisäksi sääntörivit ja sanasto (`renderSelitys`),
+tulosruutu, toistonäkymä ja asetusten "Kaksivärinen pakka".
 
-**J-10. Pelin alussa "nimetön, nimetön…" muiden pelaajien korttien kohdalla.** Tila: auki,
-syy tuntematon. Vastustajien selkäpuoliset kortit ovat `aria-hidden`, eikä previewin haku
-löytänyt nimettömiä rooleja eikä klikattavia elementtejä ilman nimeä (jaon aikana 50, 300 ja
-800 ms sekä valmiissa näkymässä).
+Kohdat löydettiin testillä eikä listasta, koska lista näki vain alkutilanteen.
+`test/ruudunlukija-maat.test.jsx` pelaa jokaista peliä ihmisenä satunnaisilla painalluksilla
+(400 askelta, kolme siementä) ja lukee jokaisen välitilan: tekstisolmu, jota ei peitä
+`aria-hidden` eikä nimen korvaava `aria-label`, ei saa sisältää maasymbolia. Sama testi avaa
+valikon säännöt, sanaston ja asetukset. Testi vartioi jatkossa uudet tekstit. Rajoitus: jsdom
+ei laske näkyvyyttä, joten testi ei tiedä, mitä Chrome lopulta antaa TalkBackille. Testin
+ensimmäinen ajo löysi 144 erilaista vuotavaa tekstiä, kun kortit yhdistettiin yhdeksi muodoksi.
+Ne syntyivät paljon harvemmasta koodikohdasta, koska esimerkiksi Mestarin neuvon kupla tuotti
+yksin kymmeniä.
 
-**J-11. Aloitusnäytön valinnat eivät kerro valittua.** Tila: auki. Paskahousun sääntörivit
-kuuluvat, mutta ei sitä, mikä vaihtoehto on valittuna: valinta näkyy vain kultaisena kehyksenä.
-Sama rakenne on Kasinon (`Kasino.jsx:1275`) ja Ristiseiskan (`Ristiseiska.jsx:537`)
-sääntövalinnoissa sekä yhteisen aloitusnäytön (`GameStartScreen.jsx`) pelaajamäärässä ja
-nimiryhmissä: yhdessäkään ei ole `aria-pressed`ia. Paskahousun "Kovat kakkoset" -vaihtoehto on
-lisäksi symboleina (♠2 ♣2), ks. J-8.
+Todennettu dev-previewissä 15.10.2026 (Chrome, äänet pois): Paskahousun alku, jako ja
+korttivalinta sekä Ristiseiskan alku ilman yhtään paljasta symbolia. Pelaa-nappi on
+näkyvästi "Pelaa (10♥)" ja ruudunlukijalle "Pelaa (hertta 10)". Ulkoasu ennallaan. Ei kuunneltu.
+
+**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: korjattu 15.10.2026, ei
+julkaistu. Live-alueeseen ilmoitus menee kerran (todennettu previewissä). Syy (päätelmä, ei
+mitattu): ilmoitusalue jäi sisältöineen saavutettavuuspuuhun, joten sivun läpi pyyhkäisy luki
+viimeisimmän ilmoituksen uudelleen. Korjaus: alue tyhjenee arvioidun puheajan jälkeen
+(`Announcer.jsx`), ennen seuraavaa ilmoitusta. Todennettu dev-previewissä: alue vuorottelee
+ilmoituksen ja tyhjän välillä. Testi `announcer.test.jsx` › "tyhjentää alueen puheajan jälkeen".
+Ei kuunneltu, joten päätelmä vahvistuu vasta kun toistoa ei enää kuulu.
+
+**J-10. Pelin alussa "nimetön, nimetön…" muiden pelaajien korttien kohdalla.** Tila:
+korjattu 15.10.2026, ei julkaistu. Syy (päätelmä, ei mitattu): pelin alun sekoitusanimaatio
+(`ShuffleOverlay`) piirtää kymmenen kortinselkää SVG-kuvina ilman nimeä ja niistä neljä lentää
+pelaajien paikoille. Chrome antaa nimettömän SVG:n ruudunlukijalle kuvana, jonka TalkBack lukee
+"nimetön". Aiempi haku etsi rooleja ja klikattavia elementtejä, eikä SVG:n implisiittinen
+kuvarooli osunut siihen. Korjaus: animaatio on `aria-hidden` ja kortinselkien SVG:t
+(`BACKS.jsx`) ovat `aria-hidden` kaikkialla, myös pinoissa (`FanStack`). Todennettu
+dev-previewissä: jaon aikana ja sen jälkeen piilottamattomia SVG:itä on nolla. Ei kuunneltu.
+
+**J-11. Aloitusnäytön valinnat eivät kerro valittua.** Tila: korjattu 15.10.2026, ei
+julkaistu. Paskahousun sääntörivit kuuluivat, mutta ei sitä, mikä vaihtoehto on valittuna:
+valinta näkyi vain kultaisena kehyksenä. Sama rakenne oli Kasinon ja Ristiseiskan
+sääntövalinnoissa sekä yhteisen aloitusnäytön (`GameStartScreen.jsx`, `GroupPicker.jsx`)
+pelaajamäärässä ja nimiryhmissä. Korjaus: jokaisessa vaihtoehdossa on `aria-pressed`
+(APG toggle button). Pelaajamäärä ja nimiryhmät ovat lisäksi `role="group"`, joka viittaa
+näkyvään otsikkoonsa (`aria-labelledby`), kuten J-5:ssä. Paskahousun "Kovat kakkoset"
+-vaihtoehto kuuluu sanoina "pata 2, risti 2" (J-8). Todennettu dev-previewissä: 18
+vaihtoehtoa, valitut `true` ja muut `false`. Ei kuunneltu.
 
 *Havainto:* Tommin mukaan TalkBackin ranskalainen ääni kuulostaa paljon luontevammalta kuin
 suomalainen. Se on puhemoottorin ominaisuus eikä Jaon.

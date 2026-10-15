@@ -4,11 +4,12 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, truncName, newDeck, cardName, shuffledAINames, lblColored, BOT_RESULT_DELAY, UNKNOWN_EV, opponentsInTurnOrder } from '../shared/helpers.js';
+import { isRed, lbl, truncName, newDeck, cardName, spokenSuits, shuffledAINames, lblColored, BOT_RESULT_DELAY, UNKNOWN_EV, opponentsInTurnOrder } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -598,14 +599,14 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, pointerEvents: 'none' }}>
           <div style={{ background: 'rgba(160,20,20,0.18)', border: '2px solid rgba(255,90,90,0.65)', borderRadius: 22, padding: '22px 36px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, boxShadow: '0 0 50px rgba(255,60,60,0.45)', animation: 'kohahdus 1.8s ease-out forwards' }}>
             <span style={{ fontSize: 40 }}>😱</span>
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 26, fontWeight: 700, color: isRed(kohahdus.s) ? '#ff7070' : '#e8e8e8' }}>{lbl(kohahdus)}</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 26, fontWeight: 700, color: isRed(kohahdus.s) ? '#ff7070' : '#e8e8e8' }}><Spoken>{lbl(kohahdus)}</Spoken></span>
             <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: '#cc8888', letterSpacing: 1 }}>pakotettiin poistopakkaan!</span>
           </div>
         </div>
       )}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0 }}>🐟</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: isMobile ? 12 : 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
+        <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: isMobile ? 12 : 13, lineHeight: 1.55, color: C.text }} html={msg} />
       </div>
 
       {ais.length > 0 && (
@@ -687,7 +688,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
             {!discardTop
               ? <div style={{ width: pw, height: ph, borderRadius: 9, border: `1.5px dashed ${canDiscard ? C.gold : C.panelBorder}`, opacity: canDiscard ? 0.8 : 0.3, boxShadow: canDiscard ? `0 0 14px rgba(201,168,76,0.4)` : 'none', transition: 'all 0.2s' }} />
               : <div style={{ position: 'relative', width: pw, height: ph, borderRadius: 9, background: C.card, border: `2px solid ${adv?.target === 'discard' ? C.botMode : (canDraw || canDiscard) ? C.gold : '#aaa'}`, boxShadow: adv?.target === 'discard' ? '0 0 18px rgba(192,132,252,0.65)' : (canDraw || canDiscard) ? `0 0 18px rgba(201,168,76,0.5)` : '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ textAlign: 'center', color: SUIT_COLOR[discardTop.s], fontFamily: 'Georgia,serif', lineHeight: 1.1, pointerEvents: 'none' }}>
+                <div role="img" aria-label={cardName(discardTop)} style={{ textAlign: 'center', color: SUIT_COLOR[discardTop.s], fontFamily: 'Georgia,serif', lineHeight: 1.1, pointerEvents: 'none' }}>
                   <div style={{ fontSize: isMobile ? 15 : 18, fontWeight: 700 }}>{discardTop.r}</div>
                   <div style={{ fontSize: isMobile ? 18 : 22 }}>{discardTop.s}</div>
                 </div>
@@ -708,7 +709,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       {/* Viimeisin siirto */}
       <div style={{ position: 'relative', height: 0 }}>
         {lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
+          <div aria-hidden="true" key={lastPlay.cards[0].id} style={{ position: 'absolute', bottom: 4, left: 0, zIndex: 5, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`, borderRadius: 12, padding: '4px 12px', animation: 'lastPlayFade 1.9s ease forwards', pointerEvents: 'none' }}>
             <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: lastPlay.isHuman ? C.gold : C.dim }}>{lastPlay.name}</span>
             {lastPlay.cards.map(c => (
               <span key={c.id} style={{ background: C.card, borderRadius: 4, padding: '1px 5px', fontSize: 12, fontWeight: 700, fontFamily: 'Georgia,serif', color: SUIT_COLOR[c.s] }}>{c.r}{c.s}</span>
@@ -749,10 +750,12 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
         <div style={{ minHeight: isMobile ? 32 : 44, display: 'flex', gap: isMobile ? 6 : 10, alignItems: 'center', marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
           {canSwapRow && swapIdx !== null && (
             <button onClick={() => humanSwapRow(swapIdx)} style={{ background: C.gold + '18', border: `1px solid ${C.gold}`, borderRadius: 9, padding: isMobile ? '6px 12px' : '10px 18px', color: C.gold, fontSize: isMobile ? 12 : 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}
+              aria-label={spokenSuits(t('games.kultakala.ui.swapTo', { card: lbl(held), n: swapIdx + 1 }))}
               dangerouslySetInnerHTML={{ __html: t('games.kultakala.ui.swapTo', { card: lblColored(held), n: swapIdx + 1 }) }} />
           )}
           {canStop && (
             <button onClick={humanStopSwap} style={{ background: 'transparent', border: `1px solid ${C.gold}88`, borderRadius: 9, padding: isMobile ? '6px 12px' : '10px 18px', color: C.gold, fontSize: isMobile ? 12 : 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}
+              aria-label={spokenSuits(t('games.kultakala.ui.discard', { card: lbl(held) }))}
               dangerouslySetInnerHTML={{ __html: t('games.kultakala.ui.discard', { card: lblColored(held) }) }} />
           )}
           {(canDraw || canSwapRow) && <><AdviceButton onClick={askAdvice} /><GuideButton onClick={askGuide} /></>}

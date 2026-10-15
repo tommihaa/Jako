@@ -4,7 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle, aiShouldFumble, truncName, shuffledAINames, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { lbl, korttia, shuffle, aiShouldFumble, truncName, shuffledAINames, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder, spokenSuits, cardName } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
@@ -14,6 +14,7 @@ import { useGameState } from '../shared/useGameState.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
+import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -987,7 +988,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: isMobile ? 300 : 360 }}>
           {[
             { key: 'handSize', label: t('games.paskahousu.opts.handSize'), opts: [5, 6] },
-            { key: 'hardTwos', label: t('games.paskahousu.opts.hardTwos'), opts: [[t('games.paskahousu.opts.all'), true], [<span><span style={{ color: SUIT_COLOR['♠'] }}>♠2</span> <span style={{ color: SUIT_COLOR_DARK['♣'] }}>♣2</span></span>, false]] },
+            { key: 'hardTwos', label: t('games.paskahousu.opts.hardTwos'), opts: [[t('games.paskahousu.opts.all'), true], [<Spoken say={spokenSuits('♠2, ♣2')}><span style={{ color: SUIT_COLOR['♠'] }}>♠2</span> <span style={{ color: SUIT_COLOR_DARK['♣'] }}>♣2</span></Spoken>, false]] },
             { key: 'faceMin',  label: t('games.paskahousu.opts.faceMin'), opts: [0, 6, 7, 8, 9] },
             { key: 'singleTwos', label: t('games.paskahousu.opts.singleTwos'), opts: [[t('games.paskahousu.opts.together'), false], [t('games.paskahousu.opts.oneAtATime'), true]] },
           ].map(row => (
@@ -999,7 +1000,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
                   const lab = Array.isArray(o) ? o[0] : o;
                   const active = rules[row.key] === val;
                   return (
-                    <button key={String(val)} onClick={() => setRules(r => ({ ...r, [row.key]: val }))}
+                    <button key={String(val)} onClick={() => setRules(r => ({ ...r, [row.key]: val }))} aria-pressed={active}
                       style={{ minWidth: 40, height: 36, padding: '0 12px', borderRadius: 9, cursor: 'pointer', fontSize: 13, fontWeight: 700, fontFamily: 'Georgia,serif', border: `2px solid ${active ? C.gold : '#2a4a32'}`, background: active ? C.gold + '18' : 'transparent', color: active ? C.gold : C.dim, transition: 'all 0.2s' }}>
                       {lab}
                     </button>
@@ -1035,7 +1036,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 40 : 56, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0 }}>🃏</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} dangerouslySetInnerHTML={{ __html: msg }}></p>
+        <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} html={msg} />
       </div>
 
       {/* AI-kädet — viuhka */}
@@ -1102,7 +1103,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
                 backStyle={BACKS[cardBack]}
                 glowColor={jpIds.has(G.top.id) ? C.gold : undefined}
                 topCard={
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: suitColor(G.top.s), fontFamily: 'Georgia,serif', lineHeight: 1.1 }}>
+                  <div role="img" aria-label={cardName(G.top)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: suitColor(G.top.s), fontFamily: 'Georgia,serif', lineHeight: 1.1 }}>
                     <div style={{ fontSize: 20, fontWeight: 700 }}>{G.top.r}</div>
                     <div style={{ fontSize: 24 }}>{G.top.s}</div>
                   </div>
@@ -1123,7 +1124,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
             return (
               <div>
                 <div style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.gold, marginBottom: 3 }}>
-                  {G.top.r}{G.top.s} {t('games.paskahousu.ui.cardValue', { v: G.top.v })}
+                  <Spoken>{`${lbl(G.top)} ${t('games.paskahousu.ui.cardValue', { v: G.top.v })}`}</Spoken>
                 </div>
                 {sameRankCount > 1 && (
                   <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.tikki, marginBottom: 2 }}>
@@ -1147,7 +1148,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
           Ennen tämä lohko oli paneelin yllä, jolloin badge vilahti yläkulmassa. */}
       <div style={{ position: 'relative', height: 0 }}>
         {showLastPlay && lastPlay && (
-          <div key={lastPlay.cards[0].id} style={{
+          <div aria-hidden="true" key={lastPlay.cards[0].id} style={{
             position: 'absolute', bottom: 4, left: 0, zIndex: 5,
             display: 'flex', alignItems: 'center', gap: 8,
             background: 'rgba(13,22,18,0.95)', border: `1px solid ${lastPlay.isHuman ? C.gold + '66' : C.panelBorder}`,
@@ -1167,11 +1168,11 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       {/* Ohje */}
       {isMyTurn && !mustSkip && (
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim, marginBottom: 8, fontStyle: 'italic' }}>
-          {selected.length > 0
+          <Spoken>{selected.length > 0
             ? t('games.paskahousu.ui.hintSelected', { cards: selected.map(lbl).join(', ') })
             : G.top
               ? t('games.paskahousu.ui.hintPlay')
-              : t('games.paskahousu.ui.hintEmpty')}
+              : t('games.paskahousu.ui.hintEmpty')}</Spoken>
         </div>
       )}
 
@@ -1182,7 +1183,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         {G.phase === 'swap_offer' && G.swapData?.pidx === 0 && (
           <div style={{ position: 'absolute', inset: 0, zIndex: 10, borderRadius: 14, background: 'rgba(13,22,18,0.97)', border: `2px solid ${C.gold}66`, padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
             <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.gold }}>
-              {t('games.paskahousu.ui.swapTitle', { cards: G.swapData.playedCards.map(lbl).join(', ') })}
+              <Spoken>{t('games.paskahousu.ui.swapTitle', { cards: G.swapData.playedCards.map(lbl).join(', ') })}</Spoken>
             </div>
             <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim }}>
               {t('games.paskahousu.ui.swapHint')}
@@ -1208,7 +1209,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
               <button
                 onClick={() => { const toSwap = selected.length ? selected : defaultSwap(G.swapData.eligible); setSel([]); opastus.answer(opastusAvain('swap', toSwap.map(c => c.id))); applySwap(gRef.current, toSwap); }}
                 style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 20px', color: '#0d2118', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-                {t('games.paskahousu.ui.swapNow', { cards: (selected.length ? selected : defaultSwap(G.swapData.eligible)).map(lbl).join(' ') })}
+                <Spoken>{t('games.paskahousu.ui.swapNow', { cards: (selected.length ? selected : defaultSwap(G.swapData.eligible)).map(lbl).join(' ') })}</Spoken>
               </button>
               <button
                 onClick={() => { opastus.answer(opastusAvain('skip')); skipSwap(gRef.current); }}
@@ -1260,7 +1261,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         )}
         {isMyTurn && !mustSkip && selValid && (
           <button onClick={humanPlay} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 22px', color: '#0d2118', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-            {t('games.paskahousu.ui.play', { cards: selected.map(lbl).join(', ') })}
+            <Spoken>{t('games.paskahousu.ui.play', { cards: selected.map(lbl).join(', ') })}</Spoken>
           </button>
         )}
         {isMyTurn && !mustSkip && selected.length > 0 && (

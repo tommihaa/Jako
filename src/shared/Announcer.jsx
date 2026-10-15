@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { cardName, suitName } from './helpers.js';
+import { spokenHtml } from './helpers.js';
 
 // Visuaalisesti piilotettu live-alue. Ilmoittaa ruudunlukijalle pelin tapahtumat
 // sitä mukaa kuin ne syntyvät. Aina läsnä, riippumatta siitä onko näkyvä
@@ -35,8 +35,13 @@ function pump() {
   timer = setTimeout(() => {
     const next = /** @type {string} */ (queue.shift());
     listeners.forEach(l => l(next));
-    timer = setTimeout(() => { busy = false; timer = null; pump(); },
-      Math.max(MIN_SPEECH_MS, next.length * MS_PER_CHAR) + GAP_MS);
+    // Puheajan jälkeen alue tyhjenee. Muuten viimeisin ilmoitus jää saavutettavuuspuuhun
+    // ja sivun läpi pyyhkäisy luki sen toiseen kertaan ("Vastustajat vuorojärjestyksessä"
+    // kuului kahdesti, auditointi J-9). Tyhjennystä ruudunlukija ei sano.
+    timer = setTimeout(() => {
+      listeners.forEach(l => l(''));
+      timer = setTimeout(() => { busy = false; timer = null; pump(); }, GAP_MS);
+    }, Math.max(MIN_SPEECH_MS, next.length * MS_PER_CHAR));
   }, 0);
 }
 
@@ -48,24 +53,16 @@ export function clearAnnouncements() {
   busy = false;
 }
 
-// Emojin esitysvalitsin (U+FE0F) ja sitova välilyönti (U+00A0) koodina, koska
-// näkymättömiä merkkejä ei erota lähdekoodista.
-const VS16 = new RegExp(String.fromCharCode(0xfe0f), 'g');
+// Sitova välilyönti (U+00A0) koodina, koska näkymätöntä merkkiä ei erota lähdekoodista.
 const NBSP = String.fromCharCode(0xa0);
 
 // Lokiteksti voi olla HTML-string tai React-node. Ilmoitetaan vain string-viestit.
-// Maasymbolit kirjoitetaan sanoiksi samoin kuin korttien nimet (`cardName`), koska
-// TalkBack lukee ♣:n emojina eikä maana (Tommin kuuntelu Pixelillä 14.10.2026).
+// Maasymbolit kirjoitetaan sanoiksi (`spokenHtml`), koska TalkBack lukee ♣:n emojina
+// eikä maana (Tommin kuuntelu Pixelillä 14.10.2026).
 /** @param {unknown} message */
 function toPlain(message) {
   if (typeof message !== 'string') return '';
-  return message
-    .replace(/<[^>]*>/g, '')
-    .replace(VS16, '')
-    .replace(/(10|[2-9AJQK])([♠♥♦♣])/g, (_, r, s) => cardName({ r, s }))
-    .replace(/[♠♥♦♣]/g, s => suitName(s))
-    .replace(/\s+/g, ' ')
-    .trim();
+  return spokenHtml(message);
 }
 
 // Jokainen viesti päättyy välimerkkiin, jotta puhe laskee sävelkorkeuden ja

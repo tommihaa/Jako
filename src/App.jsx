@@ -4,6 +4,7 @@ import GameResult from './shared/GameResult.jsx';
 import StatsPanel from './shared/StatsPanel.jsx';
 import ShareQR from './shared/ShareQR.jsx';
 import Announcer from './shared/Announcer.jsx';
+import Spoken from './shared/Spoken.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
 import { loadPref, savePref, useStickySetting } from './shared/storage.js';
 import { KANSA, NAME_GROUPS, POOL_BY_GROUP } from './shared/playerGroups.js';
@@ -205,7 +206,7 @@ const normalizeStats = (raw) => {
 function renderSelitys(text) {
   return text.split(/((?:[2-9]|10|[AJQKT])[♠♥♦♣]|[♠♥♦♣])/).map((p, i) => {
     const suit = p.match(/[♠♥♦♣]/)?.[0];
-    return suit ? <span key={i} style={{ color: SUIT_COLOR_DARK[suit], fontWeight: 700 }}>{p}</span> : p;
+    return suit ? <span key={i} style={{ color: SUIT_COLOR_DARK[suit], fontWeight: 700 }}><Spoken>{p}</Spoken></span> : p;
   });
 }
 
@@ -237,7 +238,7 @@ function RuleRow({ text }) {
       </div>
       {defn && (
         <div style={{ marginLeft: 14, marginTop: 3, padding: '5px 10px', background: `${C.gold}12`, borderLeft: `2px solid ${C.gold}66`, borderRadius: '0 6px 6px 0', fontSize: 11, fontFamily: 'sans-serif', lineHeight: 1.65, color: C.dim }}>
-          <span style={{ color: C.gold, fontWeight: 700 }}>{defn.emoji} {defnTerm}</span>{' · '}{renderSelitys(defnSelitys)}
+          <span style={{ color: C.gold, fontWeight: 700 }}><span aria-hidden="true">{defn.emoji}</span> {defnTerm}</span>{' · '}{renderSelitys(defnSelitys)}
         </div>
       )}
     </div>
@@ -259,7 +260,7 @@ function SanastoRivi({ s }) {
       <button
         onClick={() => setOpen(v => !v)}
         style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '8px 2px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
-        <span style={{ fontSize: 15, flexShrink: 0, minWidth: 22, ...(s.emojiStyle || {}) }}>{s.emoji}</span>
+        <span aria-hidden="true" style={{ fontSize: 15, flexShrink: 0, minWidth: 22, ...(s.emojiStyle || {}) }}>{s.emoji}</span>
         <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 13, color: open ? C.gold : C.text, transition: 'color 0.15s' }}>{term}</span>
         {gameNames && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, opacity: 0.6, marginRight: 4 }}>{gameNames}</span>}
         <span style={{ fontSize: 13, color: C.dim, transition: 'transform 0.15s', transform: open ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
@@ -313,7 +314,7 @@ function GameBtn({ g, stats, onSelect, onOpenGlossary }) {
           onMouseEnter={e => e.currentTarget.style.background = 'rgba(201,168,76,0.06)'}
           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
         >
-          <span style={{ fontSize: 26, flexShrink: 0, minWidth: 32, textAlign: 'center' }}>{g.emoji}</span>
+          <span aria-hidden="true" style={{ fontSize: 26, flexShrink: 0, minWidth: 32, textAlign: 'center' }}>{g.emoji}</span>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
               {g.name}
@@ -868,7 +869,7 @@ export default function App() {
                       disabled={!!disabled}
                       style={{ accentColor: C.gold, width: 14, height: 14, marginTop: 1, flexShrink: 0 }}
                     />
-                    <span style={{ fontSize: isMobile ? 11 : 12, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.4 }}>{label}</span>
+                    <span style={{ fontSize: isMobile ? 11 : 12, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.4 }}><Spoken>{label}</Spoken></span>
                   </label>
                 ));
               })()}

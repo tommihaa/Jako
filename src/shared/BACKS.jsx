@@ -4,7 +4,7 @@ export const BACKS = {
     bg: '#0d2810',
     border: '#2a5a20',
     render: (w, h) => (
-      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ position: 'absolute', top: 0, left: 0, borderRadius: 5 }}>
+      <svg aria-hidden="true" width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ position: 'absolute', top: 0, left: 0, borderRadius: 5 }}>
         <rect width={w} height={h} fill="#0d2810" />
         <rect x="2" y="2" width={w - 4} height={h - 4} fill="none" stroke="#c9a84c" strokeWidth="0.8" opacity="0.6" rx="3" />
         <rect x="4" y="4" width={w - 8} height={h - 8} fill="none" stroke="#2a5a20" strokeWidth="0.4" rx="2" />
@@ -22,7 +22,7 @@ export const BACKS = {
     bg: '#3a1e08',
     border: '#6a3a12',
     render: (w, h) => (
-      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ position: 'absolute', top: 0, left: 0, borderRadius: 5 }}>
+      <svg aria-hidden="true" width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ position: 'absolute', top: 0, left: 0, borderRadius: 5 }}>
         <rect width={w} height={h} fill="#3a1e08" />
         <rect x="2" y="2" width={w - 4} height={h - 4} fill="none" stroke="#c9a84c" strokeWidth="0.8" opacity="0.5" rx="3" />
         <circle cx={w / 2} cy={h / 2} r={Math.min(w, h) * 0.26} fill="#2a1206" stroke="#8a5020" strokeWidth="1" opacity="0.9" />
@@ -39,7 +39,7 @@ export const BACKS = {
     bg: '#0a0a18',
     border: '#1a1a35',
     render: (w, h) => (
-      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ position: 'absolute', top: 0, left: 0, borderRadius: 5 }}>
+      <svg aria-hidden="true" width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ position: 'absolute', top: 0, left: 0, borderRadius: 5 }}>
         <rect width={w} height={h} fill="#0a0a18" />
         <rect x="2" y="2" width={w - 4} height={h - 4} fill="none" stroke="#4a4a8a" strokeWidth="0.8" opacity="0.7" rx="3" />
         <circle cx={w / 2} cy={h / 2} r={Math.min(w, h) * 0.28} fill="none" stroke="#2a2a6a" strokeWidth="0.7" opacity="0.6" />
