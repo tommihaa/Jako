@@ -86,5 +86,12 @@ syy tuntematon. Vastustajien selkäpuoliset kortit ovat `aria-hidden`, eikä pre
 löytänyt nimettömiä rooleja eikä klikattavia elementtejä ilman nimeä (jaon aikana 50, 300 ja
 800 ms sekä valmiissa näkymässä).
 
+**J-11. Aloitusnäytön valinnat eivät kerro valittua.** Tila: auki. Paskahousun sääntörivit
+kuuluvat, mutta ei sitä, mikä vaihtoehto on valittuna: valinta näkyy vain kultaisena kehyksenä.
+Sama rakenne on Kasinon (`Kasino.jsx:1275`) ja Ristiseiskan (`Ristiseiska.jsx:537`)
+sääntövalinnoissa sekä yhteisen aloitusnäytön (`GameStartScreen.jsx`) pelaajamäärässä ja
+nimiryhmissä: yhdessäkään ei ole `aria-pressed`ia. Paskahousun "Kovat kakkoset" -vaihtoehto on
+lisäksi symboleina (♠2 ♣2), ks. J-8.
+
 *Havainto:* Tommin mukaan TalkBackin ranskalainen ääni kuulostaa paljon luontevammalta kuin
 suomalainen. Se on puhemoottorin ominaisuus eikä Jaon.
