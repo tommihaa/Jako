@@ -66,5 +66,25 @@ ruudunlukijalle oma teksti `ui.a11y.version` 23 kielellä ("Versio 1.2.235, julk
 15.10.2026 klo 16.05"), ja näkyvä leima on `aria-hidden`. Todennettu dev-previewissä. Ei
 kuunneltu.
 
+*Paskahousu:* kortin valinta kertoo tilan (J-2 toimii), ja kohdistus jää korttiin.
+
+**J-8. Maa kuuluu "emojina" näkyvissä teksteissä.** Tila: auki. Kortit ja ilmoitukset
+sanovat maan nimeltä (`cardName`, `Announcer.toPlain`), mutta muu näkyvä teksti kirjoittaa
+kortin symbolilla, ja TalkBack lukee symbolin "emojiksi". Dev-previewin haku (pelin alku ja
+yksi valinta, 15.10.2026) löysi symbolin ainakin näistä: Paskahousun Pelaa-nappi ("Pelaa
+(2♠)") ja kasan päällimmäinen, Kultakalan Vaihda- ja Heitä-napit, Ristiseiskan pöydän rivit,
+Seiskan Lyö-nappi, tavoiterivi ja vaadittu maa, Kasinon pöytä ja "Valittu: 4♠ = 4", Maijan ja
+Moskan valttimaa. Koputuksesta ja Läpsystä ei löytynyt. Lista ei ole täydellinen, koska haku
+näki vain alkutilanteen.
+
+**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: auki. Live-alueeseen
+ilmoitus menee kerran (todennettu previewissä). Päätelmä, ei mitattu: ilmoitusalue jää sisältöineen
+saavutettavuuspuuhun, joten sivun läpi pyyhkäisy lukee viimeisimmän ilmoituksen uudelleen.
+
+**J-10. Pelin alussa "nimetön, nimetön…" muiden pelaajien korttien kohdalla.** Tila: auki,
+syy tuntematon. Vastustajien selkäpuoliset kortit ovat `aria-hidden`, eikä previewin haku
+löytänyt nimettömiä rooleja eikä klikattavia elementtejä ilman nimeä (jaon aikana 50, 300 ja
+800 ms sekä valmiissa näkymässä).
+
 *Havainto:* Tommin mukaan TalkBackin ranskalainen ääni kuulostaa paljon luontevammalta kuin
 suomalainen. Se on puhemoottorin ominaisuus eikä Jaon.
