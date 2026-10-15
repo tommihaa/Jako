@@ -186,3 +186,37 @@ vastaukset:
   vaihtoehdoista: ilmoitukset, kortin nimi, tilasanat, viive). Tila palautetaan auki.
   Alueen tyhjentäminen puheajan jälkeen ei siis riittänyt. Toisto heti perään viittaa siihen,
   että TalkBack lukee ilmoituksen kahdesti jo saapuessaan (päätelmä, ei mitattu).
+
+## J-9:n mittaussuunnitelma (15.10.2026, kesken)
+
+Tila: suunnitelma, mittausta ei ajettu. Tommi pysäytti työn ennen kuin TalkBack kytkettiin.
+
+**Mitattu jo.** Selaimessa (dev-preview, MutationObserver pelin alussa) sivulla on kaksi
+live-aluetta: `Announcer` (`aria-live="polite"`, `aria-atomic="true"`) ja TurnPromptin
+`role="status"`. Ilmoitusalueeseen kirjoitetaan jokainen ilmoitus kerran: "Vastustajat…"
+424 ms:n kohdalla, tyhjennys 4,8 s:n kohdalla ja seuraava ilmoitus kerran. Sivu ei siis lähetä
+mitään kahdesti. Toisto syntyy Chromen ja TalkBackin välissä (päätelmä mittauksesta).
+
+**Hypoteesit.** (1) Chrome Android merkitsee solmun live-alueeksi ja lähettää lisäksi
+ilmoituksen, jolloin TalkBack puhuu molemmat. (2) `aria-atomic="true"` saa Chromen ilmoittamaan
+sekä lisätyn tekstin että koko alueen. (3) Uuden tekstisolmun lisäys tyhjään alueeseen
+käyttäytyy eri tavalla kuin olemassa olevan solmun tekstin vaihto.
+
+**Mittaus.** Koesivu `docs/koesivut/live-alue.html` (viisi muunnelmaa napin takana, ilmoitus
+2,5 s napin jälkeen): A polite ja atomic, tyhjennys ja uusi teksti (Jaon nykyinen); B polite
+ilman atomicia; C `role="status"`; D polite ja atomic, saman tekstisolmun arvon vaihto ilman
+tyhjennystä; E kaksi vuorottelevaa aluetta. Ajo:
+
+1. Tarjoa sivu: `python -m http.server 5176 --bind 127.0.0.1` sivun kansiossa ja
+   `adb reverse tcp:5176 tcp:5176`. Jaon oma vertailu: launch-konfiguraatio `jako-dev-adb`
+   (127.0.0.1:5175).
+2. TalkBackin puheloki TalkBackin ollessa pois: TalkBack-asetukset › Lisäasetukset ›
+   Kehittäjäasetukset › lokitaso Verbose (polku todennettu 15.10. Kehittäjäasetuksiin asti).
+3. TalkBack päälle adb:llä, `logcat -c`, kunkin muunnelman nappi eleillä (napautus kohdistaa,
+   kaksoisnapautus aktivoi), ja `logcat -d` jokaisen jälkeen. Lasketaan, montako kertaa
+   "Koe X yksi" puhutaan.
+4. TalkBack pois ja todennus (`Bound services:{}`), lokitaso takaisin oletukseen.
+
+Korjaus valitaan muunnelmasta, joka puhuu kerran. Ennen Tommin kuuntelua chattiin tulostetaan
+sanatarkasti, mitä pitäisi kuulua. Lupa: Tommi antoi 15.10. luvan kytkeä TalkBack mittauksen
+ajaksi ja puhelokin päälle, mutta pysäytti työn ennen ajoa.

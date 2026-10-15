@@ -1,0 +1,26 @@
+<!doctype html><html lang="fi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>Live-koe</title>
+<style>.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+button{display:block;width:90%;margin:14px auto;font-size:22px;padding:18px}</style></head><body>
+<button id="bA">A polite atomic</button>
+<button id="bB">B polite ei atomic</button>
+<button id="bC">C role status</button>
+<button id="bD">D polite atomic ei tyhjaa</button>
+<button id="bE">E kaksi vuorottelevaa</button>
+<div id="A" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+<div id="B" class="sr-only" aria-live="polite"></div>
+<div id="C" class="sr-only" role="status"></div>
+<div id="D" class="sr-only" aria-live="polite" aria-atomic="true">alku</div>
+<div id="E1" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+<div id="E2" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+<script>
+const n = {A:0,B:0,C:0,D:0,E:0};
+const sanat = ['yksi','kaksi','kolme','neljä','viisi','kuusi'];
+function aja(k, fn){ document.getElementById('b'+k).onclick = () => setTimeout(() => { n[k]++; fn('Koe '+k+' '+sanat[(n[k]-1)%6]+'.'); console.log('ilmoitus', k, n[k]); }, 2500); }
+aja('A', t => { const r=document.getElementById('A'); r.textContent=''; r.textContent=t; });
+aja('B', t => { document.getElementById('B').textContent=t; });
+aja('C', t => { document.getElementById('C').textContent=t; });
+aja('D', t => { document.getElementById('D').firstChild.nodeValue=t; });
+let vuoro=0;
+aja('E', t => { const a=document.getElementById(vuoro?'E2':'E1'), b=document.getElementById(vuoro?'E1':'E2'); b.textContent=''; a.textContent=t; vuoro=1-vuoro; });
+</script></body></html>
