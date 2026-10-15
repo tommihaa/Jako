@@ -100,7 +100,7 @@ Todennettu dev-previewissä 15.10.2026 (Chrome, äänet pois): Paskahousun alku,
 korttivalinta sekä Ristiseiskan alku ilman yhtään paljasta symbolia. Pelaa-nappi on
 näkyvästi "Pelaa (10♥)" ja ruudunlukijalle "Pelaa (hertta 10)". Ulkoasu ennallaan. Ei kuunneltu.
 
-**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: korjattu 15.10.2026,
+**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: auki, korjausyritys 15.10.2026 ei auttanut (kuuntelu 1.2.236:ssa, alla),
 julkaistu 1.2.236. Live-alueeseen ilmoitus menee kerran (todennettu previewissä). Syy (päätelmä, ei
 mitattu): ilmoitusalue jäi sisältöineen saavutettavuuspuuhun, joten sivun läpi pyyhkäisy luki
 viimeisimmän ilmoituksen uudelleen. Korjaus: alue tyhjenee arvioidun puheajan jälkeen
@@ -167,3 +167,22 @@ valittu `checked=true` (`05`, `06`). Ei kuunneltu.
 
 *Havainto:* Tommin mukaan TalkBackin ranskalainen ääni kuulostaa paljon luontevammalta kuin
 suomalainen. Se on puhemoottorin ominaisuus eikä Jaon.
+
+## Kuuntelu 1.2.236:ssa 15.10.2026 klo 22.35
+
+Tommi kuunteli tuotantoversion 1.2.236 TalkBackilla Pixel 8a:lla, pystytilassa. TalkBack
+kytkettiin adb:llä kuuntelun ajaksi ja pois heti (`Bound services:{}`). Saavutettavuuden
+äänenvoimakkuus oli 7/15. Kulku: valikko, Paskahousun aloitusnäyttö, pelin alku, omat kortit ja
+koko sivun läpipyyhkäisy. Tommin vastaukset sanatarkasti ja Clauden tarkennuskysymysten
+vastaukset:
+
+- **J-8 toimii:** valikko *"ok"*, ja kortit ja Pelaa-nappi *"ok"*.
+- **J-11 toimii:** aloitusnäytön valittu vaihtoehto kertoi tilansa (tarkennuskysymys: *"Kyllä"*).
+- **J-12 toimii:** kortit kuuluvat nimellä (*"ok"*).
+- **J-10 toimii:** *"ei nimetöntä"*.
+- **J-9 ei korjaantunut.** *"vastustajat vuorojärjestys toistui"*, *"paljon toistoa
+  sanomisissa"* ja *"toistoa on"*. Tarkennus: rivi kuului toiseen kertaan **sekä heti perään
+  itsestään että pyyhkäistessä**. Muusta toistosta ilmoitukset toistuivat (Tommin valinta
+  vaihtoehdoista: ilmoitukset, kortin nimi, tilasanat, viive). Tila palautetaan auki.
+  Alueen tyhjentäminen puheajan jälkeen ei siis riittänyt. Toisto heti perään viittaa siihen,
+  että TalkBack lukee ilmoituksen kahdesti jo saapuessaan (päätelmä, ei mitattu).
