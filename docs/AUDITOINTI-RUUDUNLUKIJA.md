@@ -127,5 +127,43 @@ näkyvään otsikkoonsa (`aria-labelledby`), kuten J-5:ssä. Paskahousun "Kovat 
 -vaihtoehto kuuluu sanoina "pata 2, risti 2" (J-8). Todennettu dev-previewissä: 18
 vaihtoehtoa, valitut `true` ja muut `false`. Ei kuunneltu.
 
+## Laitemittaus 15.10.2026
+
+Mitattu Pixel 8a:lla Tommin luvalla, ennen julkaisua. Menetelmä on DGAndroidin
+(`DGAndroid/docs/TOINEN-ASIAKAS.md` › Mitattu TalkBack päällä): TalkBack kytkettiin adb:llä,
+puhelimen Chrome avasi koneen dev-palvelimen (`adb reverse`, launch-konfiguraatio
+`jako-dev-adb`, koska Vite kuuntelee Windowsissa oletuksena vain IPv6:ta), ruutuja selattiin
+TalkBackin eleillä ja jokaisesta ruudusta otettiin saavutettavuuspuu `uiautomator dump`illa.
+Puu on se, minkä TalkBack lukee. Puhetta ei nauhoitettu, koska TalkBack ei kirjaa sitä lokiin
+oletusasetuksilla. Lopuksi TalkBack kytkettiin pois ja todennettiin (`Bound services:{}`).
+Raakadata: `raakasivut/talkback-15-10/` (ei versioida). Tulokset:
+
+- **J-8:** valikon pelinapit ilman koristemaata ("Ristiseiska"), "Kovat kakkoset" -vaihtoehto
+  "pata 2, risti 2", vihje "Valittu: pata 10. Paina Pelaa…" ja nappi "Pelaa (pata 10)". Kasan
+  päällimmäinen "risti 5 (arvo 5)". Puissa ei ole yhtään maasymbolia pelin teksteissä.
+- **J-9:** ilmoitusalue on puussa tyhjä, kun peli on levossa (`06-valittu.xml`). Pyyhkäisy ei
+  siis löydä siitä vanhaa ilmoitusta.
+- **J-10:** jaon aikana (`03-jako-sekoitus.xml`) puussa ei ole nimettömiä kuvia. Koesivulla
+  nimetön SVG näkyi nimettömänä kuvana (`Image`, NAF) ja sen sisäinen ⊕ omana tekstinään ja
+  `aria-hidden`-SVG puuttui puusta. Mekanismi on siis vahvistettu. Se, että juuri tämä kuului
+  kuuntelussa, on yhä päätelmä.
+- **J-11:** aloitusnäytön vaihtoehdot ovat Chromessa ToggleButtoneita, joilla on valintatila.
+
+*Sivuhavainto:* ilmoitusalue laahaa pelin alussa perässä. Kun vuorossa oli jo Hero, alueella
+oli vielä "Vuorossa Fortuna." (`05-kortit-korjattu.xml`), koska ilmoitukset jonotetaan
+arvioidun puheajan mukaan. Ei korjattu. Kuuntelu kertoo, häiritseekö viive.
+
+**J-12. Pelattavalla kortilla ei ole nimeä TalkBackissa.** Tila: korjattu 15.10.2026, ei
+julkaistu. Laitemittauksessa pelattavat kortit olivat nimettömiä ToggleButtoneita (NAF), kun
+taas pelaamattomat kortit (`role="img"`) kantoivat nimeään. Koesivu erotti syyn: Chrome
+Androidilla `aria-pressed` tekee elementistä ToggleButtonin ja silloin `aria-label` putoaa
+puusta. Näin kävi myös natiivilla `<button>`illa ja silloin, kun lapsi oli näkyvissä. Nimi
+säilyi vain, kun se tuli sisällöstä. Vika syntyi J-2:n korjauksessa 14.10.2026 (julkaistu
+1.2.234). Paskahousun kuuntelussa valinnan tila kuului, mutta nimen puuttumista ei kirjattu.
+Korjaus: kortin nimi on napin sisällä `sr-only`-tekstinä eikä `aria-label`issa (`Card.jsx`).
+Testi `ruudunlukija-maat.test.jsx` kieltää `aria-pressed`in ja `aria-label`in samassa
+elementissä. Todennettu laitteella: kortit "pata 10", "ruutu 8" jne. ToggleButtoneina ja
+valittu `checked=true` (`05`, `06`). Ei kuunneltu.
+
 *Havainto:* Tommin mukaan TalkBackin ranskalainen ääni kuulostaa paljon luontevammalta kuin
 suomalainen. Se on puhemoottorin ominaisuus eikä Jaon.

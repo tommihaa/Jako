@@ -10,3 +10,7 @@ koputus.jsx
 .claude/settings.json
 Jako.code-workspace
 prompteja.txt
+
+# Laitemittausten raakadata (uiautomator-puut ja kaappaukset), ei versioida
+/raakasivut/*
+!/raakasivut/LUEMINUT.md

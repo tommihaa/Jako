@@ -69,7 +69,10 @@ export default function Card({
     // Valinta kerrotaan tilana (APG toggle button): kortti nousee näkyvästi, ja ilman tätä
     // ruudunlukija ei kuule monivalinnassa mitkä kortit ovat valittuina. Vain kun peli antaa
     // selected-propsin, koska suoraan pelattava kortti ei ole kytkin.
-    ? { role: 'button', tabIndex: 0, 'aria-label': faceUp && card ? cardName(card) : 'kortti', 'aria-disabled': disabled || undefined,
+    // Napin nimi tulee sisällöstä (sr-only alla) eikä aria-labelista: Chrome Androidilla
+    // aria-pressed tekee napista ToggleButtonin ja silloin aria-label katoaa puusta, joten
+    // TalkBack ei saanut kortille nimeä (laitemittaus Pixel 8a 15.10.2026, J-12).
+    ? { role: 'button', tabIndex: 0, 'aria-disabled': disabled || undefined,
         'aria-pressed': selected === undefined ? undefined : !!selected,
         onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
     : faceUp && card
@@ -125,8 +128,9 @@ export default function Card({
         overflow: 'hidden',
       }}
     >
+      {clickable && <span className="sr-only">{faceUp && card ? cardName(card) : 'kortti'}</span>}
       {faceUp && card ? (
-        <div style={{
+        <div aria-hidden="true" style={{
           textAlign: 'center', fontFamily: 'Georgia,serif', lineHeight: 1.1,
           pointerEvents: 'none', position: 'relative', zIndex: 1,
           color: suitColor(card.s),

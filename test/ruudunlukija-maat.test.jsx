@@ -52,6 +52,11 @@ function suitLeaks(root) {
     }
     if (!hidden) out.push(`teksti "${norm((n.parentElement?.closest('button,[role=button]') ?? n.parentElement)?.textContent ?? '')}"`);
   }
+  // Chrome Android tekee aria-pressed-elementistä ToggleButtonin ja pudottaa silloin
+  // aria-labelin, joten nimi katoaa TalkBackilta (Pixel 8a 15.10.2026, J-12).
+  root.querySelectorAll('[aria-pressed][aria-label]').forEach(el => {
+    out.push(`aria-pressed ja aria-label samassa "${norm(el.getAttribute('aria-label') ?? '')}"`);
+  });
   root.querySelectorAll('[aria-label],[alt],[title]').forEach(el => {
     if (el.closest('[aria-hidden="true"]')) return;
     for (const a of ['aria-label', 'alt', 'title']) {
