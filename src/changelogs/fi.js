@@ -13,6 +13,12 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '15.10.2026',
+    items: [
+      'Saavutettavuus: Tilanne-napin teksti on korjattu ranskaksi, latinaksi, unkariksi, islanniksi ja viroksi. Esimerkiksi latinaksi vuoro luettiin kieliopittomasti, ja ranskasta puuttui välilyönti kaksoispisteen edestä.',
+    ],
+  },
+  {
     date: '14.10.2026',
     items: [
       'Saavutettavuus: ruudunlukija kertoo nyt mitkä kortit olet valinnut. Valittu kortti nousee näkyvästi, mutta ruudunlukija ei ennen kertonut sitä, joten esimerkiksi Paskahousussa ja Kasinossa et kuullut mitkä kortit olivat valittuina.',
