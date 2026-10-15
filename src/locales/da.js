@@ -7,6 +7,7 @@ export const da = {
     a11y: {
       opponents: ({ names }) => `Modstandere i turrækkefølge: ${names}.`,
       statusButton: 'Status',
+      version: ({ version, date, time }) => `Version ${version}, udgivet ${date} kl. ${time}`,
       turn: ({ name }) => `Tur: ${name}.`,
       hand: ({ cards }) => `Hånd: ${cards}.`,
       none: 'ingen kort',

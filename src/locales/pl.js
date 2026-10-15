@@ -16,6 +16,7 @@ export const pl = {
     a11y: {
       opponents: ({ names }) => `Przeciwnicy w kolejności ruchów: ${names}.`,
       statusButton: 'Sytuacja',
+      version: ({ version, date, time }) => `Wersja ${version}, opublikowana ${date} o ${time}`,
       turn: ({ name }) => `Ruch: ${name}.`,
       hand: ({ cards }) => `Ręka: ${cards}.`,
       none: 'brak kart',

@@ -14,6 +14,7 @@ export const cs = {
     a11y: {
       opponents: ({ names }) => `Soupeři v pořadí tahů: ${names}.`,
       statusButton: 'Situace',
+      version: ({ version, date, time }) => `Verze ${version}, vydána ${date} v ${time}`,
       turn: ({ name }) => `Na tahu: ${name}.`,
       hand: ({ cards }) => `Ruka: ${cards}.`,
       none: 'žádné karty',

@@ -1495,8 +1495,11 @@ export default function App() {
           {GAMES.map(g => <GameBtn key={g.id} g={g} stats={stats} onSelect={selectGame} onOpenGlossary={() => setShowGlossary(true)} />)}
         </div>
       </div>
+      {/* Ruudunlukijalle leima selitettynä: pelkkä "v1.2.235 · 15.10.2026 16.05" kuului
+          numerosarjana ilman kontekstia (kuunneltu 15.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md › J-7). */}
       <div style={{ fontSize: 10, color: '#b9c7b2', fontFamily: 'sans-serif', letterSpacing: 0.5 }}>
-        v{APP_VERSION} · {BUILD_DATE} {BUILD_TIME}
+        <span className="sr-only">{t('ui.a11y.version', { version: APP_VERSION, date: BUILD_DATE, time: BUILD_TIME })}</span>
+        <span aria-hidden="true">v{APP_VERSION} · {BUILD_DATE} {BUILD_TIME}</span>
       </div>
     </main>
   );

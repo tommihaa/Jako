@@ -6,6 +6,7 @@ export const rom = {
     a11y: {
       opponents: ({ names }) => `Le riventa: ${names}.`,
       statusButton: 'Situacija',
+      version: ({ version, date, time }) => `Versija ${version}, publikujime ${date} ando ${time}`,
       turn: ({ name }) => `Avel o rindo ${name}.`,
       hand: ({ cards }) => `Vast: ${cards}.`,
       none: 'naj karti',

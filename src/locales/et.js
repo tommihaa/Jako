@@ -7,6 +7,7 @@ export const et = {
     a11y: {
       opponents: ({ names }) => `Vastased käigujärjekorras: ${names}.`,
       statusButton: 'Seis',
+      version: ({ version, date, time }) => `Versioon ${version}, avaldatud ${date} kell ${time}`,
       turn: ({ name }) => `Käigul: ${name}.`,
       hand: ({ cards }) => `Käsi: ${cards}.`,
       none: 'kaarte pole',

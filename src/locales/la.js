@@ -5,6 +5,7 @@ export const la = {
     a11y: {
       opponents: ({ names }) => `Adversarii ordine: ${names}.`,
       statusButton: 'Status',
+      version: ({ version, date, time }) => `Versio ${version}, edita ${date} hora ${time}`,
       turn: ({ name }) => `Ludit: ${name}.`,
       hand: ({ cards }) => `Manus: ${cards}.`,
       none: 'nullae chartae',

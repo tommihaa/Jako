@@ -11,6 +11,7 @@ export const fi = {
     a11y: {
       opponents: ({ names }) => `Vastustajat vuorojärjestyksessä: ${names}.`,
       statusButton: 'Tilanne',
+      version: ({ version, date, time }) => `Versio ${version}, julkaistu ${date} klo ${time}`,
       turn: ({ name }) => `Vuorossa ${name}.`,
       hand: ({ cards }) => `Käsi: ${cards}.`,
       none: 'ei kortteja',

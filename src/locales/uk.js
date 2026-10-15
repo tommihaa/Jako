@@ -16,6 +16,7 @@ export const uk = {
     a11y: {
       opponents: ({ names }) => `Суперники в порядку ходу: ${names}.`,
       statusButton: 'Ситуація',
+      version: ({ version, date, time }) => `Версія ${version}, опублікована ${date} о ${time}`,
       turn: ({ name }) => `Ходить: ${name}.`,
       hand: ({ cards }) => `Рука: ${cards}.`,
       none: 'немає карт',

@@ -60,5 +60,11 @@ tekstit saavat uuden kielen. Korjaus: kieli kirjoitetaan `<html lang>`:iin moduu
 ennen ensimmäistä renderiä. Rajoitus: kesken käynnin tehty kielenvaihto ei välttämättä vaihda
 ääntä teksteille, joita ei piirretä uudelleen. Uudelleenlataus vaihtaa. Ei kuunneltu.
 
+**J-7. Versioleima kuuluu numerosarjana.** Tila: korjattu 15.10.2026, ei julkaistu. Valikon
+alalaidan "v1.2.235 · 15.10.2026 16.05" kuului numeromössönä ilman kontekstia. Korjaus:
+ruudunlukijalle oma teksti `ui.a11y.version` 23 kielellä ("Versio 1.2.235, julkaistu
+15.10.2026 klo 16.05"), ja näkyvä leima on `aria-hidden`. Todennettu dev-previewissä. Ei
+kuunneltu.
+
 *Havainto:* Tommin mukaan TalkBackin ranskalainen ääni kuulostaa paljon luontevammalta kuin
 suomalainen. Se on puhemoottorin ominaisuus eikä Jaon.
