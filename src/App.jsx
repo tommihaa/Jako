@@ -1374,7 +1374,6 @@ export default function App() {
 
     return (
       <div style={{ maxWidth: maxW, margin: '0 auto' }}>
-        <Announcer />
         {replayOpen && siirtorekisteri.length > 0 && (
           <ReplayView frames={siirtorekisteri} onClose={() => setReplayOpen(false)} isMobile={isMobile} />
         )}
@@ -1418,6 +1417,11 @@ export default function App() {
           onSnapshot={handleSnapshot}
         />
         </Suspense>
+        {/* Ilmoitusalue on sivun viimeinen eikä ensimmäinen (auditointi J-9, 16.10.2026).
+            Kun Aloita-nappi katoaa, ruudunlukijan kohdistus voi hypätä sivun alkuun. Jos
+            alue on siellä, kohdistus osuu sen tekstiin ja rivi kuuluu kahdesti: kerran
+            kohdistettuna ja kerran ilmoituksena (päätelmä, ks. auditointi). */}
+        <Announcer />
       </div>
     );
   }

@@ -100,7 +100,7 @@ Todennettu dev-previewissä 15.10.2026 (Chrome, äänet pois): Paskahousun alku,
 korttivalinta sekä Ristiseiskan alku ilman yhtään paljasta symbolia. Pelaa-nappi on
 näkyvästi "Pelaa (10♥)" ja ruudunlukijalle "Pelaa (hertta 10)". Ulkoasu ennallaan. Ei kuunneltu.
 
-**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: auki, korjausyritys 15.10.2026 ei auttanut (kuuntelu 1.2.236:ssa, alla),
+**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: auki. Toinen korjausyritys 16.10.2026 on tehty, mutta Pixelillä todentamatta (alla › *Tabletin mittaus 16.10.2026*). Korjausyritys 15.10.2026 ei auttanut (kuuntelu 1.2.236:ssa, alla),
 julkaistu 1.2.236. Live-alueeseen ilmoitus menee kerran (todennettu previewissä). Syy (päätelmä, ei
 mitattu): ilmoitusalue jäi sisältöineen saavutettavuuspuuhun, joten sivun läpi pyyhkäisy luki
 viimeisimmän ilmoituksen uudelleen. Korjaus: alue tyhjenee arvioidun puheajan jälkeen
@@ -220,3 +220,42 @@ tyhjennystä; E kaksi vuorottelevaa aluetta. Ajo:
 Korjaus valitaan muunnelmasta, joka puhuu kerran. Ennen Tommin kuuntelua chattiin tulostetaan
 sanatarkasti, mitä pitäisi kuulua. Lupa: Tommi antoi 15.10. luvan kytkeä TalkBack mittauksen
 ajaksi ja puhelokin päälle, mutta pysäytti työn ennen ajoa.
+
+## Tabletin mittaus 16.10.2026
+
+Galaxy Tab S7+:lla (Samsungin TalkBack 13.5, Chrome 155), koska Pixel ei ollut kiinni. Tommi
+antoi tabletin mittaukseen (*"tablet on vapaa"*). TalkBack kytkettiin adb:llä jokaisen ajon ajaksi
+ja pois heti, ja jokainen purku todennettiin (`Bound services:{}`).
+
+**Menetelmästä kolme havaintoa.**
+
+- `uiautomator events` ei yksinään näe sivun tapahtumia, koska Chrome rakentaa sivun puun vasta
+  oikealle ruudunlukijalle. TalkBackin rinnalla ajettuna se taas vaimentaa TalkBackin
+  (puhemoottori irtosi heti). Tapahtumat ja puhe on siis mitattava erikseen.
+- Samsungin TalkBack ei kirjaa puhetta lokiin edes tasolla VERBOSE, joka oli jo valmiiksi päällä.
+  Puhemoottorin loki (`SamsungTTS`) kirjaa jokaisen puhepyynnön salattuna. Salaus on
+  deterministinen, joten saman tekstin toisto näkyisi samana merkkijonona.
+- Kehittäjäasetus *Näytä puhe* piirtää puhutun tekstin ruudun alareunaan, ja se luettiin
+  kaappauksista puolen sekunnin välein. Asetus palautettiin pois mittauksen jälkeen ja todennettiin.
+
+**Tulokset.**
+
+- Koesivun viisi muunnelmaa: jokainen live-alueen teksti puhuttiin kerran. Chrome lähetti
+  jokaisesta muutoksesta kolme `TYPE_WINDOW_CONTENT_CHANGED`-tapahtumaa, mutta ei
+  `TYPE_ANNOUNCEMENT`ia. Hypoteeseista 1–3 mikään ei tuottanut toistoa tällä laitteella.
+- Tuotannon 1.2.236 Paskahousu, Aloita: puhuttiin järjestyksessä *Avaa oma etusivu, Painike*,
+  napin vihje, *Vastustajat vuorojärjestyksessä: Osku, Marko, Tinja.* ja *Paskahousu alkaa!
+  Marko aloittaa (pienin kortti).* Kukin kerran. **J-9 ei toistu tabletilla.**
+
+**Uusi hypoteesi (päätelmä, ei mitattu Pixelillä).** Kun Aloita-nappi katoaa, kohdistus lähtee
+siltä. Tabletilla se meni Chromen kotinappiin (*Avaa oma etusivu*). Ilmoitusalue
+(`<Announcer />`) oli pelisivun ensimmäinen elementti. Jos Pixelin TalkBack vie kohdistuksen sivun
+alkuun, se osuu alueeseen, jossa lukee juuri vastustajarivi. Kohdistettu teksti luetaan ja
+live-ilmoitus myös, joten rivi kuuluu kahdesti heti perään. Pyyhkäisy alkaa samasta kohdasta.
+Tämä sopii Tommin kuvaukseen (*sekä heti perään itsestään että pyyhkäistessä*) ja siihen, että
+toisto koski nimenomaan pelin ensimmäistä ilmoitusta.
+
+**Korjaus (16.10.2026, ei julkaistu).** Ilmoitusalue on pelisivun viimeinen elementti
+(`App.jsx`). Sivun alussa on nyt *Valikko*-nappi. Testit ja `verify.py` menevät läpi.
+Todennus vaatii Pixelin: ensin tuotanto ennen korjausta, jotta nähdään osuuko kohdistus
+alueeseen, sitten dev-palvelin (`jako-dev-adb`) korjauksen kanssa, *Näytä puhe* päällä.
