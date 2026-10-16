@@ -289,6 +289,14 @@ function StatBadge({ s }) {
 }
 
 
+// Nimen yläindeksi ⁹ on pelien määrä, eikä ruudunlukijan tarvitse sanoa sitä (Tommin
+// kuuntelu 16.10.2026). Näkyvä ⁹ jää, puhuttu muoto on pelkkä Jako.
+/** @param {string} s */
+const silentNine = s => s.replace(/⁹/g, '');
+/** @param {string} s */
+const withSilentNine = s => s.split('⁹').flatMap((part, i) =>
+  i ? [<span key={i} aria-hidden="true">⁹</span>, part] : [part]);
+
 function GameBtn({ g, stats, onSelect, onOpenGlossary }) {
   const t = useT();
   const { lang } = useLang();
@@ -730,7 +738,7 @@ export default function App() {
         fontSize: isMobile ? 16 : 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
         flexShrink: 0,
       }}
-      aria-label={t('ui.menu.share')}
+      aria-label={silentNine(t('ui.menu.share'))}
       title={t('ui.menu.share')}
     >
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
@@ -1188,7 +1196,7 @@ export default function App() {
             onClick={() => setShowA2hs(v => !v)}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.a2hs.title')}</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{withSilentNine(t('ui.infoPanel.a2hs.title'))}</span>
             <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showA2hs ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showA2hs && (
@@ -1471,7 +1479,7 @@ export default function App() {
             background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`,
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
           }}>
-            JAKO<span style={{ fontSize: 16, verticalAlign: 'super', letterSpacing: 2 }}>{GAMES.length}</span>
+            JAKO<span aria-hidden="true" style={{ fontSize: 16, verticalAlign: 'super', letterSpacing: 2 }}>{GAMES.length}</span>
           </h1>
           <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
             <LangSelector lang={lang} setLang={setLang} t={t} isMobile={isMobile} />{shareBtn}{infoBtn}{gearBtn}
@@ -1488,7 +1496,7 @@ export default function App() {
               background: `linear-gradient(135deg,#e8c96a,${C.gold},#a07830)`,
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
             }}>
-              JAKO<span style={{ fontSize: 22, verticalAlign: 'super', letterSpacing: 2 }}>{GAMES.length}</span>
+              JAKO<span aria-hidden="true" style={{ fontSize: 22, verticalAlign: 'super', letterSpacing: 2 }}>{GAMES.length}</span>
             </h1>
           </div>
           <div style={{ position: 'absolute', right: 0, display: 'flex', gap: 8, alignItems: 'center' }}><LangSelector lang={lang} setLang={setLang} t={t} isMobile={isMobile} />{shareBtn}{infoBtn}{gearBtn}</div>

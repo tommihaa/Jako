@@ -370,6 +370,12 @@ merkin nimi kuului ennen sanaa, ja se vaihdettiin `ui.shared.close`en. Vahti:
 numeroa ja jolta puuttuu `aria-label`. Vanhalla koodilla se kaatoi viisi peliä. Selaimessa
 Paskahousun *Peruuta valinta* palautti kohdistuksen valittuun korttiin.
 
+**J-17. Yläindeksi ⁹ kuuluu nimessä.** Tila: korjattu dev-versiossa 16.10.2026, ei kuunneltu.
+Tommin toive: kun ruudunlukija sanoo nimen Jako, yläindeksiä 9 ei tarvitse sanoa. Valikon
+otsikon luku on nyt `aria-hidden`, Jaa-napin nimi on *Jaa Jako* ja Infon *Lisää Jako⁹
+aloitusnäytölle* -otsikon ⁹ on `aria-hidden` (`App.jsx`, `silentNine` ja `withSilentNine`).
+Selaimessa: otsikon saavutettava teksti *JAKO*, napin nimi *Jaa Jako*.
+
 **Seuraavaksi:** Tommin kuuntelu Pixelillä dev-versiolla (`jako-dev-adb`), sitten julkaisu.
 Kuunneltavat: kortin pelaaminen (J-14), Asetusten ja Mestarin kuplan sulkeminen pelissä,
-paluu valikkoon (J-15) ja valinnan peruminen ✕-napilla (J-16).
+paluu valikkoon (J-15), valinnan peruminen ✕-napilla (J-16) ja nimi ilman yhdeksikköä (J-17).
