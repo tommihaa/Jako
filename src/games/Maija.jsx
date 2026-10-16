@@ -704,7 +704,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
         borderRadius:14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12,
         minHeight: isMobile ? 44 : 60, display:'flex', alignItems:'center', gap:10 }}>
         <QCard s={0.7} />
-        <SpokenHtml as="p" style={{ margin:0, fontFamily:'sans-serif', fontSize:13, lineHeight:1.55, color:C.text }} html={msg} />
+        <SpokenHtml as="p" style={{ margin:0, fontFamily:'sans-serif', fontSize:13, lineHeight:1.55, color:C.text }} html={msg} gameMessage />
       </div>
 
       {/* Valtti */}

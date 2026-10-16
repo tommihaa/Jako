@@ -7,15 +7,17 @@ import { GAME_TITLE_ID } from './GameStartScreen.jsx';
 // 8a:lla: pelin alussa näin kävi Aloita-napille, ja Tommin kuuntelussa 1.2.237:llä sama
 // toistui ensimmäisen pelatun kortin jälkeen.
 //
-// Tommin valinta paikasta: oman käden pienin valittava kortti. Jos yhtäkään ei voi valita
-// (heti oman siirron jälkeen on vastustajien vuoro), käden pienin kortti. Jos omia
-// näkyviä kortteja ei ole (tyhjä käsi, Kultakala ja Koputus kuvapuoli alas, Läpsy),
-// pelin nimi otsikkorivillä. Pienin luetaan pelin omasta järjestyksestä (`mineValue`):
-// Maijassa ja Moskassa valtti on viimeinen, koska pieni valttikin on arvokas (Tommin
-// kuuntelu 16.10.2026).
+// Tommin valinta paikasta: pelin viestirivi (`data-game-message`), koska se kertoo mitä
+// tapahtui ja kenen vuoro on. Ensimmäinen valinta oli käden pienin kortti, mutta kuuntelussa
+// 16.10.2026 se kuului ilman kontekstia jokaisen oman siirron jälkeen. Varalla, jos
+// viestiriviä ei ole: käden pienin valittava kortti, sitten pienin kortti, sitten pelin nimi.
+// Pienin luetaan pelin omasta järjestyksestä (`mineValue`): Maijassa ja Moskassa valtti on
+// viimeinen, koska pieni valttikin on arvokas.
 
 /** @param {ParentNode} [root] */
 export function rescueTarget(root = document) {
+  const message = /** @type {HTMLElement | null} */ (root.querySelector('[data-game-message]'));
+  if (message) return message;
   const mine = /** @type {HTMLElement[]} */ ([...root.querySelectorAll('[data-mine]')]);
   if (mine.length) {
     const selectable = mine.filter(el => el.getAttribute('role') === 'button'

@@ -10,6 +10,7 @@ import { render, cleanup, act, fireEvent } from '@testing-library/react';
 import { LangProvider } from '../src/shared/i18n.jsx';
 import GameStartScreen, { GAME_TITLE_ID } from '../src/shared/GameStartScreen.jsx';
 import Card from '../src/shared/Card.jsx';
+import { SpokenHtml } from '../src/shared/Spoken.jsx';
 import { installFocusRescue, rescueTarget } from '../src/shared/focusRescue.js';
 import { useState } from 'react';
 import App from '../src/App.jsx';
@@ -51,9 +52,9 @@ describe('kohdistus pelin alkaessa', () => {
   });
 });
 
-// Turvaverkko: kun painettu nappi katoaa, kohdistus siirtyy oman käden pienimpään
-// valittavaan korttiin, muuten pienimpään korttiin ja tyhjällä kädellä pelin nimeen
-// (Tommin päätös 16.10.2026, kuuntelu 1.2.237:llä).
+// Turvaverkko: kun painettu nappi katoaa, kohdistus siirtyy pelin viestiriville. Ilman
+// viestiriviä oman käden pienimpään valittavaan korttiin, muuten pienimpään korttiin ja
+// tyhjällä kädellä pelin nimeen (Tommin päätökset 16.10.2026).
 describe('kohdistuksen turvaverkko', () => {
   const card = (r, v, s = '♠') => ({ r, s, v, id: `${r}${s}` });
 
@@ -94,6 +95,30 @@ describe('kohdistuksen turvaverkko', () => {
     await act(async () => { fireEvent.click(btn); });
     act(() => { vi.runAllTimers(); });
     expect(document.activeElement?.getAttribute('aria-label')).toMatch(/4/);
+    uninstall();
+  });
+
+  // Tommin toinen valinta 16.10.2026: viestirivi kertoo tilanteen, kortti ei.
+  it('vie kohdistuksen viestiriville kun sellainen on', async () => {
+    vi.useFakeTimers();
+    function Peli() {
+      const [played, setPlayed] = useState(false);
+      return (
+        <div>
+          <SpokenHtml as="p" html={played ? 'Hero: 4.' : 'Vuorossa Hero.'} gameMessage />
+          <Card mine card={card('4', 4)} />
+          {!played && <button onClick={() => setPlayed(true)}>Pelaa</button>}
+        </div>
+      );
+    }
+    const uninstall = installFocusRescue();
+    const r = render(<Peli />);
+    const btn = /** @type {HTMLElement} */ (r.getByText('Pelaa'));
+    btn.focus();
+    await act(async () => { fireEvent.click(btn); });
+    act(() => { vi.runAllTimers(); });
+    expect(document.activeElement?.hasAttribute('data-game-message')).toBe(true);
+    expect(document.activeElement?.textContent).toBe('Hero: 4.');
     uninstall();
   });
 

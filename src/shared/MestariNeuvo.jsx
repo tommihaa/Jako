@@ -1,7 +1,8 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { C } from './colors.js';
 import { useT } from './i18n.jsx';
-import Spoken from './Spoken.jsx';
+import Spoken, { withoutEmoji } from './Spoken.jsx';
+import { announce } from './Announcer.jsx';
 
 // Kysy Mestarilta neuvoa: pillinappi + vastauskupla. Neuvo lasketaan pelikohtaisella
 // puhtaalla getAdvice-funktiolla (aina 'hard'-taso, vain julkista tietoa — botit eivät
@@ -20,19 +21,22 @@ export function AdviceButton({ onClick }) {
 
 // Kysy Mestarilta -napista avattu kupla vie kohdistuksen sulkunappiin, ja napin nimi on
 // neuvo itse ja sana Sulje (Tommin kuuntelu 16.10.2026: kuplan teksti ei kuulunut, koska
-// role="status" ei ilmoita sisältöä, joka lisätään yhdessä alueen kanssa). Opastuksen
-// kupla ilmestyy vuoron mukana, joten se ei siirrä kohdistusta pelaajan alta.
+// role="status" ei ilmoita sisältöä, joka lisätään yhdessä alueen kanssa). Roolia ei ole,
+// koska TalkBack luki sen sulkunapin perään ("Sulje, painike, tila, Mestari"). Opastuksen
+// kupla ilmestyy vuoron mukana, joten se ei siirrä kohdistusta pelaajan alta vaan menee
+// ilmoitusjonoon.
 export function AdviceBubble({ text, onDismiss }) {
   const t = useT();
   const id = useId();
   const closeRef = useRef(/** @type {HTMLButtonElement | null} */ (null));
   useEffect(() => {
-    if (text && document.activeElement?.hasAttribute('data-advice-button')) closeRef.current?.focus();
+    if (!text) return;
+    if (document.activeElement?.hasAttribute('data-advice-button')) closeRef.current?.focus();
+    else announce(withoutEmoji(`${t('ui.advice.from')} ${text}`));
   }, [text]);
   if (!text) return null;
   return (
     <div
-      role="status"
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
         margin: '0 auto 8px', padding: '7px 14px', maxWidth: 420,

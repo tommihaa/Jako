@@ -50,14 +50,17 @@ export default function Spoken({ children, say }) {
  * @property {string} html
  * @property {any} [as]       Elementti, oletuksena span
  * @property {object} [style]
+ * @property {boolean} [gameMessage]  pelin viestirivi: kohdistettava kääre, johon turvaverkko
+ *                                    vie kohdistuksen oman siirron jälkeen (focusRescue.js)
  */
 /** @param {SpokenHtmlProps} props */
-export function SpokenHtml({ html, as: Tag = 'span', style }) {
+export function SpokenHtml({ html, as: Tag = 'span', style, gameMessage = false }) {
   const said = typeof html === 'string' && hasSuit(html) ? spokenHtml(html) : null;
-  return (
+  const content = (
     <>
       {said && <span className="sr-only">{said}</span>}
       <Tag aria-hidden={said ? 'true' : undefined} style={style} dangerouslySetInnerHTML={{ __html: html }} />
     </>
   );
+  return gameMessage ? <div data-game-message="" tabIndex={-1}>{content}</div> : content;
 }

@@ -1350,7 +1350,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       {/* Viestikupla */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 60 : 70, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 15, flexShrink: 0 }}>🪙</span>
-        <p style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{hasSuit(msg) ? <Spoken say={spokenSuits(msg)}>{renderLogMessage(msg)}</Spoken> : msg}</p>
+        <p data-game-message="" tabIndex={-1} style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{hasSuit(msg) ? <Spoken say={spokenSuits(msg)}>{renderLogMessage(msg)}</Spoken> : msg}</p>
       </div>
 
       {/* Pisteet + pakka */}

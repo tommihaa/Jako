@@ -1036,7 +1036,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 40 : 56, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 16, flexShrink: 0 }}>🃏</span>
-        <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} html={msg} />
+        <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} html={msg} gameMessage />
       </div>
 
       {/* AI-kädet — viuhka */}

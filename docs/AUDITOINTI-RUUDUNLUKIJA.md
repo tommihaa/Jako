@@ -403,8 +403,13 @@ valtit ovat arvokkaita vaikka olisikin pieni kortti"*. Korjattu: `Card`in `mineV
 turvaverkolle pelin oman järjestyksen, ja Maijassa ja Moskassa valtti saa +100. Toinen
 huomio: kohdistus menee pienimpään korttiin ilman kontekstia, ja sama toistuu jokaisen oman
 siirron jälkeen. Mitattu selaimessa: kohdistus pysyi 30 s paikallaan ilman omaa siirtoa,
-joten toisto ei ole turvaverkon vika vaan valitun kohdan seuraus. Kohdan vaihto odottaa
-Tommin valintaa.
+joten toisto ei ole turvaverkon vika vaan valitun kohdan seuraus. Tommin valinta: kohdistus
+menee pelin viestiriville. Toteutus: `SpokenHtml`in `gameMessage` tekee viestistä
+kohdistettavan kääreen (`data-game-message`, kahdeksan peliä), Kasinossa sama merkintä on
+viestin `<p>`:ssä, ja turvaverkko suosii sitä. Kortti ja pelin nimi jäävät varalle.
+Selaimessa: Maijan *Lyö kortti* vei kohdistuksen viestiin *"Hipster puolustaa, 1 kortti
+kaadettavana."*, Paskahousun *Pelaa* viestiin *"Hero jatkaa vuoroaan."* Ei kuunneltu:
+ilmoitusjono voi sanoa saman tapahtuman, jolloin se kuuluu kahdesti.
 
 **Mestarin kupla.** `role="status"` ei ilmoita sisältöä, joka lisätään yhdessä alueen kanssa.
 Korjattu: *Kysy Mestarilta* vie kohdistuksen kuplan ✕:ään, ja napin nimi on neuvo ja sana
@@ -412,9 +417,13 @@ Korjattu: *Kysy Mestarilta* vie kohdistuksen kuplan ✕:ään, ja napin nimi on 
 Selaimessa: kohdistus ✕:ssä, nimi *"Mestari: Kaada pata ässä kortilla ruutu 4. … Sulje"*,
 sulkeminen palaa Mestari-nappiin.
 
-**Kohta 6, tulkinta auki.** Tommi: *"sulje painike tila mestari"*. Kysytään.
+**Kohta 6.** TalkBack sanoi kirjaimellisesti *"sulje painike tila mestari"*: *tila* on
+`role="status"` ja *Mestari* kuplan tekstin alku. Korjattu: rooli poistettu, koska sulkunappi
+kantaa nyt neuvon. Opastuksen kupla, joka ilmestyy ilman napin painallusta, menee
+ilmoitusjonoon (`announce`).
 
 **Seuraavaksi:** Tommin kuuntelu Pixelillä dev-versiolla (`jako-dev-adb`), sitten julkaisu.
 Kuunneltavat: kortin pelaaminen (J-14), Asetusten ja Mestarin kuplan sulkeminen pelissä,
 paluu valikkoon (J-15), valinnan peruminen ✕-napilla (J-16) ja nimi ilman yhdeksikköä (J-17).
-Toinen kierros: Mestarin kupla, valtti Maijassa ja emojittomat napit (J-13).
+Toinen kierros: oman siirron jälkeen viestirivi, Mestarin kupla ilman tila-sanaa ja
+emojittomat napit (J-13).
