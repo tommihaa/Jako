@@ -724,7 +724,6 @@ export const pl = {
         skipNoCard: '{name} traci turę.',
         swapped: '{name} zamienia! {cards} na stos.',
         swapSwept: '{name} zbija stos z {count} kart kartami {cards} otrzymanymi przy wymianie! Kontynuuje.',
-        aiSwaps: '{name} zamienia!',
         aiStuck: '{name}: nic nie może zrobić.',
         badCard: 'Karta tu nie pasuje.',
         suddenDeathStart: '⏱ Talia pusta — <b>Nagła śmierć!</b> Trwa odliczanie 2:30. Mniej kart wygrywa!',

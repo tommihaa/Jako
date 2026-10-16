@@ -715,7 +715,6 @@ export const is = {
         skipNoCard: '{name} missir umferð sína.',
         swapped: '{name} skiptir! {cards} í hauginn.',
         swapSwept: '{name} fellir haug með {count} spilum með {cards} úr skiptunum! Heldur áfram.',
-        aiSwaps: '{name} skiptir!',
         aiStuck: '{name}: getur ekkert gert.',
         badCard: 'Þetta spil gengur ekki hér.',
         suddenDeathStart: '⏱ Stokkur tómur — <b>Bráðabani!</b> 2:30 klukka tifar. Fæst spil vinna!',

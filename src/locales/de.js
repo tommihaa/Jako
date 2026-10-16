@@ -715,7 +715,6 @@ export const de = {
         skipNoCard: '{name} verliert seinen Zug.',
         swapped: '{name} tauscht! {cards} auf den Stapel.',
         swapSwept: '{name} räumt einen Stapel von {count} Karten mit der getauschten {cards} ab! Macht weiter.',
-        aiSwaps: '{name} tauscht!',
         aiStuck: '{name}: kann nichts tun.',
         badCard: 'Die Karte passt hier nicht.',
         suddenDeathStart: '⏱ Stapel leer — <b>Sudden Death!</b> Ein Timer von 2:30 läuft. Die wenigsten Karten gewinnen!',

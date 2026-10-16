@@ -717,7 +717,6 @@ export const se = {
         skipNoCard: '{name} massá vuorus.',
         swapped: '{name} molsso! {cards} roavgái.',
         swapSwept: '{name} gahččá {count} goartta roavggi molsumis ožžon {cards}! Joatká.',
-        aiSwaps: '{name} molsso!',
         aiStuck: '{name}: ii sáhte dahkat maidege.',
         badCard: 'Goartta ii dohkke dása.',
         suddenDeathStart: '⏱ Stohka gures — <b>Fáhkka jápmin!</b> 2:30 lohkki johtá. Unnit goarttat vuoitá!',

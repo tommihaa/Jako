@@ -715,7 +715,6 @@ export const et = {
         skipNoCard: '{name} kaotab oma käigu.',
         swapped: '{name} vahetab! {cards} hunnikusse.',
         swapSwept: '{name} lööb maha {count} kaardiga hunniku vahetuses saadud {cards}-ga! Jätkab.',
-        aiSwaps: '{name} vahetab!',
         aiStuck: '{name}: ei suuda midagi teha.',
         badCard: 'Kaart ei sobi siia.',
         suddenDeathStart: '⏱ Pakk tühi — <b>Äkksurm!</b> 2:30 taimer käib. Vähem kaarte võidab!',

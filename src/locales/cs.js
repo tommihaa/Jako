@@ -726,7 +726,6 @@ export const cs = {
         skipNoCard: '{name} ztrácí tah.',
         swapped: '{name} mění! {cards} na hromadu.',
         swapSwept: '{name} shazuje hromadu {count} karet kartou {cards} získanou výměnou! Pokračuje.',
-        aiSwaps: '{name} mění!',
         aiStuck: '{name}: nemůže nic udělat.',
         badCard: 'Karta sem neplatí.',
         suddenDeathStart: '⏱ Balíček prázdný — <b>Náhlá smrt!</b> Běží odpočet 2:30. Méně karet vyhrává!',

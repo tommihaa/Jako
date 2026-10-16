@@ -715,7 +715,6 @@ export const sv = {
         skipNoCard: '{name} förlorar sin tur.',
         swapped: '{name} byter! {cards} till högen.',
         swapSwept: '{name} fäller en hög på {count} kort med {cards} från bytet! Fortsätter.',
-        aiSwaps: '{name} byter!',
         aiStuck: '{name}: kan inte göra något.',
         badCard: 'Kortet duger inte här.',
         suddenDeathStart: '⏱ Leken tom — <b>Sudden death!</b> En timer på 2:30 går. Färst kort vinner!',

@@ -715,7 +715,6 @@ export const fr = {
         skipNoCard: '{name} perd son tour.',
         swapped: '{name} échange ! {cards} à la pile.',
         swapSwept: '{name} dégage une pile de {count} cartes avec les {cards} obtenues à l\'échange ! Il continue.',
-        aiSwaps: '{name} échange !',
         aiStuck: '{name} : ne peut rien faire.',
         badCard: 'Cette carte n\'est pas jouable ici.',
         suddenDeathStart: '⏱ Pioche vide — <b>Mort subite !</b> Un compte à rebours de 2:30 est lancé. Le moins de cartes gagne !',

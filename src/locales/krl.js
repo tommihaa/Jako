@@ -716,7 +716,6 @@ export const krl = {
         skipNoCard: '{name} mänettäy vuoruoh.',
         swapped: '{name} vaihtau! {cards} kazah.',
         swapSwept: '{name} kuatau {count} kortin kazan vaihossa šuaduolla {cards}! Jatkau.',
-        aiSwaps: '{name} vaihtau!',
         aiStuck: '{name}: ei voi luadie nimidä.',
         badCard: 'Kortti ei kelbua tähä.',
         suddenDeathStart: '⏱ Pakka tyhjä — <b>Yhtäkkini kuoloma!</b> 2:30 laškuri käy. Vähembi korttie voittau!',

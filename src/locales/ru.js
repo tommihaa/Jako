@@ -724,7 +724,6 @@ export const ru = {
         skipNoCard: '{name} теряет ход.',
         swapped: '{name} меняет! {cards} в кучу.',
         swapSwept: '{name} сбивает кучу из {count} карт картами {cards}, полученными при обмене! Продолжает.',
-        aiSwaps: '{name} меняет!',
         aiStuck: '{name}: ничего не может сделать.',
         badCard: 'Карта сюда не подходит.',
         suddenDeathStart: '⏱ Колода пуста — <b>Внезапная смерть!</b> Идёт таймер 2:30. Меньше карт побеждает!',

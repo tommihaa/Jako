@@ -753,7 +753,6 @@ export const fi = {
         skipNoCard: '{name} menettää vuoronsa.',
         swapped: '{name} vaihtaa! {cards} kasaan.',
         swapSwept: '{name} kaataa {count} kortin kasan vaihdossa saamallaan {cards}! Jatkaa.',
-        aiSwaps: '{name} vaihtaa!',
         aiStuck: '{name}: ei pysty tekemään mitään.',
         badCard: 'Kortti ei kelpaa tähän.',
         suddenDeathStart: '⏱ Pakka tyhjä: <b>Yhtäkkinen kuolema!</b> 2:30 laskuri käy. Vähemmän kortteja voittaa!',

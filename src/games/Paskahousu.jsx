@@ -459,7 +459,6 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     skipNoCard:   (isH, name) => t('games.paskahousu.msg.skipNoCard', { name }),
     swapped:      (isH, name, cards) => t('games.paskahousu.msg.swapped', { name, cards }),
     swapSwept:    (isH, name, count, cards) => t('games.paskahousu.msg.swapSwept', { name, count, cards }),
-    aiSwaps:      name => t('games.paskahousu.msg.aiSwaps', { name }),
     aiStuck:      name => t('games.paskahousu.msg.aiStuck', { name }),
     badCard:      t('games.paskahousu.msg.badCard'),
   };
@@ -867,8 +866,9 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     if (!g || g.phase !== 'swap_offer') return;
     const { playedCards, eligible } = g.swapData;
     const bestGroup = aiSwapChoice(playedCards, eligible, g.rules);
+    // applySwap kirjaa vaihdon kortteineen; erillinen "X vaihtaa!" kuului sen edellä turhana
+    // toistona (Tommin kuuntelu 16.10.2026, auditointi J-23).
     if (bestGroup) {
-      addLog(M.aiSwaps(g.players[pidx].name));
       applySwap(g, bestGroup);
     } else {
       skipSwap(g);

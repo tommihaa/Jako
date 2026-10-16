@@ -715,7 +715,6 @@ export const da = {
         skipNoCard: '{name} mister sin tur.',
         swapped: '{name} bytter! {cards} til bunken.',
         swapSwept: '{name} rydder en bunke på {count} kort med {cards} fra byttet! Fortsætter.',
-        aiSwaps: '{name} bytter!',
         aiStuck: '{name}: kan ikke gøre noget.',
         badCard: 'Kortet kan ikke bruges her.',
         suddenDeathStart: '⏱ Bunken er tom — <b>Pludselig død!</b> En 2:30-nedtælling kører. Færrest kort vinder!',

@@ -715,7 +715,6 @@ export const es = {
         skipNoCard: '{name} pierde su turno.',
         swapped: '¡{name} cambia! {cards} al montón.',
         swapSwept: '¡{name} barre un montón de {count} cartas con las {cards} obtenidas en el cambio! Continúa.',
-        aiSwaps: '¡{name} cambia!',
         aiStuck: '{name}: no puede hacer nada.',
         badCard: 'Esa carta no es válida aquí.',
         suddenDeathStart: '⏱ Mazo vacío — <b>¡Muerte súbita!</b> Un cronómetro de 2:30 está en marcha. ¡Gana quien tenga menos cartas!',

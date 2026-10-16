@@ -723,7 +723,6 @@ export const en = {
         skipNoCard: '{name} loses their turn.',
         swapped: '{name} swaps! {cards} to the pile.',
         swapSwept: '{name} clears a pile of {count} cards with the {cards} from the swap! Continues.',
-        aiSwaps: '{name} swaps!',
         aiStuck: '{name}: can do nothing.',
         badCard: 'That card is not valid here.',
         suddenDeathStart: '⏱ Deck empty: <b>Sudden death!</b> A 2:30 timer is running. Fewest cards wins!',

@@ -717,7 +717,6 @@ export const la = {
         skipNoCard: '{name} vices suas amittit.',
         swapped: '{name} mutat! {cards} in struem.',
         swapSwept: '{name} sternit struem {count} chartarum charta {cards} in mutatione accepta! Pergit.',
-        aiSwaps: '{name} mutat!',
         aiStuck: '{name}: nihil facere potest.',
         badCard: 'Charta huc non valet.',
         suddenDeathStart: '⏱ Cumulus vacuus — <b>Mors subita!</b> 2:30 numerator currit. Pauciores chartae vincunt!',

@@ -718,7 +718,6 @@ export const hu = {
         skipNoCard: '{name} elveszti a körét.',
         swapped: '{name} cserél! {cards} a kupacra.',
         swapSwept: '{name} ledönti a(z) {count} lapos kupacot a cserénél kapott {cards} lappal! Folytatja.',
-        aiSwaps: '{name} cserél!',
         aiStuck: '{name}: nem tud semmit tenni.',
         badCard: 'A lap nem érvényes ide.',
         suddenDeathStart: '⏱ A pakli üres — <b>Hirtelen halál!</b> 2:30 visszaszámláló fut. A kevesebb lap nyer!',

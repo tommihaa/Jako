@@ -718,7 +718,6 @@ export const rom = {
         skipNoCard: '{name} xasarel pesko rindo.',
         swapped: '{name} paruvel! {cards} ki grameda.',
         swapSwept: '{name} perel {count} kartengi grameda le {cards} so lijas ando paruvipe! Džal angle.',
-        aiSwaps: '{name} paruvel!',
         aiStuck: '{name}: našti kerel khanči.',
         badCard: 'I karta naj lačhi katar.',
         suddenDeathStart: '⏱ Kupa nango — <b>Sigutno meripe!</b> 2:30 ginaitori džal. Majxancik karti nirisarel!',

@@ -715,7 +715,6 @@ export const it = {
         skipNoCard: '{name} perde il turno.',
         swapped: '{name} scambia! {cards} al cumulo.',
         swapSwept: '{name} elimina un cumulo di {count} carte con il {cards} ottenuto dallo scambio! Continua.',
-        aiSwaps: '{name} scambia!',
         aiStuck: '{name}: non può fare nulla.',
         badCard: 'Quella carta non va bene qui.',
         suddenDeathStart: '⏱ Mazzo vuoto — <b>Morte improvvisa!</b> Un timer da 2:30 è in corso. Vince chi ha meno carte!',

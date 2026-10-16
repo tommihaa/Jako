@@ -717,7 +717,6 @@ export const ro = {
         skipNoCard: '{name} pierde rândul.',
         swapped: '{name} schimbă! {cards} la grămadă.',
         swapSwept: '{name} doboară grămada de {count} cărți cu {cards} primit la schimb! Continuă.',
-        aiSwaps: '{name} schimbă!',
         aiStuck: '{name}: nu poate face nimic.',
         badCard: 'Cartea nu e valabilă aici.',
         suddenDeathStart: '⏱ Pachet gol — <b>Moarte subită!</b> Cronometrul de 2:30 merge. Mai puține cărți câștigă!',
