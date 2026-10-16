@@ -462,8 +462,8 @@ Painike"*. Androidilla `aria-labelledby` ei korvaa napin omaa tekstiä (`uiautom
 *✕*), toisin kuin `aria-label`, joten muut ✕-napit kuuluivat oikein (J-16). Korjaus: kuplan
 ✕ on `aria-hidden`-kääreessä, ja CSS-velho on peruttu.
 
-**J-22. Lyödyt kortit kuuluvat kolmesti.** Tila: korjattu dev-versiossa 16.10.2026, ei
-kuunneltu. Tommi: Paskahousussa kaatamaton kortti kuuluu *"Hero risti 4, Hero risti 4, Hero
+**J-22. Lyödyt kortit kuuluvat kolmesti.** Tila: korjattu dev-versiossa 16.10.2026,
+kuunneltu ok (Paskahousu: oma kortti kuuluu kerran). Tommi: Paskahousussa kaatamaton kortti kuuluu *"Hero risti 4, Hero risti 4, Hero
 risti 4, vuorossa Kukkahattutäti"*. Puhetuloste Pixelillä: kohdistettu viestirivi sanoo
 viestin heti (ilman pistettä), ja TalkBack lukee rivin uudelleen aina kun sen teksti vaihtuu,
 eli rivi toimii toisena live-alueena. Live-alue sanoo saman viestin pisteen kanssa, ja sen
