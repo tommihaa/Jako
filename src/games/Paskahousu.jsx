@@ -1265,7 +1265,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
           </button>
         )}
         {isMyTurn && !mustSkip && selected.length > 0 && (
-          <button onClick={() => setSel([])} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
+          <button onClick={() => setSel([])} aria-label={t('ui.action.cancelSelection')} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
         )}
         {canKnock && (
           <button onClick={() => { setSel([]); opastus.answer(opastusAvain('knock')); applyKnock(gRef.current, 0); }} style={{ background: 'rgba(201,168,76,0.08)', border: `1px solid ${C.gold}55`, borderRadius: 10, padding: '10px 20px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>

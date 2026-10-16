@@ -359,11 +359,17 @@ joten `App.jsx` siirtää kohdistuksen `active`-tilan muutoksesta eikä napeista
 oman pelin ruutuun. Tulosruutujen reittejä ei ajettu selaimessa, ne kulkevat saman tilamuutoksen
 kautta. Testi `kohdistus-alussa.test.jsx` (6), joka kaatuu ilman siirtoa.
 
-**J-16. Nimettömät ✕-napit.** Tila: auki. Valinnan perumisnappi Paskahousussa, Seiskassa,
-Moskassa ja Ristiseiskassa (`setSel([])`) sekä Kasinon infolaatikon sulkija
-(`Kasino.jsx:1344`) ovat pelkkä ✕ ilman `aria-label`ia. TalkBack lukee merkin nimen, ei
-toimintoa. Ei kuunneltu.
+**J-16. Nimettömät ✕-napit.** Tila: korjattu dev-versiossa 16.10.2026, ei kuunneltu eikä
+julkaistu. Valinnan perumisnappi Paskahousussa, Seiskassa, Moskassa (kaksi) ja
+Ristiseiskassa (kaksi) sekä Kasinon infolaatikon ja uusinnan sulkija olivat pelkkä ✕ ilman
+`aria-label`ia. TalkBack lukee merkin nimen eikä toimintoa. Nimet tulevat olemassa olevista
+avaimista `ui.action.cancelSelection` (*Peruuta valinta*) ja `ui.shared.close` (*Sulje*), jotka
+ovat kaikissa 23 kielessä. Mestarin kuplan ✕:n nimi oli `ui.info.close` eli *"✕ Sulje"*, jolloin
+merkin nimi kuului ennen sanaa, ja se vaihdettiin `ui.shared.close`en. Vahti:
+`ruudunlukija-maat.test.jsx` kaataa napin, jonka näkyvässä tekstissä ei ole kirjainta eikä
+numeroa ja jolta puuttuu `aria-label`. Vanhalla koodilla se kaatoi viisi peliä. Selaimessa
+Paskahousun *Peruuta valinta* palautti kohdistuksen valittuun korttiin.
 
 **Seuraavaksi:** Tommin kuuntelu Pixelillä dev-versiolla (`jako-dev-adb`), sitten julkaisu.
-Kuunneltavat: kortin pelaaminen (J-14), Asetusten ja Mestarin kuplan sulkeminen pelissä sekä
-paluu valikkoon (J-15).
+Kuunneltavat: kortin pelaaminen (J-14), Asetusten ja Mestarin kuplan sulkeminen pelissä,
+paluu valikkoon (J-15) ja valinnan peruminen ✕-napilla (J-16).

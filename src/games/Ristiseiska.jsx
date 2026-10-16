@@ -720,7 +720,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
               <button onClick={humanEndBonusTurn} style={{ background: 'transparent', border: `1px solid ${C.dim}55`, borderRadius: 10, padding: '10px 16px', color: C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>{t('games.ristiseiska.ui.dontContinue')}</button>
             )}
             {selCard && (
-              <button onClick={() => setSel(null)} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
+              <button onClick={() => setSel(null)} aria-label={t('ui.action.cancelSelection')} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
             )}
           </>
         )}
@@ -731,7 +731,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
               <Spoken>{`${t('ui.action.give')} ${selCard ? lbl(selCard) : t('ui.action.card')}`}</Spoken>
             </button>
             {selCard && (
-              <button onClick={() => setSel(null)} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
+              <button onClick={() => setSel(null)} aria-label={t('ui.action.cancelSelection')} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
             )}
           </>
         )}

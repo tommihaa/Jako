@@ -1390,7 +1390,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
                   style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 20px', color: '#0d2118', fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
                   <Spoken>{`${t('ui.action.play')} (${selected.map(lbl).join(', ')})`}</Spoken>
                 </button>
-                <button onClick={() => setSel([])} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
+                <button onClick={() => setSel([])} aria-label={t('ui.action.cancelSelection')} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
               </>
             )}
             {!selected.length && canDraw && (

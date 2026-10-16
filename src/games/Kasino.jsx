@@ -1341,7 +1341,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
         <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, lineHeight: 1.8, marginBottom: isMobile ? 8 : 12, padding: '12px 16px', background: 'rgba(201,168,76,0.06)', border: `1px solid ${C.gold}55`, borderRadius: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: 6 }}>
             <span style={{ color: C.gold, fontWeight: 700, fontSize: 12, flex: 1 }}>{t('games.kasino.ui.scoringTitle')}</span>
-            <button onClick={() => setShowInfo(false)} style={{ background: 'transparent', border: 'none', color: C.dim, fontSize: 18, cursor: 'pointer', padding: '0 4px', lineHeight: 1 }}>✕</button>
+            <button onClick={() => setShowInfo(false)} aria-label={t('ui.shared.close')} style={{ background: 'transparent', border: 'none', color: C.dim, fontSize: 18, cursor: 'pointer', padding: '0 4px', lineHeight: 1 }}>✕</button>
           </div>
           <Spoken>{t('games.kasino.ui.scoring')}</Spoken>
         </div>

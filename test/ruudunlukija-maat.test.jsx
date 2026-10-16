@@ -57,6 +57,13 @@ function suitLeaks(root) {
   root.querySelectorAll('[aria-pressed][aria-label]').forEach(el => {
     out.push(`aria-pressed ja aria-label samassa "${norm(el.getAttribute('aria-label') ?? '')}"`);
   });
+  // Pelkkä ✕ tai muu merkki ilman aria-labelia: TalkBack lukee merkin nimen eikä toimintoa
+  // (J-16, 16.10.2026). Näkyvässä tekstissä pitää olla kirjain tai numero.
+  root.querySelectorAll('button,[role=button]').forEach(el => {
+    if (el.closest('[aria-hidden="true"]') || el.hasAttribute('aria-label')) return;
+    const text = el.textContent ?? '';
+    if (!/[\p{L}\p{N}]/u.test(text)) out.push(`nimetön nappi "${text.trim()}"`);
+  });
   root.querySelectorAll('[aria-label],[alt],[title]').forEach(el => {
     if (el.closest('[aria-hidden="true"]')) return;
     for (const a of ['aria-label', 'alt', 'title']) {

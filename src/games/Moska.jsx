@@ -1344,7 +1344,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
               <Spoken>{`${t('games.moska.ui.attack')} ${selAtk.length > 0 ? `(${selAtk.map(lbl).join(',')})` : ''}`}</Spoken>
             </button>
             {selAtk.length > 0 && (
-              <button onClick={() => setSelAtk([])} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
+              <button onClick={() => setSelAtk([])} aria-label={t('ui.action.cancelSelection')} style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
             )}
           </>
         )}
@@ -1363,7 +1363,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
               </button>
             )}
             {(selDefTarget || selPass.length > 0) && (
-              <button onClick={() => { setSelDefTarget(null); setSelPass([]); }}
+              <button onClick={() => { setSelDefTarget(null); setSelPass([]); }} aria-label={t('ui.action.cancelSelection')}
                 style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
             )}
           </>

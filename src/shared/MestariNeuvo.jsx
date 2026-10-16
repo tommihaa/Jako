@@ -33,7 +33,7 @@ export function AdviceBubble({ text, onDismiss }) {
     >
       <span aria-hidden="true" style={{ flexShrink: 0 }}>🧙</span>
       <span><strong style={{ fontWeight: 700 }}>{t('ui.advice.from')}</strong> <Spoken>{text}</Spoken></span>
-      <button onClick={onDismiss} aria-label={t('ui.info.close')}
+      <button onClick={onDismiss} aria-label={t('ui.shared.close')}
         style={{ background: 'transparent', border: 'none', color: C.botMode, cursor: 'pointer',
           fontSize: 13, padding: '0 2px', flexShrink: 0, fontFamily: 'sans-serif' }}>
         ✕
