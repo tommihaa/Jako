@@ -36,9 +36,9 @@ describe('Announcer', () => {
       announce('Vuorossa Troll.');
       vi.advanceTimersByTime(0);
     });
-    expect(liveText(container)).toBe('Random: hertta 7 (avaa maan).');
+    expect(liveText(container)).toBe('Random: hertta seitsemän (avaa maan).');
     act(() => { vi.advanceTimersByTime(1000); });
-    expect(liveText(container)).toBe('Random: hertta 7 (avaa maan).');
+    expect(liveText(container)).toBe('Random: hertta seitsemän (avaa maan).');
     act(() => { vi.advanceTimersByTime(2500); });
     expect(liveText(container)).toBe('Vuorossa Troll.');
   });
@@ -49,7 +49,7 @@ describe('Announcer', () => {
       announce('Hero aloittaa 7♣:llä. NPC: Q♥, 10♦️. Avattu ♠');
       vi.advanceTimersByTime(0);
     });
-    expect(liveText(container)).toBe('Hero aloittaa risti 7:llä. NPC: hertta rouva, ruutu 10. Avattu pata.');
+    expect(liveText(container)).toBe('Hero aloittaa risti 7:llä. NPC: hertta rouva, ruutu kymmenen. Avattu pata.');
   });
 
   it('toistaa saman viestin, koska alue tyhjenee välissä', () => {

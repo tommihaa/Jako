@@ -70,7 +70,7 @@ describe('kohdistuksen turvaverkko', () => {
     cleanup();
     const r2 = render(<div><Card mine card={card('9', 9)} /><Card mine card={card('5', 5)} /></div>);
     const t = rescueTarget(r2.container);
-    expect(t?.getAttribute('aria-label')).toMatch(/5/);
+    expect(t?.getAttribute('aria-label')).toBe('pata viisi');
     expect(t?.tabIndex).toBe(-1);
   });
 
@@ -94,7 +94,7 @@ describe('kohdistuksen turvaverkko', () => {
     // MutationObserver ilmoittaa mikrotehtävänä, joten klikkaus odotetaan ennen ajastimia.
     await act(async () => { fireEvent.click(btn); });
     act(() => { vi.runAllTimers(); });
-    expect(document.activeElement?.getAttribute('aria-label')).toMatch(/4/);
+    expect(document.activeElement?.getAttribute('aria-label')).toBe('pata neljä');
     uninstall();
   });
 

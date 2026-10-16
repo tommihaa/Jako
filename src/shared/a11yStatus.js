@@ -28,11 +28,15 @@ import { tr } from './i18n.jsx';
  * @property {{ name: string, n: number }[]} [counts]  Muiden korttimäärät
  */
 
-/** Yksi kortti puhuttuna, esim. "risti 7". */
-export const spokenCard = cardName;
+/**
+ * Yksi kortti puhuttuna, esim. "risti seitsemän". Yksiparametrinen, koska sitä käytetään
+ * `.map`in kutsuna eikä indeksi saa mennä `cardName`in optioksi.
+ * @param {any} c
+ */
+export const spokenCard = c => cardName(c);
 
 /** @param {Kortti[]} cards */
-export const spokenCards = cards => cards.map(cardName).join(', ');
+export const spokenCards = cards => cards.map(c => cardName(c)).join(', ');
 
 /** Ristiseiskan rivi: maa ja arvoväli, esim. "risti 5–9". @param {string} s @param {number} lo @param {number} hi */
 export const spokenRange = (s, lo, hi) => {

@@ -427,3 +427,17 @@ Kuunneltavat: kortin pelaaminen (J-14), Asetusten ja Mestarin kuplan sulkeminen 
 paluu valikkoon (J-15), valinnan peruminen ✕-napilla (J-16) ja nimi ilman yhdeksikköä (J-17).
 Toinen kierros: oman siirron jälkeen viestirivi, Mestarin kupla ilman tila-sanaa ja
 emojittomat napit (J-13).
+
+## Toinen kuuntelu dev-versiolla 16.10.2026 klo 21
+
+**J-18. Kortin numero kuuluu taivutettuna.** Tila: korjattu dev-versiossa 16.10.2026, ei
+kuunneltu. Tommi: kun ruudunlukija kertoo kortin, se taivuttaa usein numeron, vaikka kaivattu
+on perusmuoto, esimerkiksi *"ruutu viiteen"* ja *"risti kolmesta"*. Syy: korttinimi oli muotoa
+*ruutu 5*, ja TalkBackin puhesyntetisaattori päättelee numeron sijamuodon ympäröivistä
+sanoista. Korjaus: suomessa `cardName` sanoo numeron sanana (*ruutu viisi*, `RANK_WORD`,
+`helpers.js`). Kun näkyvässä tekstissä on numeron perässä sijapääte (*7♣:llä*), numero jää
+numeroksi (*risti 7:llä*), koska pääte kertoo oikean muodon. Karjala (`krl`) ja muut kielet
+pitävät numeron, koska taivutusta ei ole kuultu niissä. Testit: `announcer.test.jsx` (*ruutu
+kymmenen* ja *risti 7:llä* samassa viestissä) ja `kohdistus-alussa.test.jsx`.
+
+Viestirivin, Mestarin kuplan ja emojittomien nappien tulokset kirjataan, kun Tommi kertoo ne.

@@ -77,10 +77,18 @@ export const opponentsInTurnOrder = players => {
 };
 /** @param {string} s maasymboli (♠ ♥ ♦ ♣) */
 export const suitName = s => SUIT_NAME[getLang()]?.[s] || SUIT_NAME.fi[s] || s;
-export const cardName = c => {
+// Suomessa numero sanotaan perusmuodossa sanana, koska TalkBack taivuttaa numeron
+// ympäröivien sanojen mukaan: "ruutu 5" kuului "ruutu viiteen" ja "risti 3" "risti kolmesta"
+// (Tommin kuuntelu Pixelillä 16.10.2026, auditointi J-18).
+const RANK_WORD = {
+  fi: { 2: 'kaksi', 3: 'kolme', 4: 'neljä', 5: 'viisi', 6: 'kuusi', 7: 'seitsemän', 8: 'kahdeksan', 9: 'yhdeksän', 10: 'kymmenen' },
+};
+/** @param {any} c kortti { r, s } @param {{ digit?: boolean }} [opts] digit: numero numerona */
+export const cardName = (c, { digit = false } = {}) => {
   const L = getLang();
   if (!c) return EMPTY[L] || EMPTY.fi;
-  return `${SUIT_NAME[L][c.s] || ''} ${RANK_NAME[L][c.r] || c.r}`.trim();
+  const rank = RANK_NAME[L][c.r] || (!digit && RANK_WORD[L]?.[c.r]) || c.r;
+  return `${SUIT_NAME[L][c.s] || ''} ${rank}`.trim();
 };
 // Emojin esitysvalitsin (U+FE0F) koodina, koska näkymätöntä merkkiä ei erota lähdekoodista.
 const VS16 = new RegExp(String.fromCharCode(0xfe0f), 'g');
@@ -90,8 +98,8 @@ const VS16 = new RegExp(String.fromCharCode(0xfe0f), 'g');
 /** @param {string} text */
 export const spokenSuits = text => text
   .replace(VS16, '')
-  .replace(/(10|[2-9AJQK])([♠♥♦♣])/g, (_, r, s) => cardName({ r, s }))
-  .replace(/([♠♥♦♣])(10|[2-9AJQK])(?![\p{L}\d])/gu, (_, s, r) => cardName({ r, s }))
+  .replace(/(10|[2-9AJQK])([♠♥♦♣])(:?)/g, (_, r, s, colon) => cardName({ r, s }, { digit: !!colon }) + colon)
+  .replace(/([♠♥♦♣])(10|[2-9AJQK])(?![\p{L}\d])(:?)/gu, (_, s, r, colon) => cardName({ r, s }, { digit: !!colon }) + colon)
   .replace(/[♠♥♦♣]/g, s => suitName(s));
 /** @param {string} text */
 export const hasSuit = text => /[♠♥♦♣]/.test(text);
