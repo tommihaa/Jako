@@ -1,4 +1,4 @@
-import { spokenSuits, spokenHtml, hasSuit } from './helpers.js';
+import { spokenSuits, spokenFractions, spokenHtml, needsSpoken } from './helpers.js';
 
 // Näkyvä teksti jossa on maasymboli: symboli näkyy, ruudunlukija kuulee sanan.
 // TalkBack lukee ♠:n emojina eikä maana (auditointi J-8, Tommin kuuntelu 15.10.2026).
@@ -30,9 +30,9 @@ export const withoutEmoji = s => s.replace(EMOJI, '').replace(/\s{2,}/g, ' ').tr
 export default function Spoken({ children, say }) {
   if (say === undefined) {
     if (typeof children !== 'string') return children;
-    const suit = hasSuit(children), emoji = hasEmoji(children);
-    if (!suit && !emoji) return children;
-    say = withoutEmoji(suit ? spokenSuits(children) : children);
+    const spoken = needsSpoken(children), emoji = hasEmoji(children);
+    if (!spoken && !emoji) return children;
+    say = withoutEmoji(spoken ? spokenFractions(spokenSuits(children)) : children);
   }
   return (
     <>
@@ -55,7 +55,7 @@ export default function Spoken({ children, say }) {
  */
 /** @param {SpokenHtmlProps} props */
 export function SpokenHtml({ html, as: Tag = 'span', style, gameMessage = false }) {
-  const said = typeof html === 'string' && hasSuit(html) ? spokenHtml(html) : null;
+  const said = typeof html === 'string' && needsSpoken(html) ? spokenHtml(html) : null;
   const content = (
     <>
       {said && <span className="sr-only">{said}</span>}

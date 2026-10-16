@@ -103,9 +103,21 @@ export const spokenSuits = text => text
   .replace(/[♠♥♦♣]/g, s => suitName(s));
 /** @param {string} text */
 export const hasSuit = text => /[♠♥♦♣]/.test(text);
-// Lokirivi (HTML-string `lblColored`ista) ruudunlukijan tekstiksi: tagit pois, maat sanoiksi.
+// Suomessa murtoluku sanoiksi: "kaataa 0/2" kuului numeroina, ja oikea luku on "nolla
+// kahdesta" (Tommin kuuntelu Pixelillä 16.10.2026, auditointi J-19). Sanoina, koska TalkBack
+// taivuttaa numeron itse (J-18). Yli kahdentoista jää numeroiksi.
+const NUM_FI = ['nolla', 'yksi', 'kaksi', 'kolme', 'neljä', 'viisi', 'kuusi', 'seitsemän', 'kahdeksan', 'yhdeksän', 'kymmenen', 'yksitoista', 'kaksitoista'];
+const NUM_FI_ELATIVE = [, 'yhdestä', 'kahdesta', 'kolmesta', 'neljästä', 'viidestä', 'kuudesta', 'seitsemästä', 'kahdeksasta', 'yhdeksästä', 'kymmenestä', 'yhdestätoista', 'kahdestatoista'];
+const FRACTION = /(\d+)\/(\d+)/g;
+/** @param {string} text */
+export const spokenFractions = text => getLang() !== 'fi' ? text
+  : text.replace(FRACTION, (m, a, b) => NUM_FI[+a] && NUM_FI_ELATIVE[+b] ? `${NUM_FI[+a]} ${NUM_FI_ELATIVE[+b]}` : m);
+/** Tarvitseeko teksti erillisen puhutun muodon: maa tai suomen murtoluku. @param {string} text */
+export const needsSpoken = text => hasSuit(text) || (getLang() === 'fi' && /\d\/\d/.test(text));
+// Lokirivi (HTML-string `lblColored`ista) ruudunlukijan tekstiksi: tagit pois, maat ja
+// murtoluvut sanoiksi.
 /** @param {string} html */
-export const spokenHtml = html => spokenSuits(html.replace(/<[^>]*>/g, '')).replace(/\s+/g, ' ').trim();
+export const spokenHtml = html => spokenFractions(spokenSuits(html.replace(/<[^>]*>/g, ''))).replace(/\s+/g, ' ').trim();
 // Taivutusapurit: suomessa partitiivi/genetiivi, muissa kielissä kieliopillinen monikko
 // (ruotsin "kort" muuttumaton: ett kort / två kort; saksa: 1 Karte / n Karten).
 // Korttimäärä lokalisoituna. korttia = partitiivi (suomi), kortin = genetiivi (suomi);

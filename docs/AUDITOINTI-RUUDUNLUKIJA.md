@@ -440,4 +440,33 @@ numeroksi (*risti 7:llä*), koska pääte kertoo oikean muodon. Karjala (`krl`) 
 pitävät numeron, koska taivutusta ei ole kuultu niissä. Testit: `announcer.test.jsx` (*ruutu
 kymmenen* ja *risti 7:llä* samassa viestissä) ja `kohdistus-alussa.test.jsx`.
 
-Viestirivin, Mestarin kuplan ja emojittomien nappien tulokset kirjataan, kun Tommi kertoo ne.
+Tommin kuuntelu klo 22 (puhetulostus näkyvissä):
+
+| Kohta | Tulos |
+|---|---|
+| Viestirivi oman siirron jälkeen | kohdistus siirtyy oikein, mutta lyödyt kortit kuuluvat kolmesti |
+| Mestarin kupla | neuvo ja *Sulje* kuuluvat, kohdistus palaa oikein, mutta alussa kuuluu *emoji* |
+| Emojittomat napit (J-13) | napin puhetuloste *"Kysy Mestarilta. Painike"*, emoji ei kuulu |
+
+**J-19. Murtoluku kuuluu numeroina.** Tila: korjattu dev-versiossa 16.10.2026, ei kuunneltu.
+Tommi: kun kaato ei onnistu, *0/2* pitäisi sanoa *nolla kahdesta* ja *0/1* *nolla yhdestä*.
+Korjaus: `spokenFractions` (`helpers.js`) sanoo suomessa murtoluvun sanoina, ja `needsSpoken`
+antaa viestille puhutun muodon myös ilman maata. Kahtatoista suuremmat jäävät numeroiksi.
+Testi: `announcer.test.jsx`.
+
+**J-20. Kuplan velho kuuluu sanana *emoji*.** Tila: korjattu dev-versiossa 16.10.2026, ei
+kuunneltu. Tommi kuuli *emoji* ennen sanaa *Mestari*. Kuplan 🧙 oli `aria-hidden`, eikä se
+ollut Chromen saavutettavassa nimessä (Pixelin DevTools: *"Mestari: … Sulje"*) eikä Androidin
+solmuissa (`uiautomator`), joten sana syntyy TalkBackin päässä. Korjaus: velho piirretään
+CSS:llä (`.deco-emoji::before`, vaihtoehtoteksti tyhjä, `index.html`), jolloin DOMissa ei ole
+merkkiä lainkaan. Jos *emoji* kuuluu yhä, syy on muualla.
+
+**Lyödyt kortit kolmesti.** Tila: auki, syy ei löytynyt. Pixelillä mitattuna yhden kortin
+lyönti kuului puhetulosteessa kerran (*"Hero löi: pata viisi."*), ja viestirivi, johon
+kohdistus siirtyy, sanoi jo seuraavan tapahtuman. Live-alue ilmoitti saman kerran. Tarvitaan
+Tommin sanatarkka kuvaus kolmesta kerrasta.
+
+**Kaksoisnapauta pitkään.** TalkBackin vihje *"kaksoisnapauta ja pidä painettuna"* kertoo,
+että kohteella on pitkän painalluksen toiminto. Pelisivulla yksikään solmu ei ole
+pitkään painettava (`uiautomator`, `long-clickable`), vain Chromen omat palkit ja sivun kehys.
+Kohde, jossa vihje kuului, on selvittämättä.

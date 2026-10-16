@@ -52,6 +52,15 @@ describe('Announcer', () => {
     expect(liveText(container)).toBe('Hero aloittaa risti 7:llä. NPC: hertta rouva, ruutu kymmenen. Avattu pata.');
   });
 
+  it('sanoo murtoluvun sanoina, koska "0/2" kuuluu numeroina (J-19)', () => {
+    const { container } = render(<Announcer />);
+    act(() => {
+      announce('Rane kaataa 0/2 ja nostaa 2 korttia.');
+      vi.advanceTimersByTime(0);
+    });
+    expect(liveText(container)).toBe('Rane kaataa nolla kahdesta ja nostaa 2 korttia.');
+  });
+
   it('toistaa saman viestin, koska alue tyhjenee välissä', () => {
     const { container } = render(<Announcer />);
     act(() => { announce('Vuorossa Hero.'); vi.advanceTimersByTime(0); });
