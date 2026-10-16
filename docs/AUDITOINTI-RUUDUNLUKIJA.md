@@ -475,7 +475,8 @@ pitkään painettava (`uiautomator`, `long-clickable`), mutta Chromen sivualue o
 vihjeen, kun napautin adb:llä valikon versioleimaa, joka ei ole kohdistettava: TalkBack
 kohdisti sivualueen. Ei Jaon vika.
 
-**Versioleima ilman kontekstia.** Tila: auki. Tommi: valikko ei kerro versiota ja päivämäärää
-tunnistettavasti. Androidin solmu on *"Versio 1.2.237, julkaistu 16.10.2026 klo 19.49"*
-(J-7), joten mitä kuuluu, on kuulematta. Arvaus: syntetisaattori lukee *1.2.237*
-päivämääränä.
+**J-21. Versionumero kuuluu päivämääränä.** Tila: korjattu dev-versiossa 16.10.2026, ei
+kuunneltu. Tommi kuuli *"versio ensimmäinen toista kaksisataakolmekymmentäseitsemän julkaistu
+kuudestoista kymmenettä 2026 kello 19:49"*: syntetisaattori lukee *1.2.237*:n päivämääränä.
+Korjaus: suomen `ui.a11y.version` sanoo pisteet sanoina (*Versio 1 piste 2 piste 237*).
+Päivämäärän lukutapa on tavallinen suomi ja jää.

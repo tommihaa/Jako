@@ -11,7 +11,8 @@ export const fi = {
     a11y: {
       opponents: ({ names }) => `Vastustajat vuorojärjestyksessä: ${names}.`,
       statusButton: 'Tilanne',
-      version: ({ version, date, time }) => `Versio ${version}, julkaistu ${date} klo ${time}`,
+      // Pisteet sanoina: "1.2.237" kuului päivämääränä "ensimmäinen toista" (J-21).
+      version: ({ version, date, time }) => `Versio ${String(version).split('.').join(' piste ')}, julkaistu ${date} klo ${time}`,
       turn: ({ name }) => `Vuorossa ${name}.`,
       hand: ({ cards }) => `Käsi: ${cards}.`,
       none: 'ei kortteja',
