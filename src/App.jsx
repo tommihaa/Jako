@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { C, SUIT_COLOR, SUIT_COLOR_DARK, setTwoColorDeck } from './shared/colors.js';
 import GameResult from './shared/GameResult.jsx';
 import StatsPanel from './shared/StatsPanel.jsx';
@@ -307,6 +307,7 @@ function GameBtn({ g, stats, onSelect, onOpenGlossary }) {
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <button
           onClick={() => onSelect(g.id)}
+          data-game-tile={g.id}
           style={{
             background: 'transparent', border: 'none',
             padding: '14px 4px 14px 16px',
@@ -502,6 +503,18 @@ export default function App() {
   const [showStats, setShowStats]   = useState(false);
   useEffect(() => { savePref('stats', stats); }, [stats]);
   useEffect(() => installFocusRescue(), []);
+  // Valikkoon palatessa kohdistus menee sen pelin ruutuun, josta palattiin (auditointi J-15,
+  // Tommin valinta 16.10.2026). Ilman tätä painettu ← Valikko katosi pelin mukana ja TalkBack
+  // luki koko valikon. Paluureittejä on neljä (otsikko, tulosruutu, Bottien Taistelun tulos,
+  // takaisin-ele), joten siirto tehdään tilan muutoksesta eikä napeista.
+  const prevActive = useRef(active);
+  useEffect(() => {
+    const left = prevActive.current;
+    prevActive.current = active;
+    if (!left || active) return;
+    const tile = /** @type {HTMLElement | null} */ (document.querySelector(`[data-game-tile="${left}"]`));
+    tile?.focus({ preventScroll: true });
+  }, [active]);
   const [sessions, setSessions]     = useState(() => loadPref('sessions', 0)); // pelisessio = sovelluskäynti; lasketaan kerran per selainistunto (ks. recordResult)
   useEffect(() => { savePref('sessions', sessions); }, [sessions]);
   const [showLog, setShowLog]       = useStickySetting('showLog', true);   // tapahtumaloki auki oletuksena; valinta muistetaan

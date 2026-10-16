@@ -335,7 +335,7 @@ napin kohdistus, painallus ja 250 ms myöhemmin luettu `document.activeElement`.
 | Kortti valittu, Peruuta (Maija) | ei mitattu | valittu kortti |
 | Bottien Taistelu, bottien siirrot | pelin nimi pysyy | pelin nimi pysyy |
 | Bottien Taistelu, Tauko ja Jatka | kunnossa | kunnossa |
-| ← Valikko | sivun juuri | sivun juuri (J-15) |
+| ← Valikko | sivun juuri | pelin oma ruutu (J-15) |
 
 **Korjaus 1, paneelin avaaja.** Sulkunappi katoaa paneelin mukana, ja turvaverkko vei
 kohdistuksen käteen. APG:n disclosure- ja dialogimallissa kohdistus palaa avaajaan. Korjaus on
@@ -349,10 +349,15 @@ eivät saaneet `data-mine`-merkintää, joten J-14:n turvaverkko vei kohdistukse
 nimeen, vaikka edellinen kohta luettelee Maijan merkityksi. `npm run typecheck` kaatui tähän
 (J-14:n commit `163fa8d`). Nyt: *Lyö kortti* vie kohdistuksen *hertta 3*:een.
 
-**J-15. Paluu valikkoon pudottaa kohdistuksen sivun juureen.** Tila: auki, odottaa Tommin
-valintaa. ← Valikko katoaa pelin mukana, eikä valikossa ole korttia eikä pelin nimeä, joten
-TalkBack lukee koko valikon. Sama vikaluokka kuin J-9 ja J-14. Vaihtoehdot: pelin oma ruutu
-valikossa (palaa sinne mistä lähti) tai valikon otsikko JAKO.
+**J-15. Paluu valikkoon pudottaa kohdistuksen sivun juureen.** Tila: korjattu dev-versiossa
+16.10.2026, testattu selaimessa, ei kuunneltu eikä julkaistu. ← Valikko katoaa pelin mukana,
+eikä valikossa ole korttia eikä pelin nimeä, joten TalkBack luki koko valikon. Sama vikaluokka
+kuin J-9 ja J-14. Tommin valinta: kohdistus menee sen pelin ruutuun, josta palattiin.
+Paluureittejä on neljä (otsikon ← Valikko, tulosruutu, Bottien Taistelun tulos ja takaisin-ele),
+joten `App.jsx` siirtää kohdistuksen `active`-tilan muutoksesta eikä napeista. Ruudun nappi on
+`data-game-tile`. Selaimessa: Maija, Moska (pelin alettua) ja takaisin-ele Kasinosta päätyivät
+oman pelin ruutuun. Tulosruutujen reittejä ei ajettu selaimessa, ne kulkevat saman tilamuutoksen
+kautta. Testi `kohdistus-alussa.test.jsx` (6), joka kaatuu ilman siirtoa.
 
 **J-16. Nimettömät ✕-napit.** Tila: auki. Valinnan perumisnappi Paskahousussa, Seiskassa,
 Moskassa ja Ristiseiskassa (`setSel([])`) sekä Kasinon infolaatikon sulkija
@@ -360,4 +365,5 @@ Moskassa ja Ristiseiskassa (`setSel([])`) sekä Kasinon infolaatikon sulkija
 toimintoa. Ei kuunneltu.
 
 **Seuraavaksi:** Tommin kuuntelu Pixelillä dev-versiolla (`jako-dev-adb`), sitten julkaisu.
-Kuunneltavat: kortin pelaaminen (J-14), Asetusten ja Mestarin kuplan sulkeminen pelissä.
+Kuunneltavat: kortin pelaaminen (J-14), Asetusten ja Mestarin kuplan sulkeminen pelissä sekä
+paluu valikkoon (J-15).

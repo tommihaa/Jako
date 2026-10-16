@@ -12,6 +12,7 @@ import GameStartScreen, { GAME_TITLE_ID } from '../src/shared/GameStartScreen.js
 import Card from '../src/shared/Card.jsx';
 import { installFocusRescue, rescueTarget } from '../src/shared/focusRescue.js';
 import { useState } from 'react';
+import App from '../src/App.jsx';
 
 afterEach(() => { cleanup(); vi.useRealTimers(); });
 
@@ -123,4 +124,18 @@ describe('kohdistuksen turvaverkko', () => {
     expect(document.activeElement).toBe(opener);
     uninstall();
   });
+});
+
+// Paluu valikkoon vie kohdistuksen sen pelin ruutuun, josta palattiin (J-15, Tommin valinta
+// 16.10.2026). Ennen tätä ← Valikko katosi pelin mukana ja TalkBack luki koko valikon.
+describe('kohdistus valikkoon palatessa', () => {
+  it('menee pelin omaan ruutuun', async () => {
+    let utils;
+    await act(async () => { utils = render(<LangProvider><App /></LangProvider>); });
+    const tile = /** @type {HTMLElement} */ (utils.container.querySelector('[data-game-tile="maija"]'));
+    await act(async () => { fireEvent.click(tile); });
+    const back = await utils.findByText('← Valikko', {}, { timeout: 10_000 });
+    await act(async () => { fireEvent.click(back); });
+    expect(document.activeElement?.getAttribute('data-game-tile')).toBe('maija');
+  }, 20_000);
 });
