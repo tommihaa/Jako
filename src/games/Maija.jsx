@@ -833,7 +833,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
             const dimmed    = adv?.cardIds?.length ? !isAdv : (wrongSuit || !!defDimmed);
             return (
               <div key={c.id} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2 }}>
-                <Card card={c}
+                <Card card={c} mine
                   small={isMobile}
                   selected={isSel}
                   highlight={!!canBeatTarget}

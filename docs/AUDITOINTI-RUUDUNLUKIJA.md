@@ -297,3 +297,28 @@ botin nimen edessä ja 👤 Heron edessä. Samasta luvusta kuului myös *Rivinke
 (`·`-erotin) ja *Välilyönti*. Korjaus poisti kokonaisluvun pelin alusta, mutta samat kohteet
 kuuluvat yhä, kun sivua pyyhkäisee läpi. Korjaustapa olisi `aria-hidden` koristeille, kuten
 aloitusnäytön tunnuksessa. Ei vielä kartoitettu koko sivulta.
+
+## Kuuntelu 1.2.237:llä 16.10.2026 klo 19.13
+
+Tommi kuunteli julkaistun 1.2.237:n Pixelillä: *"kuulosti hyvältä, kunnes pelasin yhden
+kortin ja alkoi pitkä tarina"*. Pelin alku toimi siis, mutta sama vika toistui ensimmäisen
+pelatun kortin jälkeen. Syy (päätelmä, ei kaapattu): kortti ja Pelaa-nappi katosivat,
+kohdistus putosi sivun juureen ja TalkBack luki koko sivun.
+
+**J-14. Kohdistus putoaa, kun painettu nappi katoaa.** Tila: korjattu dev-versiossa
+16.10.2026, testattu selaimessa, ei kuunneltu eikä julkaistu. Tommin päätökset
+monivalinnoista: kohdistus menee oman käden pienimpään valittavaan korttiin, ja jos
+yhtäkään ei voi valita (heti oman siirron jälkeen), käden pienimpään korttiin.
+Toteutus: `shared/focusRescue.js` (asennetaan `App.jsx`:ssä) muistaa viimeksi napautetun tai
+kohdistetun elementin. Kun se katoaa ja kohdistus jää tyhjään, kohdistus siirtyy
+`rescueTarget`iin. `Card`-propsi `mine` merkitsee ihmispelaajan kortit (`data-mine`,
+`data-value` pelin omasta arvosta `card.v`), ja valitsematon oma kortti saa `tabIndex={-1}`.
+Merkitty seitsemään peliin: Kasino, Maija, Moska, Paskahousu (käsi ja vaihtovaihe),
+Ristiseiska ja Seiska. Kultakalassa ja Koputuksessa omat kortit ovat kuvapuoli alas, ja
+Läpsyssä kättä ei valita, joten niissä kohdistus menee pelin nimeen. Testit
+`kohdistus-alussa.test.jsx` (4). Selaimessa: Paskahousu, ♥2 pelattu, kohdistus siirtyi
+*hertta 3*:een (käden pienin, ei valittava).
+
+**Seuraavaksi:** Tommin kuuntelu Pixelillä dev-versiolla (`jako-dev-adb`), sitten julkaisu.
+Ennen sitä on tarkistettava, ettei turvaverkko siirrä kohdistusta väärään kohtaan
+valikoissa, asetuspaneelin sulkeutuessa tai Bottien Taistelussa.

@@ -5,6 +5,7 @@ import StatsPanel from './shared/StatsPanel.jsx';
 import ShareQR from './shared/ShareQR.jsx';
 import Announcer from './shared/Announcer.jsx';
 import { GAME_TITLE_ID } from './shared/GameStartScreen.jsx';
+import { installFocusRescue } from './shared/focusRescue.js';
 import Spoken from './shared/Spoken.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
 import { loadPref, savePref, useStickySetting } from './shared/storage.js';
@@ -500,6 +501,7 @@ export default function App() {
   const [stats, setStats]           = useState(() => normalizeStats(loadPref('stats', {}))); // persistoidaan jako:stats-avaimeen
   const [showStats, setShowStats]   = useState(false);
   useEffect(() => { savePref('stats', stats); }, [stats]);
+  useEffect(() => installFocusRescue(), []);
   const [sessions, setSessions]     = useState(() => loadPref('sessions', 0)); // pelisessio = sovelluskäynti; lasketaan kerran per selainistunto (ks. recordResult)
   useEffect(() => { savePref('sessions', sessions); }, [sessions]);
   const [showLog, setShowLog]       = useStickySetting('showLog', true);   // tapahtumaloki auki oletuksena; valinta muistetaan

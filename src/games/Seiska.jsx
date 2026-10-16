@@ -1321,7 +1321,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
                 ? (!isSel && (selected.length > 0 ? !multi : (!single && !multi)))
                 : (spectatorAct && !isSel && !single && !multi);
             return (
-              <Card key={c.id} card={c} large={!isMobile} small={isMobile}
+              <Card key={c.id} card={c} mine large={!isMobile} small={isMobile}
                 selected={isSel}
                 highlight={!!hl}
                 advice={isAdv}

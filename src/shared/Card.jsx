@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { C, suitColor } from './colors.js';
 import { BACKS } from './BACKS.jsx';
-import { isRed, cardName } from './helpers.js';
+import { isRed, cardName, VAL } from './helpers.js';
 
 const isRuutuKymppi = c => c && c.r === '10' && c.s === '♦';
 const isPataKakkonen = c => c && c.r === '2' && c.s === '♠';
@@ -29,6 +29,8 @@ const isPataKakkonen = c => c && c.r === '2' && c.s === '♠';
  * @property {boolean} [justPlaced]
  * @property {boolean} [disabled]
  * @property {boolean} [showBadges]  oletus false
+ * @property {boolean} [mine]        ihmispelaajan oma kortti; kohdistuksen turvaverkko
+ *                                   (focusRescue.js) etsii sen ja vertaa arvoa
  * @param {CardProps} props
  */
 export default function Card({
@@ -50,6 +52,7 @@ export default function Card({
   justPlaced,
   disabled,
   showBadges = false,
+  mine = false,
 }) {
   const [h, setH] = useState(false);
   const w = large ? 80 : xsmall ? 38 : small ? 50 : 66;
@@ -76,8 +79,13 @@ export default function Card({
         'aria-pressed': selected === undefined ? undefined : !!selected,
         onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
     : faceUp && card
-      ? { role: 'img', 'aria-label': cardName(card) }
+      // Oma kortti voi ottaa kohdistuksen ohjelmallisesti (tabIndex -1), koska turvaverkko
+      // vie sen käden pienimpään korttiin myös silloin kun yhtäkään ei voi valita.
+      ? { role: 'img', 'aria-label': cardName(card), ...(mine ? { tabIndex: -1 } : {}) }
       : { 'aria-hidden': /** @type {const} */ (true) };
+  // Pelikohtainen arvo (card.v) ratkaisee mikä on pienin; ilman sitä perusarvo.
+  const mineAttrs = mine && faceUp && card
+    ? { 'data-mine': '', 'data-value': String(card.v ?? VAL[card.r] ?? 0) } : {};
 
   const borderCol = justPlaced ? C.gold
     : reactHL ? C.red
@@ -107,6 +115,7 @@ export default function Card({
   return (
     <div
       {...a11y}
+      {...mineAttrs}
       onClick={clickable ? onClick : undefined}
       onMouseEnter={() => setH(true)}
       onMouseLeave={() => setH(false)}

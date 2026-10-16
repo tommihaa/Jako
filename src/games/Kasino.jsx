@@ -1541,7 +1541,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
             const validBuildCreate = buildMode && selTable.length > 0 && selBuilds.length === 0 && getBuildValue(c, selTable, human.hand) !== null;
             const valid = validBuildCapture || validTableCapture || validBuildCreate;
             return (
-              <Card key={c.id} card={c} small={isMobile} showBadges
+              <Card key={c.id} card={c} mine small={isMobile} showBadges
                 highlight={valid}
                 advice={!!adv?.handCardId && adv.handCardId === c.id}
                 dim={adv?.handCardId

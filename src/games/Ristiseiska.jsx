@@ -688,7 +688,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
               ? () => setSel(prev => prev?.id === c.id ? null : c)
               : (isMyTurn || isBonusTurn) ? () => humanSelect(c) : undefined;
             return (
-              <Card key={c.id} card={c} small={!isMobile} xsmall={isMobile}
+              <Card key={c.id} card={c} mine small={!isMobile} xsmall={isMobile}
                 selected={isSel}
                 highlight={!!hl}
                 advice={isAdv}

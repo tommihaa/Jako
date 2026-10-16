@@ -1193,7 +1193,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
                 const isSel = !!selected.find(s => s.id === c.id);
                 const isAdv = !isSel && !!adv?.cardIds?.includes(c.id);
                 return (
-                  <Card key={c.id} card={c} large={!isMobile} small={isMobile}
+                  <Card key={c.id} card={c} mine large={!isMobile} small={isMobile}
                     selected={isSel} highlight={!isSel}
                     advice={isAdv}
                     dim={!!adv?.cardIds?.length && !isAdv}
@@ -1236,7 +1236,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
               ? !isAdv
               : ((isMyTurn && !mustSkip && !playable && !isSel) || (isSwapPhase && !isSel));
             return (
-              <Card key={c.id} card={c} large={!isMobile} small={isMobile}
+              <Card key={c.id} card={c} mine large={!isMobile} small={isMobile}
                 selected={isSel}
                 highlight={!!hl}
                 advice={isAdv}
