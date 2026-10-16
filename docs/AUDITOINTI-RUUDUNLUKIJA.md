@@ -501,3 +501,16 @@ kuunneltu ok. Tommi kuuli *"versio ensimmäinen toista kaksisataakolmekymmentäs
 kuudestoista kymmenettä 2026 kello 19:49"*: syntetisaattori lukee *1.2.237*:n päivämääränä.
 Korjaus: suomen `ui.a11y.version` sanoo pisteet sanoina (*Versio 1 piste 2 piste 237*).
 Päivämäärän lukutapa on tavallinen suomi ja jää.
+
+## Julkaisu 1.2.238 17.10.2026
+
+J-13–J-23 julkaistu (Jako `d0b7db4`). Todennettu tuotantobundlesta selaimella noin minuutti
+pushin jälkeen: molemmat domainit tarjoavat `index-UozljuaL.js`:n, joka on sama kuin paikallinen
+build. Bundlessa on `"1.2.238"`, `data-game-message`, *kahdesta* ja *piste*, eikä `aiSwaps`ia.
+Muutoslokin chunkissa (`changelog-fi-C7qBwt5J.js`) on 17.10.2026:n merkintä. Ensimmäinen haku
+näytti vielä 1.2.237:n, koska palvelutyöntekijä tarjosi vanhaa sivua; ohi välimuistin haettu
+sivu näytti uuden.
+
+**Seuraavaksi:** Tommin kuuntelu tuotannossa, jonka jälkeen työjonon kohta 46 sulkeutuu ja
+kohdan 47 kirje voi lähteä.
+
