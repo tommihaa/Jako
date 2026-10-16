@@ -454,19 +454,28 @@ Korjaus: `spokenFractions` (`helpers.js`) sanoo suomessa murtoluvun sanoina, ja 
 antaa viestille puhutun muodon myös ilman maata. Kahtatoista suuremmat jäävät numeroiksi.
 Testi: `announcer.test.jsx`.
 
-**J-20. Kuplan velho kuuluu sanana *emoji*.** Tila: korjattu dev-versiossa 16.10.2026, ei
-kuunneltu. Tommi kuuli *emoji* ennen sanaa *Mestari*. Kuplan 🧙 oli `aria-hidden`, eikä se
-ollut Chromen saavutettavassa nimessä (Pixelin DevTools: *"Mestari: … Sulje"*) eikä Androidin
-solmuissa (`uiautomator`), joten sana syntyy TalkBackin päässä. Korjaus: velho piirretään
-CSS:llä (`.deco-emoji::before`, vaihtoehtoteksti tyhjä, `index.html`), jolloin DOMissa ei ole
-merkkiä lainkaan. Jos *emoji* kuuluu yhä, syy on muualla.
+**J-20. Kuplan sulkunappi sanoo *emoji* ennen neuvoa.** Tila: korjattu dev-versiossa
+16.10.2026, ei kuunneltu. Tommi kuuli *emoji* ennen sanaa *Mestari*. Ensimmäinen arvaus oli
+kuplan 🧙, ja sen piirtäminen CSS:llä ei auttanut (Tommin kuuntelu klo 22.20). Puhetuloste
+näytti syyn: TalkBack sanoo ensin pelkän ✕:n omana lausumanaan ja sitten *"Mestari: … Sulje.
+Painike"*. Androidilla `aria-labelledby` ei korvaa napin omaa tekstiä (`uiautomator`: teksti
+*✕*), toisin kuin `aria-label`, joten muut ✕-napit kuuluivat oikein (J-16). Korjaus: kuplan
+✕ on `aria-hidden`-kääreessä, ja CSS-velho on peruttu.
 
-**Lyödyt kortit kolmesti.** Tila: auki, syy ei löytynyt. Pixelillä mitattuna yhden kortin
-lyönti kuului puhetulosteessa kerran (*"Hero löi: pata viisi."*), ja viestirivi, johon
-kohdistus siirtyy, sanoi jo seuraavan tapahtuman. Live-alue ilmoitti saman kerran. Tarvitaan
-Tommin sanatarkka kuvaus kolmesta kerrasta.
+**Lyödyt kortit kolmesti.** Tila: syy löytyi, korjaustapa Tommin valittavana. Tommi:
+Paskahousussa kaatamaton kortti kuuluu *"Hero risti 4, Hero risti 4, Hero risti 4, vuorossa
+Kukkahattutäti"*. Puhetuloste Pixelillä: kohdistettu viestirivi sanoo viestin heti (ilman
+pistettä), ja TalkBack lukee rivin uudelleen aina kun sen teksti vaihtuu, eli rivi toimii
+toisena live-alueena. Live-alue sanoo saman viestin pisteen kanssa, ja sen jono laahaa
+sekunteja jäljessä, joten toisto kuuluu myöhemmin bottien siirtojen välissä.
 
 **Kaksoisnapauta pitkään.** TalkBackin vihje *"kaksoisnapauta ja pidä painettuna"* kertoo,
-että kohteella on pitkän painalluksen toiminto. Pelisivulla yksikään solmu ei ole
-pitkään painettava (`uiautomator`, `long-clickable`), vain Chromen omat palkit ja sivun kehys.
-Kohde, jossa vihje kuului, on selvittämättä.
+että kohteella on pitkän painalluksen toiminto. Pelisivulla yksikään Jaon solmu ei ole
+pitkään painettava (`uiautomator`, `long-clickable`), mutta Chromen sivualue on. Tommi kuuli
+vihjeen, kun napautin adb:llä valikon versioleimaa, joka ei ole kohdistettava: TalkBack
+kohdisti sivualueen. Ei Jaon vika.
+
+**Versioleima ilman kontekstia.** Tila: auki. Tommi: valikko ei kerro versiota ja päivämäärää
+tunnistettavasti. Androidin solmu on *"Versio 1.2.237, julkaistu 16.10.2026 klo 19.49"*
+(J-7), joten mitä kuuluu, on kuulematta. Arvaus: syntetisaattori lukee *1.2.237*
+päivämääränä.

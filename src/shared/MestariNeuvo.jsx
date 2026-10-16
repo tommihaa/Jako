@@ -44,15 +44,15 @@ export function AdviceBubble({ text, onDismiss }) {
         fontFamily: 'sans-serif', fontSize: 13, color: C.botMode, textAlign: 'center', lineHeight: 1.35,
       }}
     >
-      {/* Velho piirretään CSS:llä eikä tekstinä: aria-hidden-tekstinäkin TalkBack sanoi
-          kuplan alussa "emoji" ennen sanaa Mestari (Tommin kuuntelu 16.10.2026, J-20). */}
-      <span className="deco-emoji" data-emoji="🧙" aria-hidden="true" style={{ flexShrink: 0 }} />
+      <span aria-hidden="true" style={{ flexShrink: 0 }}>🧙</span>
       <span id={`${id}-text`}><strong style={{ fontWeight: 700 }}>{t('ui.advice.from')}</strong> <Spoken>{text}</Spoken></span>
       <span id={`${id}-close`} hidden>{t('ui.shared.close')}</span>
       <button ref={closeRef} onClick={onDismiss} aria-labelledby={`${id}-text ${id}-close`}
         style={{ background: 'transparent', border: 'none', color: C.botMode, cursor: 'pointer',
           fontSize: 13, padding: '0 2px', flexShrink: 0, fontFamily: 'sans-serif' }}>
-        ✕
+        {/* Androidilla aria-labelledby ei korvaa napin omaa tekstiä, ja TalkBack sanoi ✕:n
+            ennen nimeä sanana "emoji" (puhetuloste Pixelillä 16.10.2026, J-20). */}
+        <span aria-hidden="true">✕</span>
       </button>
     </div>
   );
