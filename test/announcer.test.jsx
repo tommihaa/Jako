@@ -10,6 +10,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, cleanup, act, fireEvent } from '@testing-library/react';
 import { LangProvider } from '../src/shared/i18n.jsx';
 import Announcer, { announce, clearAnnouncements } from '../src/shared/Announcer.jsx';
+import { GameMessageRow } from '../src/shared/Spoken.jsx';
 import { opponentsInTurnOrder } from '../src/shared/helpers.js';
 
 import Paskahousu from '../src/games/Paskahousu.jsx';
@@ -100,15 +101,19 @@ describe('Announcer', () => {
     expect(liveText(container)).toBe('');
   });
 
-  // J-22: kohdistettu viestirivi lukee viestit itse, ja live-alue toisti ne.
-  it('vaikenee, kun kohdistus on pelin viestirivillä', () => {
-    const { container } = render(<><Announcer /><div data-game-message="" tabIndex={-1}>Hero: 4♣</div></>);
+  // J-22: kohdistettu viestirivi sanoo oman siirron, joten live-alue ohittaa sen, mutta
+  // myöhemmät viestit kuuluvat, koska TalkBack ei lue rivin jokaista muutosta.
+  it('rivin kohdistus ohittaa jonon ja jäädyttää rivin, myöhemmät viestit kuuluvat', () => {
+    const view = msg => <><Announcer /><GameMessageRow said={msg}>{msg}</GameMessageRow></>;
+    const { container, rerender } = render(view('Hero: risti neljä'));
     const row = /** @type {HTMLElement} */ (container.querySelector('[data-game-message]'));
     act(() => { announce('Hero: 4♣'); row.focus(); vi.advanceTimersByTime(150); });
     expect(liveText(container)).toBe('');
-    act(() => { announce('Vuorossa Kukkahattutäti.'); vi.advanceTimersByTime(3000); });
-    expect(liveText(container)).toBe('');
-    act(() => { row.blur(); announce('Vuorossa Hero.'); vi.advanceTimersByTime(150); });
+    expect(row.querySelector('.sr-only')?.textContent).toBe('Hero: risti neljä');
+    rerender(view('Vuorossa Hero.'));
+    expect(row.querySelector('.sr-only')?.textContent).toBe('Hero: risti neljä');
+    expect(row.querySelector('[aria-hidden="true"]')?.textContent).toBe('Vuorossa Hero.');
+    act(() => { announce('Vuorossa Hero.'); vi.advanceTimersByTime(150); });
     expect(liveText(container)).toBe('Vuorossa Hero.');
   });
 });

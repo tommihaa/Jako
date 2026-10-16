@@ -118,7 +118,8 @@ describe('kohdistuksen turvaverkko', () => {
     await act(async () => { fireEvent.click(btn); });
     act(() => { vi.runAllTimers(); });
     expect(document.activeElement?.hasAttribute('data-game-message')).toBe(true);
-    expect(document.activeElement?.textContent).toBe('Hero: 4.');
+    // Kohdistettu rivi jäätyy ruudunlukijalle (J-22): puhuttu muoto on sr-only-tekstissä.
+    expect(document.activeElement?.querySelector('.sr-only')?.textContent).toBe('Hero: 4.');
     uninstall();
   });
 

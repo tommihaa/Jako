@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { skipAnnouncements } from './Announcer.jsx';
 import { spokenSuits, spokenFractions, spokenHtml, needsSpoken } from './helpers.js';
 
 // Näkyvä teksti jossa on maasymboli: symboli näkyy, ruudunlukija kuulee sanan.
@@ -50,8 +52,7 @@ export default function Spoken({ children, say }) {
  * @property {string} html
  * @property {any} [as]       Elementti, oletuksena span
  * @property {object} [style]
- * @property {boolean} [gameMessage]  pelin viestirivi: kohdistettava kääre, johon turvaverkko
- *                                    vie kohdistuksen oman siirron jälkeen (focusRescue.js)
+ * @property {boolean} [gameMessage]  pelin viestirivi (`GameMessageRow`)
  */
 /** @param {SpokenHtmlProps} props */
 export function SpokenHtml({ html, as: Tag = 'span', style, gameMessage = false }) {
@@ -62,5 +63,33 @@ export function SpokenHtml({ html, as: Tag = 'span', style, gameMessage = false 
       <Tag aria-hidden={said ? 'true' : undefined} style={style} dangerouslySetInnerHTML={{ __html: html }} />
     </>
   );
-  return gameMessage ? <div data-game-message="" tabIndex={-1}>{content}</div> : content;
+  if (!gameMessage) return content;
+  return <GameMessageRow said={typeof html === 'string' ? spokenHtml(html) : ''}>{content}</GameMessageRow>;
+}
+
+// Pelin viestirivi, johon turvaverkko vie kohdistuksen oman siirron jälkeen (focusRescue.js).
+// Kohdistuksen saadessaan rivi jäätyy ruudunlukijalle: se sanoo oman siirron kerran ja pysyy
+// samana, vaikka näkyvä viesti vaihtuu. TalkBack lukee kohdistetun kohdan uudelleen sen
+// muuttuessa, mutta vain osan muutoksista, joten myöhemmät viestit kuuluvat live-alueelta
+// (Tommin valinta 16.10.2026, auditointi J-22).
+/**
+ * @typedef {object} GameMessageRowProps
+ * @property {string} said    rivin puhuttu muoto nyt
+ * @property {any} children   näkyvä sisältö
+ * @property {any} [as]       elementti, oletuksena div
+ * @property {object} [style]
+ */
+/** @param {GameMessageRowProps} props */
+export function GameMessageRow({ said, children, as: Tag = 'div', style }) {
+  const [frozen, setFrozen] = useState(/** @type {string | null} */ (null));
+  // Kääre ei saa rikkoa sisäkkäisyyttä: <p>:n sisällä span, muuten div (lapsena voi olla <p>).
+  const Wrap = Tag === 'p' ? 'span' : 'div';
+  return (
+    <Tag data-game-message="" tabIndex={-1} style={style}
+      onFocus={() => { setFrozen(said); skipAnnouncements(); }}
+      onBlur={() => setFrozen(null)}>
+      {frozen !== null && <span className="sr-only">{frozen}</span>}
+      <Wrap aria-hidden={frozen !== null ? 'true' : undefined}>{children}</Wrap>
+    </Tag>
+  );
 }

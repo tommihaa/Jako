@@ -4,7 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, spokenSuits, hasSuit, korttia, kortin, SUITS, RANKS, VAL, newDeck, sortHand as sortHandBy, shuffledAINames, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { lbl, spokenSuits, spokenFractions, hasSuit, korttia, kortin, SUITS, RANKS, VAL, newDeck, sortHand as sortHandBy, shuffledAINames, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
@@ -13,7 +13,7 @@ import { useGameLog } from '../shared/useGameLog.js';
 import { useGameState } from '../shared/useGameState.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken from '../shared/Spoken.jsx';
+import Spoken, { GameMessageRow } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -1350,7 +1350,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       {/* Viestikupla */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 60 : 70, display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ fontSize: 15, flexShrink: 0 }}>🪙</span>
-        <p data-game-message="" tabIndex={-1} style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{hasSuit(msg) ? <Spoken say={spokenSuits(msg)}>{renderLogMessage(msg)}</Spoken> : msg}</p>
+        <GameMessageRow as="p" said={typeof msg === 'string' ? spokenFractions(spokenSuits(msg)) : ''} style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{hasSuit(msg) ? <Spoken say={spokenSuits(msg)}>{renderLogMessage(msg)}</Spoken> : msg}</GameMessageRow>
       </div>
 
       {/* Pisteet + pakka */}

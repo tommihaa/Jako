@@ -21,14 +21,9 @@ const MS_PER_CHAR = 75;
 const MIN_SPEECH_MS = 1000;
 const GAP_MS = 700;
 // Ensimmäinen viesti odottaa, että turvaverkko (focusRescue.js, 50 ms) on ehtinyt viedä
-// kohdistuksen viestiriville, jotta alla oleva vaikeneminen näkee sen.
+// kohdistuksen viestiriville, jolloin rivi ohittaa jonon (`skipAnnouncements`) ennen kuin
+// oma siirto kuuluu täältä toiseen kertaan.
 const FIRST_MS = 150;
-
-// Kun kohdistus on pelin viestirivillä, rivi lukee jokaisen uuden viestin itse, koska
-// TalkBack lukee kohdistetun kohdan uudelleen sen tekstin vaihtuessa. Live-alue vaikenee,
-// muuten viesti kuului kahdesti tai kolmesti (Paskahousu: "Hero risti 4" kolmesti, Tommin
-// kuuntelu ja puhetuloste Pixelillä 16.10.2026, auditointi J-22; Tommin valinta).
-const rowHasFocus = () => !!document.activeElement?.closest?.('[data-game-message]');
 
 /** @type {string[]} */
 let queue = [];
@@ -42,7 +37,6 @@ function pump() {
   // Ensimmäinenkin viesti lähtee ajastimella, jottei ilmoitus päivitä Announceria
   // kesken toisen komponentin päivityksen, ja jotta kohdistus ehtii viestiriville.
   timer = setTimeout(() => {
-    if (rowHasFocus()) { queue = []; busy = false; timer = null; return; }
     const next = /** @type {string} */ (queue.shift());
     listeners.forEach(l => l(next));
     // Puheajan jälkeen alue tyhjenee. Muuten viimeisin ilmoitus jää saavutettavuuspuuhun
@@ -63,6 +57,15 @@ export function clearAnnouncements() {
   busy = false;
 }
 
+// Viestirivi saa kohdistuksen oman siirron jälkeen ja sanoo sen itse, joten jonossa odottava
+// sama viesti ohitetaan ja alue tyhjennetään. Myöhemmät viestit kuuluvat taas täältä, koska
+// TalkBack ei lue kohdistetun rivin jokaista muutosta: kierroksen yhdeksästä viestistä
+// kuului neljä, eikä "Vuorossa Hero" kuulunut (puhetuloste Pixelillä 16.10.2026, J-22).
+export function skipAnnouncements() {
+  clearAnnouncements();
+  listeners.forEach(l => l(''));
+}
+
 // Sitova välilyönti (U+00A0) koodina, koska näkymätöntä merkkiä ei erota lähdekoodista.
 const NBSP = String.fromCharCode(0xa0);
 
@@ -80,7 +83,7 @@ function toPlain(message) {
 /** @param {unknown} message */
 export function announce(message) {
   const plain = toPlain(message);
-  if (!plain || rowHasFocus()) return;
+  if (!plain) return;
   queue.push(/[.!?…]$/.test(plain) ? plain : plain + '.');
   pump();
 }
@@ -91,7 +94,7 @@ export default function Announcer() {
     // Sama teksti kahdesti peräkkäin ei muuttaisi aluetta, jolloin ruudunlukija
     // vaikenisi. Vuorotteleva sitova välilyönti tekee toistosta muutoksen.
     /** @param {string} t */
-    const l = t => setText(prev => (prev === t ? t + NBSP : t));
+    const l = t => setText(prev => (t && prev === t ? t + NBSP : t));
     listeners.add(l);
     return () => { listeners.delete(l); };
   }, []);

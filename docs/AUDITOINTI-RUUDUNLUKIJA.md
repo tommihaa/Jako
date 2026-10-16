@@ -462,17 +462,26 @@ Painike"*. Androidilla `aria-labelledby` ei korvaa napin omaa tekstiä (`uiautom
 *✕*), toisin kuin `aria-label`, joten muut ✕-napit kuuluivat oikein (J-16). Korjaus: kuplan
 ✕ on `aria-hidden`-kääreessä, ja CSS-velho on peruttu.
 
-**J-22. Lyödyt kortit kuuluvat kolmesti.** Tila: korjattu dev-versiossa 16.10.2026,
-kuunneltu ok (Paskahousu: oma kortti kuuluu kerran). Tommi: Paskahousussa kaatamaton kortti kuuluu *"Hero risti 4, Hero risti 4, Hero
-risti 4, vuorossa Kukkahattutäti"*. Puhetuloste Pixelillä: kohdistettu viestirivi sanoo
-viestin heti (ilman pistettä), ja TalkBack lukee rivin uudelleen aina kun sen teksti vaihtuu,
-eli rivi toimii toisena live-alueena. Live-alue sanoo saman viestin pisteen kanssa, ja sen
-jono laahaa sekunteja jäljessä. Tommin valinta: kun kohdistus on viestirivillä, live-alue on
-hiljaa ja rivi lukee viestit. Toteutus: `Announcer` ohittaa viestin ja tyhjentää jonon, kun
-kohdistus on `data-game-message`-kääreessä, ja ensimmäinen viesti odottaa 150 ms, jotta
-turvaverkko (50 ms) ehtii viedä kohdistuksen riville. Riski: nopeasti peräkkäiset bottien
-viestit voivat ohittaa toisensa rivillä ennen kuin TalkBack lukee ne. Testi:
-`announcer.test.jsx`.
+**J-22. Lyödyt kortit kuuluvat kolmesti.** Tila: korjattu dev-versiossa 16.10.2026, toinen
+muoto kuuntelematta. Tommi: Paskahousussa kaatamaton kortti kuuluu *"Hero risti 4, Hero risti
+4, Hero risti 4, vuorossa Kukkahattutäti"*. Puhetuloste Pixelillä: kohdistettu viestirivi
+sanoo viestin heti (ilman pistettä), ja TalkBack lukee rivin uudelleen sen tekstin vaihtuessa.
+Live-alue sanoo saman viestin pisteen kanssa, ja sen jono laahaa sekunteja jäljessä.
+
+Ensimmäinen korjaus (Tommin valinta: live-alue hiljaa, kun kohdistus on rivillä) poisti
+toiston, ja oma kortti kuului kerran. Tommi kuitenkin huomasi, että Heron vuoron alun tunnisti
+vain hiljaisuudesta. Puhetuloste näytti syyn: TalkBack ei lue kohdistetun rivin jokaista
+muutosta. Kierroksen yhdeksästä viestistä kuului neljä, eikä *Vuorossa Hero* ollut niiden
+joukossa.
+
+Toinen korjaus (Tommin valinta: rivi jäädytetään): `GameMessageRow` (`Spoken.jsx`) jäädyttää
+rivin ruudunlukijalle kohdistuksen saadessaan. Se sanoo oman siirron kerran ja pysyy samana
+seuraavaan omaan siirtoon asti, ja näkyvä viesti on silloin `aria-hidden`. Samalla se ohittaa
+live-alueen jonon (`skipAnnouncements`), jossa oma siirto odottaa. Live-alue sanoo kaikki
+myöhemmät viestit, ja ensimmäinen viesti odottaa 150 ms, jotta turvaverkko (50 ms) ehtii
+ensin. Kasino käyttää samaa komponenttia. Puhetuloste Pixelillä: *"Hero: pata kaksi"* kerran,
+sitten seitsemän bottien viestiä järjestyksessä live-alueelta. Testit: `announcer.test.jsx`
+ja `kohdistus-alussa.test.jsx`.
 
 **Kaksoisnapauta pitkään.** TalkBackin vihje *"kaksoisnapauta ja pidä painettuna"* kertoo,
 että kohteella on pitkän painalluksen toiminto. Pelisivulla yksikään Jaon solmu ei ole
