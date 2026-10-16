@@ -8,7 +8,19 @@ import { spokenSuits, spokenHtml, hasSuit } from './helpers.js';
 // Kaksi muotoa:
 //   <Spoken>{'Pelaa (2♠)'}</Spoken>      merkkijono, puhuttu muoto johdetaan siitä
 //   <Spoken say="pata 2">{<värikäs/>}</Spoken>  JSX, puhuttu muoto annetaan
-// Merkkijono ilman maata renderöityy sellaisenaan.
+// Merkkijono ilman maata ja emojia renderöityy sellaisenaan.
+//
+// Emoji näkyy mutta ei kuulu: napin "🧙 Kysy Mestarilta" TalkBack luki "velho, Kysy
+// Mestarilta" (auditointi J-13, Tommin kuuntelu 16.10.2026: emojia ei tarvitse lausua).
+// Maasymbolit ovat samaa Unicode-luokkaa, mutta ne sanotaan sanoina eikä poisteta.
+const EMOJI = /(?![♠♥♦♣])\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier}|\u200D\p{Extended_Pictographic}\uFE0F?)*/gu;
+
+/** @param {string} s */
+export const hasEmoji = s => s.replace(/[♠♥♦♣]/g, '').search(EMOJI) >= 0;
+
+/** Teksti ilman emojeja, välit siistittyinä. @param {string} s */
+export const withoutEmoji = s => s.replace(EMOJI, '').replace(/\s{2,}/g, ' ').trim();
+
 /**
  * @typedef {object} SpokenProps
  * @property {any} children   Näkyvä sisältö
@@ -17,8 +29,10 @@ import { spokenSuits, spokenHtml, hasSuit } from './helpers.js';
 /** @param {SpokenProps} props */
 export default function Spoken({ children, say }) {
   if (say === undefined) {
-    if (typeof children !== 'string' || !hasSuit(children)) return children;
-    say = spokenSuits(children);
+    if (typeof children !== 'string') return children;
+    const suit = hasSuit(children), emoji = hasEmoji(children);
+    if (!suit && !emoji) return children;
+    say = withoutEmoji(suit ? spokenSuits(children) : children);
   }
   return (
     <>

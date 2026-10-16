@@ -76,11 +76,12 @@ export default function GameStatusBar({
       {/* Napit omassa kääreessään, jotta ne pysyvät yhdessä kun rivi katkeaa. */}
       <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
         {extras}
-        <button onClick={onSoundToggle} style={btn(soundOn, C.panelBorder)}>
-          {soundOn ? '🔊' : '🔇'} {t('ui.shared.sound')}
+        {/* Emoji kantoi tilan, joten vaiettu emoji korvataan aria-pressedillä (J-13). */}
+        <button onClick={onSoundToggle} aria-pressed={!!soundOn} style={btn(soundOn, C.panelBorder)}>
+          <span aria-hidden="true">{soundOn ? '🔊' : '🔇'}</span> {t('ui.shared.sound')}
         </button>
-        <button onClick={onRevealToggle} style={btn(revealAll, '#2a4a32')}>
-          {revealAll ? '🙈' : '🔍'} {t('ui.shared.openCards')}
+        <button onClick={onRevealToggle} aria-pressed={!!revealAll} style={btn(revealAll, '#2a4a32')}>
+          <span aria-hidden="true">{revealAll ? '🙈' : '🔍'}</span> {t('ui.shared.openCards')}
         </button>
       </div>
     </div>

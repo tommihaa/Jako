@@ -1352,7 +1352,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
               background: paused ? 'rgba(201,168,76,0.12)' : 'rgba(255,255,255,0.04)',
               color: paused ? C.gold : C.dim, cursor: 'pointer',
             }}>
-              {paused ? '▶ Jatka' : '⏸ Tauko'}
+              <Spoken>{paused ? '▶ Jatka' : '⏸ Tauko'}</Spoken>
             </button>
             <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, opacity: 0.7 }}>tahti:</span>

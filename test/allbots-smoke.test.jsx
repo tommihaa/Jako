@@ -92,9 +92,10 @@ async function runBotBattle(Component, betweenRound = null) {
   });
 
   // Käynnistä bottikamppailu aloitusnäytön napista. Nappi tunnistetaan kieli-
-  // riippumattomasti 🔮-emojista (jaettu ui.start.botBattle, sama kaikissa peleissä);
+  // riippumattomasti näkyvän tekstin 🔮-emojista (jaettu ui.start.botBattle, sama kaikissa peleissä;
+  // emoji ei kuulu napin nimeen, J-13);
   // jsdomin navigator.language voi olla mikä tahansa, joten tekstiin ei voi sitoutua.
-  const btn = utils.getByRole('button', { name: /🔮/ });
+  const btn = /** @type {HTMLElement} */ ([...utils.container.querySelectorAll('button')].find(b => b.textContent?.includes('🔮')));
   await act(async () => { fireEvent.click(btn); });
 
   // Aja fake-timereita kunnes onResult laukeaa tai iteraatiovahti pysäyttää.

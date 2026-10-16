@@ -1256,7 +1256,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       <div style={{ minHeight: 52, display: 'flex', gap: 8, marginBottom: 10, alignItems: 'center', flexWrap: 'wrap' }}>
         {mustSkip && (
           <button onClick={() => applySkip(gRef.current, 0)} style={{ background: 'rgba(224,92,59,0.12)', border: `1px solid ${C.red}55`, borderRadius: 10, padding: '10px 20px', color: C.red, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-            {t('games.paskahousu.ui.drawLose')}
+            <Spoken>{t('games.paskahousu.ui.drawLose')}</Spoken>
           </button>
         )}
         {isMyTurn && !mustSkip && selValid && (

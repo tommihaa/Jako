@@ -40,6 +40,16 @@ const labelReplacesContent = el => el.hasAttribute('aria-label')
 /** @param {string} t */
 const norm = t => t.replace(/(10|[2-9AJQK])[♠♥♦♣]/g, 'X♠').replace(/\d+/g, 'n').slice(0, 70);
 
+// Kuvamerkki-emoji. Maasymbolit ovat samaa luokkaa, mutta niillä on oma tarkistuksensa yllä.
+const EMOJI = /(?![♠♥♦♣])\p{Extended_Pictographic}/u;
+
+/** Elementin teksti ilman aria-hidden-haaroja. @param {Element} el */
+function spokenText(el) {
+  const c = /** @type {Element} */ (el.cloneNode(true));
+  c.querySelectorAll('[aria-hidden="true"]').forEach(x => x.remove());
+  return c.textContent ?? '';
+}
+
 /** Ruudunlukijalle päätyvät maasymbolit. @param {HTMLElement} root */
 function suitLeaks(root) {
   const out = [];
@@ -59,10 +69,18 @@ function suitLeaks(root) {
   });
   // Pelkkä ✕ tai muu merkki ilman aria-labelia: TalkBack lukee merkin nimen eikä toimintoa
   // (J-16, 16.10.2026). Näkyvässä tekstissä pitää olla kirjain tai numero.
+  // Napin emoji kuuluu puheessa nimenä ("velho"), eikä sitä tarvitse lausua (J-13, Tommin
+  // kuuntelu 16.10.2026). Emoji on aria-hidden-kääreessä tai nimi tulee aria-labelista.
   root.querySelectorAll('button,[role=button]').forEach(el => {
-    if (el.closest('[aria-hidden="true"]') || el.hasAttribute('aria-label')) return;
-    const text = el.textContent ?? '';
+    if (el.closest('[aria-hidden="true"]')) return;
+    if (el.hasAttribute('aria-label') || el.hasAttribute('aria-labelledby')) {
+      const v = el.getAttribute('aria-label') ?? '';
+      if (EMOJI.test(v)) out.push(`emoji napin nimessä "${norm(v)}"`);
+      return;
+    }
+    const text = spokenText(el);
     if (!/[\p{L}\p{N}]/u.test(text)) out.push(`nimetön nappi "${text.trim()}"`);
+    else if (EMOJI.test(text)) out.push(`emoji napin puheessa "${norm(text.trim())}"`);
   });
   root.querySelectorAll('[aria-label],[alt],[title]').forEach(el => {
     if (el.closest('[aria-hidden="true"]')) return;

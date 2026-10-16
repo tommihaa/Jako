@@ -195,9 +195,10 @@ export function getAdvice(g) {
  * @property {any}     [backStyle]
  * @property {boolean} [faceDown]
  * @property {boolean} [mine]      ihmispelaajan oma kortti, kuten jaetussa Cardissa (focusRescue.js)
+ * @property {number}  [mineValue] turvaverkon arvo, kuten jaetussa Cardissa
  * @param {MaijaCardProps} props
  */
-function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, backStyle, faceDown, mine = false }) {
+function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, backStyle, faceDown, mine = false, mineValue }) {
   const [h, setH] = useState(false);
   const w = xsmall ? 38 : small ? 44 : 58, ht = xsmall ? 52 : small ? 60 : 80;
   const back = backStyle || BACKS.ilves;
@@ -215,7 +216,7 @@ function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, 
     ? { role:'button', tabIndex:0, 'aria-label':cardName(card),
         onKeyDown:e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
     : { role:'img', 'aria-label':cardName(card), ...(mine ? { tabIndex:-1 } : {}) };
-  const mineAttrs = mine && card ? { 'data-mine':'', 'data-value':String(card.v) } : {};
+  const mineAttrs = mine && card ? { 'data-mine':'', 'data-value':String(mineValue ?? card.v) } : {};
 
   const borderCol = selected ? C.blue : advice ? C.botMode : mjBorder ? C.maija : highlight ? C.gold : back.border;
   const shadow = selected ? '0 0 14px rgba(91,168,212,0.6)' :
@@ -835,7 +836,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
             const dimmed    = adv?.cardIds?.length ? !isAdv : (wrongSuit || !!defDimmed);
             return (
               <div key={c.id} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2 }}>
-                <Card card={c} mine
+                <Card card={c} mine mineValue={c.s === G.trump ? c.v + 100 : c.v}
                   small={isMobile}
                   selected={isSel}
                   highlight={!!canBeatTarget}
@@ -866,7 +867,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
             <button onClick={humanAttack} style={{ background:`linear-gradient(135deg,${C.red},#8a1500)`,
               border:'none', borderRadius:9, padding:'10px 20px', color:C.text,
               fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'Georgia,serif' }}>
-              {t('ui.action.play')} {selectedCards.length > 1 ? t('ui.action.cards', { n: selectedCards.length }) : t('ui.action.card')} ⚔️
+              {t('ui.action.play')} {selectedCards.length > 1 ? t('ui.action.cards', { n: selectedCards.length }) : t('ui.action.card')} <span aria-hidden="true">⚔️</span>
             </button>
             <button onClick={() => setSel([])} style={{ background:'transparent',
               border:`1px solid ${C.dim}66`, borderRadius:9, padding:'10px 16px',
@@ -884,7 +885,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
               <button onClick={humanTakeAll} style={{ background:'transparent',
                 border:`1px solid ${C.gold}88`, borderRadius:9, padding:'10px 20px',
                 color:C.gold, fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'Georgia,serif' }}>
-                {t('games.maija.ui.takeRest', { n: unbeaten.length })}
+                <Spoken>{t('games.maija.ui.takeRest', { n: unbeaten.length })}</Spoken>
               </button>
             )}
             {unbeaten.length === table.length && (
@@ -892,7 +893,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
                 border:`1px solid ${C.red}88`, borderRadius:9, padding:'10px 20px',
                 color:C.red, fontSize:13, fontWeight:700, cursor:'pointer',
                 fontFamily:'Georgia,serif' }}>
-                {t('games.maija.ui.takeAll')}
+                <Spoken>{t('games.maija.ui.takeAll')}</Spoken>
               </button>
             )}
           </>

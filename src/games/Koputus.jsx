@@ -273,7 +273,7 @@ function Btn({ label, onClick, color, outline, small: sm }) {
   return (
     <button onClick={onClick} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
       style={{ background: outline ? (h ? color + '18' : 'transparent') : `linear-gradient(135deg,${color},${color}cc)`, border: `1px solid ${outline ? (h ? color : color + '66') : color}`, borderRadius: 9, padding: sm ? '7px 14px' : '10px 20px', color: outline ? (h ? color : color + 'bb') : '#0d2118', fontSize: sm ? 11 : 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.4, transition: 'all 0.15s' }}>
-      {label}
+      {typeof label === 'string' ? <Spoken>{label}</Spoken> : label}
     </button>
   );
 }

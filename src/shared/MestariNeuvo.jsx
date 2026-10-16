@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { C } from './colors.js';
 import { useT } from './i18n.jsx';
 import Spoken from './Spoken.jsx';
@@ -10,16 +10,25 @@ import Spoken from './Spoken.jsx';
 export function AdviceButton({ onClick }) {
   const t = useT();
   return (
-    <button onClick={onClick}
+    <button onClick={onClick} data-advice-button=""
       style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${C.botMode}66`,
         background: 'transparent', color: C.botMode, cursor: 'pointer', fontFamily: 'sans-serif', flexShrink: 0 }}>
-      🧙 {t('ui.advice.ask')}
+      <span aria-hidden="true">🧙</span> {t('ui.advice.ask')}
     </button>
   );
 }
 
+// Kysy Mestarilta -napista avattu kupla vie kohdistuksen sulkunappiin, ja napin nimi on
+// neuvo itse ja sana Sulje (Tommin kuuntelu 16.10.2026: kuplan teksti ei kuulunut, koska
+// role="status" ei ilmoita sisältöä, joka lisätään yhdessä alueen kanssa). Opastuksen
+// kupla ilmestyy vuoron mukana, joten se ei siirrä kohdistusta pelaajan alta.
 export function AdviceBubble({ text, onDismiss }) {
   const t = useT();
+  const id = useId();
+  const closeRef = useRef(/** @type {HTMLButtonElement | null} */ (null));
+  useEffect(() => {
+    if (text && document.activeElement?.hasAttribute('data-advice-button')) closeRef.current?.focus();
+  }, [text]);
   if (!text) return null;
   return (
     <div
@@ -32,8 +41,9 @@ export function AdviceBubble({ text, onDismiss }) {
       }}
     >
       <span aria-hidden="true" style={{ flexShrink: 0 }}>🧙</span>
-      <span><strong style={{ fontWeight: 700 }}>{t('ui.advice.from')}</strong> <Spoken>{text}</Spoken></span>
-      <button onClick={onDismiss} aria-label={t('ui.shared.close')}
+      <span id={`${id}-text`}><strong style={{ fontWeight: 700 }}>{t('ui.advice.from')}</strong> <Spoken>{text}</Spoken></span>
+      <span id={`${id}-close`} hidden>{t('ui.shared.close')}</span>
+      <button ref={closeRef} onClick={onDismiss} aria-labelledby={`${id}-text ${id}-close`}
         style={{ background: 'transparent', border: 'none', color: C.botMode, cursor: 'pointer',
           fontSize: 13, padding: '0 2px', flexShrink: 0, fontFamily: 'sans-serif' }}>
         ✕
@@ -64,7 +74,7 @@ export function GuideButton({ onClick }) {
     <button onClick={onClick}
       style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px dashed ${C.botMode}66`,
         background: 'transparent', color: C.botMode, cursor: 'pointer', fontFamily: 'sans-serif', flexShrink: 0 }}>
-      🎓 {t('ui.advice.guide')}
+      <span aria-hidden="true">🎓</span> {t('ui.advice.guide')}
     </button>
   );
 }

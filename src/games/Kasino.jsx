@@ -1583,7 +1583,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
             }}
             style={{ background: captureMode ? `${C.gold}18` : 'transparent', border: `1px solid ${captureMode ? C.gold : C.dim + '66'}`, borderRadius: 9, padding: '8px 14px', color: captureMode ? C.gold : C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}
           >
-            🎯 {t('games.kasino.ui.capture')}{captureMode ? ' ●' : ''}
+            <span aria-hidden="true">🎯</span> {t('games.kasino.ui.capture')}{captureMode ? ' ●' : ''}
           </button>
         )}
         {!allBots && isMyTurn && !pendingCapture && (
@@ -1597,7 +1597,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
             }}
             style={{ background: buildMode ? `${C.gold}18` : 'transparent', border: `1px solid ${buildMode ? C.gold : C.dim + '66'}`, borderRadius: 9, padding: '8px 14px', color: buildMode ? C.gold : C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}
           >
-            🔨 {t('games.kasino.ui.build')}{buildMode ? ' ●' : ''}
+            <span aria-hidden="true">🔨</span> {t('games.kasino.ui.build')}{buildMode ? ' ●' : ''}
           </button>
         )}
         {!allBots && isMyTurn && !pendingCapture && (
@@ -1616,7 +1616,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
             }}
             style={{ background: leaveMode ? `${C.gold}18` : 'transparent', border: `1px solid ${leaveMode ? C.gold : C.dim + '66'}`, borderRadius: 9, padding: '8px 14px', color: leaveMode ? C.gold : C.dim, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}
           >
-            📤 {t('games.kasino.ui.leave')}{leaveMode ? ' ●' : ''}
+            <span aria-hidden="true">📤</span> {t('games.kasino.ui.leave')}{leaveMode ? ' ●' : ''}
           </button>
         )}
         {!allBots && isMyTurn && !pendingCapture && (
@@ -1656,7 +1656,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
         })}
         extras={
           <button onClick={() => setShowInfo(v => !v)} style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${showInfo ? C.gold + '55' : C.panelBorder}`, background: 'transparent', color: showInfo ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>
-            ℹ {t('games.kasino.ui.points')}
+            <span aria-hidden="true">ℹ</span> {t('games.kasino.ui.points')}
           </button>
         }
       />

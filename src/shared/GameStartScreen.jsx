@@ -2,6 +2,7 @@ import { useId } from 'react';
 import { C, SUIT_COLOR } from './colors.js';
 import { useT } from './i18n.jsx';
 import GroupPicker from './GroupPicker.jsx';
+import Spoken from './Spoken.jsx';
 
 // Pelin aloitusnäyttö: tunnus ja nimi, pelaajamäärä, vastustajaryhmä ja kaksi nappia.
 //
@@ -82,7 +83,7 @@ export default function GameStartScreen({
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
         <button onClick={thenFocusTitle(onStart)} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>{t('ui.start.begin')}</button>
         <button onClick={thenFocusTitle(onBotBattle)} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          {t('ui.start.botBattle')}
+          <Spoken>{t('ui.start.botBattle')}</Spoken>
           <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{botBattleSub}</span>
         </button>
       </div>

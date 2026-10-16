@@ -10,7 +10,9 @@ import { GAME_TITLE_ID } from './GameStartScreen.jsx';
 // Tommin valinta paikasta: oman käden pienin valittava kortti. Jos yhtäkään ei voi valita
 // (heti oman siirron jälkeen on vastustajien vuoro), käden pienin kortti. Jos omia
 // näkyviä kortteja ei ole (tyhjä käsi, Kultakala ja Koputus kuvapuoli alas, Läpsy),
-// pelin nimi otsikkorivillä.
+// pelin nimi otsikkorivillä. Pienin luetaan pelin omasta järjestyksestä (`mineValue`):
+// Maijassa ja Moskassa valtti on viimeinen, koska pieni valttikin on arvokas (Tommin
+// kuuntelu 16.10.2026).
 
 /** @param {ParentNode} [root] */
 export function rescueTarget(root = document) {

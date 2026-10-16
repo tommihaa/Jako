@@ -297,6 +297,14 @@ botin nimen edessä ja 👤 Heron edessä. Samasta luvusta kuului myös *Rivinke
 (`·`-erotin) ja *Välilyönti*. Korjaus poisti kokonaisluvun pelin alusta, mutta samat kohteet
 kuuluvat yhä, kun sivua pyyhkäisee läpi. Korjaustapa olisi `aria-hidden` koristeille, kuten
 aloitusnäytön tunnuksessa. Ei vielä kartoitettu koko sivulta.
+*Napit korjattu 16.10.2026 klo 20.30* (Tommin kuuntelu: *"kun painikkeessa on emoji niin
+emojia ei tarvitse lausua"*). Kaikkien yhdeksän pelin ja valikon napeissa emoji on nyt
+`aria-hidden`: joko kääre JSX:ssä tai `Spoken`, joka piilottaa merkkijonon emojit samalla
+tavalla kuin maasymbolit. Äänen ja avointen korttien tila kulki emojissa (🔊/🔇, 🔍/🙈), joten
+napit saivat `aria-pressed`in. Vahti: `ruudunlukija-maat.test.jsx` kaataa napin, jonka
+puhutussa muodossa on emoji. Kolme testiä tunnisti Bottien Taistelun napin nimen 🔮:sta, ja
+ne lukevat sen nyt näkyvästä tekstistä. Tila: napit korjattu, muu teksti (lokirivit,
+pelaajarivien 🤖 ja 👤) yhä auki.
 
 ## Kuuntelu 1.2.237:llä 16.10.2026 klo 19.13
 
@@ -376,6 +384,37 @@ otsikon luku on nyt `aria-hidden`, Jaa-napin nimi on *Jaa Jako* ja Infon *Lisä�
 aloitusnäytölle* -otsikon ⁹ on `aria-hidden` (`App.jsx`, `silentNine` ja `withSilentNine`).
 Selaimessa: otsikon saavutettava teksti *JAKO*, napin nimi *Jaa Jako*.
 
+## Kuuntelu dev-versiolla 16.10.2026 klo 20.15
+
+Tommi kuunteli J-14–J-17:n Pixelillä (`localhost:5186`, juuren `launch.json`in `jako-dev-adb`).
+
+| Kohta | Tulos |
+|---|---|
+| J-17 nimi ilman yhdeksikköä | ok |
+| Paneelien sulku valikossa (Asetukset, Info) | ok |
+| Kortin pelaaminen (J-14) | siirtyy, mutta ks. alla |
+| Maija Lyö kortti | ok |
+| Mestarin kupla | teksti ei kuulunut, kohdistus palasi nappiin |
+| Peruuta valinta (J-16) | kohdistus palaa valittuun korttiin |
+| Paluu valikkoon (J-15), myös takaisin-ele | ok |
+
+**Kortin pelaaminen.** Tommi: kohdistus valitsi valtin, *"tämä on mielestäni väärin koska
+valtit ovat arvokkaita vaikka olisikin pieni kortti"*. Korjattu: `Card`in `mineValue` antaa
+turvaverkolle pelin oman järjestyksen, ja Maijassa ja Moskassa valtti saa +100. Toinen
+huomio: kohdistus menee pienimpään korttiin ilman kontekstia, ja sama toistuu jokaisen oman
+siirron jälkeen. Mitattu selaimessa: kohdistus pysyi 30 s paikallaan ilman omaa siirtoa,
+joten toisto ei ole turvaverkon vika vaan valitun kohdan seuraus. Kohdan vaihto odottaa
+Tommin valintaa.
+
+**Mestarin kupla.** `role="status"` ei ilmoita sisältöä, joka lisätään yhdessä alueen kanssa.
+Korjattu: *Kysy Mestarilta* vie kohdistuksen kuplan ✕:ään, ja napin nimi on neuvo ja sana
+*Sulje* (`aria-labelledby`). Opastuksen kupla ilmestyy vuoron mukana eikä siirrä kohdistusta.
+Selaimessa: kohdistus ✕:ssä, nimi *"Mestari: Kaada pata ässä kortilla ruutu 4. … Sulje"*,
+sulkeminen palaa Mestari-nappiin.
+
+**Kohta 6, tulkinta auki.** Tommi: *"sulje painike tila mestari"*. Kysytään.
+
 **Seuraavaksi:** Tommin kuuntelu Pixelillä dev-versiolla (`jako-dev-adb`), sitten julkaisu.
 Kuunneltavat: kortin pelaaminen (J-14), Asetusten ja Mestarin kuplan sulkeminen pelissä,
 paluu valikkoon (J-15), valinnan peruminen ✕-napilla (J-16) ja nimi ilman yhdeksikköä (J-17).
+Toinen kierros: Mestarin kupla, valtti Maijassa ja emojittomat napit (J-13).

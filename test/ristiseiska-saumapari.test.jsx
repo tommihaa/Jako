@@ -107,8 +107,9 @@ async function runComponent(seedText) {
   const orig = Math.random;
   Math.random = mulberry32(strSeed(seedText));
   try {
-    // Aloitusnäytön Bottien Taistelu -nappi tunnistetaan 🔮-emojista, kieliriippumattomasti.
-    const btn = utils.getByRole('button', { name: /🔮/ });
+    // Aloitusnäytön Bottien Taistelu -nappi tunnistetaan näkyvän tekstin 🔮-emojista, kieliriippumattomasti
+    // (emoji ei kuulu napin nimeen, J-13).
+    const btn = /** @type {HTMLElement} */ ([...utils.container.querySelectorAll('button')].find(b => b.textContent?.includes('🔮')));
     await act(async () => { fireEvent.click(btn); });
 
     const STEP_MS = 2600; // AI-viive allBots-tilassa ~2000 ms + jitter

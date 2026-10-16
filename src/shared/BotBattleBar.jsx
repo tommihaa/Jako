@@ -1,5 +1,6 @@
 import { C } from './colors.js';
 import { useT } from './i18n.jsx';
+import Spoken from './Spoken.jsx';
 
 // Bottien Taistelu -tilan ohjauspalkki: tauko + tahdin liukusäädin.
 // Korvaa aiemmin 6 peliin kopioidun KATSELUTILA-palkin.
@@ -8,7 +9,7 @@ export default function BotBattleBar({ paused, onTogglePause, aiDelayMs, onDelay
   return (
     <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', background: 'rgba(123,47,190,0.12)', border: '1px solid rgba(123,47,190,0.4)', borderRadius: 12, padding: '8px 14px', marginBottom: isMobile ? 4 : 10 }}>
       <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.botMode, fontWeight: 700, letterSpacing: 1 }}>{t('ui.shared.watchMode')}</span>
-      <button onClick={onTogglePause} style={{ fontSize: 11, padding: '4px 12px', borderRadius: 10, border: '1px solid rgba(123,47,190,0.5)', background: paused ? 'rgba(123,47,190,0.35)' : 'transparent', color: C.botMode, cursor: 'pointer', fontFamily: 'sans-serif' }}>{paused ? t('ui.shared.resume') : t('ui.shared.pause')}</button>
+      <button onClick={onTogglePause} style={{ fontSize: 11, padding: '4px 12px', borderRadius: 10, border: '1px solid rgba(123,47,190,0.5)', background: paused ? 'rgba(123,47,190,0.35)' : 'transparent', color: C.botMode, cursor: 'pointer', fontFamily: 'sans-serif' }}><Spoken>{paused ? t('ui.shared.resume') : t('ui.shared.pause')}</Spoken></button>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: 1, minWidth: 120 }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.botModeDim }}>{t('ui.shared.speed')}</span>
         <input type="range" min={500} max={4000} step={250} value={aiDelayMs} onChange={e => onDelayChange(Number(e.target.value))} style={{ flex: 1, minWidth: 80, accentColor: '#7B2FBE', cursor: 'pointer' }} />

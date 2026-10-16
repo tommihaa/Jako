@@ -1309,7 +1309,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
                 || (isMyDef && !!selDefTarget && !canBeatTarget && !isPassSel)
                 || (isMyAtk && selAtk.length > 0 && selAtk[0].r !== c.r);
             return (
-              <Card key={c.id} card={c} mine large={!isMobile} small={isMobile}                 selected={!!(isAtkSel || isPassSel || isAddSel)}
+              <Card key={c.id} card={c} mine mineValue={c.s === G.ts ? c.v + 100 : c.v} large={!isMobile} small={isMobile}                 selected={!!(isAtkSel || isPassSel || isAddSel)}
                 highlight={!!hlght}
                 advice={isAdv}
                 dim={!!dimmed}

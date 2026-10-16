@@ -2,6 +2,7 @@ import { useId } from 'react';
 import { C } from './colors.js';
 import { useT } from './i18n.jsx';
 import { NAME_GROUPS } from './playerGroups.js';
+import Spoken from './Spoken.jsx';
 
 // Aloitusnäytön vastustajaryhmän valitsin. Sama valinta kuin Asetukset → Pelaajat,
 // mutta tuotu pelin pystytyksen yhteyteen ("ketkä pelaavat" yhdessä paikassa).
@@ -32,7 +33,7 @@ export default function GroupPicker({ value, onChange }) {
                 color: active ? C.gold : C.dim, transition: 'all 0.2s',
               }}
             >
-              {t('ui.settings.groups.' + key)}
+              <Spoken>{t('ui.settings.groups.' + key)}</Spoken>
               <div style={{ fontSize: 9, opacity: 0.6, marginTop: 1 }}>{t('ui.settings.namesCount', { n: pool.length })}</div>
             </button>
           );

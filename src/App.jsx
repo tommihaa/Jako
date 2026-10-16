@@ -371,7 +371,7 @@ function GameBtn({ g, stats, onSelect, onOpenGlossary }) {
                 color: C.gold, fontFamily: 'sans-serif', fontSize: 11.5, padding: 0,
                 display: 'inline-flex', alignItems: 'center', gap: 5,
               }}
-            >📖 {t('ui.rules.moreTerms')}</button>
+            ><span aria-hidden="true">📖</span> {t('ui.rules.moreTerms')}</button>
           )}
         </div>
       )}
@@ -935,7 +935,7 @@ export default function App() {
             onClick={() => setShowKonealy(v => !v)}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.settings.aiTitle')}</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken>{t('ui.settings.aiTitle')}</Spoken></span>
             <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showKonealy ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showKonealy && (
@@ -1013,7 +1013,7 @@ export default function App() {
             onClick={() => setShowPelaajat(v => !v)}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.settings.playersTitle')}</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken>{t('ui.settings.playersTitle')}</Spoken></span>
             <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showPelaajat ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showPelaajat && (
@@ -1038,7 +1038,7 @@ export default function App() {
                   transition: 'all 0.15s',
                 }}
               >
-                {t('ui.settings.groups.' + key)}
+                <Spoken>{t('ui.settings.groups.' + key)}</Spoken>
                 <div style={{ fontSize: 10, opacity: 0.6, marginTop: 2 }}>{t('ui.settings.namesCount', { n: pool.length })}</div>
               </button>
             ))}
@@ -1166,7 +1166,7 @@ export default function App() {
           onClick={() => setShowGlossary(true)}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', cursor: 'pointer', textAlign: 'left' }}
         >
-          <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.glossaryLink')}</span>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken>{t('ui.infoPanel.glossaryLink')}</Spoken></span>
           <span style={{ color: C.gold, fontSize: 16 }}>›</span>
         </button>
 

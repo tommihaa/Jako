@@ -31,6 +31,8 @@ const isPataKakkonen = c => c && c.r === '2' && c.s === '♠';
  * @property {boolean} [showBadges]  oletus false
  * @property {boolean} [mine]        ihmispelaajan oma kortti; kohdistuksen turvaverkko
  *                                   (focusRescue.js) etsii sen ja vertaa arvoa
+ * @property {number}  [mineValue]   turvaverkon arvo, jos pelin järjestys ei ole card.v
+ *                                   (valtti viimeiseksi, Tommin kuuntelu 16.10.2026)
  * @param {CardProps} props
  */
 export default function Card({
@@ -53,6 +55,7 @@ export default function Card({
   disabled,
   showBadges = false,
   mine = false,
+  mineValue,
 }) {
   const [h, setH] = useState(false);
   const w = large ? 80 : xsmall ? 38 : small ? 50 : 66;
@@ -85,7 +88,7 @@ export default function Card({
       : { 'aria-hidden': /** @type {const} */ (true) };
   // Pelikohtainen arvo (card.v) ratkaisee mikä on pienin; ilman sitä perusarvo.
   const mineAttrs = mine && faceUp && card
-    ? { 'data-mine': '', 'data-value': String(card.v ?? VAL[card.r] ?? 0) } : {};
+    ? { 'data-mine': '', 'data-value': String(mineValue ?? card.v ?? VAL[card.r] ?? 0) } : {};
 
   const borderCol = justPlaced ? C.gold
     : reactHL ? C.red

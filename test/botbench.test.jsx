@@ -129,7 +129,7 @@ async function runBotBattle(Component, betweenRound, botLevels) {
     utils = render(<LangProvider><Component {...props} /></LangProvider>);
   });
 
-  const btn = utils.getByRole('button', { name: /🔮/ });
+  const btn = /** @type {HTMLElement} */ ([...utils.container.querySelectorAll('button')].find(b => b.textContent?.includes('🔮')));
   await act(async () => { fireEvent.click(btn); });
 
   const STEP_MS = 2600;
