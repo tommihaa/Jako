@@ -448,26 +448,31 @@ Tommin kuuntelu klo 22 (puhetulostus näkyvissä):
 | Mestarin kupla | neuvo ja *Sulje* kuuluvat, kohdistus palaa oikein, mutta alussa kuuluu *emoji* |
 | Emojittomat napit (J-13) | napin puhetuloste *"Kysy Mestarilta. Painike"*, emoji ei kuulu |
 
-**J-19. Murtoluku kuuluu numeroina.** Tila: korjattu dev-versiossa 16.10.2026, ei kuunneltu.
+**J-19. Murtoluku kuuluu numeroina.** Tila: korjattu dev-versiossa 16.10.2026, kuunneltu ok.
 Tommi: kun kaato ei onnistu, *0/2* pitäisi sanoa *nolla kahdesta* ja *0/1* *nolla yhdestä*.
 Korjaus: `spokenFractions` (`helpers.js`) sanoo suomessa murtoluvun sanoina, ja `needsSpoken`
 antaa viestille puhutun muodon myös ilman maata. Kahtatoista suuremmat jäävät numeroiksi.
 Testi: `announcer.test.jsx`.
 
 **J-20. Kuplan sulkunappi sanoo *emoji* ennen neuvoa.** Tila: korjattu dev-versiossa
-16.10.2026, ei kuunneltu. Tommi kuuli *emoji* ennen sanaa *Mestari*. Ensimmäinen arvaus oli
+16.10.2026, kuunneltu ok. Tommi kuuli *emoji* ennen sanaa *Mestari*. Ensimmäinen arvaus oli
 kuplan 🧙, ja sen piirtäminen CSS:llä ei auttanut (Tommin kuuntelu klo 22.20). Puhetuloste
 näytti syyn: TalkBack sanoo ensin pelkän ✕:n omana lausumanaan ja sitten *"Mestari: … Sulje.
 Painike"*. Androidilla `aria-labelledby` ei korvaa napin omaa tekstiä (`uiautomator`: teksti
 *✕*), toisin kuin `aria-label`, joten muut ✕-napit kuuluivat oikein (J-16). Korjaus: kuplan
 ✕ on `aria-hidden`-kääreessä, ja CSS-velho on peruttu.
 
-**Lyödyt kortit kolmesti.** Tila: syy löytyi, korjaustapa Tommin valittavana. Tommi:
-Paskahousussa kaatamaton kortti kuuluu *"Hero risti 4, Hero risti 4, Hero risti 4, vuorossa
-Kukkahattutäti"*. Puhetuloste Pixelillä: kohdistettu viestirivi sanoo viestin heti (ilman
-pistettä), ja TalkBack lukee rivin uudelleen aina kun sen teksti vaihtuu, eli rivi toimii
-toisena live-alueena. Live-alue sanoo saman viestin pisteen kanssa, ja sen jono laahaa
-sekunteja jäljessä, joten toisto kuuluu myöhemmin bottien siirtojen välissä.
+**J-22. Lyödyt kortit kuuluvat kolmesti.** Tila: korjattu dev-versiossa 16.10.2026, ei
+kuunneltu. Tommi: Paskahousussa kaatamaton kortti kuuluu *"Hero risti 4, Hero risti 4, Hero
+risti 4, vuorossa Kukkahattutäti"*. Puhetuloste Pixelillä: kohdistettu viestirivi sanoo
+viestin heti (ilman pistettä), ja TalkBack lukee rivin uudelleen aina kun sen teksti vaihtuu,
+eli rivi toimii toisena live-alueena. Live-alue sanoo saman viestin pisteen kanssa, ja sen
+jono laahaa sekunteja jäljessä. Tommin valinta: kun kohdistus on viestirivillä, live-alue on
+hiljaa ja rivi lukee viestit. Toteutus: `Announcer` ohittaa viestin ja tyhjentää jonon, kun
+kohdistus on `data-game-message`-kääreessä, ja ensimmäinen viesti odottaa 150 ms, jotta
+turvaverkko (50 ms) ehtii viedä kohdistuksen riville. Riski: nopeasti peräkkäiset bottien
+viestit voivat ohittaa toisensa rivillä ennen kuin TalkBack lukee ne. Testi:
+`announcer.test.jsx`.
 
 **Kaksoisnapauta pitkään.** TalkBackin vihje *"kaksoisnapauta ja pidä painettuna"* kertoo,
 että kohteella on pitkän painalluksen toiminto. Pelisivulla yksikään Jaon solmu ei ole
@@ -475,8 +480,8 @@ pitkään painettava (`uiautomator`, `long-clickable`), mutta Chromen sivualue o
 vihjeen, kun napautin adb:llä valikon versioleimaa, joka ei ole kohdistettava: TalkBack
 kohdisti sivualueen. Ei Jaon vika.
 
-**J-21. Versionumero kuuluu päivämääränä.** Tila: korjattu dev-versiossa 16.10.2026, ei
-kuunneltu. Tommi kuuli *"versio ensimmäinen toista kaksisataakolmekymmentäseitsemän julkaistu
+**J-21. Versionumero kuuluu päivämääränä.** Tila: korjattu dev-versiossa 16.10.2026,
+kuunneltu ok. Tommi kuuli *"versio ensimmäinen toista kaksisataakolmekymmentäseitsemän julkaistu
 kuudestoista kymmenettä 2026 kello 19:49"*: syntetisaattori lukee *1.2.237*:n päivämääränä.
 Korjaus: suomen `ui.a11y.version` sanoo pisteet sanoina (*Versio 1 piste 2 piste 237*).
 Päivämäärän lukutapa on tavallinen suomi ja jää.

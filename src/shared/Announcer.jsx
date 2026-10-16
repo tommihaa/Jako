@@ -20,6 +20,15 @@ const listeners = new Set();
 const MS_PER_CHAR = 75;
 const MIN_SPEECH_MS = 1000;
 const GAP_MS = 700;
+// Ensimmäinen viesti odottaa, että turvaverkko (focusRescue.js, 50 ms) on ehtinyt viedä
+// kohdistuksen viestiriville, jotta alla oleva vaikeneminen näkee sen.
+const FIRST_MS = 150;
+
+// Kun kohdistus on pelin viestirivillä, rivi lukee jokaisen uuden viestin itse, koska
+// TalkBack lukee kohdistetun kohdan uudelleen sen tekstin vaihtuessa. Live-alue vaikenee,
+// muuten viesti kuului kahdesti tai kolmesti (Paskahousu: "Hero risti 4" kolmesti, Tommin
+// kuuntelu ja puhetuloste Pixelillä 16.10.2026, auditointi J-22; Tommin valinta).
+const rowHasFocus = () => !!document.activeElement?.closest?.('[data-game-message]');
 
 /** @type {string[]} */
 let queue = [];
@@ -31,8 +40,9 @@ function pump() {
   if (busy || queue.length === 0) return;
   busy = true;
   // Ensimmäinenkin viesti lähtee ajastimella, jottei ilmoitus päivitä Announceria
-  // kesken toisen komponentin päivityksen.
+  // kesken toisen komponentin päivityksen, ja jotta kohdistus ehtii viestiriville.
   timer = setTimeout(() => {
+    if (rowHasFocus()) { queue = []; busy = false; timer = null; return; }
     const next = /** @type {string} */ (queue.shift());
     listeners.forEach(l => l(next));
     // Puheajan jälkeen alue tyhjenee. Muuten viimeisin ilmoitus jää saavutettavuuspuuhun
@@ -42,7 +52,7 @@ function pump() {
       listeners.forEach(l => l(''));
       timer = setTimeout(() => { busy = false; timer = null; pump(); }, GAP_MS);
     }, Math.max(MIN_SPEECH_MS, next.length * MS_PER_CHAR));
-  }, 0);
+  }, FIRST_MS);
 }
 
 // Uusi peli tyhjentää edellisen pelin kuulumattomat viestit (useGameLog.resetLog).
@@ -70,7 +80,7 @@ function toPlain(message) {
 /** @param {unknown} message */
 export function announce(message) {
   const plain = toPlain(message);
-  if (!plain) return;
+  if (!plain || rowHasFocus()) return;
   queue.push(/[.!?…]$/.test(plain) ? plain : plain + '.');
   pump();
 }

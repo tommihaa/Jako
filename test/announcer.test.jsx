@@ -34,12 +34,12 @@ describe('Announcer', () => {
     act(() => {
       announce('Random: <b>7♥</b> (avaa maan)');
       announce('Vuorossa Troll.');
-      vi.advanceTimersByTime(0);
+      vi.advanceTimersByTime(150);
     });
     expect(liveText(container)).toBe('Random: hertta seitsemän (avaa maan).');
     act(() => { vi.advanceTimersByTime(1000); });
     expect(liveText(container)).toBe('Random: hertta seitsemän (avaa maan).');
-    act(() => { vi.advanceTimersByTime(2500); });
+    act(() => { vi.advanceTimersByTime(2700); });
     expect(liveText(container)).toBe('Vuorossa Troll.');
   });
 
@@ -47,7 +47,7 @@ describe('Announcer', () => {
     const { container } = render(<Announcer />);
     act(() => {
       announce('Hero aloittaa 7♣:llä. NPC: Q♥, 10♦️. Avattu ♠');
-      vi.advanceTimersByTime(0);
+      vi.advanceTimersByTime(150);
     });
     expect(liveText(container)).toBe('Hero aloittaa risti 7:llä. NPC: hertta rouva, ruutu kymmenen. Avattu pata.');
   });
@@ -56,18 +56,18 @@ describe('Announcer', () => {
     const { container } = render(<Announcer />);
     act(() => {
       announce('Rane kaataa 0/2 ja nostaa 2 korttia.');
-      vi.advanceTimersByTime(0);
+      vi.advanceTimersByTime(150);
     });
     expect(liveText(container)).toBe('Rane kaataa nolla kahdesta ja nostaa 2 korttia.');
   });
 
   it('toistaa saman viestin, koska alue tyhjenee välissä', () => {
     const { container } = render(<Announcer />);
-    act(() => { announce('Vuorossa Hero.'); vi.advanceTimersByTime(0); });
+    act(() => { announce('Vuorossa Hero.'); vi.advanceTimersByTime(150); });
     expect(liveText(container)).toBe('Vuorossa Hero.');
     act(() => { announce('Vuorossa Hero.'); vi.advanceTimersByTime(1050); });
     expect(liveText(container)).toBe('');
-    act(() => { vi.advanceTimersByTime(750); });
+    act(() => { vi.advanceTimersByTime(900); });
     expect(liveText(container).trim()).toBe('Vuorossa Hero.');
   });
 
@@ -81,10 +81,10 @@ describe('Announcer', () => {
     const { container } = render(<Announcer />);
     act(() => {
       announce('Vanha 1.'); announce('Vanha 2.');
-      vi.advanceTimersByTime(0);
+      vi.advanceTimersByTime(150);
       clearAnnouncements();
       announce('Uusi peli.');
-      vi.advanceTimersByTime(0);
+      vi.advanceTimersByTime(150);
     });
     expect(liveText(container)).toBe('Uusi peli.');
     act(() => { vi.advanceTimersByTime(10000); });
@@ -94,10 +94,22 @@ describe('Announcer', () => {
   // J-9: viimeisin ilmoitus jäi alueeseen ja pyyhkäisy luki sen toiseen kertaan.
   it('tyhjentää alueen puheajan jälkeen', () => {
     const { container } = render(<Announcer />);
-    act(() => { announce('Vastustajat vuorojärjestyksessä: A, B.'); vi.advanceTimersByTime(0); });
+    act(() => { announce('Vastustajat vuorojärjestyksessä: A, B.'); vi.advanceTimersByTime(150); });
     expect(liveText(container)).toBe('Vastustajat vuorojärjestyksessä: A, B.');
     act(() => { vi.advanceTimersByTime(38 * 75); });
     expect(liveText(container)).toBe('');
+  });
+
+  // J-22: kohdistettu viestirivi lukee viestit itse, ja live-alue toisti ne.
+  it('vaikenee, kun kohdistus on pelin viestirivillä', () => {
+    const { container } = render(<><Announcer /><div data-game-message="" tabIndex={-1}>Hero: 4♣</div></>);
+    const row = /** @type {HTMLElement} */ (container.querySelector('[data-game-message]'));
+    act(() => { announce('Hero: 4♣'); row.focus(); vi.advanceTimersByTime(150); });
+    expect(liveText(container)).toBe('');
+    act(() => { announce('Vuorossa Kukkahattutäti.'); vi.advanceTimersByTime(3000); });
+    expect(liveText(container)).toBe('');
+    act(() => { row.blur(); announce('Vuorossa Hero.'); vi.advanceTimersByTime(150); });
+    expect(liveText(container)).toBe('Vuorossa Hero.');
   });
 });
 
