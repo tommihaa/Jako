@@ -100,7 +100,7 @@ Todennettu dev-previewissä 15.10.2026 (Chrome, äänet pois): Paskahousun alku,
 korttivalinta sekä Ristiseiskan alku ilman yhtään paljasta symbolia. Pelaa-nappi on
 näkyvästi "Pelaa (10♥)" ja ruudunlukijalle "Pelaa (hertta 10)". Ulkoasu ennallaan. Ei kuunneltu.
 
-**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: korjattu 16.10.2026 ja todennettu Pixelillä dev-versiolla, ei julkaistu. Syy mitattiin (alla › *Pixelin mittaus 16.10.2026*). Korjausyritys 15.10.2026 ei auttanut (kuuntelu 1.2.236:ssa, alla),
+**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: korjattu 16.10.2026 ja todennettu Pixelillä dev-versiolla, julkaistu 1.2.237 (todennettu tuotantobundlesta). Tommin kuuntelu julkaistulla versiolla on tekemättä. Syy mitattiin (alla › *Pixelin mittaus 16.10.2026*). Korjausyritys 15.10.2026 ei auttanut (kuuntelu 1.2.236:ssa, alla),
 julkaistu 1.2.236. Live-alueeseen ilmoitus menee kerran (todennettu previewissä). Syy (päätelmä, ei
 mitattu): ilmoitusalue jäi sisältöineen saavutettavuuspuuhun, joten sivun läpi pyyhkäisy luki
 viimeisimmän ilmoituksen uudelleen. Korjaus: alue tyhjenee arvioidun puheajan jälkeen
