@@ -483,8 +483,8 @@ ensin. Kasino käyttää samaa komponenttia. Puhetuloste Pixelillä: *"Hero: pat
 sitten seitsemän bottien viestiä järjestyksessä live-alueelta. Testit: `announcer.test.jsx`
 ja `kohdistus-alussa.test.jsx`.
 
-**J-23. Botin vaihto kuuluu kahdesti.** Tila: korjattu dev-versiossa 16.10.2026, ei
-kuunneltu. Tommi: kun joku muu vaihtaa kortin, vaihto kuuluu kahdesti, ja ensimmäinen on
+**J-23. Botin vaihto kuuluu kahdesti.** Tila: korjattu dev-versiossa 16.10.2026,
+kuunneltu ok. Tommi: kun joku muu vaihtaa kortin, vaihto kuuluu kahdesti, ja ensimmäinen on
 liikaa. Puhetuloste: *"Veeti vaihtaa!"* ja heti perään *"Veeti vaihtaa! hertta seitsemän
 kasaan."* Paskahousun `doAISwap` kirjasi erillisen `aiSwaps`-rivin ennen `applySwap`ia, joka
 kirjaa vaihdon kortteineen. Rivi ja käyttämätön avain poistettu (23 kieltä). Muutos näkyy
