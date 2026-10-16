@@ -194,9 +194,10 @@ export function getAdvice(g) {
  * @property {any}     [onClick]
  * @property {any}     [backStyle]
  * @property {boolean} [faceDown]
+ * @property {boolean} [mine]      ihmispelaajan oma kortti, kuten jaetussa Cardissa (focusRescue.js)
  * @param {MaijaCardProps} props
  */
-function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, backStyle, faceDown }) {
+function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, backStyle, faceDown, mine = false }) {
   const [h, setH] = useState(false);
   const w = xsmall ? 38 : small ? 44 : 58, ht = xsmall ? 52 : small ? 60 : 80;
   const back = backStyle || BACKS.ilves;
@@ -213,7 +214,8 @@ function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, 
   const a11y = clickable
     ? { role:'button', tabIndex:0, 'aria-label':cardName(card),
         onKeyDown:e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
-    : { role:'img', 'aria-label':cardName(card) };
+    : { role:'img', 'aria-label':cardName(card), ...(mine ? { tabIndex:-1 } : {}) };
+  const mineAttrs = mine && card ? { 'data-mine':'', 'data-value':String(card.v) } : {};
 
   const borderCol = selected ? C.blue : advice ? C.botMode : mjBorder ? C.maija : highlight ? C.gold : back.border;
   const shadow = selected ? '0 0 14px rgba(91,168,212,0.6)' :
@@ -223,7 +225,7 @@ function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, 
                  h && clickable ? '0 6px 16px rgba(0,0,0,0.5)' : '0 2px 6px rgba(0,0,0,0.3)';
 
   return (
-    <div {...a11y} onClick={clickable ? onClick : undefined}
+    <div {...a11y} {...mineAttrs} onClick={clickable ? onClick : undefined}
       onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
       style={{ width:w, height:ht, borderRadius:7, flexShrink:0,
         background:C.card, border:`2px solid ${borderCol}`,

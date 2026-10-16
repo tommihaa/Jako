@@ -95,4 +95,32 @@ describe('kohdistuksen turvaverkko', () => {
     expect(document.activeElement?.getAttribute('aria-label')).toMatch(/4/);
     uninstall();
   });
+
+  // Asetusten ja Mestarin kuplan sulkunappi katoaa paneelin mukana. Ennen tätä kohdistus
+  // meni pienimpään korttiin eikä avausnappiin (tarkistus 16.10.2026).
+  it('palauttaa kohdistuksen paneelin avaajaan kun sulkunappi katoaa', async () => {
+    vi.useFakeTimers();
+    function Peli() {
+      const [open, setOpen] = useState(false);
+      return (
+        <div>
+          <Card mine card={card('4', 4)} />
+          <button onClick={() => setOpen(true)}>Asetukset</button>
+          {open && <div><button onClick={() => setOpen(false)}>Sulje</button></div>}
+        </div>
+      );
+    }
+    const uninstall = installFocusRescue();
+    const r = render(<Peli />);
+    const opener = /** @type {HTMLElement} */ (r.getByText('Asetukset'));
+    opener.focus();
+    await act(async () => { fireEvent.click(opener); });
+    act(() => { vi.runAllTimers(); });
+    const close = /** @type {HTMLElement} */ (r.getByText('Sulje'));
+    close.focus();
+    await act(async () => { fireEvent.click(close); });
+    act(() => { vi.runAllTimers(); });
+    expect(document.activeElement).toBe(opener);
+    uninstall();
+  });
 });

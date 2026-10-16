@@ -319,6 +319,45 @@ Läpsyssä kättä ei valita, joten niissä kohdistus menee pelin nimeen. Testit
 `kohdistus-alussa.test.jsx` (4). Selaimessa: Paskahousu, ♥2 pelattu, kohdistus siirtyi
 *hertta 3*:een (käden pienin, ei valittava).
 
+## Turvaverkon tarkistus 16.10.2026 klo 19.30
+
+Edellisen kohdan kolme tarkistettavaa ajettiin dev-previewissä (Chrome, ei ruudunlukijaa):
+napin kohdistus, painallus ja 250 ms myöhemmin luettu `document.activeElement`.
+
+| Reitti | Ennen | Korjauksen jälkeen |
+|---|---|---|
+| Asetukset auki ja kiinni pelissä | pienin kortti (*pata 3*) | Asetukset |
+| Mestarin kupla ✕ | pienin kortti | Kysy Mestarilta |
+| Asetukset, Info, Jaa valikossa | sivun juuri | avausnappi |
+| Kielivalitsin, kielen valinta | kunnossa | kunnossa |
+| Opasta, Tilanne, Loki, Avoimet kortit | kunnossa (nappi pysyy) | kunnossa |
+| Kortti valittu, Pelaa | käden pienin | käden pienin (ennallaan) |
+| Kortti valittu, Peruuta (Maija) | ei mitattu | valittu kortti |
+| Bottien Taistelu, bottien siirrot | pelin nimi pysyy | pelin nimi pysyy |
+| Bottien Taistelu, Tauko ja Jatka | kunnossa | kunnossa |
+| ← Valikko | sivun juuri | sivun juuri (J-15) |
+
+**Korjaus 1, paneelin avaaja.** Sulkunappi katoaa paneelin mukana, ja turvaverkko vei
+kohdistuksen käteen. APG:n disclosure- ja dialogimallissa kohdistus palaa avaajaan. Korjaus on
+turvaverkossa eikä paneeleissa, koska paneeleja on ainakin kuusi: napautuksen samassa tahdissa
+lisätyt solmut muistavat napautetun elementin, ja kadonneen napin vanhempiketjusta löytyy
+avaaja. Pelaa-napin avaaja on valittu kortti, joka katoaa itsekin, joten J-14:n tapaus menee
+yhä käteen. Testi `kohdistus-alussa.test.jsx` (5), joka kaatuu vanhalla turvaverkolla.
+
+**Korjaus 2, Maija.** Maijalla on oma `Card`, joka ei lukenut `mine`-propsia. Maijan kortit
+eivät saaneet `data-mine`-merkintää, joten J-14:n turvaverkko vei kohdistuksen siellä pelin
+nimeen, vaikka edellinen kohta luettelee Maijan merkityksi. `npm run typecheck` kaatui tähän
+(J-14:n commit `163fa8d`). Nyt: *Lyö kortti* vie kohdistuksen *hertta 3*:een.
+
+**J-15. Paluu valikkoon pudottaa kohdistuksen sivun juureen.** Tila: auki, odottaa Tommin
+valintaa. ← Valikko katoaa pelin mukana, eikä valikossa ole korttia eikä pelin nimeä, joten
+TalkBack lukee koko valikon. Sama vikaluokka kuin J-9 ja J-14. Vaihtoehdot: pelin oma ruutu
+valikossa (palaa sinne mistä lähti) tai valikon otsikko JAKO.
+
+**J-16. Nimettömät ✕-napit.** Tila: auki. Valinnan perumisnappi Paskahousussa, Seiskassa,
+Moskassa ja Ristiseiskassa (`setSel([])`) sekä Kasinon infolaatikon sulkija
+(`Kasino.jsx:1344`) ovat pelkkä ✕ ilman `aria-label`ia. TalkBack lukee merkin nimen, ei
+toimintoa. Ei kuunneltu.
+
 **Seuraavaksi:** Tommin kuuntelu Pixelillä dev-versiolla (`jako-dev-adb`), sitten julkaisu.
-Ennen sitä on tarkistettava, ettei turvaverkko siirrä kohdistusta väärään kohtaan
-valikoissa, asetuspaneelin sulkeutuessa tai Bottien Taistelussa.
+Kuunneltavat: kortin pelaaminen (J-14), Asetusten ja Mestarin kuplan sulkeminen pelissä.

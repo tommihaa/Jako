@@ -33,28 +33,65 @@ const interactive = t => t instanceof Element
   ? /** @type {HTMLElement} */ (t.closest('button,[role="button"],a,[tabindex]') ?? t)
   : null;
 
+// Paneelin avaaja (tarkistus 16.10.2026 ennen J-14:n kuuntelua). Asetusten, Mestarin kuplan
+// ja muiden paneelien sulkunappi katoaa paneelin mukana, ja ilman tätä kohdistus meni
+// pienimpään korttiin. APG:n disclosure- ja dialogimallissa kohdistus palaa avaajaan.
+// Napautuksen samassa tahdissa lisätyt solmut muistavat napautetun elementin. Irrotetun
+// solmun vanhempiketju säilyy irrotettuun juureen asti, joten avaaja löytyy vielä katoamisen
+// jälkeen. Pelin tilasta ilmestyneillä napeilla (Nosta kasa) avaajaa ei ole, ja pelatun
+// kortin avaama Pelaa-nappi löytää avaajan, joka on itse kadonnut.
+/** @type {WeakMap<Node, HTMLElement>} */
+const openers = new WeakMap();
+
+/** @param {Node | null} n */
+function openerOf(n) {
+  for (; n; n = n.parentNode) {
+    const o = openers.get(n);
+    if (o) return o.isConnected ? o : null;
+  }
+  return null;
+}
+
 // Asentaa kuuntelijat kerran; palauttaa purkufunktion. Viimeisin napautettu tai kohdistettu
 // elementti muistetaan, koska TalkBackin kaksoisnapautus ei aina anna DOM-kohdistusta.
 export function installFocusRescue() {
   /** @type {HTMLElement | null} */
   let last = null;
+  /** @type {HTMLElement | null} */
+  let clicked = null;
   /** @param {Event} e */
   const note = e => { last = interactive(e.target); };
+  /** @param {Event} e */
+  const noteClick = e => {
+    note(e);
+    clicked = last;
+    // React piirtää napautuksen seuraukset saman tapahtuman aikana, ja MutationObserver
+    // ilmoittaa ne mikrotehtävänä ennen tätä ajastinta.
+    setTimeout(() => { clicked = null; }, 0);
+  };
   document.addEventListener('focusin', note, true);
-  document.addEventListener('click', note, true);
-  const mo = new MutationObserver(() => {
+  document.addEventListener('click', noteClick, true);
+  const mo = new MutationObserver(records => {
+    if (clicked) {
+      for (const r of records) {
+        for (const n of r.addedNodes) {
+          if (!n.contains(clicked)) openers.set(n, /** @type {HTMLElement} */ (clicked));
+        }
+      }
+    }
     if (!last || last.isConnected) return;
+    const opener = openerOf(last);
     last = null;
     setTimeout(() => {
       const a = document.activeElement;
       if (a && a !== document.body && a.isConnected) return;
-      rescueTarget()?.focus({ preventScroll: true });
+      (opener?.isConnected ? opener : rescueTarget())?.focus({ preventScroll: true });
     }, RESCUE_DELAY_MS);
   });
   mo.observe(document.body, { childList: true, subtree: true });
   return () => {
     document.removeEventListener('focusin', note, true);
-    document.removeEventListener('click', note, true);
+    document.removeEventListener('click', noteClick, true);
     mo.disconnect();
   };
 }
