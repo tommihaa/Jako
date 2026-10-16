@@ -13,6 +13,22 @@ import GroupPicker from './GroupPicker.jsx';
 //
 // `onStart` on propsi eikä kiinteä kutsu, koska Seiska rakentaa istuinlistan ennen
 // aloitusta ja muut kutsuvat startGamen ilman argumentteja.
+
+// Otsikkorivin pelin nimi (App.jsx › GameHeader). Pelin alkaessa kohdistus viedään sinne,
+// koska painettu nappi katoaa aloitusnäytön mukana. Ilman tätä TalkBack putosi sivun
+// juureen ja luki koko sivun yhtenä pötkönä, jonka alussa oli ilmoitusalueen
+// vastustajarivi, joten rivi kuului kahdesti (Pixel 8a 16.10.2026, auditointi J-9).
+export const GAME_TITLE_ID = 'jako-game-title';
+
+/** @param {() => void} fn */
+function thenFocusTitle(fn) {
+  return () => {
+    fn();
+    // Ajastin, jotta peli ehtii korvata aloitusnäytön ennen kohdistusta.
+    setTimeout(() => document.getElementById(GAME_TITLE_ID)?.focus(), 0);
+  };
+}
+
 /**
  * @typedef {object} GameStartScreenProps
  * @property {any} [icon]                 Tunnus otsikon yllä (emoji tai komponentti)
@@ -64,8 +80,8 @@ export default function GameStartScreen({
       {children}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-        <button onClick={onStart} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>{t('ui.start.begin')}</button>
-        <button onClick={onBotBattle} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+        <button onClick={thenFocusTitle(onStart)} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>{t('ui.start.begin')}</button>
+        <button onClick={thenFocusTitle(onBotBattle)} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           {t('ui.start.botBattle')}
           <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{botBattleSub}</span>
         </button>

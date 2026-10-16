@@ -100,7 +100,7 @@ Todennettu dev-previewissä 15.10.2026 (Chrome, äänet pois): Paskahousun alku,
 korttivalinta sekä Ristiseiskan alku ilman yhtään paljasta symbolia. Pelaa-nappi on
 näkyvästi "Pelaa (10♥)" ja ruudunlukijalle "Pelaa (hertta 10)". Ulkoasu ennallaan. Ei kuunneltu.
 
-**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: auki. Toinen korjausyritys 16.10.2026 on tehty, mutta Pixelillä todentamatta (alla › *Tabletin mittaus 16.10.2026*). Korjausyritys 15.10.2026 ei auttanut (kuuntelu 1.2.236:ssa, alla),
+**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: korjattu 16.10.2026 ja todennettu Pixelillä dev-versiolla, ei julkaistu. Syy mitattiin (alla › *Pixelin mittaus 16.10.2026*). Korjausyritys 15.10.2026 ei auttanut (kuuntelu 1.2.236:ssa, alla),
 julkaistu 1.2.236. Live-alueeseen ilmoitus menee kerran (todennettu previewissä). Syy (päätelmä, ei
 mitattu): ilmoitusalue jäi sisältöineen saavutettavuuspuuhun, joten sivun läpi pyyhkäisy luki
 viimeisimmän ilmoituksen uudelleen. Korjaus: alue tyhjenee arvioidun puheajan jälkeen
@@ -259,3 +259,41 @@ toisto koski nimenomaan pelin ensimmäistä ilmoitusta.
 (`App.jsx`). Sivun alussa on nyt *Valikko*-nappi. Testit ja `verify.py` menevät läpi.
 Todennus vaatii Pixelin: ensin tuotanto ennen korjausta, jotta nähdään osuuko kohdistus
 alueeseen, sitten dev-palvelin (`jako-dev-adb`) korjauksen kanssa, *Näytä puhe* päällä.
+
+## Pixelin mittaus 16.10.2026
+
+Pixel 8a (TalkBack 17.0.1, Chrome 155), Tommin sormella. TalkBackin asetus *Näytä puhe*
+(Visuaalinen-osiossa) piirtää puhutun tekstin ruudun alareunaan, ja se luettiin kaappauksista
+noin 0,7 sekunnin välein. TalkBack kytkettiin adb:llä kummankin ajon ajaksi ja pois heti
+(`Bound services:{}`). Adb:n napautus ei kelpaa tähän: se jättää TalkBackin kohdistuksen koko
+verkkonäkymään, joten oikea kulku (napautus kohdistaa Aloitaan, kaksoisnapautus aloittaa)
+syntyy vain sormella.
+
+**Tuotanto 1.2.236.** Ensin live-ilmoitus yksinään: *Vastustajat vuorojärjestyksessä: Jukka,
+Sune, Simo.* Heti perään TalkBack luki koko pelisivun yhtenä kohteena (vihreä kehys koko sivun
+ympärillä), ja luku alkoi samalla rivillä: *Vastustajat vuorojärjestyksessä: Jukka, Sune,
+Simo.. Paskahousu. tila. 🃏. Paskahousu alkaa! … 🤖 . Jukka. 🤖 . Sune … KASA. Rivinkeskinen
+piste. tyhjä. PAKKA · 28 korttia … 👤 Hero · 6 korttia kädessä. Tavoite:. Välilyönti. …*
+**Syy on mitattu:** painettu Aloita katosi aloitusnäytön mukana, kohdistus putosi sivun
+juureen, ja juuren luku alkoi ilmoitusalueesta. Tabletin hypoteesi piti, mutta mekanismi oli
+juuren kokonaisluku eikä yksittäinen kohdistus alueeseen.
+
+**Korjaus.** Ilmoitusalueen siirto sivun loppuun ei yksin riittäisi, koska juuren luku kävisi
+yhä koko sivun läpi. Aloita ja Bottien Taistelu vievät siksi kohdistuksen otsikkorivin pelin
+nimeen (`GameStartScreen.jsx` › `thenFocusTitle`, `App.jsx` › `GameHeader`, jonka nimi on nyt
+`h1` ja `tabIndex={-1}`). Testi `kohdistus-alussa.test.jsx`.
+
+**Dev-versio korjauksella.** Puhe järjestyksessä: *Vastustajat vuorojärjestyksessä: Tryhard,
+Noob, Lurker.*, *Paskahousu. otsikko 1*, *Paskahousu alkaa! Noob aloittaa (pienin kortti).*,
+*Vuorossa Noob.*, *Noob: risti 3.*, *Vuorossa Lurker.*, *Lurker: ruutu 3.* ja *Vuorossa Hero.*
+Kukin kerran. *Lurker: ruutu 3.* näkyi kahdessa kehyksessä 0,57 sekunnin päässä, siirtyneenä
+10 pikseliä. Se on yhden lausuman sisällä, ja ilmoitusalue ei lähetä samaa tekstiä kahdesti,
+joten se on sama puhe. Koko sivun lukua ei tullut. **J-9 on korjattu dev-versiossa.** Tommin
+kuuntelu julkaistulla versiolla on tekemättä.
+
+**J-13. Koristeemojit kuuluvat puheessa.** Tila: auki. Tommi kuuli tuotannon ajossa emojit
+(*"emojit puheessa"*), ja koko sivun luku näytti ne: 🃏 pelin tilan kohdalla, 🤖 jokaisen
+botin nimen edessä ja 👤 Heron edessä. Samasta luvusta kuului myös *Rivinkeskinen piste*
+(`·`-erotin) ja *Välilyönti*. Korjaus poisti kokonaisluvun pelin alusta, mutta samat kohteet
+kuuluvat yhä, kun sivua pyyhkäisee läpi. Korjaustapa olisi `aria-hidden` koristeille, kuten
+aloitusnäytön tunnuksessa. Ei vielä kartoitettu koko sivulta.

@@ -4,6 +4,7 @@ import GameResult from './shared/GameResult.jsx';
 import StatsPanel from './shared/StatsPanel.jsx';
 import ShareQR from './shared/ShareQR.jsx';
 import Announcer from './shared/Announcer.jsx';
+import { GAME_TITLE_ID } from './shared/GameStartScreen.jsx';
 import Spoken from './shared/Spoken.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
 import { loadPref, savePref, useStickySetting } from './shared/storage.js';
@@ -473,9 +474,12 @@ function GameHeader({ title, onBack, gearBtn, isMobile }) {
         <button onClick={onBack} style={{ ...btnBase, flexShrink: 0, position: 'absolute', left: 8 }}>
           {t('ui.menu.back')}
         </button>
-        <div style={{ fontFamily: 'Georgia,serif', fontSize: isMobile ? 12 : 14, color: C.text, letterSpacing: 1 }}>
+        {/* Otsikko ottaa kohdistuksen pelin alkaessa (GameStartScreen, auditointi J-9).
+            Muuten kadonneen Aloita-napin kohdistus putoaa sivun juureen, ja TalkBack lukee
+            koko sivun yhtenä pötkönä emojeineen. */}
+        <h1 id={GAME_TITLE_ID} tabIndex={-1} style={{ fontFamily: 'Georgia,serif', fontSize: isMobile ? 12 : 14, fontWeight: 'normal', margin: 0, outline: 'none', color: C.text, letterSpacing: 1 }}>
           {title}
-        </div>
+        </h1>
         <div style={{ position: 'absolute', right: 8 }}>{gearBtn}</div>
       </div>
     </div>
