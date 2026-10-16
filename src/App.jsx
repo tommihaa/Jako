@@ -1422,9 +1422,9 @@ export default function App() {
         />
         </Suspense>
         {/* Ilmoitusalue on sivun viimeinen eikä ensimmäinen (auditointi J-9, 16.10.2026).
-            Kun Aloita-nappi katoaa, ruudunlukijan kohdistus voi hypätä sivun alkuun. Jos
-            alue on siellä, kohdistus osuu sen tekstiin ja rivi kuuluu kahdesti: kerran
-            kohdistettuna ja kerran ilmoituksena (päätelmä, ks. auditointi). */}
+            Jos kohdistus putoaa sivun juureen, TalkBack lukee koko sivun alusta, ja alue
+            alussa toisti viimeisimmän ilmoituksen (mitattu Pixelillä). Pelin alussa kohdistus
+            viedään nyt pelin nimeen (GameStartScreen), ja tämä on toinen varmistus. */}
         <Announcer />
       </div>
     );

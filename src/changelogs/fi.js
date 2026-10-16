@@ -13,6 +13,12 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '16.10.2026',
+    items: [
+      'Saavutettavuus: vastustajien nimet kuuluvat pelin alussa vain kerran. Eilinen korjaus ei auttanut, koska syy oli muualla: kun Aloita-nappi katosi, ruudunlukija luki koko sivun alusta loppuun. Nyt pelin alkaessa ruudunlukija siirtyy pelin nimeen otsikkorivillä.',
+    ],
+  },
+  {
     date: '15.10.2026',
     items: [
       'Saavutettavuus: valittavat kortit kertovat taas nimensä ruudunlukijalle. Eilinen korjaus kertoi valitun kortin tilan, mutta Androidin Chromessa se samalla vei kortilta nimen. Ruudunlukija ei siis kertonut, mikä kortti oli kyseessä.',
