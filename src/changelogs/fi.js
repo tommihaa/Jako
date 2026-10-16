@@ -13,6 +13,16 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '17.10.2026',
+    items: [
+      'Saavutettavuus: kun nappi katoaa painamisen jälkeen, ruudunlukija ei enää lue koko sivua alusta. Oman siirron jälkeen kohdistus siirtyy pelin viestiriville, joka kertoo siirtosi kerran, ja valikkoon palatessa se siirtyy juuri pelatun pelin kohdalle. Asetuksista ja Infosta palataan siihen nappiin, josta ne avattiin.',
+      'Saavutettavuus: pelin tapahtumat kuuluvat kerran ja järjestyksessä. Oma kortti kuului aiemmin jopa kolmesti, Heron vuoron alkua ei kuulunut lainkaan, ja botin vaihto kuului kahdesti.',
+      'Saavutettavuus: kortit kuuluvat perusmuodossa ("ruutu viisi" eikä "ruutu viiteen"), kaadon tulos sanoina ("nolla kahdesta") ja versionumero selvästi ("1 piste 2 piste 238").',
+      'Saavutettavuus: Mestarin neuvo kuuluu kokonaan, kun painat Kysy Mestarilta, ja sulkunappi kertoo neuvon. Nappien koriste-emojit, ✕-merkki ja nimen yläindeksi 9 eivät enää kuulu puheessa, ja ✕-napeilla on nimet.',
+      'Maijassa ja Moskassa valtti on käden viimeinen kortti, kun ruudunlukija valitsee kortin puolestasi, koska valtit ovat arvokkaita pieninäkin.',
+    ],
+  },
+  {
     date: '16.10.2026',
     items: [
       'Saavutettavuus: vastustajien nimet kuuluvat pelin alussa vain kerran. Eilinen korjaus ei auttanut, koska syy oli muualla: kun Aloita-nappi katosi, ruudunlukija luki koko sivun alusta loppuun. Nyt pelin alkaessa ruudunlukija siirtyy pelin nimeen otsikkorivillä.',
