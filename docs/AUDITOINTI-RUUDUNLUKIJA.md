@@ -641,6 +641,13 @@ kaatamatta"*). Näkyvä muoto pysyi. Apuri `eyeAndEar` (`helpers.js`) antaa vies
 muodon silmälle ja korvalle, ja `spokenHtml` jättää näkyvän osan pois. Avaimet `beatenBy` ja
 `unbeaten` ovat 23 kielessä.
 
+*Toinen kuuntelu 17.10.2026.* Pöytäkuvaus kuului oikein. Puolustusvuoron rivi kuului silti
+*"0 emoji 2 emoji"*, koska kaadettujen ja kaatamattomien määrä (`{beaten}🛡️/{unbeaten}⚔️`)
+oli käännöspohjassa kahdessa avaimessa (`defendHumanCards`, `statusOnTable`). Pohja on nyt
+`{tally}`, ja korvalle se on *"0 kaadettu, 2 kaatamatta"* (avain `tally`, 23 kieltä). Parien
+väliin tuli korvalle puolipiste, koska pilkuin erotettuna parin raja hämärtyi (selaimessa
+kuultu muoto *"ruutu neljä, kaatajana ruutu kahdeksan, risti kahdeksan, …"*).
+
 **J-28. Seiskan kahden kortin lyönti sanoo jälkimmäisen kahdesti.** Tila: korjattu dev-versiossa 17.10.2026, ei kuunneltu.
 Ryhmälyönnin rivi on `kortit → päällimmäinen`. Nuoli kertoo näkevälle, mikä jää päällimmäiseksi,
 mutta ruudunlukija kuulee vain saman kortin uudestaan. Tommin valinta: kahden, kolmen tai neljän
@@ -657,8 +664,20 @@ Avain `beginNamed` on 23 kielessä.
 hylätty 17.10.2026 Tommin päätöksellä. Kohdistus jää korttiin, koska toisen samanarvoisen
 kortin valinta vaatisi muuten paluun käteen.
 
-**Seuraavaksi:** kohta 46 odottaa Tommin kuuntelua tuotannossa 1.2.239:llä. J-26–J-29
-odottavat kuuntelua Pixelillä ja julkaisua.
+**J-31. Moskan sivustalyönti paljasti botin käsikortit.** Tila: korjattu dev-versiossa
+17.10.2026, ei kuunneltu. Tommi huomasi kuuntelussa, että rivi *"{name} voi lyödä sivusta:
+{cards}"* luetteli botin kaikki sivustalyöntiin kelpaavat käsikortit. Se rikkoi kaanonia
+(`MOSKA.md` › Pelaajien näkyvyys: muiden kädet ovat piilossa), ja tieto näkyi myös näkevälle
+lokissa. Rivi ja avain `aiCanAdd` poistettiin. Lyöty kortti kuuluu yhä `doAdd`in rivillä
+(*"… löi sivusta: risti kahdeksan."*), ja se on julkinen. Selaimessa todennettu Bottien
+Taistelussa.
+
+**Pitkä viesti (havainto, ei toimenpidettä).** Tommi: viestirivin pitkä pötkö on haastava.
+Moskassa sivustalyöntivaihe katkaisee sen sopivasti. Muissa peleissä katkaisua ei vielä ole
+mietitty.
+
+**Seuraavaksi:** kohta 46 odottaa Tommin kuuntelua tuotannossa 1.2.239:llä. J-26–J-29 ja
+J-31 odottavat kuuntelua Pixelillä ja julkaisua.
 
 ## Julkaisu 1.2.239 17.10.2026
 

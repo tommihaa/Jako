@@ -448,14 +448,16 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     pass:           (name, cards, nextName) => t('games.moska.msg.pass', { name, cards, nextName }),
     add:            (name, cards) => t('games.moska.msg.add', { name, cards }),
     defendHuman:    (unbeaten, cards, beaten) => unbeaten > 0
-      ? t('games.moska.msg.defendHumanCards', { cards, beaten, unbeaten })
+      ? t('games.moska.msg.defendHumanCards', { cards, tally: M.tally(beaten, unbeaten) })
       : t('games.moska.msg.defendHuman'),
     defendAI:       (name, unbeaten, cards) => unbeaten > 0
       ? t('games.moska.msg.defendAICards', { name, cards })
       : t('games.moska.msg.defendAI', { name }),
     addPhase:       cards => t('games.moska.msg.addPhase', { cards }),
     canAdd:         (name, cards) => t('games.moska.msg.canAdd', { name, cards }),
-    aiCanAdd:       (name, cards) => t('games.moska.msg.aiCanAdd', { name, cards }),
+    // Kaadettujen ja kaatamattomien määrä: silmälle 🛡️/⚔️, korvalle sanoina, koska TalkBack
+    // luki rivin "0 emoji 2 emoji" (Tommin kuuntelu 17.10.2026, J-27).
+    tally:          (beaten, unbeaten) => eyeAndEar(`${beaten}🛡️/${unbeaten}⚔️`, t('games.moska.msg.tally', { beaten, unbeaten })),
     aiSkips:        name => t('games.moska.msg.aiSkips', { name }),
     badSameRank:    t('games.moska.msg.badSameRank'),
     tooManyCards:   t('games.moska.msg.tooManyCards'),
@@ -518,7 +520,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       return t.def
         ? eyeAndEar(`${atk}→${lblColored(t.def)}`, tr('games.moska.msg.beatenBy', { atk, def: lblColored(t.def) }))
         : eyeAndEar(`${atk}❌`, tr('games.moska.msg.unbeaten', { atk }));
-    }).join(', ');
+    }).join(eyeAndEar(', ', '; '));
 
     if (defWon) {
       // Kaadetut kortit poistuvat pelistä — Super Natural muistaa ne
@@ -683,7 +685,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     // Laske pöydän tila: kaadetut/kaatamatta jääneet
     const unbeaten = newTable.filter(t => !t.def).length;
     const beaten = newTable.filter(t => t.def).length;
-    const statusMsg = unbeaten > 0 ? t('games.moska.msg.statusOnTable', { beaten, unbeaten }) : t('games.moska.msg.statusAllBeaten');
+    const statusMsg = unbeaten > 0 ? t('games.moska.msg.statusOnTable', { tally: M.tally(beaten, unbeaten) }) : t('games.moska.msg.statusAllBeaten');
 
     lines.push(M.beat(def.name, lblColored(defCard), lblColored(atkCard), statusMsg));
     flashLastPlay(def.name, defCard, def.isHuman);
@@ -811,7 +813,9 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       const lvl = botLevelsRef.current?.[next] ?? aiLevelRef.current;
       if (moskaShouldAdd(g, lvl)) {
         const card = aiPickAddCard(addable, p.hand, g.ts);
-        addLog(M.aiCanAdd(p.name, addable.map(lblColored).join(', ')));
+        // Sivustalyöntiin kelpaavia kortteja ei kerrota, koska botin käsi on salainen
+        // (MOSKA.md › Pelaajien näkyvyys). Lyöty kortti kuuluu doAddin rivillä. Ennen
+        // 17.10.2026 rivi luetteli botin kelpaavat käsikortit (Tommin kuuntelu, J-31).
         if (initShowIntention) {
           const intentionMs = Math.min(1600, Math.max(600, aiDelayRef.current * 0.5));
           setIntention({ playerIdx: next, cards: [card] });
