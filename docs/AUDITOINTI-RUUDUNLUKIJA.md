@@ -792,3 +792,11 @@ korttia ei ole kaadettu, korva kuulee pelkän *kaatamatta N* (uusi avain `tallyU
 kieltä, johdettu kunkin kielen `tally`-avaimen jälkiosasta). Silmä näkee yhä `0🛡️/1⚔️`. Sama
 `M.tally` on myös lyönnin tilarivissä, joten korjaus koskee sitäkin. Testit `announcer.test.jsx`.
 
+## Julkaisu 1.2.241 17.10.2026
+
+Kuvausvirke, ensikertalaisen ryhmä ja J-34 julkaistu (Jako `7d9823a`, push klo 23.32, Tommin
+*julkaise kaikki*). Tuotantobundlesta todennettu selaimella pushin jälkeen. Molemmat domainit
+tarjoavat `index-Cd-muPF0.js`:n, jossa on `"1.2.241"` sekä avaimet `introToggle` ja
+`tallyUnbeaten`. Paikallisen buildin hash oli eri (`DiATmYJI`), mikä deploy-skillin mukaan ei
+ole virhe. Kuvausvirkkeen palaavan kävijän linkkiä ja J-34:ää ei ole kuunneltu.
+
