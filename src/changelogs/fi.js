@@ -15,6 +15,14 @@ export const CHANGELOG = [
   {
     date: '17.10.2026',
     items: [
+      'Valikon yläreunan virke kertoo, mitä sivulla on ja mitkä vastustajat ja taso ovat nyt valittuina. Ensimmäisellä käynnillä virke näkyy, myöhemmin sen saa auki linkistä "Mitä sivulla on?". Ruudunlukija kuulee virkkeen aina. Virke korvaa aiemman ★-vihjeen.',
+      'Ensimmäisellä käynnillä vastustajat ovat suomeksi Paikalliset-ryhmästä, muilla kielillä Meme-jengistä.',
+      'Moska: kun yhtään korttia ei ole vielä kaadettu, ruudunlukija sanoo vain kaatamattomien määrän eikä enää "kaadettu nolla".',
+    ],
+  },
+  {
+    date: '17.10.2026',
+    items: [
       'Saavutettavuus: kun nostat kortteja Maijassa, Moskassa, Paskahousussa tai Seiskan Lappu-sakkona, ruudunlukija kertoo saamasi kortit. Paskahousun kasa nimetään kuuteen korttiin asti, isompi kerrotaan määränä. Vastustajien nostoja ei nimetä.',
       'Saavutettavuus: oman siirron jälkeen viestirivi kertoo kaikki siirron seuraukset järjestyksessä. Aiemmin vain viimeisin kuului, ja esimerkiksi oma lyönti ja täydennyksen kortit jäivät kuulumatta.',
       'Moska: ruudunlukija kertoo pöydän pareittain ("pata viisi, kaatajana hertta seitsemän; risti yhdeksän kaatamatta") ja määrät sanoina eikä emojeina. Pelin viestien emojit eivät enää kuulu missään pelissä.',
