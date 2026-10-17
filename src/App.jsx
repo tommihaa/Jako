@@ -9,7 +9,7 @@ import { installFocusRescue } from './shared/focusRescue.js';
 import Spoken from './shared/Spoken.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
 import { loadPref, savePref, useStickySetting } from './shared/storage.js';
-import { KANSA, NAME_GROUPS, POOL_BY_GROUP } from './shared/playerGroups.js';
+import { KANSA, NAME_GROUPS, POOL_BY_GROUP, firstVisitGroup } from './shared/playerGroups.js';
 import { SANASTO, MERKISTO, MERKISTO_KATEGORIAT, splitWithGlossary } from './shared/glossary.js';
 import { SFX, setTheme as setSfxTheme } from './shared/audio.js';
 import { SFX_CATALOG } from './shared/sfxCatalog.js';
@@ -556,10 +556,11 @@ export default function App() {
   };
   const [aiLevel, setAiLevel]           = useStickySetting('aiLevel', 'normal'); // 'beginner' | 'normal' | 'hard'
   const [isMobile, setIsMobile]     = useState(() => window.innerWidth < 600);
-  // Ensikertalainen kokoelmassa → Meme-jengi oletuksena (hauska ensivaikutelma);
-  // sen jälkeen satunnainen ryhmä. Valinta muistetaan; 'visited'-lippu ratkaisee laiskan oletuksen.
+  // Ensikertalainen kokoelmassa → ryhmä kielen mukaan (`firstVisitGroup`: suomeksi porukka,
+  // muuten Meme-jengi); sen jälkeen satunnainen ryhmä. Valinta muistetaan; 'visited'-lippu
+  // ratkaisee laiskan oletuksen.
   const [playerGroup, setPlayerGroup] = useStickySetting('playerGroup', () => {
-    if (!loadPref('visited', false)) return 'meme';
+    if (!loadPref('visited', false)) return firstVisitGroup(lang);
     const groups = ['porukka', 'jumalat', 'puolue', 'kansa', 'meme', 'goauld'];
     return groups[Math.floor(Math.random() * groups.length)];
   });

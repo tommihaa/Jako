@@ -26,3 +26,11 @@ export const NAME_GROUPS = [
 ];
 
 export const POOL_BY_GROUP = Object.fromEntries(NAME_GROUPS.map(g => [g.key, g.pool]));
+
+// Ensikertalaisen ryhmä kielen mukaan (Tommin päätös 17.10.2026): suomeksi porukka, muilla
+// kielillä Meme-jengi. Porukan nimet ovat lyhyitä suomalaisia etunimiä, jotka suomalainen
+// puheääni lausuu oikein ja jotka kuormittavat ruudunlukijan käyttäjää vähiten. Meme-jengin
+// englanninkieliset nimet kuulostavat suomalaisella äänellä muulta. Selain ei kerro sivulle
+// ruudunlukijasta, joten valinta tehdään kielen eikä apuvälineen perusteella.
+/** @param {string} lang */
+export const firstVisitGroup = lang => (lang === 'fi' ? 'porukka' : 'meme');
