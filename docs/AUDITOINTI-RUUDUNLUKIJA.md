@@ -730,10 +730,23 @@ julkaisussa.
 ## Kuuntelu 17.10.2026 klo 21.50
 
 **J-9 kuuluu kerran.** Tommi: *"vastustajat kuuluu kerran"*. Kohdan 46 J-9-osa on kuunneltu.
-J-14 odottaa yhä kuuntelua.
+J-14 kuunneltiin samalla kierroksella (alla).
 
 **Uusi portti.** Valttivaihdon emoji kuului viidennessä kuuntelussa `localhost:5186`:ssa, eikä
 korjausta (`f6ba6b0`) ole kuunneltu. Jotta kuunneltava versio on varmasti uusin, dev-palvelin
 käynnistettiin juuren `launch.json`in uudella `jako-dev-adb-5188`-merkinnällä HEAD:sta `469f586`
 (1.2.240), ja Pixelille avattiin `adb reverse tcp:5188`. Selaimessa todennettu:
 `spokenHtml` antaa valttivaihdon rivistä *"Hero: ruutu kaksi ruutu kymmenen (valttivaihto)"*.
+
+**Valttivaihto kuuluu ilman emojia.** Tommi kuunteli `localhost:5188`:ssa: emoji ei kuulu.
+`localhost:5186`:ssa emoji kuului yhä, myös sivun uudelleenlatauksen jälkeen. Syy (päätelmä,
+ei mitattu): 5186:n palvelin ei ollut käynnissä eikä Pixelillä ollut sille `adb reverse`ia
+(tarkistettu 17.10. klo 21.50), joten verkkohaku epäonnistui. Palvelutyöntekijä (`public/sw.js`)
+on rekisteröity myös dev-palvelimella, ja se antaa epäonnistuneen haun tilalle välimuistista
+viimeksi haetut moduulit. Pixel ajoi siis 5186:n vanhaa versiota, ja uudelleenlataus sai
+saman välimuistin. Kuolleesta dev-portista kuuntelija saa vanhan version ilman virhettä.
+
+**J-14 kuunneltu ok** (`localhost:5188`, koodi sama kuin julkaistu 1.2.240, `git diff
+1d0f7db HEAD -- src public index.html` on tyhjä). Kaikki neljä reittiä toimivat: kortin pelaaminen
+vie viestiriville, Asetusten sulku palaa Asetuksiin, Mestarin kuplan ✕ palaa Mestari-nappiin ja
+paluu valikkoon osuu pelin kohdalle. Koko sivun lukua ei kuulunut. Kohta 46 suljettu.
