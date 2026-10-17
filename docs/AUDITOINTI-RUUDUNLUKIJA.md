@@ -566,4 +566,30 @@ kertaa. Avaimet `aiPartialBeat` ja `defenderWinRound` korvattiin avaimilla `beat
 se kaatui yhdeksään. Selaimessa nähtiin täyskaato, botin nosto ja Heron nosto korttien kanssa.
 Osittaista kaatoa, jossa samassa vuorossa on kaato ja nosto, ei nähty selaimessa.
 
-**Seuraavaksi:** J-24:n ja J-25:n julkaisu, ja kohta 46 odottaa kuuntelua sen jälkeen.
+**J-26. Heron nosto ei nimeä kortteja.** Tila: auki, kartoitettu 17.10.2026, siirretty
+seuraavaan sessioon Tommin päätöksellä (iso urakka). Tommi: kun Hero nostaa, kortit pitäisi
+kertoa, myös Maijan pakasta nostossa ja muiden pelien nostoissa. Bottien nostoja ei nimetä,
+koska niiden kortit ovat salaisia. Kartoitus koodista:
+
+| Peli | Heron nosto | Nykyinen viesti |
+|---|---|---|
+| Maija | täydennys pakasta viiteen (`drawHand`) | ei viestiä |
+| Maija | Ota kaikki (`resolveDefenseLoss`) | nimeää kortit (J-25) |
+| Paskahousu | täydennys pakasta lyönnin jälkeen (`fillHand`, rivit 542 ja 661) | ei viestiä |
+| Paskahousu | kasan nosto (`tookPile`) | vain määrä |
+| Paskahousu | tyhjälle lyöty 10 tai A (`emptyPenalty`), seuraava nostaa | nostettua ei nimetä |
+| Moska | täydennys kuuteen (`playerDrew`, rivit 548 ja 1027) | vain määrä |
+| Moska | pöydän otto (`defenderTook`) | pöytä nimetään jo |
+| Seiska | unohtunut Lappu, +3 korttia (`forgotLappu`) | vain määrä |
+| Seiska | nosto ja ässärangaistus (`humanDraws`, `aceDrawn`) | nimeää kortin |
+| Koputus, Kultakala | nosto pakasta tai poistopakasta | nimeää kortin |
+| Ristiseiska | pantti (`passGiveRandom`) | nimeää kortin |
+
+Läpsyssä pinot ovat kuvapuoli alas eikä kättä ole, joten nostettavaa nimettävää ei ole.
+Kasinon uusi jako ei ole nosto, ja se jäi kartoituksen ulkopuolelle. Toteutus: Heron versio
+viestistä kortteineen (`lblColored`, kuten J-25), uudet avaimet 23 kieleen, testit ja kuuntelu
+Pixelillä. Ennen toteutusta kysytään muoto, esimerkiksi *"Hero nosti pakasta hertta kuusi,
+risti ässä."*, ja se, nimetäänkö Paskahousun suuri kasa kokonaan.
+
+**Seuraavaksi:** J-24:n ja J-25:n julkaisu, ja kohta 46 odottaa kuuntelua sen jälkeen. J-26
+on oma työnsä seuraavassa sessiossa.
