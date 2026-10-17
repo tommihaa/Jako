@@ -790,6 +790,7 @@ export const rom = {
         beatenBy: '{atk}, mardi {def}',
         unbeaten: '{atk} bimardi',
         tally: '{beaten} mardine, {unbeaten} bimardine',
+        tallyUnbeaten: '{unbeaten} bimardine',
         won: '{name} lija o niro! 🏆🎉',
         out: '{name} geli andai khelipe. 👏',
         lost: '{name} xasardas.',

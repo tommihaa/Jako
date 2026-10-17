@@ -790,6 +790,7 @@ export const hu = {
         beatenBy: '{atk}, ütve ezzel: {def}',
         unbeaten: '{atk} ütetlen',
         tally: '{beaten} ütve, {unbeaten} ütetlen',
+        tallyUnbeaten: '{unbeaten} ütetlen',
         won: '{name} elvitte a győzelmet! 🏆🎉',
         out: '{name} kiesett a játékból. 👏',
         lost: '{name} veszített.',

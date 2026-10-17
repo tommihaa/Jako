@@ -788,6 +788,7 @@ export const krl = {
         beatenBy: '{atk}, kuadajana {def}',
         unbeaten: '{atk} kuadamatta',
         tally: 'kuattu {beaten}, kuadamatta {unbeaten}',
+        tallyUnbeaten: 'kuadamatta {unbeaten}',
         won: '{name} vei voiton! 🏆🎉',
         out: '{name} läksi kizasta. 👏',
         lost: '{name} hävizi.',

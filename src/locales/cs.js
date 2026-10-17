@@ -798,6 +798,7 @@ export const cs = {
         beatenBy: '{atk}, přebita {def}',
         unbeaten: '{atk} nepřebita',
         tally: '{beaten} přebito, {unbeaten} nepřebito',
+        tallyUnbeaten: '{unbeaten} nepřebito',
         won: '{name} si odnesl výhru! 🏆🎉',
         out: '{name} vypadl ze hry. 👏',
         lost: '{name} prohrál.',

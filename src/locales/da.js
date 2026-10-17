@@ -787,6 +787,7 @@ export const da = {
         beatenBy: '{atk}, slået af {def}',
         unbeaten: '{atk} uslået',
         tally: '{beaten} slået, {unbeaten} uslået',
+        tallyUnbeaten: '{unbeaten} uslået',
         won: '{name} tog sejren! 🏆🎉',
         out: '{name} er ude af spillet. 👏',
         lost: '{name} tabte.',

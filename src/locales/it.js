@@ -787,6 +787,7 @@ export const it = {
         beatenBy: '{atk}, battuta da {def}',
         unbeaten: '{atk} non battuta',
         tally: '{beaten} battute, {unbeaten} non battute',
+        tallyUnbeaten: '{unbeaten} non battute',
         won: '{name} ha conquistato la vittoria! 🏆🎉',
         out: '{name} è uscito dal gioco. 👏',
         lost: '{name} ha perso.',

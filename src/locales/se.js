@@ -789,6 +789,7 @@ export const se = {
         beatenBy: '{atk}, čuoččuhan {def}',
         unbeaten: '{atk} čuoččuhkeahttá',
         tally: '{beaten} čuoččuhuvvon, {unbeaten} čuoččuhkeahttá',
+        tallyUnbeaten: '{unbeaten} čuoččuhkeahttá',
         won: '{name} válddii vuoittu! 🏆🎉',
         out: '{name} vulggii spealus eret. 👏',
         lost: '{name} vuoittáhalai.',

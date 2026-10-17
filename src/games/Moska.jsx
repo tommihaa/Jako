@@ -468,7 +468,11 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     canAdd:         (name, cards) => t('games.moska.msg.canAdd', { name, cards }),
     // Kaadettujen ja kaatamattomien määrä: silmälle 🛡️/⚔️, korvalle sanoina, koska TalkBack
     // luki rivin "0 emoji 2 emoji" (Tommin kuuntelu 17.10.2026, J-27).
-    tally:          (beaten, unbeaten) => eyeAndEar(`${beaten}🛡️/${unbeaten}⚔️`, t('games.moska.msg.tally', { beaten, unbeaten })),
+    // Nolla kaadettua jätetään korvalta pois: "kaadettu nolla" ei kerro mitään, ja kortit
+    // luetellaan jo viestissä (Tommin kuuntelu 17.10.2026). Silmä näkee yhä 0🛡️.
+    tally:          (beaten, unbeaten) => eyeAndEar(`${beaten}🛡️/${unbeaten}⚔️`, beaten > 0
+      ? t('games.moska.msg.tally', { beaten, unbeaten })
+      : t('games.moska.msg.tallyUnbeaten', { unbeaten })),
     aiSkips:        name => t('games.moska.msg.aiSkips', { name }),
     badSameRank:    t('games.moska.msg.badSameRank'),
     tooManyCards:   t('games.moska.msg.tooManyCards'),

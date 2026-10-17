@@ -787,6 +787,7 @@ export const sv = {
         beatenBy: '{atk}, slagen av {def}',
         unbeaten: '{atk} oslagen',
         tally: '{beaten} slagna, {unbeaten} oslagna',
+        tallyUnbeaten: '{unbeaten} oslagna',
         won: '{name} tog hem segern! 🏆🎉',
         out: '{name} är ute ur spelet. 👏',
         lost: '{name} förlorade.',

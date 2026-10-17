@@ -796,6 +796,7 @@ export const ru = {
         beatenBy: '{atk}, побита {def}',
         unbeaten: '{atk} не побита',
         tally: '{beaten} побито, {unbeaten} не побито',
+        tallyUnbeaten: '{unbeaten} не побито',
         won: '{name} одержал победу! 🏆🎉',
         out: '{name} вышел из игры. 👏',
         lost: '{name} проиграл.',

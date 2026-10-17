@@ -789,6 +789,7 @@ export const ro = {
         beatenBy: '{atk}, bătută cu {def}',
         unbeaten: '{atk} nebătută',
         tally: '{beaten} bătute, {unbeaten} nebătute',
+        tallyUnbeaten: '{unbeaten} nebătute',
         won: '{name} a luat victoria! 🏆🎉',
         out: '{name} a ieșit din joc. 👏',
         lost: '{name} a pierdut.',

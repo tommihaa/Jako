@@ -796,6 +796,7 @@ export const uk = {
         beatenBy: '{atk}, побита {def}',
         unbeaten: '{atk} не побита',
         tally: '{beaten} побито, {unbeaten} не побито',
+        tallyUnbeaten: '{unbeaten} не побито',
         won: '{name} здобув перемогу! 🏆🎉',
         out: '{name} вийшов з гри. 👏',
         lost: '{name} програв.',

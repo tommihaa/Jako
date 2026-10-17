@@ -787,6 +787,7 @@ export const el = {
         beatenBy: '{atk}, κόπηκε με {def}',
         unbeaten: '{atk} ακάλυπτο',
         tally: '{beaten} κομμένα, {unbeaten} ακάλυπτα',
+        tallyUnbeaten: '{unbeaten} ακάλυπτα',
         won: 'Ο {name} πήρε τη νίκη! 🏆🎉',
         out: 'Ο {name} βγήκε από το παιχνίδι. 👏',
         lost: 'Ο {name} έχασε.',

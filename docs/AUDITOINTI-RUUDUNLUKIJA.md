@@ -785,3 +785,10 @@ Kisälli. Valitse peli listasta. Tähdellä merkityistä peleistä sopii aloitta
 kaikkiin 23 kieleen. Pixelin ruudulta luettu teksti vastaa tätä. Palaavan kävijän linkkiä ei
 ole vielä kuunneltu.
 
+**J-34. Moskan puolustusviesti sanoo *kaadettu nolla*.** Tila: korjattu dev-versiossa 17.10.2026,
+ei kuunneltu. Tommi kuuli *"On vuorosi puolustautua. Pöydällä: … (kaadettu nolla, kaatamatta
+…)"*. Nolla kaadettua ei kerro mitään, ja kortit luetellaan jo viestissä. Korjaus: kun yhtään
+korttia ei ole kaadettu, korva kuulee pelkän *kaatamatta N* (uusi avain `tallyUnbeaten`, 23
+kieltä, johdettu kunkin kielen `tally`-avaimen jälkiosasta). Silmä näkee yhä `0🛡️/1⚔️`. Sama
+`M.tally` on myös lyönnin tilarivissä, joten korjaus koskee sitäkin. Testit `announcer.test.jsx`.
+

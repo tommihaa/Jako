@@ -789,6 +789,7 @@ export const la = {
         beatenBy: '{atk}, victa {def}',
         unbeaten: '{atk} invicta',
         tally: '{beaten} victae, {unbeaten} invictae',
+        tallyUnbeaten: '{unbeaten} invictae',
         won: '{name} victoriam tulit! 🏆🎉',
         out: '{name} e lusu exiit. 👏',
         lost: '{name} perdidit.',

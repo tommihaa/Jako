@@ -787,6 +787,7 @@ export const et = {
         beatenBy: '{atk}, löödud kaardiga {def}',
         unbeaten: '{atk} löömata',
         tally: '{beaten} löödud, {unbeaten} löömata',
+        tallyUnbeaten: '{unbeaten} löömata',
         won: '{name} võttis võidu! 🏆🎉',
         out: '{name} lahkus mängust. 👏',
         lost: '{name} kaotas.',

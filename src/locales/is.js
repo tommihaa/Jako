@@ -787,6 +787,7 @@ export const is = {
         beatenBy: '{atk}, drepið með {def}',
         unbeaten: '{atk} ódrepið',
         tally: '{beaten} drepin, {unbeaten} ódrepin',
+        tallyUnbeaten: '{unbeaten} ódrepin',
         won: '{name} hlaut sigurinn! 🏆🎉',
         out: '{name} er úr leik. 👏',
         lost: '{name} tapaði.',

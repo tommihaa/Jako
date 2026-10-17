@@ -200,3 +200,21 @@ describe('spokenHtml ja emoji', () => {
     expect(spokenHtml('💫 Hero: 2♦ ↔ <span>10♦</span> (valttivaihto)')).not.toMatch(/💫|↔/);
   });
 });
+
+// Moskan puolustusviesti: nolla kaadettua ei kuulu (Tommin kuuntelu 17.10.2026).
+describe('Moskan tally ilman kaadettuja', () => {
+  it('jokaisella kielellä on muoto pelkille kaatamattomille', async () => {
+    const { LANGS } = await import('../src/shared/i18n.jsx');
+    for (const { code } of LANGS) {
+      const loc = (await import(`../src/locales/${code}.js`))[code];
+      const s = loc.games.moska.msg.tallyUnbeaten;
+      expect(s, code).toContain('{unbeaten}');
+      expect(s, code).not.toContain('{beaten}');
+    }
+  });
+  it('suomeksi korva kuulee vain kaatamattomat', async () => {
+    const { eyeAndEar, spokenHtml } = await import('../src/shared/helpers.js');
+    const html = `Pöydällä: 5♠ (${eyeAndEar('0🛡️/1⚔️', 'kaatamatta 1')}).`;
+    expect(spokenHtml(html)).toBe('Pöydällä: pata viisi (kaatamatta 1).');
+  });
+});

@@ -823,6 +823,7 @@ export const fi = {
         beatenBy: '{atk}, kaatajana {def}',
         unbeaten: '{atk} kaatamatta',
         tally: 'kaadettu {beaten}, kaatamatta {unbeaten}',
+        tallyUnbeaten: 'kaatamatta {unbeaten}',
         won: '{name} vei voiton! 🏆🎉',
         out: '{name} poistui pelistä. 👏',
         lost: '{name} hävisi.',
