@@ -400,7 +400,6 @@ function LangSelector({ lang, setLang, t, isMobile }) {
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
         aria-label={`${t('ui.lang.label')}: ${current.name}`}
-        title={current.name}
         style={{
           display: 'flex', alignItems: 'center', gap: 5,
           background: 'transparent', border: `1px solid ${open ? C.gold : C.panelBorder}`,
@@ -436,7 +435,7 @@ function LangSelector({ lang, setLang, t, isMobile }) {
                   const active = lang === code;
                   return (
                     <button
-                      key={code} aria-current={active ? 'true' : undefined} title={name}
+                      key={code} aria-current={active ? 'true' : undefined}
                       onClick={() => { setLang(code); setOpen(false); }}
                       style={{
                         display: 'flex', alignItems: 'center', gap: 8, width: '100%',
@@ -738,8 +737,9 @@ export default function App() {
         fontSize: isMobile ? 16 : 18, cursor: 'pointer', lineHeight: 1, fontFamily: 'sans-serif',
         flexShrink: 0,
       }}
+      // Ei title-attribuuttia: TalkBack lukee sen nimen perään, ja Jaa-napissa se toi ⁹:n
+      // puheeseen (kuunneltu 17.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md › J-24).
       aria-label={silentNine(t('ui.menu.share'))}
-      title={t('ui.menu.share')}
     >
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
         <circle cx="18" cy="5" r="3" />

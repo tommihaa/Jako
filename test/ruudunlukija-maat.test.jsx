@@ -183,3 +183,17 @@ describe('ruudunlukija: valikon tekstit (J-8)', () => {
     expect([...leaks]).toEqual([]);
   });
 });
+
+// TalkBack lukee title-attribuutin napin nimen perään. Jaa-napin title toi nimeen ⁹:n, jonka
+// aria-label oli jo jättänyt pois (kuunneltu 17.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md J-24).
+describe('valikon napeissa ei ole tooltipiä', () => {
+  it('nimetyllä napilla ei ole title-attribuuttia', async () => {
+    let root;
+    await act(async () => { ({ container: root } = render(<LangProvider><App /></LangProvider>)); });
+    const lang = /** @type {HTMLElement} */ (root.querySelector('button[aria-expanded]'));
+    await act(async () => { fireEvent.click(lang); });
+    const leaks = [...root.querySelectorAll('button[title]')].map(b => `${b.getAttribute('aria-label') || b.textContent}: ${b.getAttribute('title')}`);
+    expect(root.querySelector('button[aria-label="Jaa Jako"]')).not.toBeNull();
+    expect(leaks).toEqual([]);
+  });
+});

@@ -514,3 +514,37 @@ sivu näytti uuden.
 **Seuraavaksi:** Tommin kuuntelu tuotannossa, jonka jälkeen työjonon kohta 46 sulkeutuu ja
 kohdan 47 kirje voi lähteä.
 
+## Kuuntelu tuotannossa 1.2.238:lla 17.10.2026 klo 02.50
+
+Tommi kuunteli 1.2.238:n Pixelillä tuotannosta (`tommi-jako.vercel.app`). Hän kuuli *Jako*-sanan
+perässä 9:n. Versiorivi kuului muodossa *"v ensimmäinen toista…"* eikä *"Versio 1 piste 2…"*.
+Versiorivi tuli sivua pyyhkäistäessä heti Chromen *Muokkaa ja hallinnoi Google Chromea*
+-napin jälkeen. Androidin saavutettavuuspuussa (`uiautomator dump`) otsikko on *JAKO* ilman 9:ää.
+Jaa-nappi on puussa *Jaa Jako* ja versiorivi *Versio 1 piste 2 piste 238, julkaistu…*, joten
+J-17 ja J-21 ovat puussa oikein. Syitä on kaksi, ja molemmat mitattiin TalkBackin puhetulosteesta.
+
+**J-24. Napin title kuuluu nimen perässä.** Tila: korjattu dev-versiossa 17.10.2026, ei
+kuunneltu eikä julkaistu. Jaa-nappi sanoo *"Jaa Jako. Painike. Jaa Jako⁹"*: Chrome antaa
+`title`-attribuutin TalkBackille lisätietona, joka luetaan nimen jälkeen. J-17 poisti ⁹:n
+`aria-label`ista mutta ei `title`stä. Tommin valinta: tooltip pois. Se poistettiin Jaa-napista,
+kielinapista (*"Kieli: Suomi"* + *Suomi*) ja kielivalikon kielistä, joissa nimi olisi kuulunut
+kahdesti. Vahti: `ruudunlukija-maat.test.jsx` kaataa valikon napin, jolla on `title`. Vanhalla
+koodilla se kaatoi 25 nappia. Auki: `GameStatusBar`in Tilanne-napin `title="H"` kertoo
+pikanäppäimen ja kuuluu samalla tavalla *H*:na nimen perässä. Se on eri päätös, koska
+title kantaa siinä tietoa.
+
+**Tekstintunnistus lukee verkkonäkymän kuvana.** Ei Jaon vika, eikä sivu voi estää sitä.
+Kun pyyhkäisy siirtyy Chromen työkalupalkista sivulle, kohdistus osuu ensin koko verkkonäkymään.
+TalkBack sanoo silloin *"Jako · Tommin kokoelma. Verkkonäkymä"* ja perään *"Havaittu: Teksti,
+"JAKO 9 ★ Uusi peleissä? … V1.2.238 17.10.2026 00.02""*. Tämä on TalkBackin tekstintunnistus:
+se lukee ruudulla näkyvän tekstin kuvasta eikä saavutettavuuspuusta, joten `aria-hidden` ja
+`sr-only` eivät vaikuta siihen. Tommin *v ensimmäinen toista* ja otsikon 9 tulivat sieltä.
+Päätelmä, ei mitattu: J-9:n ja J-14:n *koko sivun luku* voi olla samaa tunnistusta silloin, kun
+kohdistus putoaa verkkonäkymään. Tunnistuksen voi kytkeä pois TalkBackin asetuksista, ja se on
+Tommin laitteen asetus.
+
+Mittaus tehtiin adb-napautuksilla ja pyyhkäisyillä, ja puhetuloste kaapattiin puhelimen omalla
+`screencap`-silmukalla, joka on nopeampi kuin adb-haku. Yksi napautus avasi Asetukset ja
+takaisin-näppäin sulki tuotantovälilehden, minkä jälkeen välilehti avattiin uudelleen.
+
+**Seuraavaksi:** J-24 julkaistaan, ja kohta 46 odottaa Tommin kuuntelua sen jälkeen.
