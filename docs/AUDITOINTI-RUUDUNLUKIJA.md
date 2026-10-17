@@ -661,6 +661,13 @@ määriä (*"pöydällä kaadettu 2, kaatamatta 1"*). Säännöksi tästä: suom
 ruudunlukijatekstissä numeroa ei kirjoiteta taivutetun sanan eteen, koska TalkBack taivuttaa
 luvun sen mukaan.
 
+*Viides kuuntelu 17.10.2026.* Kesken jääneen kaadon tilarivi kuului oikein. Uusi havainto:
+pelin alussa valttivaihdon rivi (*"💫 {name}: 2♦ ↔ {kortti} (valttivaihto)"*) kuului emojeineen.
+Korjaus on yleinen: `spokenHtml` jättää emojit pois kaikista peliviesteistä, kuten `Spoken`
+napeista jo J-13:ssa, joten käännöspohjaan jäänyt emoji ei kuulu missään pelissä. Lauseke
+`EMOJI` siirtyi `helpers.js`:ään. Korvalle rivi on nyt *"Hero: ruutu kaksi ruutu kymmenen
+(valttivaihto)"*. Nuoli jää siis sanomatta, ja vaihdon suunnan kertoo vain sana valttivaihto.
+
 **J-28. Seiskan kahden kortin lyönti sanoo jälkimmäisen kahdesti.** Tila: korjattu dev-versiossa 17.10.2026, ei kuunneltu.
 Ryhmälyönnin rivi on `kortit → päällimmäinen`. Nuoli kertoo näkevälle, mikä jää päällimmäiseksi,
 mutta ruudunlukija kuulee vain saman kortin uudestaan. Tommin valinta: kahden, kolmen tai neljän

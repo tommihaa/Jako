@@ -192,3 +192,11 @@ describe('eyeAndEar', () => {
     expect(spokenHtml(html)).toBe('Pöydällä: pata viisi kaatamatta');
   });
 });
+
+// Moskan valttivaihto: viestin emoji näkyy mutta ei kuulu (kuuntelu 17.10.2026).
+describe('spokenHtml ja emoji', () => {
+  it('jättää emojin pois ja sanoo maat', async () => {
+    const { spokenHtml } = await import('../src/shared/helpers.js');
+    expect(spokenHtml('💫 Hero: 2♦ ↔ <span>10♦</span> (valttivaihto)')).not.toMatch(/💫|↔/);
+  });
+});

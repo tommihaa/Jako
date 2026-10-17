@@ -117,7 +117,11 @@ export const needsSpoken = text => hasSuit(text) || (getLang() === 'fi' && /\d\/
 // Lokirivi (HTML-string `lblColored`ista) ruudunlukijan tekstiksi: tagit pois, maat ja
 // murtoluvut sanoiksi.
 /** @param {string} html */
-export const spokenHtml = html => spokenFractions(spokenSuits(html.replace(VISUAL_ONLY, '').replace(/<[^>]*>/g, ''))).replace(/\s+/g, ' ').trim();
+export const spokenHtml = html => spokenFractions(spokenSuits(html.replace(VISUAL_ONLY, '').replace(/<[^>]*>/g, '').replace(EMOJI, ''))).replace(/\s+/g, ' ').trim();
+
+// Emoji ilman maasymboleja. Peliviestin emoji näkyy mutta ei kuulu: TalkBack luki Moskan
+// valttivaihdon 💫:n (Tommin kuuntelu 17.10.2026) samoin kuin napin 🧙:n (J-13).
+export const EMOJI = /(?![♠♥♦♣])\p{Extended_Pictographic}(?:️|\p{Emoji_Modifier}|‍\p{Extended_Pictographic}️?)*/gu;
 
 // Viestin osa jolla on eri muoto silmälle ja korvalle. Näkyvä osa (nuoli, ruksi) on
 // `aria-hidden` ja puhuttu `sr-only`; `spokenHtml` jättää näkyvän osan pois, joten live-alue

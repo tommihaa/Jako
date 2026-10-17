@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { skipAnnouncements } from './Announcer.jsx';
-import { spokenSuits, spokenFractions, spokenHtml, needsSpoken } from './helpers.js';
+import { spokenSuits, spokenFractions, spokenHtml, needsSpoken, EMOJI } from './helpers.js';
 
 // Näkyvä teksti jossa on maasymboli: symboli näkyy, ruudunlukija kuulee sanan.
 // TalkBack lukee ♠:n emojina eikä maana (auditointi J-8, Tommin kuuntelu 15.10.2026).
@@ -15,7 +15,7 @@ import { spokenSuits, spokenFractions, spokenHtml, needsSpoken } from './helpers
 // Emoji näkyy mutta ei kuulu: napin "🧙 Kysy Mestarilta" TalkBack luki "velho, Kysy
 // Mestarilta" (auditointi J-13, Tommin kuuntelu 16.10.2026: emojia ei tarvitse lausua).
 // Maasymbolit ovat samaa Unicode-luokkaa, mutta ne sanotaan sanoina eikä poisteta.
-const EMOJI = /(?![♠♥♦♣])\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier}|\u200D\p{Extended_Pictographic}\uFE0F?)*/gu;
+// Säännöllinen lauseke on `helpers.js`:ssä, koska peliviestin puhuttu muoto käyttää samaa.
 
 /** @param {string} s */
 export const hasEmoji = s => s.replace(/[♠♥♦♣]/g, '').search(EMOJI) >= 0;
