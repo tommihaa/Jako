@@ -39,7 +39,7 @@ export const et = {
     loading: 'Laadimine…',
     info: { title: 'ℹ Info', close: '✕ Sulge' },
     lang: { label: 'Keel', tested: 'Kinnitatud', untested: 'Kinnitamata', note: '✓ emakeelne · web = masinkontrollitud (mitte emakeelne kontroll)' },
-    menu: { intro: ({ group, level, info, settings }) => `Jako on üheksa traditsioonilise kaardimängu kogumik. Üleval on keelevalik, jagamine, ${info} ja ${settings}. Vastased tulevad grupist „${group}“ ja tase on ${level}. Vali loendist mäng. Tärniga märgitud mängudest on hea alustada.`, introToggle: "Mis sellel lehel on?", recommended: "Soovitatud", back: '← Menüü', settings: 'Seaded', info: 'Info', share: 'Jaga Jako⁹' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako on üheksa traditsioonilise kaardimängu kogumik. Üleval on keelevalik, jagamine, ${info} ja ${settings}. Vastased ja nende taseme saad ise valida. Praegu on need „${group}“ tasemel ${level}. Vali loendist mäng. Tärniga märgitud mängudest sobib alustada.`, introToggle: "Mis sellel lehel on?", recommended: "Soovitatud", back: '← Menüü', settings: 'Seaded', info: 'Info', share: 'Jaga Jako⁹' },
     share: { title: 'Jako – tasuta kaardimängud', text: 'Mängi 9 kaardimängu otse brauseris:', copied: 'Link kopeeritud', scan: 'Skanni kood telefoniga või jaga linki', copy: 'Kopeeri link', shareVia: 'Jaga…' },
     difficulty: { easy: 'Lihtne', medium: 'Keskmine', hard: 'Raske' },
     rulesAria: '{name}: näita reegleid',

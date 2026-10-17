@@ -37,7 +37,7 @@ export const ro = {
     loading: 'Se încarcă…',
     info: { title: 'ℹ Info', close: '✕ Închide' },
     lang: { label: 'Limbă', tested: 'Verificate', untested: 'Neverificate', note: '✓ vorbitor nativ · web = verificat automat (fără verificare de vorbitor nativ)' },
-    menu: { intro: ({ group, level, info, settings }) => `Jako este o colecție de nouă jocuri de cărți tradiționale. Sus se află alegerea limbii, partajarea, ${info} și ${settings}. Adversarii vin din grupul „${group}”, iar nivelul este ${level}. Alege un joc din listă. Jocurile marcate cu o stea sunt un bun început.`, introToggle: "Ce este pe această pagină?", recommended: "Recomandat", back: '← Meniu', settings: 'Setări', info: 'Info', share: 'Distribuie Jako⁹' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako este o colecție de nouă jocuri de cărți tradiționale. Sus se află alegerea limbii, partajarea, ${info} și ${settings}. Îți poți alege adversarii și nivelul lor. Acum sunt „${group}”, la nivelul ${level}. Alege un joc din listă. Cu jocurile marcate cu o stea e potrivit să începi.`, introToggle: "Ce este pe această pagină?", recommended: "Recomandat", back: '← Meniu', settings: 'Setări', info: 'Info', share: 'Distribuie Jako⁹' },
     share: { title: 'Jako – jocuri de cărți gratuite', text: 'Joacă 9 jocuri de cărți direct în browser:', copied: 'Link copiat', scan: 'Scanează codul cu telefonul sau distribuie linkul', copy: 'Copiază linkul', shareVia: 'Distribuie…' },
     difficulty: { easy: 'Ușor', medium: 'Mediu', hard: 'Greu' },
     rulesAria: '{name}: arată regulile',

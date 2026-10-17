@@ -39,7 +39,7 @@ export const es = {
     loading: 'Cargando…',
     info: { title: 'ℹ Info', close: '✕ Cerrar' },
     lang: { label: 'Idioma', tested: 'Verificados', untested: 'No verificados', note: '✓ nativo · web = verificado automáticamente (no por nativo)' },
-    menu: { intro: ({ group, level, info, settings }) => `Jako es una colección de nueve juegos de cartas tradicionales. Arriba están la elección de idioma, compartir, ${info} y ${settings}. Los rivales vienen del grupo «${group}» y el nivel es ${level}. Elige un juego de la lista. Los juegos marcados con una estrella son un buen punto de partida.`, introToggle: "¿Qué hay en esta página?", recommended: "Recomendado", back: '← Menú', settings: 'Ajustes', info: 'Info', share: 'Compartir Jako⁹' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako es una colección de nueve juegos de cartas tradicionales. Arriba están la elección de idioma, compartir, ${info} y ${settings}. Puedes elegir a tus rivales y su nivel. Ahora son «${group}» con nivel ${level}. Elige un juego de la lista. Los juegos marcados con una estrella sirven para empezar.`, introToggle: "¿Qué hay en esta página?", recommended: "Recomendado", back: '← Menú', settings: 'Ajustes', info: 'Info', share: 'Compartir Jako⁹' },
     share: { title: 'Jako – juegos de cartas gratis', text: 'Juega 9 juegos de cartas directamente en el navegador:', copied: 'Enlace copiado', scan: 'Escanea el código con el móvil o comparte el enlace', copy: 'Copiar enlace', shareVia: 'Compartir…' },
     difficulty: { easy: 'Fácil', medium: 'Medio', hard: 'Difícil' },
     rulesAria: '{name}: mostrar reglas',

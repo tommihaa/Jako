@@ -775,3 +775,13 @@ karjala, saame, romani ja latina ovat parhaan kyvyn käännöksiä kuten muutkin
 Selaimessa todennettu: ensikertalaisella näkyvä virke ilman linkkiä, palaavalla `sr-only`-virke
 ja linkki (`aria-expanded="false"`), avattuna vain näkyvä virke (`true`). Ei kuunneltu.
 
+*Kuuntelu Pixelillä 17.10.2026 (`localhost:5188`).* Virke kuului oikein. Linkkiä ei ollut,
+koska Pixelin 5188:n tilastossa ei ollut loppuun pelattua peliä (J-14:n kokeilupelit jäivät
+kesken), joten sivu oli ensikertalaisen tilassa. Tämä on suunniteltu toiminta. Tommi muotoili
+kaksi lausetta uudelleen. Nykyiset valinnat kerrotaan sanalla *nyt* eikä *oletuksena*, koska
+virke luetaan valinnoista ja vaihdetun ryhmän kohdalla *oletuksena* olisi väärin (Tommin valinta).
+Nyt virke on *"… Vastustajasi ja heidän tasonsa voit valita, nyt ne ovat Paikalliset ja taso
+Kisälli. Valitse peli listasta. Tähdellä merkityistä peleistä sopii aloittaa."* Muutos tehtiin
+kaikkiin 23 kieleen. Pixelin ruudulta luettu teksti vastaa tätä. Palaavan kävijän linkkiä ei
+ole vielä kuunneltu.
+

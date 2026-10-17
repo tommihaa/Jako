@@ -39,7 +39,7 @@ export const is = {
     loading: 'Hleð…',
     info: { title: 'ℹ Upplýsingar', close: '✕ Loka' },
     lang: { label: 'Tungumál', tested: 'Staðfest', untested: 'Óstaðfest', note: '✓ málhafi · web = vélstaðfest (ekki yfirfarið af málhafa)' },
-    menu: { intro: ({ group, level, info, settings }) => `Jako er safn níu hefðbundinna spilaleikja. Efst eru tungumálaval, deiling, ${info} og ${settings}. Andstæðingarnir koma úr hópnum „${group}“ og stigið er ${level}. Veldu leik af listanum. Leikirnir merktir með stjörnu eru góður staður til að byrja.`, introToggle: "Hvað er á síðunni?", recommended: "Mælt með", back: '← Valmynd', settings: 'Stillingar', info: 'Upplýsingar', share: 'Deila Jako⁹' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako er safn níu hefðbundinna spilaleikja. Efst eru tungumálaval, deiling, ${info} og ${settings}. Þú getur valið andstæðinga þína og stig þeirra. Núna eru þeir „${group}“ á stiginu ${level}. Veldu leik af listanum. Leikirnir merktir með stjörnu henta vel til að byrja.`, introToggle: "Hvað er á síðunni?", recommended: "Mælt með", back: '← Valmynd', settings: 'Stillingar', info: 'Upplýsingar', share: 'Deila Jako⁹' },
     share: { title: 'Jako – ókeypis spilaleikir', text: 'Spilaðu 9 spilaleiki beint í vafranum:', copied: 'Hlekkur afritaður', scan: 'Skannaðu kóðann með símanum eða deildu hlekknum', copy: 'Afrita hlekk', shareVia: 'Deila…' },
     difficulty: { easy: 'Auðvelt', medium: 'Miðlungs', hard: 'Erfitt' },
     rulesAria: '{name}: sýna reglur',

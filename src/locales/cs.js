@@ -46,7 +46,7 @@ export const cs = {
     loading: 'Načítání…',
     info: { title: 'ℹ Info', close: '✕ Zavřít' },
     lang: { label: 'Jazyk', tested: 'Ověřené', untested: 'Neověřené', note: '✓ rodilý mluvčí · web = ověřeno strojově (bez kontroly rodilým mluvčím)' },
-    menu: { intro: ({ group, level, info, settings }) => `Jako je sbírka devíti tradičních karetních her. Nahoře je výběr jazyka, sdílení, ${info} a ${settings}. Soupeři pocházejí ze skupiny „${group}“ a úroveň je ${level}. Vyber hru ze seznamu. Hry označené hvězdičkou jsou dobrý začátek.`, introToggle: "Co je na této stránce?", recommended: "Doporučeno", back: '← Nabídka', settings: 'Nastavení', info: 'Info', share: 'Sdílet Jako⁹' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako je sbírka devíti tradičních karetních her. Nahoře je výběr jazyka, sdílení, ${info} a ${settings}. Soupeře a jejich úroveň si můžeš vybrat. Teď jsou to „${group}“ na úrovni ${level}. Vyber hru ze seznamu. Hrami označenými hvězdičkou je vhodné začít.`, introToggle: "Co je na této stránce?", recommended: "Doporučeno", back: '← Nabídka', settings: 'Nastavení', info: 'Info', share: 'Sdílet Jako⁹' },
     share: { title: 'Jako – karetní hry zdarma', text: 'Hraj 9 karetních her přímo v prohlížeči:', copied: 'Odkaz zkopírován', scan: 'Naskenuj kód telefonem nebo sdílej odkaz', copy: 'Kopírovat odkaz', shareVia: 'Sdílet…' },
     difficulty: { easy: 'Lehká', medium: 'Střední', hard: 'Těžká' },
     rulesAria: '{name}: zobrazit pravidla',

@@ -48,7 +48,7 @@ export const pl = {
     loading: 'Ładowanie…',
     info: { title: 'ℹ Info', close: '✕ Zamknij' },
     lang: { label: 'Język', tested: 'Sprawdzone', untested: 'Niesprawdzone', note: '✓ native · web = sprawdzone maszynowo (bez weryfikacji native)' },
-    menu: { intro: ({ group, level, info, settings }) => `Jako to zbiór dziewięciu tradycyjnych gier karcianych. Na górze są wybór języka, udostępnianie, ${info} i ${settings}. Przeciwnicy pochodzą z grupy „${group}”, a poziom to ${level}. Wybierz grę z listy. Gry oznaczone gwiazdką są dobre na początek.`, introToggle: "Co jest na tej stronie?", recommended: "Polecane", back: '← Menu', settings: 'Ustawienia', info: 'Info', share: 'Udostępnij Jako⁹' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako to zbiór dziewięciu tradycyjnych gier karcianych. Na górze są wybór języka, udostępnianie, ${info} i ${settings}. Możesz wybrać przeciwników i ich poziom. Teraz to „${group}” na poziomie ${level}. Wybierz grę z listy. Gry oznaczone gwiazdką nadają się na początek.`, introToggle: "Co jest na tej stronie?", recommended: "Polecane", back: '← Menu', settings: 'Ustawienia', info: 'Info', share: 'Udostępnij Jako⁹' },
     share: { title: 'Jako – darmowe gry karciane', text: 'Zagraj w 9 gier karcianych prosto w przeglądarce:', copied: 'Link skopiowany', scan: 'Zeskanuj kod telefonem lub udostępnij link', copy: 'Kopiuj link', shareVia: 'Udostępnij…' },
     difficulty: { easy: 'Łatwy', medium: 'Średni', hard: 'Trudny' },
     rulesAria: '{name}: pokaż zasady',

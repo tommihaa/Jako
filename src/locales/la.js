@@ -37,7 +37,7 @@ export const la = {
     loading: 'Oneratur…',
     info: { title: 'ℹ Info', close: '✕ Claude' },
     lang: { label: 'Lingua', tested: 'Probatae', untested: 'Non probatae', note: '✓ nativus · web = machina confirmavit (sine nativa probatione)' },
-    menu: { intro: ({ group, level, info, settings }) => `Jako est collectio novem ludorum chartarum traditorum. Supra sunt delectus linguae, communicatio, ${info} et ${settings}. Adversarii ex grege «${group}» veniunt et gradus est ${level}. Ludum ex indice elige. A ludis stella notatis bene incipitur.`, introToggle: "Quid in hac pagina est?", recommended: "Commendatum", back: '← Index', settings: 'Optiones', info: 'Info', share: 'Communica Jako⁹' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako est collectio novem ludorum chartarum traditorum. Supra sunt delectus linguae, communicatio, ${info} et ${settings}. Adversarios eorumque gradum eligere potes. Nunc sunt «${group}» gradu ${level}. Ludum ex indice elige. A ludis stella notatis apte incipitur.`, introToggle: "Quid in hac pagina est?", recommended: "Commendatum", back: '← Index', settings: 'Optiones', info: 'Info', share: 'Communica Jako⁹' },
     share: { title: 'Jako – chartarum lusus gratuiti', text: 'Lude 9 chartarum lusus in navigatro:', copied: 'Nexus exscriptus', scan: 'Codicem telephono scande vel nexum communica', copy: 'Nexum exscribe', shareVia: 'Communica…' },
     difficulty: { easy: 'Facilis', medium: 'Medius', hard: 'Difficilis' },
     rulesAria: '{name}: monstra regulas',

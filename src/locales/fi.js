@@ -35,7 +35,7 @@ export const fi = {
     loading: 'Ladataan…',
     info: { title: 'ℹ Info', close: '✕ Sulje' },
     lang: { label: 'Kieli', tested: 'Testatut', untested: 'Testaamattomat', note: '✓ natiivi · web = konevarmistettu (ei natiivitarkistusta)' },
-    menu: { intro: ({ group, level, info, settings }) => `Jako on yhdeksän perinteisen korttipelin kokoelma. Ylhäällä ovat kielen valinta, jakaminen, ${info} ja ${settings}. Vastustajat tulevat ryhmästä ${group} ja taso on ${level}. Valitse peli listasta. Tähdellä merkityistä peleistä on hyvä aloittaa.`, introToggle: "Mitä sivulla on?", back: '← Valikko', settings: 'Asetukset', info: 'Info', share: 'Jaa Jako⁹', recommended: 'Suosittu peli' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako on yhdeksän perinteisen korttipelin kokoelma. Ylhäällä ovat kielen valinta, jakaminen, ${info} ja ${settings}. Vastustajasi ja heidän tasonsa voit valita, nyt ne ovat ${group} ja taso ${level}. Valitse peli listasta. Tähdellä merkityistä peleistä sopii aloittaa.`, introToggle: "Mitä sivulla on?", back: '← Valikko', settings: 'Asetukset', info: 'Info', share: 'Jaa Jako⁹', recommended: 'Suosittu peli' },
     share: { title: 'Jako · ilmaiset korttipelit', text: 'Pelaa 9 korttipeliä suoraan selaimessa:', copied: 'Linkki kopioitu', scan: 'Skannaa koodi puhelimella tai jaa linkki', copy: 'Kopioi linkki', shareVia: 'Jaa…' },
     difficulty: { easy: 'Helppo', medium: 'Keskitaso', hard: 'Vaativa' },
     rulesAria: '{name}: näytä säännöt',

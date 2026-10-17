@@ -39,7 +39,7 @@ export const de = {
     loading: 'Lädt…',
     info: { title: 'ℹ Info', close: '✕ Schließen' },
     lang: { label: 'Sprache', tested: 'Geprüft', untested: 'Ungeprüft', note: '✓ Muttersprache · web = maschinell geprüft (nicht muttersprachlich)' },
-    menu: { intro: ({ group, level, info, settings }) => `Jako ist eine Sammlung von neun traditionellen Kartenspielen. Oben findest du Sprachwahl, Teilen, ${info} und ${settings}. Die Gegner kommen aus der Gruppe „${group}“ und die Stufe ist ${level}. Wähle ein Spiel aus der Liste. Die mit einem Stern markierten Spiele eignen sich gut für den Anfang.`, introToggle: "Was ist auf dieser Seite?", recommended: "Empfohlen", back: '← Menü', settings: 'Einstellungen', info: 'Info', share: 'Jako⁹ teilen' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako ist eine Sammlung von neun traditionellen Kartenspielen. Oben findest du Sprachwahl, Teilen, ${info} und ${settings}. Deine Gegner und ihre Stufe kannst du wählen. Gerade sind es „${group}“ auf der Stufe ${level}. Wähle ein Spiel aus der Liste. Die mit einem Stern markierten Spiele eignen sich für den Anfang.`, introToggle: "Was ist auf dieser Seite?", recommended: "Empfohlen", back: '← Menü', settings: 'Einstellungen', info: 'Info', share: 'Jako⁹ teilen' },
     share: { title: 'Jako – kostenlose Kartenspiele', text: 'Spiele 9 Kartenspiele direkt im Browser:', copied: 'Link kopiert', scan: 'Scanne den Code mit dem Handy oder teile den Link', copy: 'Link kopieren', shareVia: 'Teilen…' },
     difficulty: { easy: 'Leicht', medium: 'Mittel', hard: 'Schwer' },
     rulesAria: '{name}: Regeln anzeigen',

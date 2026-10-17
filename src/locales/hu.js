@@ -38,7 +38,7 @@ export const hu = {
     loading: 'Betöltés…',
     info: { title: 'ℹ Infó', close: '✕ Bezárás' },
     lang: { label: 'Nyelv', tested: 'Ellenőrzött', untested: 'Nem ellenőrzött', note: '✓ anyanyelvi · web = gépileg ellenőrizve (anyanyelvi ellenőrzés nélkül)' },
-    menu: { intro: ({ group, level, info, settings }) => `A Jako kilenc hagyományos kártyajáték gyűjteménye. Fent található a nyelvválasztás, a megosztás, ${info} és ${settings}. Az ellenfelek a(z) „${group}” csoportból jönnek, a szint pedig ${level}. Válassz játékot a listából. A csillaggal jelölt játékokkal érdemes kezdeni.`, introToggle: "Mi van ezen az oldalon?", recommended: "Ajánlott", back: '← Menü', settings: 'Beállítások', info: 'Infó', share: 'Jako⁹ megosztása' },
+    menu: { intro: ({ group, level, info, settings }) => `A Jako kilenc hagyományos kártyajáték gyűjteménye. Fent található a nyelvválasztás, a megosztás, ${info} és ${settings}. Az ellenfeleidet és a szintjüket te választhatod meg. Most ők a(z) „${group}”, ${level} szinten. Válassz játékot a listából. A csillaggal jelölt játékokkal érdemes kezdeni.`, introToggle: "Mi van ezen az oldalon?", recommended: "Ajánlott", back: '← Menü', settings: 'Beállítások', info: 'Infó', share: 'Jako⁹ megosztása' },
     share: { title: 'Jako – ingyenes kártyajátékok', text: 'Játssz 9 kártyajátékot közvetlenül a böngészőben:', copied: 'Link másolva', scan: 'Olvasd be a kódot a telefonnal, vagy oszd meg a linket', copy: 'Link másolása', shareVia: 'Megosztás…' },
     difficulty: { easy: 'Könnyű', medium: 'Közepes', hard: 'Nehéz' },
     rulesAria: '{name}: szabályok megjelenítése',

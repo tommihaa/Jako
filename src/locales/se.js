@@ -37,7 +37,7 @@ export const se = {
     loading: 'Viežžamin…',
     info: { title: 'ℹ Diehtu', close: '✕ Gidde' },
     lang: { label: 'Giella', tested: 'Geahččaluvvon', untested: 'Geahččalkeahttá', note: '✓ eatnigiella · web = mašiidnaduhkkojuvvon (ii eatnigielalaš dárkkisteapmi)' },
-    menu: { intro: ({ group, level, info, settings }) => `Jako lea ovcci árbevirolaš korttaspealu čoakkáldat. Bajábealde leat giellaválga, juohkin, ${info} ja ${settings}. Vuostálastit bohtet joavkkus „${group}“ ja dássi lea ${level}. Vállje speallu listtus. Násttiin merkejuvvon spealuin lea buorre álgit.`, introToggle: "Mii dán siiddus lea?", recommended: "Ávžžuhuvvon", back: '← Fállu', settings: 'Heivehusat', info: 'Diehtu', share: 'Juoge Jako⁹' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako lea ovcci árbevirolaš korttaspealu čoakkáldat. Bajábealde leat giellaválga, juohkin, ${info} ja ${settings}. Sáhtát válljet vuostálasttiid ja sin dási. Dál dat leat „${group}“ dásis ${level}. Vállje speallu listtus. Násttiin merkejuvvon spealuin heive álgit.`, introToggle: "Mii dán siiddus lea?", recommended: "Ávžžuhuvvon", back: '← Fállu', settings: 'Heivehusat', info: 'Diehtu', share: 'Juoge Jako⁹' },
     share: { title: 'Jako – nuvttá goartaspeallut', text: 'Speala 9 goartaspeallu njuolga lohkanprográmmas:', copied: 'Liŋka kopierejuvvon', scan: 'Skanne koda telefovnnain dahje juoge liŋkka', copy: 'Kopiere liŋkka', shareVia: 'Juoge…' },
     difficulty: { easy: 'Álki', medium: 'Gaska', hard: 'Váttis' },
     rulesAria: '{name}: čájet njuolggadusaid',
