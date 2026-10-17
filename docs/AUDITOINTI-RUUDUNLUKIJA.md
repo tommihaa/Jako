@@ -706,8 +706,16 @@ Selaimessa todennettu.
 Moskassa sivustalyöntivaihe katkaisee sen sopivasti. Muissa peleissä katkaisua ei vielä ole
 mietitty.
 
-**Seuraavaksi:** kohta 46 odottaa Tommin kuuntelua tuotannossa 1.2.239:llä. J-26–J-29,
-J-31 ja J-32 odottavat kuuntelua Pixelillä ja julkaisua.
+**Seuraavaksi:** kohta 46 odottaa Tommin kuuntelua tuotannossa. J-26–J-33 on kuunneltu
+Pixelillä dev-versiona ja julkaistu 1.2.240:ssä. Valttivaihdon emoji kuunnellaan tuotannossa
+Tommin päätöksellä.
+
+## Julkaisu 1.2.240 17.10.2026
+
+J-26–J-33 julkaistu (Jako `1d0f7db`, push klo 20.30). Tuotantobundlesta todennettu selaimella
+pushin jälkeen. Molemmat domainit tarjoavat `index-DA79-NG-.js`:n, jossa on `"1.2.240"`,
+`eyeAndEar`in merkintä `data-v aria-hidden` ja avain `beginNamed`. Hash on sama kuin paikallisen
+buildin. Pääosoitteen HTML:n otsikko on *"Jako · korttipelikokoelma"*.
 
 ## Julkaisu 1.2.239 17.10.2026
 
