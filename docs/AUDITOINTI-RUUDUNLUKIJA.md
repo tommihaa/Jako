@@ -100,7 +100,7 @@ Todennettu dev-previewissä 15.10.2026 (Chrome, äänet pois): Paskahousun alku,
 korttivalinta sekä Ristiseiskan alku ilman yhtään paljasta symbolia. Pelaa-nappi on
 näkyvästi "Pelaa (10♥)" ja ruudunlukijalle "Pelaa (hertta 10)". Ulkoasu ennallaan. Ei kuunneltu.
 
-**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: korjattu 16.10.2026 ja todennettu Pixelillä dev-versiolla, julkaistu 1.2.237 (todennettu tuotantobundlesta). Tommin kuuntelu julkaistulla versiolla on tekemättä. Syy mitattiin (alla › *Pixelin mittaus 16.10.2026*). Korjausyritys 15.10.2026 ei auttanut (kuuntelu 1.2.236:ssa, alla),
+**J-9. "Vastustajat vuorojärjestyksessä" kuuluu kahdesti.** Tila: korjattu 16.10.2026 ja todennettu Pixelillä dev-versiolla, julkaistu 1.2.237 (todennettu tuotantobundlesta). Kuunneltu ok 17.10.2026: vastustajat kuuluvat kerran (alla › *Kuuntelu 17.10.2026 klo 21.50*). Syy mitattiin (alla › *Pixelin mittaus 16.10.2026*). Korjausyritys 15.10.2026 ei auttanut (kuuntelu 1.2.236:ssa, alla),
 julkaistu 1.2.236. Live-alueeseen ilmoitus menee kerran (todennettu previewissä). Syy (päätelmä, ei
 mitattu): ilmoitusalue jäi sisältöineen saavutettavuuspuuhun, joten sivun läpi pyyhkäisy luki
 viimeisimmän ilmoituksen uudelleen. Korjaus: alue tyhjenee arvioidun puheajan jälkeen
@@ -726,3 +726,14 @@ jossa on `"1.2.239"`, Maijan `aiBeatsAll`-kutsu ja suomen `{name} nostaa {cards}
 uusi merkintä. Paikallisen buildin hash oli eri (`BZFD7XTk`), mikä deploy-skillin mukaan ei ole
 virhe. Pääosoite näytti ensin 1.2.238:n palvelutyöntekijän välimuistista, kuten 1.2.238:n
 julkaisussa.
+
+## Kuuntelu 17.10.2026 klo 21.50
+
+**J-9 kuuluu kerran.** Tommi: *"vastustajat kuuluu kerran"*. Kohdan 46 J-9-osa on kuunneltu.
+J-14 odottaa yhä kuuntelua.
+
+**Uusi portti.** Valttivaihdon emoji kuului viidennessä kuuntelussa `localhost:5186`:ssa, eikä
+korjausta (`f6ba6b0`) ole kuunneltu. Jotta kuunneltava versio on varmasti uusin, dev-palvelin
+käynnistettiin juuren `launch.json`in uudella `jako-dev-adb-5188`-merkinnällä HEAD:sta `469f586`
+(1.2.240), ja Pixelille avattiin `adb reverse tcp:5188`. Selaimessa todennettu:
+`spokenHtml` antaa valttivaihdon rivistä *"Hero: ruutu kaksi ruutu kymmenen (valttivaihto)"*.
