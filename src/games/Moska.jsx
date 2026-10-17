@@ -4,7 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, kortin, SUITS, aiShouldFumble, sortHand as sortHandBy, shuffledAINames, lblColored, newDeck, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { lbl, korttia, kortin, SUITS, aiShouldFumble, sortHand as sortHandBy, shuffledAINames, lblColored, eyeAndEar, newDeck, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -512,9 +512,13 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     const lines = /** @type {string[]} */ ([]);
 
     // Kuvaa pöydän tilanne kun kierros päättyi
-    const tableDesc = g.table.map(t =>
-      t.def ? `${lblColored(t.atk)}→${lblColored(t.def)}` : `${lblColored(t.atk)}❌`
-    ).join(', ');
+    // Ruudunlukija kuulee parin sanoina eikä nuolta ja ruksia (J-27).
+    const tableDesc = g.table.map(t => {
+      const atk = lblColored(t.atk);
+      return t.def
+        ? eyeAndEar(`${atk}→${lblColored(t.def)}`, tr('games.moska.msg.beatenBy', { atk, def: lblColored(t.def) }))
+        : eyeAndEar(`${atk}❌`, tr('games.moska.msg.unbeaten', { atk }));
+    }).join(', ');
 
     if (defWon) {
       // Kaadetut kortit poistuvat pelistä — Super Natural muistaa ne

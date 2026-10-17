@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useRef, useEffect } from 'react';
 import { C, SUIT_COLOR } from './colors.js';
 import { useT } from './i18n.jsx';
 import GroupPicker from './GroupPicker.jsx';
@@ -57,6 +57,12 @@ export default function GameStartScreen({
 }) {
   const t = useT();
   const countLabelId = useId();
+  // Valikosta tultaessa kohdistus on Aloita-napissa, ja napin nimi kertoo pelin, joten
+  // ruudunlukija kuulee heti mikä peli avautui ja kaksoisnapautus aloittaa (Tommin toive
+  // kuuntelussa 17.10.2026, auditointi J-29).
+  const startRef = useRef(/** @type {HTMLButtonElement | null} */ (null));
+  useEffect(() => { startRef.current?.focus(); }, []);
+  const gameName = title.charAt(0) + title.slice(1).toLowerCase();
   return (
     <div style={{ background: C.bg, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28, paddingTop: isMobile ? 24 : 32, fontFamily: 'Georgia,serif', color: C.text }}>
       <div style={{ textAlign: 'center' }}>
@@ -81,7 +87,7 @@ export default function GameStartScreen({
       {children}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-        <button onClick={thenFocusTitle(onStart)} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>{t('ui.start.begin')}</button>
+        <button ref={startRef} onClick={thenFocusTitle(onStart)} aria-label={t('ui.start.beginNamed', { game: gameName })} style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 14, padding: '14px 44px', color: '#0d2118', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 2 }}>{t('ui.start.begin')}</button>
         <button onClick={thenFocusTitle(onBotBattle)} style={{ background: 'linear-gradient(135deg,#7B2FBE,#5a1d8a)', border: 'none', borderRadius: 14, padding: '10px 32px', color: '#f0e6ff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           <Spoken>{t('ui.start.botBattle')}</Spoken>
           <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{botBattleSub}</span>

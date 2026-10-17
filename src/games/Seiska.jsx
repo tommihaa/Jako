@@ -4,7 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, suitName, korttia, shuffle, aiShouldFumble, truncName, sortHand as sortHandBy, lblColored, newDeck, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { lbl, suitName, korttia, shuffle, aiShouldFumble, truncName, sortHand as sortHandBy, lblColored, eyeAndEar, newDeck, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -683,8 +683,10 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     // poistopakan päällimmäinen ovat laskettuina (kompositioauditointi H4).
     let playedMsg;
     if (!fromDraw) {
+      // Ruudunlukija kuulee päällimmäisen sanalla eikä samaa korttia kahdesti (J-28).
       const shown = cards.length > 1
-        ? `${cards.map(lblColored).join(' ')} → ${lblColored(card)}`
+        ? eyeAndEar(`${cards.map(lblColored).join(' ')} → ${lblColored(card)}`,
+            `${cards.map(lblColored).join(', ')}. ${t('games.seiska.ui.topCard', { card: lblColored(card) })}`)
         : lblColored(card);
       playedMsg = M.played(isH, p.name, shown);
     }

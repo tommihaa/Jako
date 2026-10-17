@@ -117,7 +117,16 @@ export const needsSpoken = text => hasSuit(text) || (getLang() === 'fi' && /\d\/
 // Lokirivi (HTML-string `lblColored`ista) ruudunlukijan tekstiksi: tagit pois, maat ja
 // murtoluvut sanoiksi.
 /** @param {string} html */
-export const spokenHtml = html => spokenFractions(spokenSuits(html.replace(/<[^>]*>/g, ''))).replace(/\s+/g, ' ').trim();
+export const spokenHtml = html => spokenFractions(spokenSuits(html.replace(VISUAL_ONLY, '').replace(/<[^>]*>/g, ''))).replace(/\s+/g, ' ').trim();
+
+// Viestin osa jolla on eri muoto silmälle ja korvalle. Näkyvä osa (nuoli, ruksi) on
+// `aria-hidden` ja puhuttu `sr-only`; `spokenHtml` jättää näkyvän osan pois, joten live-alue
+// ja viestirivi kuulevat vain sanat. TalkBack luki Moskan ❌:n emojina ja Seiskan
+// `kortit → päällimmäinen` -rivin kortin kahdesti (Tommin kuuntelu 17.10.2026, J-27 ja J-28).
+const VISUAL_ONLY = /<i data-v[^>]*>[\s\S]*?<\/i>/g;
+/** @param {string} visual @param {string} spoken */
+export const eyeAndEar = (visual, spoken) =>
+  `<i data-v aria-hidden="true" style="font-style:normal">${visual}</i><span class="sr-only">${spoken}</span>`;
 // Taivutusapurit: suomessa partitiivi/genetiivi, muissa kielissä kieliopillinen monikko
 // (ruotsin "kort" muuttumaton: ett kort / två kort; saksa: 1 Karte / n Karten).
 // Korttimäärä lokalisoituna. korttia = partitiivi (suomi), kortin = genetiivi (suomi);

@@ -633,22 +633,32 @@ järjestyksessä (`announcer.test.jsx`). Korjattua ei ole vielä kuunneltu.
 
 Kuuntelussa nousi neljä uutta havaintoa, ne ovat J-27–J-30.
 
-**J-27. Moskan pöytäkuvaus lausuu emojin.** Tila: avoin, muoto kysytty Tommilta 17.10.2026.
+**J-27. Moskan pöytäkuvaus lausuu emojin.** Tila: korjattu dev-versiossa 17.10.2026, ei kuunneltu.
 Kun puolustus ei onnistu, kaatamattoman kortin perässä on ❌ (`resolveRound`, `tableDesc`), ja
-TalkBack lukee sen. Kaadettu pari on muotoa `atk→def`, ja nuolikin voi kuulua.
+TalkBack lukee sen. Kaadettu pari on muotoa `atk→def`, ja nuolikin voi kuulua. Tommin valinta:
+sanat parin ja tilan mukaan (*"pata viisi, kaatajana hertta seitsemän; risti yhdeksän
+kaatamatta"*). Näkyvä muoto pysyi. Apuri `eyeAndEar` (`helpers.js`) antaa viestin osalle eri
+muodon silmälle ja korvalle, ja `spokenHtml` jättää näkyvän osan pois. Avaimet `beatenBy` ja
+`unbeaten` ovat 23 kielessä.
 
-**J-28. Seiskan kahden kortin lyönti sanoo jälkimmäisen kahdesti.** Tila: avoin, muoto kysytty.
+**J-28. Seiskan kahden kortin lyönti sanoo jälkimmäisen kahdesti.** Tila: korjattu dev-versiossa 17.10.2026, ei kuunneltu.
 Ryhmälyönnin rivi on `kortit → päällimmäinen`. Nuoli kertoo näkevälle, mikä jää päällimmäiseksi,
-mutta ruudunlukija kuulee vain saman kortin uudestaan.
+mutta ruudunlukija kuulee vain saman kortin uudestaan. Tommin valinta: kahden, kolmen tai neljän
+kortin lyönnissä päällimmäinen kerrotaan sanalla. Korvalle rivi on *"Hero: hertta viisi, pata
+viisi. Päällimmäinen: pata viisi."* Se käyttää olemassa olevaa avainta `topCard`.
 
-**J-29. Aloita-nappi ei saa kohdistusta pelin aloitussivulla.** Tila: ehdotus, kysytty.
-Valikosta tultaessa kohdistus menee pelin nimeen (`GameStartScreen`).
+**J-29. Aloita-nappi ei saa kohdistusta pelin aloitussivulla.** Tila: korjattu dev-versiossa
+17.10.2026, ei kuunneltu. Tommin valinta: kohdistus Aloita-nappiin, ja napin nimessä on peli
+(*"Aloita Moska"*), koska se kertoo samalla mikä peli avautui. Näkyvä teksti *"Aloita →"* pysyi.
+Selaimessa todennettu: valikosta tultaessa kohdistus on napissa ja nimi on *"Aloita Moska"*.
+Avain `beginNamed` on 23 kielessä.
 
 **J-30. Kohdistus Lyö-nappiin kortin valinnan jälkeen (Paskahousu ja Seiska).** Tila:
-ehdotus, kysytty.
+hylätty 17.10.2026 Tommin päätöksellä. Kohdistus jää korttiin, koska toisen samanarvoisen
+kortin valinta vaatisi muuten paluun käteen.
 
-**Seuraavaksi:** kohta 46 odottaa Tommin kuuntelua tuotannossa 1.2.239:llä. J-26 odottaa
-viestirivin korjauksen kuuntelua Pixelillä ja julkaisua.
+**Seuraavaksi:** kohta 46 odottaa Tommin kuuntelua tuotannossa 1.2.239:llä. J-26–J-29
+odottavat kuuntelua Pixelillä ja julkaisua.
 
 ## Julkaisu 1.2.239 17.10.2026
 

@@ -183,3 +183,12 @@ describe('tavallinen peli ilmoittaa ruudunlukijalle', () => {
     expect(heard.length).toBe(2);
   });
 });
+
+// J-27 ja J-28: näkyvä nuoli tai ruksi ei kuulu, sanallinen muoto kuuluu.
+describe('eyeAndEar', () => {
+  it('ruudunlukija saa vain puhutun muodon', async () => {
+    const { eyeAndEar, spokenHtml } = await import('../src/shared/helpers.js');
+    const html = `Pöydällä: ${eyeAndEar('5♠❌', '5♠ kaatamatta')}`;
+    expect(spokenHtml(html)).toBe('Pöydällä: pata viisi kaatamatta');
+  });
+});
