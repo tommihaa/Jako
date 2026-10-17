@@ -57,13 +57,18 @@ export function clearAnnouncements() {
   busy = false;
 }
 
-// Viestirivi saa kohdistuksen oman siirron jälkeen ja sanoo sen itse, joten jonossa odottava
-// sama viesti ohitetaan ja alue tyhjennetään. Myöhemmät viestit kuuluvat taas täältä, koska
+// Viestirivi saa kohdistuksen oman siirron jälkeen ja sanoo jonossa odottaneet viestit itse,
+// joten ne palautetaan sille ja alue tyhjennetään. Myöhemmät viestit kuuluvat taas täältä, koska
 // TalkBack ei lue kohdistetun rivin jokaista muutosta: kierroksen yhdeksästä viestistä
 // kuului neljä, eikä "Vuorossa Hero" kuulunut (puhetuloste Pixelillä 16.10.2026, J-22).
+// Ennen 17.10.2026 rivi sanoi vain viimeisimmän viestin ja jono hylättiin, jolloin Maijan
+// oma lyönti ja täydennyksen kortit katosivat (Tommin kuuntelu Pixelillä, J-26).
+/** @returns {string[]} jonossa odottaneet viestit */
 export function skipAnnouncements() {
+  const pending = queue;
   clearAnnouncements();
   listeners.forEach(l => l(''));
+  return pending;
 }
 
 // Sitova välilyönti (U+00A0) koodina, koska näkymätöntä merkkiä ei erota lähdekoodista.

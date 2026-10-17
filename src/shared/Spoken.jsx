@@ -68,7 +68,8 @@ export function SpokenHtml({ html, as: Tag = 'span', style, gameMessage = false 
 }
 
 // Pelin viestirivi, johon turvaverkko vie kohdistuksen oman siirron jälkeen (focusRescue.js).
-// Kohdistuksen saadessaan rivi jäätyy ruudunlukijalle: se sanoo oman siirron kerran ja pysyy
+// Kohdistuksen saadessaan rivi jäätyy ruudunlukijalle: se sanoo jonossa odottaneet viestit
+// (oma siirto ja sen seuraukset, J-26) tai ilman niitä nykyisen viestin kerran ja pysyy
 // samana, vaikka näkyvä viesti vaihtuu. TalkBack lukee kohdistetun kohdan uudelleen sen
 // muuttuessa, mutta vain osan muutoksista, joten myöhemmät viestit kuuluvat live-alueelta
 // (Tommin valinta 16.10.2026, auditointi J-22).
@@ -86,7 +87,7 @@ export function GameMessageRow({ said, children, as: Tag = 'div', style }) {
   const Wrap = Tag === 'p' ? 'span' : 'div';
   return (
     <Tag data-game-message="" tabIndex={-1} style={style}
-      onFocus={() => { setFrozen(said); skipAnnouncements(); }}
+      onFocus={() => { const pending = skipAnnouncements(); setFrozen(pending.length ? pending.join(' ') : said); }}
       onBlur={() => setFrozen(null)}>
       {frozen !== null && <span className="sr-only">{frozen}</span>}
       <Wrap aria-hidden={frozen !== null ? 'true' : undefined}>{children}</Wrap>

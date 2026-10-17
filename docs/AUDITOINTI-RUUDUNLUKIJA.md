@@ -619,8 +619,36 @@ kasan noston kortteineen (1–6 korttia), seitsemän kortin kasan määränä ja
 jälkeisen kasarivin. Maijan ja Moskan täydennys nähtiin vain testissä. Seiskan Heron
 Lappu-sakkoa ei nähty selaimessa eikä testissä.
 
+*Kuuntelu Pixelillä 17.10.2026 (dev, portti 5186).* Tommi kuunteli TalkBackilla kahdeksan
+kohtaa. Kunnossa: Paskahousun pieni ja iso kasa, täydennys lyönnin jälkeen, Seiskan Lappu-sakko
+ja se, ettei botin nostoa nimetä. Pettivät: Maijan ja Moskan täydennyksen kortit eivät
+kuuluneet, eikä sokkokoputuksen kortti kuulunut (kasarivi kuului).
+
+Syy mitattiin selaimessa Maijan hyökkäyksellä. Oma siirto vie kohdistuksen viestiriville, ja
+rivi sanoi vain viimeisimmän viestin (*"Chad puolustaa, 1 kortti kaadettavana."*). Samalla se
+tyhjensi ilmoitusjonon, joten oma lyönti ja täydennysrivi katosivat kuulumatta. Viesti ei siis
+puuttunut vaan hukkui. Paskahousussa täydennys sattui olemaan viimeinen rivi. Korjaus:
+`skipAnnouncements` palauttaa jonon, ja rivi sanoo kaikki jonossa odottaneet viestit
+järjestyksessä (`announcer.test.jsx`). Korjattua ei ole vielä kuunneltu.
+
+Kuuntelussa nousi neljä uutta havaintoa, ne ovat J-27–J-30.
+
+**J-27. Moskan pöytäkuvaus lausuu emojin.** Tila: avoin, muoto kysytty Tommilta 17.10.2026.
+Kun puolustus ei onnistu, kaatamattoman kortin perässä on ❌ (`resolveRound`, `tableDesc`), ja
+TalkBack lukee sen. Kaadettu pari on muotoa `atk→def`, ja nuolikin voi kuulua.
+
+**J-28. Seiskan kahden kortin lyönti sanoo jälkimmäisen kahdesti.** Tila: avoin, muoto kysytty.
+Ryhmälyönnin rivi on `kortit → päällimmäinen`. Nuoli kertoo näkevälle, mikä jää päällimmäiseksi,
+mutta ruudunlukija kuulee vain saman kortin uudestaan.
+
+**J-29. Aloita-nappi ei saa kohdistusta pelin aloitussivulla.** Tila: ehdotus, kysytty.
+Valikosta tultaessa kohdistus menee pelin nimeen (`GameStartScreen`).
+
+**J-30. Kohdistus Lyö-nappiin kortin valinnan jälkeen (Paskahousu ja Seiska).** Tila:
+ehdotus, kysytty.
+
 **Seuraavaksi:** kohta 46 odottaa Tommin kuuntelua tuotannossa 1.2.239:llä. J-26 odottaa
-kuuntelua Pixelillä ja julkaisua.
+viestirivin korjauksen kuuntelua Pixelillä ja julkaisua.
 
 ## Julkaisu 1.2.239 17.10.2026
 

@@ -109,12 +109,26 @@ describe('Announcer', () => {
     const row = /** @type {HTMLElement} */ (container.querySelector('[data-game-message]'));
     act(() => { announce('Hero: 4♣'); row.focus(); vi.advanceTimersByTime(150); });
     expect(liveText(container)).toBe('');
-    expect(row.querySelector('.sr-only')?.textContent).toBe('Hero: risti neljä');
+    expect(row.querySelector('.sr-only')?.textContent).toBe('Hero: risti neljä.');
     rerender(view('Vuorossa Hero.'));
-    expect(row.querySelector('.sr-only')?.textContent).toBe('Hero: risti neljä');
+    expect(row.querySelector('.sr-only')?.textContent).toBe('Hero: risti neljä.');
     expect(row.querySelector('[aria-hidden="true"]')?.textContent).toBe('Vuorossa Hero.');
     act(() => { announce('Vuorossa Hero.'); vi.advanceTimersByTime(150); });
     expect(liveText(container)).toBe('Vuorossa Hero.');
+  });
+
+  // J-26: oma siirto tuottaa useamman viestin samassa tahdissa. Rivi sanoo ne kaikki, koska
+  // pelkkä viimeisin hukkasi Maijan oman lyönnin ja täydennyksen kortit (kuuntelu 17.10.2026).
+  it('rivin kohdistus sanoo kaikki jonossa odottaneet viestit järjestyksessä', () => {
+    const { container } = render(<><Announcer /><GameMessageRow said="Chad puolustaa.">x</GameMessageRow></>);
+    const row = /** @type {HTMLElement} */ (container.querySelector('[data-game-message]'));
+    act(() => {
+      announce('Hero lyö 7♥'); announce('Hero nosti 1 kortin: 2♣.'); announce('Chad puolustaa.');
+      row.focus(); vi.advanceTimersByTime(150);
+    });
+    expect(liveText(container)).toBe('');
+    expect(row.querySelector('.sr-only')?.textContent)
+      .toBe('Hero lyö hertta seitsemän. Hero nosti 1 kortin: risti kaksi. Chad puolustaa.');
   });
 });
 
