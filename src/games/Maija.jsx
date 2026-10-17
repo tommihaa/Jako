@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
-import { SUITS, RANKS, lbl, korttia, shuffle, cardName, sortHand as sortHandBy, shuffledAINames, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { SUITS, RANKS, lbl, korttia, kortin, shuffle, cardName, sortHand as sortHandBy, shuffledAINames, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
@@ -389,6 +389,9 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       name, beats: rows.map(r => t('games.maija.msg.beatPair', { attCard: lblColored(r.att), defCard: lblColored(r.def) })).join(', '),
     }),
     aiTake: (name, cards) => t('games.maija.msg.aiTake', { name, cards: cards.map(lblColored).join(', ') }),
+    // Heron täydennys pakasta nimeää kortit. Botin nostoa ei nimetä, koska sen kortit ovat
+    // salaisia (Tommin toive 17.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md › J-26).
+    heroDrew: (name, cards) => t('games.maija.msg.heroDrew', { name, count: kortin(cards.length), cards: cards.map(lblColored).join(', ') }),
     defenderWinRoundNext: t('games.maija.msg.defenderWinRoundNext'),
     tooManyCards: t('games.maija.msg.tooManyCards'),
     maijaNotValid: t('games.maija.msg.maijaNotValid'),
@@ -424,10 +427,12 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   }
 
 
-  function drawHand(g, playerIdx) {
+  // `lines` saa Heron nostorivin, jotta ruudunlukija kertoo mitkä kortit käteen tulivat.
+  function drawHand(g, playerIdx, lines = /** @type {string[]} */ ([])) {
     const need = 5 - g.players[playerIdx].hand.length;
     if (need <= 0 || !g.deck.length) return g;
     const drawn = g.deck.slice(0, Math.min(need, g.deck.length));
+    if (g.players[playerIdx].isHuman) lines.push(M.heroDrew(g.players[playerIdx].name, drawn));
     const players = g.players.map((p,i) => i===playerIdx ? { ...p, hand:[...p.hand, ...drawn] } : p);
     return { ...g, players, deck:g.deck.slice(drawn.length) };
   }
@@ -495,9 +500,9 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   function resolveDefenseWin(g) {
     const allCards = g.table.flatMap(r => [r.att, r.def]);
     let g2 = { ...g, discard:[...g.discard, ...allCards] };
-    g2 = drawHand(g2, g.defenderIdx);
-    g2 = drawHand(g2, g.attackerIdx);
     const lines = /** @type {string[]} */ ([]);
+    g2 = drawHand(g2, g.defenderIdx, lines);
+    g2 = drawHand(g2, g.attackerIdx, lines);
     const { done, g2:g3 } = checkWinners(g2, lines);
     if (done) return;
     advanceRound(g3, false, lines);
@@ -514,7 +519,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     if (sndRef.current) SFX.take();
     const detail = beaten.length > 0 ? t('games.maija.msg.beatDetail', { n: beaten.length >> 1 }) : '';
     const lines = /** @type {string[]} */ (announced ? [] : [M.defendTake(g.players[g.defenderIdx].name, unbeaten, detail)]);
-    g2 = drawHand(g2, g2.attackerIdx);
+    g2 = drawHand(g2, g2.attackerIdx, lines);
     const { done, g2:g3 } = checkWinners(g2, lines);
     if (done) return;
     advanceRound(g3, true, lines);
@@ -562,10 +567,12 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       ? { ...p, hand:p.hand.filter(c => !cards.find(x => x.id===c.id)) } : p);
     const tbl = cards.map(c => ({ att:c, def:null }));
     let g2 = { ...g, players };
-    g2 = drawHand(g2, g.attackerIdx);
+    const drewLines = /** @type {string[]} */ ([]);
+    g2 = drawHand(g2, g.attackerIdx, drewLines);
     g2 = { ...g2, table: tbl, phase: /** @type {Vaihe} */ ('defending') };
     setSel([]);
     commit(g2, msg);
+    drewLines.forEach(addLog);
     const defName = g2.players[g.defenderIdx];
     addLog(M.aiDefense(defName.name, tbl.length));
     if (tbl.some(r => isMaija(r.att))) {

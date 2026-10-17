@@ -566,7 +566,8 @@ kertaa. Avaimet `aiPartialBeat` ja `defenderWinRound` korvattiin avaimilla `beat
 se kaatui yhdeksään. Selaimessa nähtiin täyskaato, botin nosto ja Heron nosto korttien kanssa.
 Osittaista kaatoa, jossa samassa vuorossa on kaato ja nosto, ei nähty selaimessa.
 
-**J-26. Heron nosto ei nimeä kortteja.** Tila: auki, kartoitettu 17.10.2026, siirretty
+**J-26. Heron nosto ei nimeä kortteja.** Tila: korjattu dev-versiossa 17.10.2026, ei
+kuunneltu eikä julkaistu (ks. toteutus taulukon jälkeen). Kartoitettu 17.10.2026 ja siirretty
 seuraavaan sessioon Tommin päätöksellä (iso urakka). Tommi: kun Hero nostaa, kortit pitäisi
 kertoa, myös Maijan pakasta nostossa ja muiden pelien nostoissa. Bottien nostoja ei nimetä,
 koska niiden kortit ovat salaisia. Kartoitus koodista:
@@ -591,8 +592,35 @@ viestistä kortteineen (`lblColored`, kuten J-25), uudet avaimet 23 kieleen, tes
 Pixelillä. Ennen toteutusta kysytään muoto, esimerkiksi *"Hero nosti pakasta hertta kuusi,
 risti ässä."*, ja se, nimetäänkö Paskahousun suuri kasa kokonaan.
 
-**Seuraavaksi:** kohta 46 odottaa Tommin kuuntelua tuotannossa 1.2.239:llä. J-26 on oma työnsä
-seuraavassa sessiossa.
+*Toteutus 17.10.2026.* Tommin valinnat: muoto on määrä ja kortit (*"Hero nosti 2 korttia:
+hertta kuusi, risti ässä."*), ja Paskahousun kasa nimetään kuuteen korttiin asti. Isompi kasa
+kerrotaan määränä (*"Hero nostaa 7 kortin kasan."*), koska käden voi lukea erikseen. Raja 6 on
+kysymyksen esimerkkiluku, ja se on vakio `PILE_NAME_MAX`.
+
+Kartoitusta korjattiin kahdesti koodia vasten. Paskahousun tyhjän pöydän rangaistus nimesi
+kortin jo ennestään. Rangaistu nostaa vuorollaan ja `skipCard` sanoo silloin *"Hero nostaa
+(risti ässä) ja menettää vuoronsa."* Sen sijaan sokkokoputus, joka ei käy (`blindBad`), siirtää
+koko kasan käteen nimeämättä. Sitä ei ollut taulukossa. Nyt sitä seuraa sama kasarivi kuin
+*Nosta kasa* -napista.
+
+Muutokset: Maijan `drawHand` kirjaa Heron täydennyksen kaikilla kolmella polulla (hyökkäys,
+täyskaato ja nosto). Paskahousu kirjaa täydennyksen lyönnin ja koputuksen jälkeen, kasan noston
+ja sokkokoputuksen kasan. Moskan kumpikin nostopolku käyttää `M.drew`-funktiota, joka nimeää
+vain Heron kortit. Seiskan Lappu-sakko nimeää Heron sakkokortit. Uudet avaimet `heroDrew`
+(Maija, Moska, Paskahousu), `tookPileCards` ja `forgotLappuCards` ovat 23 kielessä. Ne on
+johdettu kunkin kielen nykyisestä viestistä lisäämällä kortit kaksoispisteen jälkeen.
+Englannin Lappu-sakko on kirjoitettu käsin, koska siinä oli jo kaksoispiste.
+
+Testi `heron-nosto.test.jsx`: Bottien Taistelussa neljässä pelissä mikään nostorivi ei nimeä
+kortteja. Hero lyö ja ottaa Maijassa, Moskassa ja Paskahousussa, ja täydennysrivin korttien
+lukumäärä vastaa ilmoitettua määrää. Paskahousun kasarivi nimeää kortit kuuteen asti ja on sen
+yli pelkkä määrä. Testi meni läpi seitsemän kertaa peräkkäin. Selaimessa Paskahousu näytti
+kasan noston kortteineen (1–6 korttia), seitsemän kortin kasan määränä ja sokkokoputuksen
+jälkeisen kasarivin. Maijan ja Moskan täydennys nähtiin vain testissä. Seiskan Heron
+Lappu-sakkoa ei nähty selaimessa eikä testissä.
+
+**Seuraavaksi:** kohta 46 odottaa Tommin kuuntelua tuotannossa 1.2.239:llä. J-26 odottaa
+kuuntelua Pixelillä ja julkaisua.
 
 ## Julkaisu 1.2.239 17.10.2026
 

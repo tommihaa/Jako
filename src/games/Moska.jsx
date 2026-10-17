@@ -433,7 +433,11 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     gameStart:      (trump, att, def) => t('games.moska.msg.gameStart', { trump, att, def }),
     defenderWon:    (name, table) => t('games.moska.msg.defenderWon', { name, table }),
     defenderTook:   (name, count, table) => t('games.moska.msg.defenderTook', { name, count, table }),
-    playerDrew:     (name, count) => t('games.moska.msg.playerDrew', { name, count }),
+    // Heron täydennys nimeää kortit ruudunlukijalle; botin kortit ovat salaisia
+    // (Tommin toive 17.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md › J-26).
+    drew:           (p, drawn) => p.isHuman
+      ? t('games.moska.msg.heroDrew', { name: p.name, count: kortin(drawn.length), cards: drawn.map(lblColored).join(', ') })
+      : t('games.moska.msg.playerDrew', { name: p.name, count: kortin(drawn.length) }),
     won:            name => t('games.moska.msg.won', { name }),
     out:            name => t('games.moska.msg.out', { name }),
     lost:           name => t('games.moska.msg.lost', { name }),
@@ -545,7 +549,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
           const { drawn, deck: d2, trumpCard: t2 } = drawFrom(deck, tc, need);
           if (drawn.length) {
             players[idx] = { ...players[idx], hand: [...players[idx].hand, ...drawn] };
-            lines.push(M.playerDrew(players[idx].name, kortin(drawn.length)));
+            lines.push(M.drew(players[idx], drawn));
           }
           deck = d2; tc = t2;
         }
@@ -1024,7 +1028,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
           const { drawn, deck: d2, trumpCard: t2 } = drawFrom(deck, tc, need);
           if (drawn.length) {
             players[idx] = { ...players[idx], hand: [...players[idx].hand, ...drawn] };
-            lines.push(M.playerDrew(players[idx].name, kortin(drawn.length)));
+            lines.push(M.drew(players[idx], drawn));
           }
           deck = d2; tc = t2;
         }

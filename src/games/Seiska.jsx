@@ -507,6 +507,9 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
     aceDrawn:     (isH, name, card) => card ? t('games.seiska.msg.aceDrawn', { name, card }) : t('games.seiska.msg.aceDrawnNoCard', { name }),
     lastSpecialDraw: (name, card) => card ? t('games.seiska.msg.lastSpecialDraw', { name, card }) : t('games.seiska.msg.lastSpecialDrawNoCard', { name }),
     forgotLappu:  (name, count) => t('games.seiska.msg.forgotLappu', { name, count }),
+    // Heron sakkokortit nimetään ruudunlukijalle; botin kortit ovat salaisia
+    // (Tommin toive 17.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md › J-26).
+    forgotLappuCards: (name, cards) => t('games.seiska.msg.forgotLappuCards', { name, count: cards.length, cards: cards.map(lblColored).join(', ') }),
     played:       (isH, name, cards) => t('games.seiska.msg.played', { name, cards }),
     won:          (isH, name, rank) => rank === 1 ? t('games.seiska.msg.winTop', { name }) : t('games.seiska.msg.winPlace', { name, rank }),
     sevenPlayed:  (isH, name, suit) => t('games.seiska.msg.sevenPlayed', { name, suit: coloredSuit(suit) }),
@@ -621,7 +624,10 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       pendingLappu: null,
     };
     if (sndRef.current) SFX.take();
-    lines.push(M.forgotLappu(g.players[g.pendingLappu].name, pen.length));
+    const sakotettu = g.players[g.pendingLappu];
+    lines.push(sakotettu.isHuman && pen.length
+      ? M.forgotLappuCards(sakotettu.name, pen)
+      : M.forgotLappu(sakotettu.name, pen.length));
     return g2;
   }
 

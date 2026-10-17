@@ -4,7 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { lbl, korttia, shuffle, aiShouldFumble, truncName, shuffledAINames, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder, spokenSuits, cardName } from '../shared/helpers.js';
+import { lbl, korttia, kortin, shuffle, aiShouldFumble, truncName, shuffledAINames, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder, spokenSuits, cardName } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import Card from '../shared/Card.jsx';
 import { useStickySetting } from '../shared/storage.js';
@@ -37,6 +37,7 @@ const SUITS      = ['♠','♥','♦','♣'];
 const BASE_RANKS = ['3','4','5','6','7','8','9','10','J','Q','K','A'];
 const BASE_VAL   = Object.fromEntries(BASE_RANKS.map((r, i) => [r, i + 3])); // 3=3 … A=14
 const HAND_SZ    = 6; // oletuskäsikoko (sääntövalinta 5/6 ohittaa)
+const PILE_NAME_MAX = 6; // Heron nostama kasa nimetään kortti kortilta tähän asti (J-26)
 const LOW        = new Set(['3','4','5','6','7','8','9']);
 const FACES      = new Set(['J','Q','K']);
 // Kaikki kortit käyvät tyhjälle pöydälle (STARTERS-rajoitus poistettu)
@@ -455,6 +456,13 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     blindGood:    (isH, name, card) => t('games.paskahousu.msg.blindGood', { name, card }),
     blindBad:     (isH, name, card) => t('games.paskahousu.msg.blindBad', { name, card }),
     tookPile:     (isH, name, count) => t('games.paskahousu.msg.tookPile', { name, count }),
+    // Heron nostot nimeävät kortit ruudunlukijalle; botin kortit ovat salaisia. Kasa
+    // nimetään vain kun se on pieni, isompi kerrotaan määränä ja käsi luetaan erikseen
+    // (Tommin valinnat 17.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md › J-26).
+    heroDrew:     (name, cards) => t('games.paskahousu.msg.heroDrew', { name, count: kortin(cards.length), cards: cards.map(lblColored).join(', ') }),
+    heroTookPile: (name, cards) => cards.length <= PILE_NAME_MAX
+      ? t('games.paskahousu.msg.tookPileCards', { name, count: cards.length, cards: cards.map(lblColored).join(', ') })
+      : t('games.paskahousu.msg.tookPile', { name, count: cards.length }),
     skipCard:     (isH, name, card) => t('games.paskahousu.msg.skipCard', { name, card }),
     skipNoCard:   (isH, name) => t('games.paskahousu.msg.skipNoCard', { name }),
     swapped:      (isH, name, cards) => t('games.paskahousu.msg.swapped', { name, cards }),
@@ -542,6 +550,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     const filled = fillHand(p.hand, draw, g.rules.handSize);
     p.hand = filled.hand;
     const newlyDrawn = filled.drawn;
+    if (isH && newlyDrawn.length) lines.push(M.heroDrew(p.name, newlyDrawn));
     if (g.draw.length > 0 && draw.length === 0) {
       setPakaAnim(true); // pakka on tyhjä
       const activeNow = g.players.length - g.finished.length;
@@ -658,7 +667,9 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       setJP(new Set([knocked.id]));
       tm(() => setJP(new Set()), 2000);
 
-      p.hand = fillHand(p.hand, draw, g.rules.handSize).hand;
+      const kFilled = fillHand(p.hand, draw, g.rules.handSize);
+      p.hand = kFilled.hand;
+      if (isH && kFilled.drawn.length) kLines.push(M.heroDrew(p.name, kFilled.drawn));
       if (draw.length === 0) {
         setPakaAnim(true); // pakka on tyhjä
         const activeNow = g.players.length - g.finished.length;
@@ -723,6 +734,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
       else addLog(M.turnOf('Hero'));
     } else {
       kLines.push(M.blindBad(isH, p.name, lblColored(knocked)));
+      if (isH && pile.length) kLines.push(M.heroTookPile(p.name, pile));
       triggerKasaAnim('take');
       p.hand = [...p.hand, knocked, ...pile];
       const advTurn = nextActive(players, pidx, g.finished);
@@ -744,7 +756,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
     players[pidx].hand = [...players[pidx].hand, ...g.pile];
     const advTurn = nextActive(players, pidx, g.finished);
     const g2 = { ...g, players, pile: [], top: null, finished: g.finished, turn: advTurn, skipNext: g.skipNext, phase: 'play' };
-    commit(g2, M.tookPile(isH, players[pidx].name, g.pile.length));
+    commit(g2, isH ? M.heroTookPile(players[pidx].name, g.pile) : M.tookPile(isH, players[pidx].name, g.pile.length));
     if (players[advTurn] && !players[advTurn].isHuman)
       schedAI(() => runAI(g2), 1600);
     else addLog(M.turnOf('Hero'));
