@@ -591,5 +591,15 @@ viestistä kortteineen (`lblColored`, kuten J-25), uudet avaimet 23 kieleen, tes
 Pixelillä. Ennen toteutusta kysytään muoto, esimerkiksi *"Hero nosti pakasta hertta kuusi,
 risti ässä."*, ja se, nimetäänkö Paskahousun suuri kasa kokonaan.
 
-**Seuraavaksi:** J-24:n ja J-25:n julkaisu, ja kohta 46 odottaa kuuntelua sen jälkeen. J-26
-on oma työnsä seuraavassa sessiossa.
+**Seuraavaksi:** kohta 46 odottaa Tommin kuuntelua tuotannossa 1.2.239:llä. J-26 on oma työnsä
+seuraavassa sessiossa.
+
+## Julkaisu 1.2.239 17.10.2026
+
+J-24 ja J-25 julkaistu (Jako `dcbe43a`, push klo 03.57). Tuotantobundlesta todennettu
+selaimella noin kaksi minuuttia pushin jälkeen. Molemmat domainit tarjoavat `index-B1OeUDL_.js`:n,
+jossa on `"1.2.239"`, Maijan `aiBeatsAll`-kutsu ja suomen `{name} nostaa {cards}.`. Siinä ei ole
+`aiPartialBeat`ia eikä Jaa-napin `title`a. Muutoslokin chunkissa (`changelog-fi-ComlPMQ7.js`) on
+uusi merkintä. Paikallisen buildin hash oli eri (`BZFD7XTk`), mikä deploy-skillin mukaan ei ole
+virhe. Pääosoite näytti ensin 1.2.238:n palvelutyöntekijän välimuistista, kuten 1.2.238:n
+julkaisussa.
