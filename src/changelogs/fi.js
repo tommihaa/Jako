@@ -15,6 +15,13 @@ export const CHANGELOG = [
   {
     date: '17.10.2026',
     items: [
+      'Saavutettavuus: Jaa-nappi ei enää sano yläindeksiä 9 nimensä perässä. Kielinappi ja kielivalikon kielet kuuluvat kerran.',
+      'Maija: kaadot ja nostot kertovat kortit. Botin kaato kuuluu muodossa "kaatoi ruutu kaksi kortilla risti seitsemän". Botin nosto kuuluu kerran omana viestinään. Myös oma Ota kaikki kertoo nostetut kortit.',
+    ],
+  },
+  {
+    date: '17.10.2026',
+    items: [
       'Saavutettavuus: kun nappi katoaa painamisen jälkeen, ruudunlukija ei enää lue koko sivua alusta. Oman siirron jälkeen kohdistus siirtyy pelin viestiriville, joka kertoo siirtosi kerran, ja valikkoon palatessa se siirtyy juuri pelatun pelin kohdalle. Asetuksista ja Infosta palataan siihen nappiin, josta ne avattiin.',
       'Saavutettavuus: pelin tapahtumat kuuluvat kerran ja järjestyksessä. Oma kortti kuului aiemmin jopa kolmesti, Heron vuoron alkua ei kuulunut lainkaan, ja botin vaihto kuului kahdesti.',
       'Saavutettavuus: kortit kuuluvat perusmuodossa ("ruutu viisi" eikä "ruutu viiteen"), kaadon tulos sanoina ("nolla kahdesta") ja versionumero selvästi ("1 piste 2 piste 238").',
