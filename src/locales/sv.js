@@ -39,7 +39,7 @@ export const sv = {
     loading: 'Laddar…',
     info: { title: 'ℹ Info', close: '✕ Stäng' },
     lang: { label: 'Språk', tested: 'Verifierade', untested: 'Overifierade', note: '✓ modersmål · web = maskinverifierad (ej modersmålskontroll)' },
-    menu: { recommended: "Rekommenderas", startHere: "Ny på spel? Prova ★-favoriterna först.", back: '← Meny', settings: 'Inställningar', info: 'Info', share: 'Dela Jako⁹' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako är en samling med nio traditionella kortspel. Högst upp finns språkval, delning, ${info} och ${settings}. Motståndarna kommer från gruppen ”${group}” och nivån är ${level}. Välj ett spel i listan. Spelen märkta med en stjärna är en bra början.`, introToggle: "Vad finns på sidan?", recommended: "Rekommenderas", back: '← Meny', settings: 'Inställningar', info: 'Info', share: 'Dela Jako⁹' },
     share: { title: 'Jako – gratis kortspel', text: 'Spela 9 kortspel direkt i webbläsaren:', copied: 'Länk kopierad', scan: 'Skanna koden med telefonen eller dela länken', copy: 'Kopiera länk', shareVia: 'Dela…' },
     difficulty: { easy: 'Lätt', medium: 'Medel', hard: 'Svår' },
     rulesAria: '{name}: visa regler',

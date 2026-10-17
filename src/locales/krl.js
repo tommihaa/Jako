@@ -40,7 +40,7 @@ export const krl = {
     loading: 'Ladauvuu…',
     info: { title: 'ℹ Info', close: '✕ Salbua' },
     lang: { label: 'Kieli', tested: 'Tarkastetut', untested: 'Tarkastamattomat', note: '✓ omakielini · web = konehen tarkastettu (ei omakielistä tarkastusta)' },
-    menu: { recommended: "Suvaittu", startHere: "Uuzi peleis? Kokeile enzimäi ★-suvattuloi.", back: '← Valikko', settings: 'Šiännöt', info: 'Info', share: 'Jua Jako⁹' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako on yhekšän perinnehizen korttipelin kerävys. Yläh on kielen valličendu, jagamine, ${info} da ${settings}. Vastustajat tullah joukospäi ${group} da tazo on ${level}. Valliče peli listaspäi. Tiähtyöl merkittylöis pelilöis on hyvä allata.`, introToggle: "Mi on sivul?", recommended: "Suvaittu", back: '← Valikko', settings: 'Šiännöt', info: 'Info', share: 'Jua Jako⁹' },
     share: { title: 'Jako – ilmazet korttipelit', text: 'Kiza 9 korttipeliä suorah selaimešša:', copied: 'Linkki kopiu', scan: 'Skannua koodi telefonalla tahi jua linkki', copy: 'Kopiu linkki', shareVia: 'Jua…' },
     difficulty: { easy: 'Kebie', medium: 'Keskitaso', hard: 'Vaigie' },
     rulesAria: '{name}: ozuta šiännöt',

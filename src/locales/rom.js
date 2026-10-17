@@ -38,7 +38,7 @@ export const rom = {
     loading: 'Del pe…',
     info: { title: 'ℹ Info', close: '✕ Phande' },
     lang: { label: 'Čhib', tested: 'Probime', untested: 'Naprobime', note: '✓ dajaki čhib · web = mašina sikadas (bi dajaka čhibako probipe)' },
-    menu: { recommended: "Rekomandime", startHere: "Nevo ko khelimata? Probisar angluno le ★-drago.", back: '← Lista', settings: 'Lačharimata', info: 'Info', share: 'Ulav Jako⁹' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako si jekh kidipe enja tradicionalne khelengo le kartenca. Opre si o alipe la čhibako, o ulavipe, ${info} thaj ${settings}. Le kontra aven andar o grupo „${group}“ thaj o nivelo si ${level}. Alos jekh khelipe andar e lista. Le khelimata le čerhenjasa si lačhe te astares.`, introToggle: "So si pe kadaja pagina?", recommended: "Rekomandime", back: '← Lista', settings: 'Lačharimata', info: 'Info', share: 'Ulav Jako⁹' },
     share: { title: 'Jako – ivja khelimata kartenca', text: 'Khel 9 khelimata kartenca direkt ando brauzero:', copied: 'Liako kopisardo', scan: 'Skanir o kodo e telefonosa vaj ulav o linko', copy: 'Kopisar o linko', shareVia: 'Ulav…' },
     difficulty: { easy: 'Loko', medium: 'Maškarutno', hard: 'Pharo' },
     rulesAria: '{name}: sikav o regule',

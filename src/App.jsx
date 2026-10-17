@@ -6,7 +6,7 @@ import ShareQR from './shared/ShareQR.jsx';
 import Announcer from './shared/Announcer.jsx';
 import { GAME_TITLE_ID } from './shared/GameStartScreen.jsx';
 import { installFocusRescue } from './shared/focusRescue.js';
-import Spoken from './shared/Spoken.jsx';
+import Spoken, { withoutEmoji } from './shared/Spoken.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
 import { loadPref, savePref, useStickySetting } from './shared/storage.js';
 import { KANSA, NAME_GROUPS, POOL_BY_GROUP, firstVisitGroup } from './shared/playerGroups.js';
@@ -492,6 +492,38 @@ function GameHeader({ title, onBack, gearBtn, isMobile }) {
         <div style={{ position: 'absolute', right: 8 }}>{gearBtn}</div>
       </div>
     </div>
+  );
+}
+
+// Valikon kuvausvirke: mitä sivulla on ja mitä on valittuna, proosana. TalkBack ohitti
+// sivulle kohdistettaessa napit ja asetukset ja luki leimat numeromössönä (J-33), joten sivu
+// kerrotaan lauseina. Ensikertalainen näkee virkkeen, ruudunlukija kuulee sen aina, ja
+// palaava näkevä kävijä avaa sen linkistä (Tommin päätökset 17.10.2026). Avattuna virke on
+// vain näkyvänä, jotta ruudunlukija ei kuule sitä kahdesti. Virke korvaa ★-vihjeen.
+/**
+ * @typedef {object} MenuIntroProps
+ * @property {boolean} newcomer
+ * @property {string} text
+ * @property {string} toggleLabel
+ * @property {boolean} isMobile
+ */
+/** @param {MenuIntroProps} props */
+function MenuIntro({ newcomer, text, toggleLabel, isMobile }) {
+  const [open, setOpen] = useState(false);
+  const box = {
+    margin: '0 0 8px', padding: '9px 12px',
+    border: `1px solid ${C.gold}55`, borderRadius: 10, background: `${C.gold}12`,
+    fontFamily: 'sans-serif', fontSize: isMobile ? 11 : 12, color: C.text, lineHeight: 1.4,
+  };
+  if (newcomer) return <p style={box}>{text}</p>;
+  return (
+    <>
+      {open ? <p style={box}>{text}</p> : <p className="sr-only">{text}</p>}
+      <button type="button" aria-expanded={open} onClick={() => setOpen(o => !o)} style={{
+        background: 'none', border: 'none', padding: '0 0 8px', cursor: 'pointer',
+        fontFamily: 'sans-serif', fontSize: isMobile ? 11 : 12, color: C.dim, textDecoration: 'underline',
+      }}>{toggleLabel}</button>
+    </>
   );
 }
 
@@ -1512,18 +1544,14 @@ export default function App() {
         width: '100%',
         maxWidth: isMobile ? '100%' : 900,
       }}>
-        {!Object.values(stats).some(s => s.played > 0) && (
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            margin: '0 0 8px', padding: '9px 12px',
-            border: `1px solid ${C.gold}55`, borderRadius: 10,
-            background: `${C.gold}12`,
-            fontFamily: 'sans-serif', fontSize: isMobile ? 11 : 12, color: C.text, lineHeight: 1.4,
-          }}>
-            <span style={{ color: C.gold, fontSize: 13, flexShrink: 0 }}>★</span>
-            {t('ui.menu.startHere')}
-          </div>
-        )}
+        <MenuIntro
+          newcomer={!Object.values(stats).some(s => s.played > 0)}
+          text={t('ui.menu.intro', {
+            group: withoutEmoji(t(`ui.settings.groups.${playerGroup}`)),
+            level: t(`ui.settings.ai.${aiLevel}.label`),
+            info: t('ui.menu.info'), settings: t('ui.menu.settings'),
+          })}
+          toggleLabel={t('ui.menu.introToggle')} isMobile={isMobile} />
         <div style={{
           display: 'grid',
           gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',

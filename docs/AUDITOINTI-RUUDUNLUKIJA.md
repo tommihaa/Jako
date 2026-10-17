@@ -752,3 +752,26 @@ tilanteessa kuunnellaan uudessa portissa.
 1d0f7db HEAD -- src public index.html` on tyhjä). Kaikki neljä reittiä toimivat: kortin pelaaminen
 vie viestiriville, Asetusten sulku palaa Asetuksiin, Mestarin kuplan ✕ palaa Mestari-nappiin ja
 paluu valikkoon osuu pelin kohdalle. Koko sivun lukua ei kuulunut. Kohta 46 suljettu.
+
+## Valikon kuvausvirke ja ensikertalaisen ryhmä 17.10.2026
+
+**Ensikertalaisen nimiryhmä** (Jako `f6a19d6`, Tommin päätös): suomeksi porukka (*Paikalliset*),
+muilla kielillä Meme-jengi. Porukan lyhyet suomalaiset etunimet ovat korvalle kevein ryhmä.
+Selain ei kerro sivulle ruudunlukijasta, joten valinta tehdään kielen perusteella. Tallennettu
+valinta ei muutu. Selaimessa todennettu tyhjällä tallennuksella: `?lang=fi` antaa `porukka`,
+`?lang=en` antaa `meme`.
+
+**Kuvausvirke** (J-33:n jatko, Tommin ajatus: sivu kerrotaan proosana, koska TalkBack ohitti
+sivulle kohdistettaessa napit ja asetukset). Valikon yläreunan virke kertoo, mitä sivulla on ja
+mitä on valittuna: *"Jako on yhdeksän perinteisen korttipelin kokoelma. Ylhäällä ovat kielen
+valinta, jakaminen, Info ja Asetukset. Vastustajat tulevat ryhmästä Paikalliset ja taso on
+Kisälli. Valitse peli listasta. Tähdellä merkityistä peleistä on hyvä aloittaa."* Ryhmä ja taso
+luetaan asetuksista, ja ryhmän nimestä jätetään emoji pois. Tommin päätökset: ensikertalainen
+(ei yhtään pelattua peliä) näkee virkkeen, ruudunlukija kuulee sen aina, ja palaava näkevä
+kävijä avaa sen linkistä *Mitä sivulla on?*, jota ei piiloteta ruudunlukijalta. Virke korvaa
+★-vihjeen (avain `startHere` poistettu 23 kielestä). Tähti on neuvo eikä mitattu suosio, ja
+suomalaisuusväite jätettiin pois. Avaimet `ui.menu.intro` ja `introToggle` 23 kielellä;
+karjala, saame, romani ja latina ovat parhaan kyvyn käännöksiä kuten muutkin `untested`-kielet.
+Selaimessa todennettu: ensikertalaisella näkyvä virke ilman linkkiä, palaavalla `sr-only`-virke
+ja linkki (`aria-expanded="false"`), avattuna vain näkyvä virke (`true`). Ei kuunneltu.
+

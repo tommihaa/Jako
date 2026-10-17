@@ -39,7 +39,7 @@ export const en = {
     loading: 'Loading…',
     info: { title: 'ℹ Info', close: '✕ Close' },
     lang: { label: 'Language', tested: 'Verified', untested: 'Unverified', note: '✓ native · web = machine-verified (not native-checked)' },
-    menu: { recommended: "Recommended", startHere: "New to games? Try the ★ favourites first.", back: '← Menu', settings: 'Settings', info: 'Info', share: 'Share Jako⁹' },
+    menu: { intro: ({ group, level, info, settings }) => `Jako is a collection of nine traditional card games. At the top are language, sharing, ${info} and ${settings}. Opponents come from the group “${group}” and the level is ${level}. Choose a game from the list. The games marked with a star are a good place to start.`, introToggle: "What is on this page?", recommended: "Recommended", back: '← Menu', settings: 'Settings', info: 'Info', share: 'Share Jako⁹' },
     share: { title: 'Jako – free card games', text: 'Play 9 card games right in your browser:', copied: 'Link copied', scan: 'Scan the code with your phone or share the link', copy: 'Copy link', shareVia: 'Share…' },
     difficulty: { easy: 'Easy', medium: 'Medium', hard: 'Hard' },
     rulesAria: '{name}: show rules',
