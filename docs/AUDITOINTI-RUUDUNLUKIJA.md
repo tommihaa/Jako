@@ -654,6 +654,13 @@ lukua (*"kaadettu 0, kaatamatta 2"*). Sivustalyöntivaiheen alkurivi luetteli va
 hyökkäyskortit, vaikka puolustuskorttienkin arvoilla saa lyödä sivusta. Rivi kertoo nyt pöydän
 pareittain samalla funktiolla kuin kierroksen loppu (`describeTable`).
 
+*Neljäs kuuntelu 17.10.2026.* Puolustusvuoro, tilarivi ja sivustalyöntivaiheen alku kuuluivat
+oikein. Kesken jääneen kaadon tilarivi kuului kuitenkin *"kaatamatta yhdellä pöydällä"*,
+koska puhe taivutti luvun seuraavan sanan mukaan. Suomessa ja karjalassa paikka on nyt ennen
+määriä (*"pöydällä kaadettu 2, kaatamatta 1"*). Säännöksi tästä: suomenkielisessä
+ruudunlukijatekstissä numeroa ei kirjoiteta taivutetun sanan eteen, koska TalkBack taivuttaa
+luvun sen mukaan.
+
 **J-28. Seiskan kahden kortin lyönti sanoo jälkimmäisen kahdesti.** Tila: korjattu dev-versiossa 17.10.2026, ei kuunneltu.
 Ryhmälyönnin rivi on `kortit → päällimmäinen`. Nuoli kertoo näkevälle, mikä jää päällimmäiseksi,
 mutta ruudunlukija kuulee vain saman kortin uudestaan. Tommin valinta: kahden, kolmen tai neljän

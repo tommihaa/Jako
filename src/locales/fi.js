@@ -829,7 +829,7 @@ export const fi = {
         nextRound: '{att} hyökkää → {def} puolustaa.',
         attack: '{name} hyökkäsi: {cards}.',
         beat: '{defName}: {defCard} kaataa {atkCard}. {status}',
-        statusOnTable: '({tally} pöydällä)',
+        statusOnTable: '(pöydällä {tally})',
         statusAllBeaten: '(kaikki kaadettu)',
         cannotPass: 'Ei voi siirtää enempää.',
         pass: '{name} siirsi ({cards}) → {nextName} puolustaa.',
