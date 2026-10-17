@@ -745,6 +745,8 @@ ei mitattu): 5186:n palvelin ei ollut käynnissä eikä Pixelillä ollut sille `
 on rekisteröity myös dev-palvelimella, ja se antaa epäonnistuneen haun tilalle välimuistista
 viimeksi haetut moduulit. Pixel ajoi siis 5186:n vanhaa versiota, ja uudelleenlataus sai
 saman välimuistin. Kuolleesta dev-portista kuuntelija saa vanhan version ilman virhettä.
+Tommin päätös 17.10.2026: palvelutyöntekijä jää dev-palvelimelle ennalleen, ja epävarmassa
+tilanteessa kuunnellaan uudessa portissa.
 
 **J-14 kuunneltu ok** (`localhost:5188`, koodi sama kuin julkaistu 1.2.240, `git diff
 1d0f7db HEAD -- src public index.html` on tyhjä). Kaikki neljä reittiä toimivat: kortin pelaaminen
