@@ -15,6 +15,18 @@ export const CHANGELOG = [
   {
     date: '17.10.2026',
     items: [
+      'Saavutettavuus: kun nostat kortteja Maijassa, Moskassa, Paskahousussa tai Seiskan Lappu-sakkona, ruudunlukija kertoo saamasi kortit. Paskahousun kasa nimetään kuuteen korttiin asti, isompi kerrotaan määränä. Vastustajien nostoja ei nimetä.',
+      'Saavutettavuus: oman siirron jälkeen viestirivi kertoo kaikki siirron seuraukset järjestyksessä. Aiemmin vain viimeisin kuului, ja esimerkiksi oma lyönti ja täydennyksen kortit jäivät kuulumatta.',
+      'Moska: ruudunlukija kertoo pöydän pareittain ("pata viisi, kaatajana hertta seitsemän; risti yhdeksän kaatamatta") ja määrät sanoina eikä emojeina. Pelin viestien emojit eivät enää kuulu missään pelissä.',
+      'Moska: sivustalyönnin viesti ei enää paljasta, mitkä vastustajan käsikorteista kelpaisivat sivustalyöntiin.',
+      'Seiska: useamman kortin lyönnissä ruudunlukija kertoo päällimmäisen kortin sanalla eikä toista sitä.',
+      'Pelin aloitussivulla Aloita-nappi on valmiiksi valittuna, ja ruudunlukija sanoo sen pelin nimen kanssa ("Aloita Moska").',
+      'Sivun nimi on nyt "Jako · korttipelikokoelma" valitulla kielellä, ja valikon alareunassa lukee "Versio … julkaistu …".',
+    ],
+  },
+  {
+    date: '17.10.2026',
+    items: [
       'Saavutettavuus: Jaa-nappi ei enää sano yläindeksiä 9 nimensä perässä. Kielinappi ja kielivalikon kielet kuuluvat kerran.',
       'Maija: kaadot ja nostot kertovat kortit. Botin kaato kuuluu muodossa "kaatoi ruutu kaksi kortilla risti seitsemän". Botin nosto kuuluu kerran omana viestinään. Myös oma Ota kaikki kertoo nostetut kortit.',
     ],
