@@ -4,6 +4,7 @@
 // solo se traducen las descripciones y las reglas.
 export const es = {
   ui: {
+    docTitle: 'colección de juegos de cartas',
     a11y: {
       opponents: ({ names }) => `Rivales en orden de turno: ${names}.`,
       statusButton: 'Situación',

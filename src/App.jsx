@@ -510,6 +510,10 @@ export default function App() {
   const [showStats, setShowStats]   = useState(false);
   useEffect(() => { savePref('stats', stats); }, [stats]);
   useEffect(() => installFocusRescue(), []);
+  // Välilehden otsikko valitun kielen mukaan; index.html:n suomenkielinen on ensilatauksen
+  // arvo. Ruudunlukija sanoo sen sivun nimenä (Tommin toive 17.10.2026, J-32).
+  const docTitle = `Jako · ${t('ui.docTitle')}`;
+  useEffect(() => { document.title = docTitle; }, [docTitle]);
   // Valikkoon palatessa kohdistus menee sen pelin ruutuun, josta palattiin (auditointi J-15,
   // Tommin valinta 16.10.2026). Ilman tätä painettu ← Valikko katosi pelin mukana ja TalkBack
   // luki koko valikon. Paluureittejä on neljä (otsikko, tulosruutu, Bottien Taistelun tulos,
@@ -1528,10 +1532,11 @@ export default function App() {
         </div>
       </div>
       {/* Ruudunlukijalle leima selitettynä: pelkkä "v1.2.235 · 15.10.2026 16.05" kuului
-          numerosarjana ilman kontekstia (kuunneltu 15.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md › J-7). */}
+          numerosarjana ilman kontekstia (kuunneltu 15.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md › J-7).
+          Näkyvä teksti on samaa muotoa sanoineen (Tommin toive 17.10.2026, J-33). */}
       <div style={{ fontSize: 10, color: '#b9c7b2', fontFamily: 'sans-serif', letterSpacing: 0.5 }}>
         <span className="sr-only">{t('ui.a11y.version', { version: APP_VERSION, date: BUILD_DATE, time: BUILD_TIME })}</span>
-        <span aria-hidden="true">v{APP_VERSION} · {BUILD_DATE} {BUILD_TIME}</span>
+        <span aria-hidden="true">{t('ui.a11y.version', { version: APP_VERSION, date: BUILD_DATE, time: BUILD_TIME, plain: true })}</span>
       </div>
     </main>
   );

@@ -2,6 +2,7 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const la = {
   ui: {
+    docTitle: 'collectio ludorum chartarum',
     a11y: {
       opponents: ({ names }) => `Adversarii ordine: ${names}.`,
       statusButton: 'Status',

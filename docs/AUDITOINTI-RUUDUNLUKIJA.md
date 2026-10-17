@@ -648,6 +648,12 @@ oli käännöspohjassa kahdessa avaimessa (`defendHumanCards`, `statusOnTable`).
 väliin tuli korvalle puolipiste, koska pilkuin erotettuna parin raja hämärtyi (selaimessa
 kuultu muoto *"ruutu neljä, kaatajana ruutu kahdeksan, risti kahdeksan, …"*).
 
+*Kolmas kuuntelu 17.10.2026.* Emoji ei enää kuulunut, mutta puhe taivutti luvun
+kaatamatta-sanan mukaan (*"kahdetta kaatamatta"*). Suomessa ja karjalassa sana on nyt ennen
+lukua (*"kaadettu 0, kaatamatta 2"*). Sivustalyöntivaiheen alkurivi luetteli vain
+hyökkäyskortit, vaikka puolustuskorttienkin arvoilla saa lyödä sivusta. Rivi kertoo nyt pöydän
+pareittain samalla funktiolla kuin kierroksen loppu (`describeTable`).
+
 **J-28. Seiskan kahden kortin lyönti sanoo jälkimmäisen kahdesti.** Tila: korjattu dev-versiossa 17.10.2026, ei kuunneltu.
 Ryhmälyönnin rivi on `kortit → päällimmäinen`. Nuoli kertoo näkevälle, mikä jää päällimmäiseksi,
 mutta ruudunlukija kuulee vain saman kortin uudestaan. Tommin valinta: kahden, kolmen tai neljän
@@ -672,12 +678,22 @@ lokissa. Rivi ja avain `aiCanAdd` poistettiin. Lyöty kortti kuuluu yhä `doAdd`
 (*"… löi sivusta: risti kahdeksan."*), ja se on julkinen. Selaimessa todennettu Bottien
 Taistelussa.
 
+**J-32. Sivun otsikko oli "Jako · Tommin kokoelma".** Tila: korjattu dev-versiossa 17.10.2026,
+ei kuunneltu. Tommin valinta: kieliversioitu *"Jako · korttipelikokoelma"* (avain `docTitle`,
+23 kieltä). App kirjoittaa otsikon kielen mukaan. `index.html` ja `manifest.json` ovat
+suomeksi, koska manifestia ei käännetä lennossa.
+
+**J-33. Valikon alaraita oli numeromössöä näkevällekin.** Tila: korjattu dev-versiossa
+17.10.2026. Näkyvä teksti on nyt samaa muotoa kuin ruudunlukijan (*"Versio 1.2.239, julkaistu
+17.10.2026 klo 18.44"*) kullakin kielellä. Vain suomen korvamuoto sanoo version pisteineen.
+Selaimessa todennettu.
+
 **Pitkä viesti (havainto, ei toimenpidettä).** Tommi: viestirivin pitkä pötkö on haastava.
 Moskassa sivustalyöntivaihe katkaisee sen sopivasti. Muissa peleissä katkaisua ei vielä ole
 mietitty.
 
-**Seuraavaksi:** kohta 46 odottaa Tommin kuuntelua tuotannossa 1.2.239:llä. J-26–J-29 ja
-J-31 odottavat kuuntelua Pixelillä ja julkaisua.
+**Seuraavaksi:** kohta 46 odottaa Tommin kuuntelua tuotannossa 1.2.239:llä. J-26–J-29,
+J-31 ja J-32 odottavat kuuntelua Pixelillä ja julkaisua.
 
 ## Julkaisu 1.2.239 17.10.2026
 

@@ -8,11 +8,13 @@
 export const fi = {
   ui: {
     // Vain ruudunlukijalle (Announcer), ei näy ruudulla.
+    docTitle: 'korttipelikokoelma',
     a11y: {
       opponents: ({ names }) => `Vastustajat vuorojärjestyksessä: ${names}.`,
       statusButton: 'Tilanne',
       // Pisteet sanoina: "1.2.237" kuului päivämääränä "ensimmäinen toista" (J-21).
-      version: ({ version, date, time }) => `Versio ${String(version).split('.').join(' piste ')}, julkaistu ${date} klo ${time}`,
+      // `plain` on alaraidan näkyvä muoto; korvalle versio sanotaan pisteineen (J-7).
+      version: ({ version, date, time, plain }) => `Versio ${plain ? version : String(version).split('.').join(' piste ')}, julkaistu ${date} klo ${time}`,
       turn: ({ name }) => `Vuorossa ${name}.`,
       hand: ({ cards }) => `Käsi: ${cards}.`,
       none: 'ei kortteja',
@@ -820,7 +822,7 @@ export const fi = {
         heroDrew: '{name} nosti {count}: {cards}.',
         beatenBy: '{atk}, kaatajana {def}',
         unbeaten: '{atk} kaatamatta',
-        tally: '{beaten} kaadettu, {unbeaten} kaatamatta',
+        tally: 'kaadettu {beaten}, kaatamatta {unbeaten}',
         won: '{name} vei voiton! 🏆🎉',
         out: '{name} poistui pelistä. 👏',
         lost: '{name} hävisi.',

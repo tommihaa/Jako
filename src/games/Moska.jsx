@@ -131,6 +131,17 @@ function getAddable(g, playerIdx) {
   return g.players[playerIdx].hand.filter(c => tableRanks.has(c.r));
 }
 
+// Pöydän kortit pareittain. Ruudunlukija kuulee parin sanoina eikä nuolta ja ruksia,
+// ja parien väliin tulee puolipiste (J-27).
+function describeTable(table) {
+  return table.map(t => {
+    const atk = lblColored(t.atk);
+    return t.def
+      ? eyeAndEar(`${atk}→${lblColored(t.def)}`, tr('games.moska.msg.beatenBy', { atk, def: lblColored(t.def) }))
+      : eyeAndEar(`${atk}❌`, tr('games.moska.msg.unbeaten', { atk }));
+  }).join(eyeAndEar(', ', '; '));
+}
+
 function getMaxAdd(g) {
   const def = g.players[g.defender];
   const unbeaten = g.table.filter(t => !t.def).length;
@@ -514,13 +525,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     const lines = /** @type {string[]} */ ([]);
 
     // Kuvaa pöydän tilanne kun kierros päättyi
-    // Ruudunlukija kuulee parin sanoina eikä nuolta ja ruksia (J-27).
-    const tableDesc = g.table.map(t => {
-      const atk = lblColored(t.atk);
-      return t.def
-        ? eyeAndEar(`${atk}→${lblColored(t.def)}`, tr('games.moska.msg.beatenBy', { atk, def: lblColored(t.def) }))
-        : eyeAndEar(`${atk}❌`, tr('games.moska.msg.unbeaten', { atk }));
-    }).join(eyeAndEar(', ', '; '));
+    const tableDesc = describeTable(g.table);
 
     if (defWon) {
       // Kaadetut kortit poistuvat pelistä — Super Natural muistaa ne
@@ -774,7 +779,9 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     }
 
     // Näytä lisäysvaiheen alku
-    const tableCards = g.table.map(t => lblColored(t.atk)).join(', ');
+    // Pöytä pareittain: puolustuskorttienkin arvoilla saa lyödä sivusta, joten pelkät
+    // hyökkäyskortit kertoivat vain osan (Tommin kuuntelu 17.10.2026, J-27).
+    const tableCards = describeTable(g.table);
     const g2 = { ...g, phase: 'add', addQueue: queue };
     commit(g2, M.addPhase(tableCards));
     processAddQueue(g2);

@@ -5,6 +5,7 @@
 // rules are translated. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const krl = {
   ui: {
+    docTitle: 'korttipelikokoelma',
     a11y: {
       opponents: ({ names }) => `Vastuštajat vuoron mukah: ${names}.`,
       statusButton: 'Tilanne',
@@ -786,7 +787,7 @@ export const krl = {
         heroDrew: '{name} nošti {count}: {cards}.',
         beatenBy: '{atk}, kuadajana {def}',
         unbeaten: '{atk} kuadamatta',
-        tally: '{beaten} kuattu, {unbeaten} kuadamatta',
+        tally: 'kuattu {beaten}, kuadamatta {unbeaten}',
         won: '{name} vei voiton! 🏆🎉',
         out: '{name} läksi kizasta. 👏',
         lost: '{name} hävizi.',

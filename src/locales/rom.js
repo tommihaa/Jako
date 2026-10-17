@@ -3,6 +3,7 @@
 // Pelien erisnimet pidetään suomeksi (altName).
 export const rom = {
   ui: {
+    docTitle: 'kidipe khelenge karti',
     a11y: {
       opponents: ({ names }) => `Le riventa: ${names}.`,
       statusButton: 'Situacija',

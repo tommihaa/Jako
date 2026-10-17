@@ -2,6 +2,7 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const ro = {
   ui: {
+    docTitle: 'colecție de jocuri de cărți',
     a11y: {
       opponents: ({ names }) => `Adversari în ordinea mutărilor: ${names}.`,
       statusButton: 'Situația',

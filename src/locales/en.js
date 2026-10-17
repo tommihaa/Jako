@@ -4,6 +4,7 @@
 // rules are translated. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const en = {
   ui: {
+    docTitle: 'card game collection',
     a11y: {
       opponents: ({ names }) => `Opponents in turn order: ${names}.`,
       statusButton: 'Status',
