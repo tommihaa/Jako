@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { C, SUIT_COLOR } from '../shared/colors.js';
 import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
-import { SUITS, RANKS, lbl, korttia, kortin, shuffle, cardName, sortHand as sortHandBy, shuffledAINames, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
+import { SUITS, RANKS, lbl, korttia, shuffle, cardName, sortHand as sortHandBy, shuffledAINames, lblColored, BOT_RESULT_DELAY, opponentsInTurnOrder } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
@@ -379,11 +379,16 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       : t('games.maija.msg.finishedOut', { name }),
     maija: (name, hadMaija) => t(hadMaija ? 'games.maija.msg.maijaQ' : 'games.maija.msg.maija', { name }),
     newAttack: (attacker, defender) => t('games.maija.msg.newAttack', { attacker, defender }),
-    defendTake: (name, unbeatenCount, detail) => t('games.maija.msg.defendTake', { name, cards: kortin(unbeatenCount), detail }),
+    defendTake: (name, cards, detail) => t('games.maija.msg.defendTake', { name, cards: cards.map(lblColored).join(', '), detail }),
     aiAttack: (name, cards) => t('games.maija.msg.aiAttack', { name, cards }),
     aiDefense: (name, count) => t('games.maija.msg.aiDefense', { name, cards: korttia(count) }),
     maijaWarning: t('games.maija.msg.maijaWarning'),
-    defenderWinRound: (name) => t('games.maija.msg.defenderWinRound', { name }),
+    // Botin kaadot ja nosto nimeävät kortit, jotta ruudunlukijan käyttäjä kuulee mitä
+    // pöydältä lähti ja mitä botin käteen tuli (Tommin toive 17.10.2026, J-25).
+    aiBeats: (name, rows, all) => t(all ? 'games.maija.msg.aiBeatsAll' : 'games.maija.msg.aiBeats', {
+      name, beats: rows.map(r => t('games.maija.msg.beatPair', { attCard: lblColored(r.att), defCard: lblColored(r.def) })).join(', '),
+    }),
+    aiTake: (name, cards) => t('games.maija.msg.aiTake', { name, cards: cards.map(lblColored).join(', ') }),
     defenderWinRoundNext: t('games.maija.msg.defenderWinRoundNext'),
     tooManyCards: t('games.maija.msg.tooManyCards'),
     maijaNotValid: t('games.maija.msg.maijaNotValid'),
@@ -498,14 +503,17 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     advanceRound(g3, false, lines);
   }
 
-  function resolveDefenseLoss(g) {
+  // announced: botti sanoi noston jo päätöksen hetkellä (aiTake), joten nostoriviä ei
+  // kirjata toista kertaa. Ennen tätä sama nosto kuului kahdesti (kuunneltu 17.10.2026,
+  // docs/AUDITOINTI-RUUDUNLUKIJA.md › J-25).
+  function resolveDefenseLoss(g, announced = false) {
     const unbeaten = g.table.filter(r => !r.def).map(r => r.att);
     const beaten = g.table.filter(r => r.def).flatMap(r => [r.att, r.def]);
     const players = g.players.map((p,i) => i===g.defenderIdx ? { ...p, hand:[...p.hand, ...unbeaten] } : p);
     let g2 = { ...g, players, discard:[...g.discard, ...beaten] };
     if (sndRef.current) SFX.take();
     const detail = beaten.length > 0 ? t('games.maija.msg.beatDetail', { n: beaten.length >> 1 }) : '';
-    const lines = /** @type {string[]} */ ([M.defendTake(g.players[g.defenderIdx].name, unbeaten.length, detail)]);
+    const lines = /** @type {string[]} */ (announced ? [] : [M.defendTake(g.players[g.defenderIdx].name, unbeaten, detail)]);
     g2 = drawHand(g2, g2.attackerIdx);
     const { done, g2:g3 } = checkWinners(g2, lines);
     if (done) return;
@@ -591,15 +599,18 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       const players = g2.players.map((p,i) => i===g2.defenderIdx ? { ...p, hand } : p);
       const g3 = { ...g2, players, table: newTbl };
       const unbeaten = newTbl.filter(r => !r.def);
+      const beatRows = newTbl.filter(r => r.def);
       if (unbeaten.length === 0) {
-        const defName = g2.players[g2.defenderIdx];
-        commit(g3, M.defenderWinRound(defName.name));
+        commit(g3, M.aiBeats(defender.name, beatRows, true));
         if (sndRef.current) SFX.fanfare();
         schedMove(() => resolveDefenseWin(g3), 2200);
       } else {
-        const n = g2.players[g2.defenderIdx];
-        commit(g3, t('games.maija.msg.aiPartialBeat', { name: n.name, beat: newTbl.length - unbeaten.length, total: newTbl.length, cards: kortin(unbeaten.length) }));
-        schedMove(() => resolveDefenseLoss(g3), 1500);
+        // Kaato ja nosto ovat eri viestit (Tommin valinta 17.10.2026). Ilman kaatoja
+        // kuuluu pelkkä nosto.
+        const takeMsg = M.aiTake(defender.name, unbeaten.map(r => r.att));
+        if (beatRows.length) { commit(g3, M.aiBeats(defender.name, beatRows, false)); addLog(takeMsg); }
+        else commit(g3, takeMsg);
+        schedMove(() => resolveDefenseLoss(g3, true), 1500);
       }
   }
 

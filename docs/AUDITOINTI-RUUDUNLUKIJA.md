@@ -523,8 +523,9 @@ Versiorivi tuli sivua pyyhkäistäessä heti Chromen *Muokkaa ja hallinnoi Googl
 Jaa-nappi on puussa *Jaa Jako* ja versiorivi *Versio 1 piste 2 piste 238, julkaistu…*, joten
 J-17 ja J-21 ovat puussa oikein. Syitä on kaksi, ja molemmat mitattiin TalkBackin puhetulosteesta.
 
-**J-24. Napin title kuuluu nimen perässä.** Tila: korjattu dev-versiossa 17.10.2026, ei
-kuunneltu eikä julkaistu. Jaa-nappi sanoo *"Jaa Jako. Painike. Jaa Jako⁹"*: Chrome antaa
+**J-24. Napin title kuuluu nimen perässä.** Tila: korjattu dev-versiossa 17.10.2026,
+kuunneltu ok Pixelillä klo 03.20 (Jaa-nappi *"Jaa Jako. Painike."*, kielinappi ja jokainen
+kieli kerran, versiorivi sanoina), ei julkaistu. Jaa-nappi sanoo *"Jaa Jako. Painike. Jaa Jako⁹"*: Chrome antaa
 `title`-attribuutin TalkBackille lisätietona, joka luetaan nimen jälkeen. J-17 poisti ⁹:n
 `aria-label`ista mutta ei `title`stä. Tommin valinta: tooltip pois. Se poistettiin Jaa-napista,
 kielinapista (*"Kieli: Suomi"* + *Suomi*) ja kielivalikon kielistä, joissa nimi olisi kuulunut
@@ -547,4 +548,22 @@ Mittaus tehtiin adb-napautuksilla ja pyyhkäisyillä, ja puhetuloste kaapattiin 
 `screencap`-silmukalla, joka on nopeampi kuin adb-haku. Yksi napautus avasi Asetukset ja
 takaisin-näppäin sulki tuotantovälilehden, minkä jälkeen välilehti avattiin uudelleen.
 
-**Seuraavaksi:** J-24 julkaistaan, ja kohta 46 odottaa Tommin kuuntelua sen jälkeen.
+**J-25. Maijan botin nosto kuuluu kahdesti, eikä kortteja nimetä.** Tila: korjattu
+dev-versiossa 17.10.2026, ei kuunneltu eikä julkaistu. Tommi: kun puolustaja joutuu nostamaan
+kaatamattomia kortteja, viesti toistuu. Pixelin loki: *"Setämies kaataa 0/2 ja nostaa 2
+korttia."* ja sekuntia myöhemmin *"Setämies nosti 2 korttia kaatamatta jääneistä."* Botti
+sanoi noston päätöksen hetkellä (`runAIDefend`), ja `resolveDefenseLoss` kirjasi saman teon
+uudelleen. Ihmisen *Ota kaikki* kulkee vain jälkimmäistä reittiä, joten Heron nosto kuului
+kerran. Tommin toive: näkövammainen pelaaja haluaa tietää, millä korteilla kaadettiin ja mitä
+nostettiin. Tommin valinnat: kaato ja nosto ovat eri viestit, ja myös Heron nosto nimeää
+kortit. Nyt botti sanoo *"Arttu kaatoi ruutu kaksi kortilla risti seitsemän."* (kaikki
+kaadettuina *"kaatoi kaikki: …"*) ja *"Juuso nostaa pata rouva."*, ja Hero *"Hero nosti pata
+kaksi, pata neljä kaatamatta jääneistä."* `resolveDefenseLoss` ei kirjaa botin nostoa toista
+kertaa. Avaimet `aiPartialBeat` ja `defenderWinRound` korvattiin avaimilla `beatPair`, `aiBeats`,
+`aiBeatsAll` ja `aiTake` (23 kieltä, muodot kunkin kielen *Hero kaatoi* -viestistä). Testi
+`maija-nosto-kerran.test.jsx` pelaa Bottien Taistelun ja kaatuu tuplanostoon. Vanhalla koodilla
+se kaatui yhdeksään. Selaimessa nähtiin täyskaato, botin nosto ja Heron nosto korttien kanssa.
+Osittaista kaatoa, jossa samassa vuorossa on kaato ja nosto, ei nähty selaimessa.
+
+**Seuraavaksi:** Tommin kuuntelu J-25:stä Pixelillä, sitten J-24:n ja J-25:n julkaisu, ja
+kohta 46 odottaa kuuntelua sen jälkeen.
