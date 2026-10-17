@@ -549,7 +549,8 @@ Mittaus tehtiin adb-napautuksilla ja pyyhkäisyillä, ja puhetuloste kaapattiin 
 takaisin-näppäin sulki tuotantovälilehden, minkä jälkeen välilehti avattiin uudelleen.
 
 **J-25. Maijan botin nosto kuuluu kahdesti, eikä kortteja nimetä.** Tila: korjattu
-dev-versiossa 17.10.2026, ei kuunneltu eikä julkaistu. Tommi: kun puolustaja joutuu nostamaan
+dev-versiossa 17.10.2026, kuunneltu ok Pixelillä (kaadot ja nostot kerran korttien kanssa),
+ei julkaistu. Tommi: kun puolustaja joutuu nostamaan
 kaatamattomia kortteja, viesti toistuu. Pixelin loki: *"Setämies kaataa 0/2 ja nostaa 2
 korttia."* ja sekuntia myöhemmin *"Setämies nosti 2 korttia kaatamatta jääneistä."* Botti
 sanoi noston päätöksen hetkellä (`runAIDefend`), ja `resolveDefenseLoss` kirjasi saman teon
@@ -565,5 +566,4 @@ kertaa. Avaimet `aiPartialBeat` ja `defenderWinRound` korvattiin avaimilla `beat
 se kaatui yhdeksään. Selaimessa nähtiin täyskaato, botin nosto ja Heron nosto korttien kanssa.
 Osittaista kaatoa, jossa samassa vuorossa on kaato ja nosto, ei nähty selaimessa.
 
-**Seuraavaksi:** Tommin kuuntelu J-25:stä Pixelillä, sitten J-24:n ja J-25:n julkaisu, ja
-kohta 46 odottaa kuuntelua sen jälkeen.
+**Seuraavaksi:** J-24:n ja J-25:n julkaisu, ja kohta 46 odottaa kuuntelua sen jälkeen.
