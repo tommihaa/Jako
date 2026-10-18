@@ -13,6 +13,13 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '19.10.2026',
+    items: [
+      'Kultakala: botin vaihto ei enää paljasta sen piilossa olevia kortteja. Viesti kertoo vain vaihdetut paikat ja poistopakkaan menevän kortin. Avoimet kortit ja Bottien Taistelu näyttävät kortit kuten ennenkin.',
+      'Saavutettavuus: pelin lopussa paljastetut kortit kuuluvat pelaajittain yhtenä lauseena, eikä jokaisen kortin perään enää sanota "kuva".',
+    ],
+  },
+  {
     date: '18.10.2026',
     items: [
       'Saavutettavuus: ruudunlukija ei enää lue koristeemojeja pelaajien nimien edessä, viestien alussa, lokissa eikä otsikoissa.',
