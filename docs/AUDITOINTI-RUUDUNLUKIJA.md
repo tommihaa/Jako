@@ -975,3 +975,11 @@ jokaisen pelin rivi alkoi pelin kuvakkeella (👋, 🤜, ♣ jne.). Pelatun peli
 jonka nimeen kuvake tuli. Sijoitusjakauman rivit alkoivat samoilla mitaleilla. Korjaus J-13:n
 mallilla: kuvake on koriste (`Deco`). Mitali näkyy mutta kuuluu sijana (*"1."*). Testi kaatui
 ilman korjausta (tarkistettu).
+
+## Julkaisu 1.2.244 19.10.2026
+
+J-37 ja retron tarkistimet (`b76509d`) julkaistu (Jako `4edaeca`, push klo 2.24, Tommin
+*julkaise Jako 1.2.244*). Tuotantobundlesta todennettu selaimella: molemmat domainit tarjoavat
+`index-DkXP64nJ.js`:n, jossa on `"1.2.244"`, ja hash on sama kuin paikallisen buildin.
+Kuuntelu tekemättä: J-13, J-35, J-36 ja J-37. Ennen kuuntelua luetaan laitteen versio
+deploy-skillin vaiheen 8 mukaan.
