@@ -874,3 +874,13 @@ tarjoavat `index-Cd-muPF0.js`:n, jossa on `"1.2.241"` sekä avaimet `introToggle
 `tallyUnbeaten`. Paikallisen buildin hash oli eri (`DiATmYJI`), mikä deploy-skillin mukaan ei
 ole virhe. Kuvausvirkkeen palaavan kävijän linkkiä ja J-34:ää ei ole kuunneltu.
 
+
+## Julkaisu 1.2.242 18.10.2026
+
+J-13 julkaistu kokonaan (ryhmät 1–6, Jako `b15bb40`, push klo 23.57, Tommin *julkaise J-13:n
+korjaukset, kuunnellaan tuotannossa*). Tuotantobundlesta todennettu selaimella pushin jälkeen.
+Molemmat domainit tarjoavat `index-DRqXQ7d6.js`:n, jossa on `"1.2.242"` sekä avaimet `srTurn`,
+`statSpoken` ja `srLowerRange`. Paikallisen buildin hash oli eri (`BZ_LjooG`), mikä
+deploy-skillin mukaan ei ole virhe. Kuuntelu tekemättä: J-13:n korjaukset, kuvausvirkkeen
+palaavan kävijän linkki ja J-34. Pixelin tuotantotallennuksessa oli 18.10. klo 23 nolla
+pelattua peliä, joten linkki tulee näkyviin vasta yhden loppuun pelatun pelin jälkeen.
