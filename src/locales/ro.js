@@ -257,6 +257,7 @@ export const ro = {
         aiDiscard: '{name} aruncă {card} în pachetul de aruncare.',
         aiCannotForceSwap: '{name} nu poate schimba {card} forțat: {reason}',
         slotItem: 'locul {pos}: {card}',
+        slotPos: 'locul {pos}',
         aiSwapChain: '{name} schimbă: {chain}, {card} în pachetul de aruncare.',
         humanDrawDiscard: 'Ai tras {card} ({v} p) din pachetul de aruncare — schimb obligatoriu. Atinge o carte de pe câmp.',
         humanDrawDeck: 'Ai tras {card} ({v} p). Dacă o vrei printre cărțile de pe câmp, Schimb-o sau Arunc-o în pachetul de aruncare.',

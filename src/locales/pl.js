@@ -264,6 +264,7 @@ export const pl = {
         aiDiscard: '{name} zrzuca {card} na stos zrzutów.',
         aiCannotForceSwap: '{name} nie może zmienić {card} z talii: {reason}',
         slotItem: 'pole {pos}: {card}',
+        slotPos: 'pole {pos}',
         aiSwapChain: '{name} zmienia: {chain}, {card} na stos zrzutów.',
         humanDrawDiscard: 'Dobrałeś {card} ({v} p) ze stosu zrzutów — wymiana obowiązkowa. Kliknij kartę pola.',
         humanDrawDeck: 'Dobrałeś {card} ({v} p). Jeśli chcesz ją mieć w kartach pola, Zamień ją lub Zrzuć na stos zrzutów.',

@@ -264,6 +264,7 @@ export const uk = {
         aiDiscard: '{name} скидає {card} у скидання.',
         aiCannotForceSwap: '{name} не може обміняти {card} з колоди: {reason}',
         slotItem: 'позиція {pos}: {card}',
+        slotPos: 'позиція {pos}',
         aiSwapChain: '{name} обмінює: {chain}, {card} у скидання.',
         humanDrawDiscard: 'Ти взяв {card} ({v} оч) зі скидання — обов’язковий обмін. Клацни польову карту.',
         humanDrawDeck: 'Ти взяв {card} ({v} оч). Якщо хочеш її в поле — Обміняй її або Скинь у скидання.',

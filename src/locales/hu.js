@@ -258,6 +258,7 @@ export const hu = {
         aiDiscard: '{name} eldobja a(z) {card} lapot a dobópakliba.',
         aiCannotForceSwap: '{name} nem tudja kicserélni a(z) {card} lapot kényszerből: {reason}',
         slotItem: '{pos}. hely: {card}',
+        slotPos: '{pos}. hely',
         aiSwapChain: '{name} cserél: {chain}, {card} a dobópakliba.',
         humanDrawDiscard: 'Húztad a(z) {card} lapot ({v} p) a dobópakliból — kötelező csere. Érints egy mezőlapra.',
         humanDrawDeck: 'Húztad a(z) {card} lapot ({v} p). Ha a mezőlapjaid közé szeretnéd, Cseréld ki vagy Dobd a dobópakliba.',

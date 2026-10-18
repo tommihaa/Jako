@@ -264,6 +264,7 @@ export const ru = {
         aiDiscard: '{name} сбрасывает {card}.',
         aiCannotForceSwap: '{name} не может поменять {card} из колоды: {reason}',
         slotItem: 'ячейка {pos}: {card}',
+        slotPos: 'ячейка {pos}',
         aiSwapChain: '{name} меняет: {chain}, {card} в сброс.',
         humanDrawDiscard: 'Вы взяли {card} ({v} о) из сброса — обязательный обмен. Кликните карту поля.',
         humanDrawDeck: 'Вы взяли {card} ({v} о). Чтобы оставить её среди карт поля, Поменяйте её или Сбросьте.',

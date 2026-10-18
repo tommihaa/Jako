@@ -255,6 +255,7 @@ export const es = {
         aiDiscard: '{name} descarta {card}.',
         aiCannotForceSwap: '{name} no puede cambiar {card} del mazo: {reason}',
         slotItem: 'posición {pos}: {card}',
+        slotPos: 'posición {pos}',
         aiSwapChain: '{name} cambia: {chain}, {card} al descarte.',
         humanDrawDiscard: 'Robaste {card} ({v} p) del descarte: cambio obligatorio. Haz clic en una carta de campo.',
         humanDrawDeck: 'Robaste {card} ({v} p). Si la quieres entre tus cartas de campo, Cámbiala o Descártala.',

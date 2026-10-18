@@ -257,6 +257,7 @@ export const se = {
         aiDiscard: '{name} bálká {card} sihkkunstohkii.',
         aiCannotForceSwap: '{name} ii sáhte molssodit {card} bággu mielde: {reason}',
         slotItem: 'báiki {pos}: {card}',
+        slotPos: 'báiki {pos}',
         aiSwapChain: '{name} molsso: {chain}, {card} sihkkunstohkii.',
         humanDrawDiscard: 'Geasiidet {card} ({v} č) sihkkunstohkas — bággomolsun. Coahkkal giettegoartta.',
         humanDrawDeck: 'Geasiidet {card} ({v} č). Jus háliidat dan giettegoarttaidasat, de Molsso dan dahje Bálká sihkkunstohkii.',

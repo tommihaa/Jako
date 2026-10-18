@@ -259,6 +259,7 @@ export const en = {
         aiDiscard: '{name} discards {card}.',
         aiCannotForceSwap: '{name} cannot swap {card} from the deck: {reason}',
         slotItem: 'slot {pos}: {card}',
+        slotPos: 'slot {pos}',
         aiSwapChain: '{name} swaps: {chain}, {card} to discard.',
         humanDrawDiscard: 'You drew {card} ({v} pts) from the discard pile. The swap is mandatory, click a field card.',
         humanDrawDeck: 'You drew {card} ({v} pts). Swap it for a field card or Discard it.',

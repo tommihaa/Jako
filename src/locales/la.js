@@ -257,6 +257,7 @@ export const la = {
         aiDiscard: '{name} iacit {card} in cumulum deiectum.',
         aiCannotForceSwap: '{name} non potest mutare {card} ex necessitate: {reason}',
         slotItem: 'locus {pos}: {card}',
+        slotPos: 'locus {pos}',
         aiSwapChain: '{name} mutat: {chain}, {card} in cumulum deiectum.',
         humanDrawDiscard: 'Traxisti {card} ({v} p) e cumulo deiecto — mutatio necessaria. Pulsa chartam campi.',
         humanDrawDeck: 'Traxisti {card} ({v} p). Si eam in chartas campi vis, Muta eam vel Iace in cumulum deiectum.',

@@ -247,6 +247,9 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
   // näkymätila. Katselutila pakottaa paljastuksen päälle koskematta asetukseen, ja
   // `startGame` palauttaa näkymän asetuksen mukaiseksi.
   const [revealAll, setRevealAll] = useState(seeAll);
+  // Botin ajastettu siirto lukee näkyvyyden refistä, koska sulkeuma voi olla vanha (J-36).
+  const revealAllRef = useRef(revealAll);
+  revealAllRef.current = revealAll;
   useEffect(() => { setRevealAll(seeAll); }, [seeAll]);
   const [shuffling, setShuffling] = useState(false);
   const [kohahdus, setKohahdus] = useState(null);
@@ -454,7 +457,13 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       if (sndRef.current) SFX.swap();
 
       // Logita ketjuvaihto - näytä kaikki välivaiheet väreillä
-      const swapChain = swaps.map(s => t('games.kultakala.msg.slotItem', { pos: s.pos, card: lblColored(s.card) })).join(eyeAndEar(' → ', `, ${t('ui.shared.srThen')} `));
+      // Botin rivi on piilossa (KULTAKALA.md: muiden pelaajien kortit piilossa koko pelin ajan),
+      // joten viesti kertoo vain paikat. Kortit näkyvät, kun Avoimet kortit tai Bottien
+      // Taistelu paljastaa ne (auditointi J-36, Tommin vahvistus 19.10.2026).
+      const shown = revealAllRef.current;
+      const swapChain = swaps.map(s => shown
+        ? t('games.kultakala.msg.slotItem', { pos: s.pos, card: lblColored(s.card) })
+        : t('games.kultakala.msg.slotPos', { pos: s.pos })).join(eyeAndEar(' → ', `, ${t('ui.shared.srThen')} `));
       commit(newG, t('games.kultakala.msg.aiSwapChain', { name: g2.players[idx].name, chain: swapChain, card: lblColored(held) }));
       // Paikasta 1 ulos ajettu pikkukortti kohahduttaa, sama ehto kuin humanSwapRow:ssa.
       if (swaps[swaps.length - 1].pos === 1 && held.v <= 2) triggerKohahdus(held);

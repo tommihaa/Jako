@@ -255,6 +255,7 @@ export const it = {
         aiDiscard: '{name} scarta {card}.',
         aiCannotForceSwap: '{name} non può scambiare {card} dal mazzo: {reason}',
         slotItem: 'casella {pos}: {card}',
+        slotPos: 'casella {pos}',
         aiSwapChain: '{name} scambia: {chain}, {card} agli scarti.',
         humanDrawDiscard: 'Hai pescato {card} ({v} pti) dagli scarti — scambio obbligatorio. Clicca una carta del campo.',
         humanDrawDeck: 'Hai pescato {card} ({v} pti). Se vuoi tenerla tra le tue carte del campo, Scambiala oppure Scartala.',

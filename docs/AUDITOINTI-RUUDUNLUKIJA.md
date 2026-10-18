@@ -907,8 +907,8 @@ dev-versiossa 19.10.2026, ei kuunneltu. Tulosruudun paljastetut kortit (Kultakal
 olivat kukin oma `role="img"`. Nyt pelaajan rivi kuuluu yhtenä lauseena
 (*"Jens: pata kuusi, risti neljä, …"*), ja näkyvä rivi on `aria-hidden`.
 
-**J-36. Kultakalan botin vaihtoviesti paljastaa botin piilokortit.** Tila: auki, odottaa
-Tommin vahvistusta. Tommi kuuli bottien kaikki kortit, vaikka Avoimet kortit oli pois.
+**J-36. Kultakalan botin vaihtoviesti paljastaa botin piilokortit.** Tila: korjattu
+dev-versiossa 19.10.2026 Tommin vahvistuksella, ei kuunneltu. Tommi kuuli bottien kaikki kortit, vaikka Avoimet kortit oli pois.
 Viesti `aiSwapChain` nimeää jokaisen kortin, jonka botti vaihtaa piilossa oleviin paikkoihin
 (*"Jens vaihtaa: paikka 5: pata kuusi → paikka 4: risti neljä, pata kuningas poistopakkaan"*).
 Sama näkyy myös ruudulla, joten vuoto koskee näkevääkin. KULTAKALA.md:15: *"Muiden pelaajien
@@ -916,3 +916,11 @@ kortit ovat piilossa koko pelin ajan."* Koodi rikkoo kaanonia. Tommin toive: kuu
 poistopakkaan menevä kortti ja vaihtojen paikat. Ehdotettu muoto: *"Jens vaihtaa: paikka 5,
 sitten paikka 4, pata kuningas poistopakkaan"*, ja Avoimet kortit tai Bottien Taistelu
 näyttää kortit kuten nyt.
+
+*J-36:n korjaus 19.10.2026.* Ilman Avoimia kortteja ketju kertoo vain paikat (uusi avain
+`games.kultakala.msg.slotPos` 23 kielellä, johdettu `slotItem`ista). Näkyvyys luetaan refistä
+(`revealAllRef`), koska botin ajastettu siirto voi nähdä vanhan tilan. Testi
+`kultakala-piilokortit.test.jsx` pelaa kolme peliä molemmissa tiloissa: piilossa ketjussa ei ole
+korttia, avoimena on. Testi kaatui ilman korjausta (tarkistettu). Selaimessa todennettu Bottien
+Taistelussa: *"Janus vaihtaa: paikka 5: risti neljä, sitten paikka 4: ruutu viisi, …"*, mikä
+todentaa samalla Kultakalan *sitten*-sanan.

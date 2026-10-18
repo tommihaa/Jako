@@ -255,6 +255,7 @@ export const de = {
         aiDiscard: '{name} wirft {card} auf den Ablagestapel.',
         aiCannotForceSwap: '{name} kann {card} nicht vom Stapel tauschen: {reason}',
         slotItem: 'Platz {pos}: {card}',
+        slotPos: 'Platz {pos}',
         aiSwapChain: '{name} tauscht: {chain}, {card} auf den Ablagestapel.',
         humanDrawDiscard: 'Du hast {card} ({v} P) vom Ablagestapel gezogen — Pflichttausch. Klicke eine Feldkarte an.',
         humanDrawDeck: 'Du hast {card} ({v} P) gezogen. Wenn du sie zu deinen Feldkarten willst, tausche sie ein oder wirf sie auf den Ablagestapel.',

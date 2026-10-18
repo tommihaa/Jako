@@ -258,6 +258,7 @@ export const rom = {
         aiDiscard: '{name} čhudel {card} ki kupa šudimaski.',
         aiCannotForceSwap: '{name} našti paruvel {card} le zorasa: {reason}',
         slotItem: 'than {pos}: {card}',
+        slotPos: 'than {pos}',
         aiSwapChain: '{name} paruvel: {chain}, {card} ki kupa šudimaski.',
         humanDrawDiscard: 'Cirdan {card} ({v} p) andai kupa šudimaski — trubul te paruves. Ce pe karta le poleski.',
         humanDrawDeck: 'Cirdan {card} ({v} p). Te kames la ande tire poleske karti, atunč Paruv la vaj Čhude ki kupa šudimaski.',

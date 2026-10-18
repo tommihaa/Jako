@@ -255,6 +255,7 @@ export const pt = {
         aiDiscard: '{name} descarta {card}.',
         aiCannotForceSwap: '{name} não pode trocar {card} do baralho: {reason}',
         slotItem: 'posição {pos}: {card}',
+        slotPos: 'posição {pos}',
         aiSwapChain: '{name} troca: {chain}, {card} para o descarte.',
         humanDrawDiscard: 'Compraste {card} ({v} p) do monte de descarte — troca obrigatória. Clica numa carta de campo.',
         humanDrawDeck: 'Compraste {card} ({v} p). Se a quiseres entre as tuas cartas de campo, troca-a ou descarta-a.',

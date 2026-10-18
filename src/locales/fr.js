@@ -255,6 +255,7 @@ export const fr = {
         aiDiscard: '{name} défausse {card}.',
         aiCannotForceSwap: '{name} ne peut pas échanger {card} de la pioche : {reason}',
         slotItem: 'emplacement {pos} : {card}',
+        slotPos: 'emplacement {pos}',
         aiSwapChain: '{name} échange : {chain}, {card} à la défausse.',
         humanDrawDiscard: 'Tu as pioché {card} ({v} p) dans la défausse — échange obligatoire. Clique sur une carte de terrain.',
         humanDrawDeck: 'Tu as pioché {card} ({v} p). Pour la garder parmi tes cartes de terrain, Échange-la, ou Défausse-la.',

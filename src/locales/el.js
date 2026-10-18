@@ -255,6 +255,7 @@ export const el = {
         aiDiscard: 'Ο {name} απορρίπτει το {card}.',
         aiCannotForceSwap: 'Ο {name} δεν μπορεί να αλλάξει το {card} από την τράπουλα: {reason}',
         slotItem: 'θέση {pos}: {card}',
+        slotPos: 'θέση {pos}',
         aiSwapChain: 'Ο {name} αλλάζει: {chain}, {card} στην απόρριψη.',
         humanDrawDiscard: 'Τράβηξες {card} ({v} π) από τον σωρό απόρριψης — υποχρεωτική αλλαγή. Κάνε κλικ σε ένα χαρτί πεδίου.',
         humanDrawDeck: 'Τράβηξες {card} ({v} π). Για να το κρατήσεις στα χαρτιά πεδίου σου, Άλλαξέ το ή Απόρριψέ το.',

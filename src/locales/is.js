@@ -255,6 +255,7 @@ export const is = {
         aiDiscard: '{name} kastar {card} í kasthaug.',
         aiCannotForceSwap: '{name} getur ekki skipt {card} úr stokki: {reason}',
         slotItem: 'reitur {pos}: {card}',
+        slotPos: 'reitur {pos}',
         aiSwapChain: '{name} skiptir: {chain}, {card} í kasthaug.',
         humanDrawDiscard: 'Þú dróst {card} ({v} st) úr kasthaug — skylduskipti. Smelltu á reitaspil.',
         humanDrawDeck: 'Þú dróst {card} ({v} st). Til að halda því meðal reitaspilanna, Skiptu því eða Kastaðu því í kasthaug.',

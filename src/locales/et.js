@@ -255,6 +255,7 @@ export const et = {
         aiDiscard: '{name} viskab {card} viskehunnikusse.',
         aiCannotForceSwap: '{name} ei saa {card} pakist vahetada: {reason}',
         slotItem: 'koht {pos}: {card}',
+        slotPos: 'koht {pos}',
         aiSwapChain: '{name} vahetab: {chain}, {card} viskehunnikusse.',
         humanDrawDiscard: 'Võtsid {card} ({v} p) viskehunnikust — kohustuslik vahetus. Klõpsa väljakaardile.',
         humanDrawDeck: 'Võtsid {card} ({v} p). Kui tahad selle oma väljakaartide hulka, siis Vaheta see või Viska viskehunnikusse.',

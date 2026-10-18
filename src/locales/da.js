@@ -255,6 +255,7 @@ export const da = {
         aiDiscard: '{name} kaster {card} i kastebunken.',
         aiCannotForceSwap: '{name} kan ikke bytte {card} fra bunken: {reason}',
         slotItem: 'plads {pos}: {card}',
+        slotPos: 'plads {pos}',
         aiSwapChain: '{name} bytter: {chain}, {card} til kastebunken.',
         humanDrawDiscard: 'Du trak {card} ({v} p) fra kastebunken — tvungent bytte. Klik på et feltkort.',
         humanDrawDeck: 'Du trak {card} ({v} p). Vil du have det blandt dine feltkort, så Byt det eller Kast det i kastebunken.',

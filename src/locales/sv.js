@@ -255,6 +255,7 @@ export const sv = {
         aiDiscard: '{name} kastar {card} i kasthögen.',
         aiCannotForceSwap: '{name} kan inte byta {card} från leken: {reason}',
         slotItem: 'plats {pos}: {card}',
+        slotPos: 'plats {pos}',
         aiSwapChain: '{name} byter: {chain}, {card} till kasthögen.',
         humanDrawDiscard: 'Du drog {card} ({v} p) från kasthögen — obligatoriskt byte. Klicka på ett fältkort.',
         humanDrawDeck: 'Du drog {card} ({v} p). Vill du ha det bland dina fältkort, byt det eller kasta det i kasthögen.',

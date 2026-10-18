@@ -266,6 +266,7 @@ export const cs = {
         aiDiscard: '{name} odhazuje {card} do odhazovacího balíčku.',
         aiCannotForceSwap: '{name} nemůže vyměnit {card} z nutnosti: {reason}',
         slotItem: 'místo {pos}: {card}',
+        slotPos: 'místo {pos}',
         aiSwapChain: '{name} mění: {chain}, {card} do odhazovacího balíčku.',
         humanDrawDiscard: 'Dobral jsi {card} ({v} b) z odhazovacího balíčku — povinná výměna. Klepni na kartu v poli.',
         humanDrawDeck: 'Dobral jsi {card} ({v} b). Chceš-li ji do svých karet v poli, Vyměň ji nebo Odhoď do odhazovacího balíčku.',

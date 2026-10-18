@@ -256,6 +256,7 @@ export const krl = {
         aiDiscard: '{name} viskuau {card} poistopakkah.',
         aiCannotForceSwap: '{name} ei voi vaihtua {card} pakosta: {reason}',
         slotItem: 'šija {pos}: {card}',
+        slotPos: 'šija {pos}',
         aiSwapChain: '{name} vaihtau: {chain}, {card} poistopakkah.',
         humanDrawDiscard: 'Noštit {card} ({v} p) poistopakasta — pakollini vaihto. Paina kendäkorttie.',
         humanDrawDeck: 'Noštit {card} ({v} p). Ku tahot šen kendäkortteihis, ga Vaiha še tai Viskua poistopakkah.',

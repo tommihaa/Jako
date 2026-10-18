@@ -306,6 +306,7 @@ export const fi = {
         aiDiscard: '{name} heittää {card} poistopakkaan.',
         aiCannotForceSwap: '{name} ei voi vaihtaa {card} pakosta: {reason}',
         slotItem: 'paikka {pos}: {card}',
+        slotPos: 'paikka {pos}',
         aiSwapChain: '{name} vaihtaa: {chain}, {card} poistopakkaan.',
         humanDrawDiscard: 'Nostit {card} ({v} p) poistopakasta. Vaihto on pakollinen, klikkaa kenttäkorttia.',
         humanDrawDeck: 'Nostit {card} ({v} p). Vaihda se kenttäkorttiin tai Heitä poistopakkaan.',
