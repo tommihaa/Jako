@@ -15,6 +15,12 @@ export const CHANGELOG = [
   {
     date: '19.10.2026',
     items: [
+      'Saavutettavuus: tulosruudun ja tilastojen mitali kuuluu sijana, esimerkiksi "1.", eikä mitalin nimenä. Tilastojen pelikuvaketta ei enää lueta.',
+    ],
+  },
+  {
+    date: '19.10.2026',
+    items: [
       'Kultakala: botin vaihto ei enää paljasta sen piilossa olevia kortteja. Viesti kertoo vain vaihdetut paikat ja poistopakkaan menevän kortin. Avoimet kortit ja Bottien Taistelu näyttävät kortit kuten ennenkin.',
       'Saavutettavuus: pelin lopussa paljastetut kortit kuuluvat pelaajittain yhtenä lauseena, eikä jokaisen kortin perään enää sanota "kuva".',
     ],
