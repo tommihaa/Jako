@@ -14,7 +14,7 @@ import { useStickySetting } from '../shared/storage.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, TurnMark } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
@@ -604,7 +604,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
             return (
               <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '5px 10px', borderRadius: 10, background: isActive ? `${C.gold}08` : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, opacity: isDone ? 0.45 : 1 }}>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 70, flexShrink: 0 }}>
-                  {isActive ? '► ' : '🤖 '}{truncName(p.name)}
+                  <Deco>{isActive ? '► ' : '🤖 '}</Deco>{truncName(p.name)}<TurnMark on={isActive} mark="" />
                   {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
                 </span>
                 {revealAll ? (
@@ -672,7 +672,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
       {/* Oma käsi */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn || isGiving ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '12px 14px', marginBottom: isMobile ? 6 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn || isGiving ? C.gold : C.dim, marginBottom: 8 }}>
-          👤 Hero{human.hand.length === 0 ? ` · ${t('ui.shared.emptyHandWin')}` : ''}
+          <Deco>👤</Deco> Hero{human.hand.length === 0 ? ` · ${t('ui.shared.emptyHandWin')}` : ''}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {sortHand(human.hand).map(c => {

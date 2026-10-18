@@ -170,6 +170,7 @@ export const cs = {
     replay: { table: 'Stůl', pts: 'b' },
 
     shared: {
+      srTurn: 'na tahu', srAttacks: 'útočí', srDefends: 'brání', srSkips: 'ztrácí tah',
       watchMode: '🤖 REŽIM SLEDOVÁNÍ',
       resume: '▶ Pokračovat',
       pause: '⏸ Pauza',

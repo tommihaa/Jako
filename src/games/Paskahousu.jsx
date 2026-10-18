@@ -14,7 +14,7 @@ import { useGameState } from '../shared/useGameState.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, TurnMark, SrWord } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -1047,7 +1047,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
 
       {/* Viesti */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 40 : 56, display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 16, flexShrink: 0 }}>🃏</span>
+        <span aria-hidden="true" style={{ fontSize: 16, flexShrink: 0 }}>🃏</span>
         <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} html={msg} gameMessage />
       </div>
 
@@ -1067,8 +1067,8 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
             return (
               <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '5px 10px', borderRadius: 10, background: isActive ? `${C.gold}08` : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '55' : willSkip ? C.red + '55' : C.panelBorder}`, opacity: isDone ? 0.45 : 1 }}>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : willSkip ? C.red : C.dim, minWidth: 70, flexShrink: 0 }}>
-                  {isActive ? '► ' : '🤖 '}{truncName(p.name)}
-                  {willSkip && <span style={{ color: C.red, marginLeft: 4 }}>⚠</span>}
+                  <Deco>{isActive ? '► ' : '🤖 '}</Deco>{truncName(p.name)}<TurnMark on={isActive} mark="" />
+                  {willSkip && <><span aria-hidden="true" style={{ color: C.red, marginLeft: 4 }}>⚠</span><SrWord word={t('ui.shared.srSkips')} /></>}
                   {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
                 </span>
                 {revealAll ? (
@@ -1233,7 +1233,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         )}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn ? C.gold + '44' : G.phase === 'swap_offer' && G.swapData?.pidx === 0 ? C.gold + '22' : C.panelBorder}`, borderRadius: 14, padding: '12px 14px', transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn ? C.gold : C.dim, marginBottom: 8 }}>
-          👤 Hero · {korttia(human.hand.length)} {t('ui.shared.inHand')}
+          <Deco>👤</Deco> Hero · {korttia(human.hand.length)} {t('ui.shared.inHand')}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {sortHand(human.hand).map(c => {

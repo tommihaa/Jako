@@ -161,6 +161,7 @@ export const ro = {
     replay: { table: 'Masă', pts: 'pct' },
 
     shared: {
+      srTurn: 'la rând', srAttacks: 'atacă', srDefends: 'apără', srSkips: 'pierde rândul',
       watchMode: '🤖 MOD SPECTATOR',
       resume: '▶ Continuă',
       pause: '⏸ Pauză',

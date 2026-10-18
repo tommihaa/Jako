@@ -168,6 +168,7 @@ export const uk = {
     replay: { table: 'Стіл', pts: 'оч' },
 
     shared: {
+      srTurn: 'ходить', srAttacks: 'атакує', srDefends: 'захищається', srSkips: 'втрачає свій хід',
       watchMode: '🤖 РЕЖИМ СПОСТЕРЕЖЕННЯ',
       resume: '▶ Продовжити',
       pause: '⏸ Пауза',

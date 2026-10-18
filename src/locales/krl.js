@@ -160,6 +160,7 @@ export const krl = {
     replay: { table: 'Stola', pts: 'pts' },
 
     shared: {
+      srTurn: 'vuorošša', srAttacks: 'hyökkiäy', srDefends: 'puolistau', srSkips: 'mänettäy vuoruoh',
       watchMode: '🤖 KAČČELUTILA',
       resume: '▶ Jatka',
       pause: '⏸ Tauko',

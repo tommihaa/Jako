@@ -9,7 +9,7 @@ import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11y
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, RoleWord } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -1164,7 +1164,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
 
       {/* Viestikupla */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 16, flexShrink: 0 }}>⚔️</span>
+        <span aria-hidden="true" style={{ fontSize: 16, flexShrink: 0 }}>⚔️</span>
         <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }} html={msg} gameMessage />
       </div>
 
@@ -1204,7 +1204,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
                 return (
                   <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.03)', border: `1px solid ${p.id === G.defender ? C.blue + '55' : p.id === G.primaryAtk ? '#e05c3b55' : C.panelBorder}`, borderRadius: 8, padding: '4px 8px', opacity: p.rank !== null ? 0.35 : 1 }}>
                     <span style={{ minWidth: 64, flexShrink: 0, fontFamily: 'sans-serif', fontSize: 11, color: p.id === G.primaryAtk ? C.red : p.id === G.defender ? C.blue : C.dim }}>
-                      {p.id === G.primaryAtk ? '⚔' : p.id === G.defender ? '🛡' : '🤖'} {p.name.slice(0, 8)}{p.rank !== null ? ` ${p.rank}.` : ''}
+                      <Deco>{p.id === G.primaryAtk ? '⚔' : p.id === G.defender ? '🛡' : '🤖'}</Deco> {p.name.slice(0, 8)}<RoleWord role={p.id === G.primaryAtk ? 'attack' : p.id === G.defender && 'defend'} />{p.rank !== null ? ` ${p.rank}.` : ''}
                     </span>
                     <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap', flex: 1 }}>
                       {sortHand(p.hand).map(c => {
@@ -1227,7 +1227,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
               {G.players.filter((_, i) => allBots || i !== 0).map(p => (
                 <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${p.id === G.defender ? C.blue + '55' : p.id === G.primaryAtk ? '#e05c3b55' : C.panelBorder}`, borderRadius: 10, padding: isMobile ? '5px 8px' : '7px 10px', textAlign: 'center', opacity: p.rank !== null ? 0.35 : 1 }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: p.id === G.primaryAtk ? C.red : p.id === G.defender ? C.blue : C.dim, marginBottom: 4 }}>
-                    {p.id === G.primaryAtk ? '⚔' : p.id === G.defender ? '🛡' : '🤖'} {p.name}
+                    <Deco>{p.id === G.primaryAtk ? '⚔' : p.id === G.defender ? '🛡' : '🤖'}</Deco> {p.name}<RoleWord role={p.id === G.primaryAtk ? 'attack' : p.id === G.defender && 'defend'} />
                     {p.rank !== null ? ` · sija ${p.rank}` : ''}
                   </div>
                   <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -1309,7 +1309,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       {/* Pelaaja 0 (ihminen tai botti katselutilassa) */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${myTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: myTurn ? C.gold : C.dim, marginBottom: 8 }}>
-          {allBots ? '🤖' : '👤'} {human.name} {G.primaryAtk === 0 ? '⚔' : G.defender === 0 ? '🛡' : ''}
+          <Deco>{allBots ? '🤖' : '👤'}</Deco> {human.name} <Deco>{G.primaryAtk === 0 ? '⚔' : G.defender === 0 ? '🛡' : ''}</Deco><RoleWord role={G.primaryAtk === 0 ? 'attack' : G.defender === 0 && 'defend'} />
           {human.rank !== null ? <span style={{ color: C.gold, marginLeft: 6 }}>{t('ui.result.place', { n: human.rank })}</span> : ` · ${t('ui.action.cards', { n: human.hand.length })} ${t('ui.shared.inHand')}`}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>

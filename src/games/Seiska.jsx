@@ -9,7 +9,7 @@ import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11y
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, TurnMark } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -1175,7 +1175,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
             return (
               <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '5px 10px', borderRadius: 10, background: isActive ? 'rgba(201,168,76,0.05)' : 'rgba(255,255,255,0.02)', border: `1px solid ${isActive ? C.gold + '33' : C.panelBorder}`, opacity: isDone ? 0.45 : 1 }}>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 70, flexShrink: 0 }}>
-                  {isActive ? '► ' : ''}{icon}{truncName(p.name)}
+                  <Deco>{isActive ? '► ' : ''}{icon}</Deco>{truncName(p.name)}<TurnMark on={isActive} mark="" />
                   {hasLappu && <span style={{ color: C.red, marginLeft: 4 }}>LAPPU</span>}
                   {isDone && <span style={{ color: C.gold, marginLeft: 4 }}>({rank}.)</span>}
                 </span>
@@ -1293,7 +1293,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
       {!allBots && (
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn ? C.gold : C.dim, marginBottom: 8 }}>
-          {displayP?.isHuman ? '👤' : '🤖'} {displayP?.name}
+          <Deco>{displayP?.isHuman ? '👤' : '🤖'}</Deco> {displayP?.name}
           {displayP?.hand.length > 0
             ? ` · ${korttia(displayP.hand.length)} ${t('ui.shared.inHand')}`
             : ` · ${t('ui.shared.emptyHandWin')}`}

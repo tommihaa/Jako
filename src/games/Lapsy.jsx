@@ -10,7 +10,7 @@ import FanStack from '../shared/FanStack.jsx';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, TurnMark } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
@@ -574,7 +574,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
       <TurnPrompt show={humanTurn} action={t('ui.turn.lapsy')} />
       <AdviceBubble text={advice?.text} onDismiss={() => setAdvice(null)} />
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 12, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, height: isMobile ? 44 : 60, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 15, flexShrink: 0 }}>👋</span>
+        <span aria-hidden="true" style={{ fontSize: 15, flexShrink: 0 }}>👋</span>
         <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.55, color: C.text }} html={msg} gameMessage />
       </div>
 
@@ -584,7 +584,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
             {piles.map((pile, pi) => (
               <div key={pi} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.04)', border: `1px solid ${curTurn === pi ? C.red + '55' : C.panelBorder}`, borderRadius: 8, padding: '4px 8px', transition: 'border-color 0.2s' }}>
                 <span style={{ minWidth: 64, flexShrink: 0, fontFamily: 'sans-serif', fontSize: 11, color: curTurn === pi ? C.red : C.dim }}>
-                  🤖 {pName(pi).slice(0, 8)}{curTurn === pi ? ' ●' : ''}
+                  <Deco>🤖</Deco> {pName(pi).slice(0, 8)}<TurnMark on={curTurn === pi} />
                 </span>
                 <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', flex: 1 }}>
                   {revealAll
@@ -607,7 +607,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
               return (
                 <div key={pi} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.04)', border: `1px solid ${curTurn === pi ? C.red + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px', textAlign: 'center', transition: 'border-color 0.2s' }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: curTurn === pi ? C.red : C.dim, marginBottom: 5 }}>
-                    🤖 {pName(pi)}{curTurn === pi ? ' ●' : ''}
+                    <Deco>🤖</Deco> {pName(pi)}<TurnMark on={curTurn === pi} />
                   </div>
                   <div style={{ margin: '0 auto' }}>
                     {revealAll
@@ -633,7 +633,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
       <div style={{ height: isMobile ? 28 : 36, marginBottom: isMobile ? 4 : 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
         {bestMs !== null && (
           <div style={{ fontFamily: 'monospace', fontSize: 11, color: C.gold, opacity: 0.7, letterSpacing: 1 }}>
-            {t('games.lapsy.ui.best', { ms: bestMs })}
+            <Spoken>{t('games.lapsy.ui.best', { ms: bestMs })}</Spoken>
           </div>
         )}
         {ch && (
@@ -722,7 +722,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
       {!allBots && (
         <div style={{ background: 'rgba(255,255,255,0.03)', border: `2px solid ${humanTurn ? C.red + '66' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, display: 'flex', alignItems: 'center', gap: 16, transition: 'border-color 0.2s' }}>
           <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: humanTurn ? C.red : C.dim, marginBottom: 6 }}>👤 Hero{curTurn === 0 ? ' ●' : ''}</div>
+            <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: humanTurn ? C.red : C.dim, marginBottom: 6 }}><Deco>👤</Deco> Hero<TurnMark on={curTurn === 0} /></div>
             <div>
               <FanStack
                 count={humanPile.length}

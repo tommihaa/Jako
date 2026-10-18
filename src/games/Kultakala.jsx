@@ -9,7 +9,7 @@ import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11y
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, TurnMark } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -598,14 +598,14 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       {kohahdus && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, pointerEvents: 'none' }}>
           <div style={{ background: 'rgba(160,20,20,0.18)', border: '2px solid rgba(255,90,90,0.65)', borderRadius: 22, padding: '22px 36px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, boxShadow: '0 0 50px rgba(255,60,60,0.45)', animation: 'kohahdus 1.8s ease-out forwards' }}>
-            <span style={{ fontSize: 40 }}>😱</span>
+            <span aria-hidden="true" style={{ fontSize: 40 }}>😱</span>
             <span style={{ fontFamily: 'Georgia,serif', fontSize: 26, fontWeight: 700, color: isRed(kohahdus.s) ? '#ff7070' : '#e8e8e8' }}><Spoken>{lbl(kohahdus)}</Spoken></span>
             <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: '#cc8888', letterSpacing: 1 }}>pakotettiin poistopakkaan!</span>
           </div>
         </div>
       )}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 44 : 60, display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 16, flexShrink: 0 }}>🐟</span>
+        <span aria-hidden="true" style={{ fontSize: 16, flexShrink: 0 }}>🐟</span>
         <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: isMobile ? 12 : 13, lineHeight: 1.55, color: C.text }} html={msg} gameMessage />
       </div>
 
@@ -616,7 +616,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
               const pi = allBots ? i : i + 1, isActive = curIdx === pi;
               return (
                 <div key={p.id} style={{ display: 'flex', gap: 5, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '5px 8px' }}>
-                  <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: isActive ? C.gold : C.dim, minWidth: 54, flexShrink: 0 }}>🤖 {truncName(p.name)}{isActive ? ' ●' : ''}</div>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: isActive ? C.gold : C.dim, minWidth: 54, flexShrink: 0 }}><Deco>🤖</Deco> {truncName(p.name)}<TurnMark on={isActive} /></div>
                   {/* Sama kehyslaatikko kaikille (reunus läpinäkyvä ilman korostusta),
                       jotta korostettu, korostamaton ja tuntematon istuvat samalla tasolla */}
                   <div style={{ borderRadius: 4, border: '2px solid transparent', padding: 1 }}>
@@ -640,7 +640,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
               const pi = allBots ? i : i + 1, isActive = curIdx === pi;
               return (
                 <div key={p.id} style={{ display: 'flex', gap: 6, alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: '8px 10px' }}>
-                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 80, flexShrink: 0 }}>🤖 {truncName(p.name)}{isActive ? ' ●' : ''}</div>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, minWidth: 80, flexShrink: 0 }}><Deco>🤖</Deco> {truncName(p.name)}<TurnMark on={isActive} /></div>
                   {/* Sama kehyslaatikko kaikille (reunus läpinäkyvä ilman korostusta),
                       jotta korostettu, korostamaton ja tuntematon istuvat samalla tasolla */}
                   <div style={{ borderRadius: 6, border: '2px solid transparent', padding: 2 }}>
@@ -721,7 +721,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       {/* Pelaaja 0 (ihminen — piilotettu allBots-tilassa, koska näkyy ais-listassa) */}
       {!allBots && <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${curIdx === 0 ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: 'sans-serif', fontSize: 12, color: curIdx === 0 ? C.gold : C.dim, marginBottom: 8 }}>
-          <span>{allBots ? '🤖' : '👤'} {human.name} {curIdx === 0 ? '●' : ''}</span>
+          <span><Deco>{allBots ? '🤖' : '👤'}</Deco> {human.name}<TurnMark on={curIdx === 0} /></span>
           {!isMobile && <span style={{ fontSize: 10, color: C.dim, letterSpacing: 1.5, opacity: 0.65 }}>{t('ui.shared.fieldLabel')}</span>}
         </div>
         <div style={{ display: 'flex', gap: isMobile ? 4 : 8, alignItems: 'flex-end', flexWrap: 'nowrap' }}>

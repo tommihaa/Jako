@@ -13,7 +13,7 @@ import { useGameLog } from '../shared/useGameLog.js';
 import { useGameState } from '../shared/useGameState.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { GameMessageRow } from '../shared/Spoken.jsx';
+import Spoken, { GameMessageRow, Deco, TurnMark, withoutEmoji } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -1349,8 +1349,8 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
 
       {/* Viestikupla */}
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 60 : 70, display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 15, flexShrink: 0 }}>🪙</span>
-        <GameMessageRow as="p" said={typeof msg === 'string' ? spokenFractions(spokenSuits(msg)) : ''} style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{hasSuit(msg) ? <Spoken say={spokenSuits(msg)}>{renderLogMessage(msg)}</Spoken> : msg}</GameMessageRow>
+        <span aria-hidden="true" style={{ fontSize: 15, flexShrink: 0 }}>🪙</span>
+        <GameMessageRow as="p" said={typeof msg === 'string' ? withoutEmoji(spokenFractions(spokenSuits(msg))) : ''} style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text }}>{hasSuit(msg) ? <Spoken say={withoutEmoji(spokenSuits(msg))}>{renderLogMessage(msg)}</Spoken> : <Spoken>{msg}</Spoken>}</GameMessageRow>
       </div>
 
       {/* Pisteet + pakka */}
@@ -1401,7 +1401,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
               {G.players.filter((_, i) => allBots || i !== 0).map(p => (
                 <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.03)', border: `1px solid ${curIdx === p.id ? C.gold + '55' : C.panelBorder}`, borderRadius: 8, padding: '4px 8px' }}>
                   <span style={{ minWidth: 64, flexShrink: 0, fontFamily: 'sans-serif', fontSize: 11, color: curIdx === p.id ? C.gold : C.dim }}>
-                    🤖 {p.name.slice(0, 8)}{curIdx === p.id ? ' ●' : ''}
+                    <Deco>🤖</Deco> {p.name.slice(0, 8)}<TurnMark on={curIdx === p.id} />
                   </span>
                   <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', flex: 1 }}>
                     {p.hand.map(c => <Card key={c.id} card={c} small showBadges backStyle={BACKS[cardBack]} selected={initShowIntention && aiSel.handCard?.id === c.id} />)}
@@ -1415,7 +1415,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
               {G.players.filter((_, i) => allBots || i !== 0).map(p => (
                 <div key={p.id} style={{ flex: 1, minWidth: 90, background: 'rgba(255,255,255,0.03)', border: `1px solid ${curIdx === p.id ? C.gold + '55' : C.panelBorder}`, borderRadius: 10, padding: isMobile ? '5px 8px' : '8px 10px', textAlign: 'center' }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: curIdx === p.id ? C.gold : C.dim, marginBottom: 4 }}>
-                    🤖 {p.name} {curIdx === p.id ? '●' : ''}{!isMobile && ` · ${korttia(p.captured.length)} ${t('games.kasino.ui.captured')}`}
+                    <Deco>🤖</Deco> {p.name}<TurnMark on={curIdx === p.id} />{!isMobile && ` · ${korttia(p.captured.length)} ${t('games.kasino.ui.captured')}`}
                   </div>
                   <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: revealAll ? 'wrap' : 'nowrap', overflow: revealAll ? 'visible' : 'hidden' }}>
                     {revealAll
@@ -1502,7 +1502,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
                       ))}
                     </div>
                     <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: borderColor, fontWeight: 700 }}>
-                      {isMine ? '🔨' : '⚔'} {build.value} {isMine ? '(oma)' : `(${G.players[build.ownerIdx].name})`}
+                      <Deco>{isMine ? '🔨' : '⚔'}</Deco> {build.value} {isMine ? '(oma)' : `(${G.players[build.ownerIdx].name})`}
                     </div>
                   </div>
                 );
@@ -1528,7 +1528,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
       {/* Ihmispelaajan käsi */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn ? C.gold : C.dim, marginBottom: 8 }}>
-          {allBots ? '🤖' : '👤'} {G.players[0].name} {curIdx === 0 ? '●' : ''} · {t('ui.action.cards', { n: human.captured.length })} {t('games.kasino.ui.captured')}, {human.tikkiCount} {t('games.kasino.ui.sweeps')}
+          <Deco>{allBots ? '🤖' : '👤'}</Deco> {G.players[0].name}<TurnMark on={curIdx === 0} /> · {t('ui.action.cards', { n: human.captured.length })} {t('games.kasino.ui.captured')}, {human.tikkiCount} {t('games.kasino.ui.sweeps')}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {orderedHand.map(c => {
@@ -1752,7 +1752,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
           <div style={{ position: 'fixed', inset: 0, zIndex: 400, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }} onClick={() => setShowOptions(false)}>
             <div ref={optionsDialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={t('games.kasino.ui.options')} style={{ background: C.bg, border: `1px solid ${C.panelBorder}`, borderRadius: '16px 16px 0 0', padding: '16px', maxHeight: '65vh', overflowY: 'auto', maxWidth: 560, width: '100%', margin: '0 auto', outline: 'none' }} onClick={e => e.stopPropagation()}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                <span style={{ fontFamily: 'Georgia,serif', fontSize: 14, color: C.gold, letterSpacing: 1 }}>{t('games.kasino.ui.optionsTitle')}</span>
+                <span style={{ fontFamily: 'Georgia,serif', fontSize: 14, color: C.gold, letterSpacing: 1 }}><Spoken>{t('games.kasino.ui.optionsTitle')}</Spoken></span>
                 <button onClick={() => setShowOptions(false)} aria-label={t('ui.shared.close')} style={{ background: 'transparent', border: 'none', color: C.dim, fontSize: 18, cursor: 'pointer', lineHeight: 1 }}>✕</button>
               </div>
 
@@ -1761,12 +1761,12 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
               {(captures.length > 0 || ownCaptures.length > 0) && (
                 <div style={{ marginBottom: 12 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                    <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7 }}>{t('games.kasino.ui.capturesHeader')}</span>
+                    <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7 }}><Spoken>{t('games.kasino.ui.capturesHeader')}</Spoken></span>
                     <button onClick={() => setHelpTerm(t => t === 'kaappaus' ? null : 'kaappaus')} style={{ background: 'transparent', border: `1px solid ${helpTerm === 'kaappaus' ? C.gold : C.dim + '55'}`, borderRadius: 6, padding: '1px 7px', fontSize: 10, color: helpTerm === 'kaappaus' ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{t('games.kasino.ui.captureMode')} {helpTerm === 'kaappaus' ? '▴' : '▾'}</button>
                   </div>
                   {helpTerm === 'kaappaus' && (
                     <div style={{ marginBottom: 8, padding: '7px 10px', background: `${C.gold}0e`, borderLeft: `2px solid ${C.gold}66`, borderRadius: '0 6px 6px 0', fontFamily: 'sans-serif', fontSize: 11, color: C.dim, lineHeight: 1.6 }}>
-                      <span style={{ color: C.gold, fontWeight: 700 }}>🎯 {t('games.kasino.ui.captureMode')}</span>{t('games.kasino.ui.captureHelpA')}<span style={{ color: '#7ec8a0' }}>{t('games.kasino.ui.mokkiWord')}</span>{t('games.kasino.ui.captureHelpB')}
+                      <span style={{ color: C.gold, fontWeight: 700 }}><Deco>🎯</Deco> {t('games.kasino.ui.captureMode')}</span>{t('games.kasino.ui.captureHelpA')}<span style={{ color: '#7ec8a0' }}>{t('games.kasino.ui.mokkiWord')}</span>{t('games.kasino.ui.captureHelpB')}
                     </div>
                   )}
                   {captures.map((c, i) => (
@@ -1790,7 +1790,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
 
               {steals.length > 0 && (
                 <div style={{ marginBottom: 12 }}>
-                  <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7, marginBottom: 6 }}>{t('games.kasino.ui.stealsHeader')}</div>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7, marginBottom: 6 }}><Spoken>{t('games.kasino.ui.stealsHeader')}</Spoken></div>
                   {steals.map((s, i) => (
                     <CardRow key={i} accent='#e09060'>
                       <CS card={s.hc} />
@@ -1805,12 +1805,12 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
               {builds.length > 0 && (
                 <div style={{ marginBottom: 4 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                    <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7 }}>{t('games.kasino.ui.buildsHeader')}</span>
+                    <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7 }}><Spoken>{t('games.kasino.ui.buildsHeader')}</Spoken></span>
                     <button onClick={() => setHelpTerm(t => t === 'rakennus' ? null : 'rakennus')} style={{ background: 'transparent', border: `1px solid ${helpTerm === 'rakennus' ? C.gold : C.dim + '55'}`, borderRadius: 6, padding: '1px 7px', fontSize: 10, color: helpTerm === 'rakennus' ? C.gold : C.dim, cursor: 'pointer', fontFamily: 'sans-serif' }}>{t('games.kasino.ui.buildMode')} {helpTerm === 'rakennus' ? '▴' : '▾'}</button>
                   </div>
                   {helpTerm === 'rakennus' && (
                     <div style={{ marginBottom: 8, padding: '7px 10px', background: `${C.gold}0e`, borderLeft: `2px solid ${C.gold}66`, borderRadius: '0 6px 6px 0', fontFamily: 'sans-serif', fontSize: 11, color: C.dim, lineHeight: 1.6 }}>
-                      <span style={{ color: C.gold, fontWeight: 700 }}>🔨 {t('games.kasino.ui.buildMode')}</span>{t('games.kasino.ui.buildHelp')}
+                      <span style={{ color: C.gold, fontWeight: 700 }}><Deco>🔨</Deco> {t('games.kasino.ui.buildMode')}</span>{t('games.kasino.ui.buildHelp')}
                     </div>
                   )}
                   {builds.map((b, i) => (
@@ -1819,7 +1819,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
                       {b.tableCards.length > 0 && <Sep color={C.dim} ch='+' />}
                       {b.tableCards.map(tc => <CS key={tc.id} card={tc} />)}
                       <Sep color='#7ec8a0' ch={`→ ${b.value}`} />
-                      <span style={{ fontSize: 14, flexShrink: 0, lineHeight: 1 }}>🔑</span>
+                      <span aria-hidden="true" style={{ fontSize: 14, flexShrink: 0, lineHeight: 1 }}>🔑</span>
                       <Card card={b.capturer} xsmall showBadges highlight backStyle={BACKS[cardBack]} />
                     </CardRow>
                   ))}

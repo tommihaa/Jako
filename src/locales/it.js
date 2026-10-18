@@ -159,6 +159,7 @@ export const it = {
     replay: { table: 'Tavolo', pts: 'pti' },
 
     shared: {
+      srTurn: 'di turno', srAttacks: 'attacca', srDefends: 'difende', srSkips: 'perde il turno',
       watchMode: '🤖 MODALITÀ SPETTATORE',
       resume: '▶ Riprendi',
       pause: '⏸ Pausa',

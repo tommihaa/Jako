@@ -159,6 +159,7 @@ export const is = {
     replay: { table: 'Borð', pts: 'st' },
 
     shared: {
+      srTurn: 'á leik', srAttacks: 'sækir', srDefends: 'ver', srSkips: 'missir umferð sína',
       watchMode: '🤖 ÁHORFSHAMUR',
       resume: '▶ Halda áfram',
       pause: '⏸ Hlé',

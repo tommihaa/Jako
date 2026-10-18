@@ -159,6 +159,7 @@ export const et = {
     replay: { table: 'Laud', pts: 'pts' },
 
     shared: {
+      srTurn: 'käigul', srAttacks: 'ründab', srDefends: 'kaitseb', srSkips: 'kaotab oma käigu',
       watchMode: '🤖 VAATLUSREŽIIM',
       resume: '▶ Jätka',
       pause: '⏸ Paus',

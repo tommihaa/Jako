@@ -161,6 +161,7 @@ export const se = {
     replay: { table: 'Beavdi', pts: 'čuog' },
 
     shared: {
+      srTurn: 'vuorus', srAttacks: 'fallehat', srDefends: 'bealušta', srSkips: 'massá vuorus',
       watchMode: '🤖 GEAHČČANDÁSSI',
       resume: '▶ Joatkke',
       pause: '⏸ Bottu',

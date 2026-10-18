@@ -55,12 +55,17 @@ function suitLeaks(root) {
   const out = [];
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-    if (!SUIT.test(n.nodeValue ?? '')) continue;
+    const suit = SUIT.test(n.nodeValue ?? ''), emoji = EMOJI.test(n.nodeValue ?? '');
+    if (!suit && !emoji) continue;
     let hidden = false;
     for (let el = n.parentElement; el && el !== root; el = el.parentElement) {
       if (el.getAttribute('aria-hidden') === 'true' || el.tagName === 'STYLE' || labelReplacesContent(el)) { hidden = true; break; }
     }
-    if (!hidden) out.push(`teksti "${norm((n.parentElement?.closest('button,[role=button]') ?? n.parentElement)?.textContent ?? '')}"`);
+    // Emoji muussa kuin napissa: pelaajarivien 🤖/👤, vuoron ja roolin merkit ja viestirivin
+    // pelikuvake kuuluivat puheessa (J-13, kartoitus 18.10.2026). Nappi tarkistetaan alla.
+    const where = (n.parentElement?.closest('button,[role=button]') ?? n.parentElement)?.textContent ?? '';
+    if (!hidden && suit) out.push(`teksti "${norm(where)}"`);
+    else if (!hidden && !n.parentElement?.closest('button,[role=button]')) out.push(`emoji tekstissä "${norm(where)}"`);
   }
   // Chrome Android tekee aria-pressed-elementistä ToggleButtonin ja pudottaa silloin
   // aria-labelin, joten nimi katoaa TalkBackilta (Pixel 8a 15.10.2026, J-12).

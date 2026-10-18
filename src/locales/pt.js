@@ -159,6 +159,7 @@ export const pt = {
     replay: { table: 'Mesa', pts: 'pts' },
 
     shared: {
+      srTurn: 'na vez', srAttacks: 'ataca', srDefends: 'defende', srSkips: 'perde a sua vez',
       watchMode: '🤖 MODO DE OBSERVAÇÃO',
       resume: '▶ Continuar',
       pause: '⏸ Pausa',

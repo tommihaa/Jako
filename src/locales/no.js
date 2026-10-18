@@ -159,6 +159,7 @@ export const no = {
     replay: { table: 'Bord', pts: 'pts' },
 
     shared: {
+      srTurn: 'i tur', srAttacks: 'angriper', srDefends: 'forsvarer', srSkips: 'mister turen sin',
       watchMode: '🤖 SEMODUS',
       resume: '▶ Fortsett',
       pause: '⏸ Pause',

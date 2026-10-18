@@ -168,6 +168,7 @@ export const pl = {
     replay: { table: 'Stół', pts: 'pkt' },
 
     shared: {
+      srTurn: 'na ruchu', srAttacks: 'atakuje', srDefends: 'broni się', srSkips: 'traci turę',
       watchMode: '🤖 TRYB OGLĄDANIA',
       resume: '▶ Wznów',
       pause: '⏸ Pauza',

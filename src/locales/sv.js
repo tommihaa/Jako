@@ -159,6 +159,7 @@ export const sv = {
     replay: { table: 'Bord', pts: 'p' },
 
     shared: {
+      srTurn: 'på tur', srAttacks: 'anfaller', srDefends: 'försvarar', srSkips: 'förlorar sin tur',
       watchMode: '🤖 ÅSKÅDARLÄGE',
       resume: '▶ Fortsätt',
       pause: '⏸ Paus',

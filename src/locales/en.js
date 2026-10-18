@@ -163,6 +163,7 @@ export const en = {
     replay: { table: 'Table', pts: 'pts' },
 
     shared: {
+      srTurn: 'to play', srAttacks: 'attacks', srDefends: 'defends', srSkips: 'loses their turn',
       watchMode: '🤖 WATCH MODE',
       resume: '▶ Resume',
       pause: '⏸ Pause',

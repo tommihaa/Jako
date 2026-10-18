@@ -162,6 +162,7 @@ export const rom = {
     replay: { table: 'Skafidi', pts: 'pnk' },
 
     shared: {
+      srTurn: 'si o rindo', srAttacks: 'marel', srDefends: 'braninil', srSkips: 'xasarel pesko rindo',
       watchMode: '🤖 MODO DIKHIMASKO',
       resume: '▶ Ja angle',
       pause: '⏸ Ačhipe',

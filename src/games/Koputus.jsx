@@ -9,7 +9,7 @@ import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11y
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, TurnMark } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -224,7 +224,7 @@ function PlayerGrid({ player, isActive, clickableSet, onCardClick, peekSet, smal
   return (
     <div style={{ padding: small ? '4px 8px' : 14, borderRadius: 12, transition: 'border-color 0.2s', border: `1px solid ${isActive ? 'rgba(201,168,76,0.3)' : 'rgba(42,74,50,0.4)'}`, background: isActive ? 'rgba(201,168,76,0.03)' : 'transparent', display: small ? 'flex' : 'block', alignItems: small ? 'center' : undefined, gap: small ? 6 : 0 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: small ? 4 : 8, marginBottom: small ? 0 : 8, fontFamily: 'sans-serif', fontSize: 11, color: isActive ? C.gold : C.dim, flexShrink: 0 }}>
-        <span style={{ fontSize: small ? 12 : 14 }}>{player.isHuman ? '👤' : '🤖'}</span>
+        <span aria-hidden="true" style={{ fontSize: small ? 12 : 14 }}>{player.isHuman ? '👤' : '🤖'}</span>
         <span style={{ fontWeight: isActive ? 700 : 400, letterSpacing: 0.5 }}>{player.name}</span>
         {isActive && !small && <span style={{ fontSize: 9, animation: 'blink 1.2s ease infinite', opacity: 0.8 }}>{t('games.koputus.ui.turnIndicator')}</span>}
         {showScore && player.isHuman && <span style={{ marginLeft: 'auto', color: '#a0baa8', fontSize: 12 }}>{pScore(player)} p</span>}
@@ -849,12 +849,12 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
       <TurnPrompt show={isHuman && !showDrawn} action={t('ui.turn.koputus')} />
       <AdviceBubble text={advice?.text || opastus.text} onDismiss={() => { setAdvice(null); opastus.dismiss(); }} />
       <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 10px' : '12px 16px', marginBottom: isMobile ? 6 : 12, minHeight: isMobile ? 66 : 72, display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 17, flexShrink: 0 }}>🤜</span>
+        <span aria-hidden="true" style={{ fontSize: 17, flexShrink: 0 }}>🤜</span>
         <SpokenHtml as="p" style={{ margin: 0, fontFamily: 'sans-serif', fontSize: 13, lineHeight: 1.55, color: C.text, overflow: 'hidden' }} html={msg} gameMessage />
       </div>
       {knockedBy !== null && (
         <div style={{ marginBottom: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: C.red + '14', border: `1px solid ${C.red}40`, borderRadius: 10, padding: '4px 14px', fontFamily: 'sans-serif', fontSize: 12, color: C.red, letterSpacing: 0.5 }}>{t('games.koputus.ui.knockedBanner')}</div>
+          <div style={{ background: C.red + '14', border: `1px solid ${C.red}40`, borderRadius: 10, padding: '4px 14px', fontFamily: 'sans-serif', fontSize: 12, color: C.red, letterSpacing: 0.5 }}><Spoken>{t('games.koputus.ui.knockedBanner')}</Spoken></div>
         </div>
       )}
       {ais.length > 0 && (
@@ -866,7 +866,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
                 return (
                   <div key={ai.id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.03)', border: `1px solid ${curIdx === pi ? C.gold + '55' : C.panelBorder}`, borderRadius: 8, padding: '4px 8px' }}>
                     <span style={{ minWidth: 64, flexShrink: 0, fontFamily: 'sans-serif', fontSize: 11, color: curIdx === pi ? C.gold : C.dim }}>
-                      🤖 {ai.name.slice(0, 8)}{curIdx === pi ? ' ●' : ''}
+                      <Deco>🤖</Deco> {ai.name.slice(0, 8)}<TurnMark on={curIdx === pi} />
                     </span>
                     <div style={{ display: 'flex', gap: 2, flexWrap: 'nowrap', overflow: 'hidden', flex: 1, paddingTop: 8 }}>
                       {ai.cards.map((c, ci) =>
@@ -936,7 +936,7 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
               <span style={{ fontSize: isMobile ? 18 : 22, fontWeight: 700, color: C.red, lineHeight: 1, fontFamily: 'monospace' }}>{reactionSec}</span>
               <span style={{ fontSize: 9, color: C.dim, fontFamily: 'sans-serif', letterSpacing: 1 }}>{t('games.koputus.ui.sec')}</span>
             </div>
-            : <div style={{ width: isMobile ? 48 : 64, height: isMobile ? 48 : 64, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, opacity: 0.12 }}>⚡</div>}
+            : <div style={{ width: isMobile ? 48 : 64, height: isMobile ? 48 : 64, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, opacity: 0.12 }} aria-hidden="true">⚡</div>}
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>{t('ui.shared.discardLabel')}</div>

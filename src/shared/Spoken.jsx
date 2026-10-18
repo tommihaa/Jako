@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { skipAnnouncements } from './Announcer.jsx';
+import { useT } from './i18n.jsx';
 import { spokenSuits, spokenFractions, spokenHtml, needsSpoken, EMOJI } from './helpers.js';
 
 // Näkyvä teksti jossa on maasymboli: symboli näkyy, ruudunlukija kuulee sanan.
@@ -44,6 +45,36 @@ export default function Spoken({ children, say }) {
   );
 }
 
+// Pelaajarivin merkit (auditointi J-13, kartoitus 18.10.2026). 🤖 ja 👤 ovat koristeita:
+// rooli kuuluu jo nimestä, joten `Deco` piilottaa ne. Vuoron ja roolin merkit (●, ►, ⚔️, 🛡️)
+// kantavat tietoa, joten merkki piilotetaan ja ruudunlukija kuulee nimen perässä sanan
+// (`SrWord`: vuorossa, hyökkää, puolustaa; Tommin valinta 18.10.2026).
+/** @param {{ children: any }} props */
+export const Deco = ({ children }) => <span aria-hidden="true">{children}</span>;
+
+/** Ruudunlukijan sana edellisen tekstin perään, pilkulla erotettuna. @param {{ word?: string | false | null }} props */
+export const SrWord = ({ word }) => (word ? <span className="sr-only">{`, ${word}`}</span> : null);
+
+/**
+ * Vuoron merkki: näkyvä ● ja kuuluva "vuorossa".
+ * @param {{ on: boolean, mark?: string }} props
+ */
+export function TurnMark({ on, mark = ' ●' }) {
+  const t = useT();
+  if (!on) return null;
+  return <><Deco>{mark}</Deco><SrWord word={t('ui.shared.srTurn')} /></>;
+}
+
+/**
+ * Hyökkääjän tai puolustajan sana nimen perään; merkki itse on `Deco`ssa nimen edessä.
+ * @param {{ role: 'attack' | 'defend' | '' | null | false | undefined }} props
+ */
+export function RoleWord({ role }) {
+  const t = useT();
+  if (!role) return null;
+  return <SrWord word={t(role === 'attack' ? 'ui.shared.srAttacks' : 'ui.shared.srDefends')} />;
+}
+
 // HTML-viesti (`lblColored`in värilliset kortit) samalla periaatteella: näkyvä HTML on
 // `aria-hidden` ja ruudunlukija saa tagittoman tekstin maat sanoina. Viesti ilman maata
 // renderöityy sellaisenaan. Pelien viestilaatikko ja loki käyttävät tätä.
@@ -56,7 +87,8 @@ export default function Spoken({ children, say }) {
  */
 /** @param {SpokenHtmlProps} props */
 export function SpokenHtml({ html, as: Tag = 'span', style, gameMessage = false }) {
-  const said = typeof html === 'string' && needsSpoken(html) ? spokenHtml(html) : null;
+  // Emoji riittää syyksi puhuttuun muotoon: lokin "🔮 Katsomotila" kuului emojina (J-13).
+  const said = typeof html === 'string' && (needsSpoken(html) || hasEmoji(html)) ? spokenHtml(html) : null;
   const content = (
     <>
       {said && <span className="sr-only">{said}</span>}

@@ -330,7 +330,7 @@ function GameBtn({ g, stats, onSelect, onOpenGlossary }) {
             <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
               {g.name}
               {g.suosikki && (
-                <span title={t('ui.menu.recommended')} aria-label={t('ui.menu.recommended')} style={{ fontSize: 11, color: C.gold, lineHeight: 1 }}>★</span>
+                <span role="img" title={t('ui.menu.recommended')} aria-label={t('ui.menu.recommended')} style={{ fontSize: 11, color: C.gold, lineHeight: 1 }}>★</span>
               )}
             </div>
             {lang !== 'fi' && (
@@ -794,13 +794,13 @@ export default function App() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '6px 14px', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13 }}>{t('glossary.backInfo')}</button>
-          <span style={{ fontFamily: 'Georgia,serif', fontSize: 16, color: C.gold, letterSpacing: 2 }}>{t('glossary.title')}</span>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 16, color: C.gold, letterSpacing: 2 }}><Spoken>{t('glossary.title')}</Spoken></span>
           <div style={{ width: 90 }} />
         </div>
 
         {/* Sanasto */}
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 8, opacity: 0.8 }}>{t('glossary.sanastoTitle')}</div>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 8, opacity: 0.8 }}><Spoken>{t('glossary.sanastoTitle')}</Spoken></div>
           <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 12, lineHeight: 1.5 }}>
             {t('glossary.sanastoIntro')}
           </div>
@@ -818,7 +818,7 @@ export default function App() {
 
         {/* Merkistö */}
         <div style={{ padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 8, opacity: 0.8 }}>{t('glossary.merkistoTitle')}</div>
+          <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, marginBottom: 8, opacity: 0.8 }}><Spoken>{t('glossary.merkistoTitle')}</Spoken></div>
           <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 12, lineHeight: 1.5 }}>
             {t('glossary.merkistoIntro')}
           </div>
@@ -827,7 +827,7 @@ export default function App() {
               <div style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.gold, letterSpacing: 1.5, opacity: 0.7, marginBottom: 4, textTransform: 'uppercase' }}>{t('glossary.cat.' + key)}</div>
               {MERKISTO.filter(m => m.kategoria === key).map(m => (
                 <div key={m.label} style={{ display: 'flex', alignItems: 'baseline', gap: 8, padding: '5px 0', borderBottom: `1px solid ${C.panelBorder}33` }}>
-                  <span style={{ fontSize: 15, flexShrink: 0, minWidth: 22, textAlign: 'center', lineHeight: 1 }}>{m.icon}</span>
+                  <span aria-hidden="true" style={{ fontSize: 15, flexShrink: 0, minWidth: 22, textAlign: 'center', lineHeight: 1 }}>{m.icon}</span>
                   <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text, flexShrink: 0, minWidth: 130 }}>{lang === 'fi' ? m.label : t(`glossary.merkisto.${m.label}.label`)}</span>
                   <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, lineHeight: 1.45, flex: 1 }}>
                     {lang === 'fi' ? m.selitys : t(`glossary.merkisto.${m.label}.selitys`)}
@@ -853,7 +853,7 @@ export default function App() {
     }}>
       <div style={{ width: '100%', maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontFamily: 'Georgia,serif', fontSize: 18, color: C.gold, letterSpacing: 2 }}>{t('ui.settings.title')}</span>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 18, color: C.gold, letterSpacing: 2 }}><Spoken>{t('ui.settings.title')}</Spoken></span>
           <button
             onClick={() => setShowSettings(false)}
             style={{
@@ -1112,7 +1112,7 @@ export default function App() {
     }}>
       <div style={{ width: '100%', maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontFamily: 'Georgia,serif', fontSize: 18, color: C.gold, letterSpacing: 2 }}>{t('ui.info.title')}</span>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 18, color: C.gold, letterSpacing: 2 }}><Spoken>{t('ui.info.title')}</Spoken></span>
           <button
             onClick={() => setShowInfo(false)}
             style={{
@@ -1194,7 +1194,7 @@ export default function App() {
           onClick={() => setShowStats(true)}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', cursor: 'pointer', textAlign: 'left' }}
         >
-          <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.stats.menuLink')}</span>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken>{t('ui.stats.menuLink')}</Spoken></span>
           <span style={{ color: C.gold, fontSize: 16 }}>›</span>
         </button>
 
@@ -1215,7 +1215,7 @@ export default function App() {
             aria-expanded={showSrHelp}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.screenReader.title')}</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken>{t('ui.infoPanel.screenReader.title')}</Spoken></span>
             <span aria-hidden="true" style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showSrHelp ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showSrHelp && (
@@ -1233,7 +1233,7 @@ export default function App() {
             onClick={() => setShowA2hs(v => !v)}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{withSilentNine(t('ui.infoPanel.a2hs.title'))}</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken say={withoutEmoji(t('ui.infoPanel.a2hs.title')).replace('⁹', '')}>{withSilentNine(t('ui.infoPanel.a2hs.title'))}</Spoken></span>
             <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showA2hs ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showA2hs && (
@@ -1260,7 +1260,7 @@ export default function App() {
             onClick={() => setShowChangelog(v => !v)}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.changelog')}</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken>{t('ui.infoPanel.changelog')}</Spoken></span>
             <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showChangelog ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showChangelog && changelogData && (
@@ -1306,7 +1306,7 @@ export default function App() {
             onClick={() => setShowTodo(v => !v)}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
-            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.todo')}</span>
+            <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken>{t('ui.infoPanel.todo')}</Spoken></span>
             <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showTodo ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showTodo && (() => {

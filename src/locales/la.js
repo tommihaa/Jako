@@ -161,6 +161,7 @@ export const la = {
     replay: { table: 'Mensa', pts: 'pts' },
 
     shared: {
+      srTurn: 'agit', srAttacks: 'oppugnat', srDefends: 'defendit', srSkips: 'vices suas amittit',
       watchMode: '🤖 MODUS SPECTANDI',
       resume: '▶ Perge',
       pause: '⏸ Mora',

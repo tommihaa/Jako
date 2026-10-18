@@ -201,6 +201,7 @@ export const fi = {
     replay: { table: 'Pöytä', pts: 'pts' },
 
     shared: {
+      srTurn: 'vuorossa', srAttacks: 'hyökkää', srDefends: 'puolustaa', srSkips: 'menettää vuoronsa',
       watchMode: '🤖 KATSELUTILA',
       resume: '▶ Jatka',
       pause: '⏸ Tauko',

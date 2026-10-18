@@ -159,6 +159,7 @@ export const de = {
     replay: { table: 'Tisch', pts: 'P' },
 
     shared: {
+      srTurn: 'am Zug', srAttacks: 'greift an', srDefends: 'verteidigt', srSkips: 'verliert seinen Zug',
       watchMode: '🤖 ZUSCHAUERMODUS',
       resume: '▶ Weiter',
       pause: '⏸ Pause',

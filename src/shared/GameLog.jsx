@@ -1,6 +1,7 @@
 import { C } from './colors.js';
 import { useT } from './i18n.jsx';
 import { hasSuit, spokenHtml } from './helpers.js';
+import { hasEmoji } from './Spoken.jsx';
 
 // Tapahtumalokin paneeli: otsikkorivi joka avaa ja sulkee, ja rivit uusin ensin.
 //
@@ -48,8 +49,8 @@ export default function GameLog({
         <div>
           {log.map((e, i) => {
             // Rivi jossa on kortti näkyy symbolein, mutta ruudunlukija saa sen sanoina
-            // (auditointi J-8), samassa muodossa kuin live-alue sen ilmoitti.
-            const said = typeof e.m === 'string' && hasSuit(e.m) ? spokenHtml(e.m) : null;
+            // (auditointi J-8), samassa muodossa kuin live-alue sen ilmoitti. Emoji jää pois (J-13).
+            const said = typeof e.m === 'string' && (hasSuit(e.m) || hasEmoji(e.m)) ? spokenHtml(e.m) : null;
             const hide = said ? /** @type {const} */ ('true') : undefined;
             return (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: rowBorder, background: i === 0 ? accentBg : 'transparent' }}>

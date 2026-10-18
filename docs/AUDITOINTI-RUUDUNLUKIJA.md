@@ -347,6 +347,21 @@ ryhmän 2 merkit sanoina (esim. *vuorossa*, *hyökkää*, *puolustaa*), ja piilo
 erottimet ja nuolet kokonaan vai vaihdetaanko osa sanaksi (lokin nuoli kertoo
 vaihdon järjestyksen, joka on sisältöä).
 
+*Korjattu dev-versiossa 18.10.2026, ei kuunneltu* (ryhmät 1, 2, 3, 5 ja 6; Tommin valinta: ryhmän
+2 merkit sanoina). `Spoken.jsx`:ään tuli `Deco` (koriste piiloon), `TurnMark` (● näkyy,
+*vuorossa* kuuluu) ja `RoleWord` (*hyökkää* tai *puolustaa* nimen perään). Paskahousun ⚠
+kuuluu *menettää vuoronsa*. Uudet avaimet `ui.shared.srTurn`, `srAttacks`, `srDefends` ja
+`srSkips` 23 kielellä; hyökkää, puolustaa ja menettää vuoronsa on johdettu kunkin kielen
+Moskan `newAttack`- ja Paskahousun `skipNoCard`-tekstistä, *vuorossa* on käännetty erikseen.
+Vahtitesti `ruudunlukija-maat.test.jsx` tarkistaa nyt emojin myös muusta tekstistä kuin
+napeista. Ensimmäinen ajo löysi selainkartoitusta enemmän, koska se pelaa ihmisenä ja käy
+läpi enemmän tiloja: lokirivit ilman maata (`GameLog` ja `SpokenHtml` antoivat puhutun muodon
+vain maasta, nyt myös emojista), Kasinon viestirivi, rakennelmarivit ja otsikot, Läpsyn
+ennätys, Koputuksen koputusbanneri, Kultakalan 😱, Maijan ⚠ ja valikon paneelien otsikot.
+Merkistön kuvakkeet piilotettiin, koska selitys on vieressä. Selaimessa todennettu: Moskan
+rivi kuuluu *"Mikael, hyökkää"* ja *"Hero, puolustaa · 6 korttia kädessä"*, Kultakalan
+*"Hero, vuorossa"*. Ryhmä 4 (erottimet ja nuolet) on yhä auki.
+
 ## Kuuntelu 1.2.237:llä 16.10.2026 klo 19.13
 
 Tommi kuunteli julkaistun 1.2.237:n Pixelillä: *"kuulosti hyvältä, kunnes pelasin yhden

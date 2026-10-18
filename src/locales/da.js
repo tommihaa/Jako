@@ -159,6 +159,7 @@ export const da = {
     replay: { table: 'Bord', pts: 'pt' },
 
     shared: {
+      srTurn: 'i tur', srAttacks: 'angriber', srDefends: 'forsvarer', srSkips: 'mister sin tur',
       watchMode: '🤖 SEERTILSTAND',
       resume: '▶ Fortsæt',
       pause: '⏸ Pause',

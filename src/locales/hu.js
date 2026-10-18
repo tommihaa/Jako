@@ -162,6 +162,7 @@ export const hu = {
     replay: { table: 'Asztal', pts: 'pt' },
 
     shared: {
+      srTurn: 'soron', srAttacks: 'támad', srDefends: 'véd', srSkips: 'elveszti a körét',
       watchMode: '🤖 NÉZŐ MÓD',
       resume: '▶ Folytatás',
       pause: '⏸ Szünet',

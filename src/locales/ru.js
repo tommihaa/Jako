@@ -168,6 +168,7 @@ export const ru = {
     replay: { table: 'Стол', pts: 'очк.' },
 
     shared: {
+      srTurn: 'ходит', srAttacks: 'атакует', srDefends: 'защищается', srSkips: 'теряет ход',
       watchMode: '🤖 РЕЖИМ ПРОСМОТРА',
       resume: '▶ Продолжить',
       pause: '⏸ Пауза',

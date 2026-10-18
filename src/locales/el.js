@@ -159,6 +159,7 @@ export const el = {
     replay: { table: 'Τραπέζι', pts: 'πόντοι' },
 
     shared: {
+      srTurn: 'παίζει', srAttacks: 'επιτίθεται', srDefends: 'αμύνεται', srSkips: 'χάνει τη σειρά του',
       watchMode: '🤖 ΛΕΙΤΟΥΡΓΙΑ ΘΕΑΣΗΣ',
       resume: '▶ Συνέχεια',
       pause: '⏸ Παύση',

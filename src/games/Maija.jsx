@@ -8,7 +8,7 @@ import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, RoleWord } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -745,7 +745,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
                 return (
                   <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.03)', border: `1px solid ${isAtt ? C.red + '66' : isDef ? C.blue + '66' : C.panelBorder}`, borderRadius: 8, padding: '4px 8px' }}>
                     <span style={{ minWidth: 64, flexShrink: 0, fontFamily: 'sans-serif', fontSize: 11, color: isAtt ? C.red : isDef ? C.blue : C.dim }}>
-                      {isAtt ? '⚔️' : isDef ? '🛡️' : '🤖'} {p.name.slice(0, 8)}
+                      <Deco>{isAtt ? '⚔️' : isDef ? '🛡️' : '🤖'}</Deco> {p.name.slice(0, 8)}<RoleWord role={isAtt ? 'attack' : isDef && 'defend'} />
                     </span>
                     <div style={{ display: 'flex', gap: 2, flexWrap: 'wrap', flex: 1 }}>
                       {sortHand(p.hand).map(c => {
@@ -766,7 +766,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
                 return (
                   <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${isAtt ? C.red + '66' : isDef ? C.blue + '66' : C.panelBorder}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center' }}>
                     <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: isAtt ? C.red : isDef ? C.blue : C.dim, marginBottom: 4 }}>
-                      {isAtt ? '⚔️' : isDef ? '🛡️' : '🤖'} {p.name}
+                      <Deco>{isAtt ? '⚔️' : isDef ? '🛡️' : '🤖'}</Deco> {p.name}<RoleWord role={isAtt ? 'attack' : isDef && 'defend'} />
                     </div>
                     <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
                       {revealAll
@@ -838,7 +838,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
         borderRadius:14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 12, transition:'border-color 0.2s' }}>
         <div style={{ fontFamily:'sans-serif', fontSize:12,
           color:(isHumanAttacker || isHumanDefender) ? C.gold : C.dim, marginBottom:8 }}>
-          {allBots ? '🤖' : '👤'} {G.players[0].name} {G.attackerIdx===0 ? '⚔️' : G.defenderIdx===0 ? '🛡️' : ''}
+          <Deco>{allBots ? '🤖' : '👤'}</Deco> {G.players[0].name} <Deco>{G.attackerIdx===0 ? '⚔️' : G.defenderIdx===0 ? '🛡️' : ''}</Deco><RoleWord role={G.attackerIdx===0 ? 'attack' : G.defenderIdx===0 && 'defend'} />
           {!allBots && isHumanAttacker && <span style={{ color:C.dim, fontSize:11, marginLeft:8 }}>{t('games.maija.ui.attackHint2')}</span>}
           {!allBots && isHumanDefender && !selDefTargetRow && <span style={{ color:C.dim, fontSize:11, marginLeft:8 }}>{t('games.maija.ui.defendHint1')}</span>}
           {!allBots && isHumanDefender && selDefTargetRow && <span style={{ color:C.gold, fontSize:11, marginLeft:8 }}><Spoken>{t('games.maija.ui.defendHint2', { card: lbl(selDefTargetRow.att) })}</Spoken></span>}
@@ -864,7 +864,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
                     : (isHumanDefender && selDefTargetRow) ? () => humanBeatWithCard(c)
                     : undefined}
                   backStyle={BACKS[cardBack]}/>
-                {isMaija(c) && <span style={{ fontSize:8, color:C.maija, fontFamily:'sans-serif' }}>⚠</span>}
+                {isMaija(c) && <span aria-hidden="true" style={{ fontSize:8, color:C.maija, fontFamily:'sans-serif' }}>⚠</span>}
               </div>
             );
           })}
