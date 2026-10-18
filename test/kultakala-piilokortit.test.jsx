@@ -25,16 +25,20 @@ beforeEach(() => {
   });
   vi.useFakeTimers();
 });
-afterEach(() => { cleanup(); clearAnnouncements(); vi.useRealTimers(); });
+afterEach(() => { cleanup(); clearAnnouncements(); vi.useRealTimers(); vi.restoreAllMocks(); });
 
 /** Pelaa ihmisenä ja palauttaa botin vaihtoviestien ketjuosat (vaihtaa: … viimeiseen pilkkuun). */
 async function botSwapChains(seeAll, seed) {
   const rnd = mulberry32(strSeed(`kultakala-piilo#${seed}`));
+  // Botin valinnat ja sekoitus käyttävät Math.randomia: siemen tekee ajosta toistettavan.
+  vi.restoreAllMocks();
+  vi.spyOn(Math, 'random').mockImplementation(mulberry32(strSeed(`random#kultakala#${seeAll}#${seed}`)));
   const props = {
     onResult: () => {}, onSnapshot: () => {}, soundOn: false, seeAll,
     showLastPlay: true, showAIKnown: true, showLog: true, isMobile: false,
     playerCount: 2 + (seed % 3), aiLevel: 'normal', onAiLevelChange: () => {},
-    onPlayerGroupChange: () => {}, playerGroup: 'porukka',
+    onPlayerGroupChange: () => {}, playerGroup: 'porukka', playerNames: undefined,
+    onSeeAllChange: () => {}, onShowLogChange: () => {}, onSoundOnChange: () => {},
   };
   let utils;
   await act(async () => { utils = render(<LangProvider><Kultakala {...props} /></LangProvider>); });

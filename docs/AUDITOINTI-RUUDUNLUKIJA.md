@@ -932,3 +932,46 @@ todennettu selaimella pushin jälkeen: molemmat domainit tarjoavat `index-esyo7-
 `"1.2.243"` ja avain `slotPos`. Hash on sama kuin paikallisen buildin. Kuuntelu tekemättä:
 J-13 (1.2.242), J-35 ja J-36. Pixelillä vanha versio tulee palvelutyöntekijän välimuistista,
 joten ennen kuuntelua tarkistetaan versioleima.
+
+## Oikaisu 19.10.2026: Pixelin vanhan version syy
+
+Kaksi yllä olevaa merkintää (*Kuuntelu tuotannossa 19.10.2026* ja *Julkaisu 1.2.243*)
+väittävät, että Pixelin 1.2.241 tuli palvelutyöntekijän välimuistista. Väite ei pidä
+sellaisenaan. `public/sw.js` hakee navigoinnin verkosta ensin (`fetchAndCache`), ja
+välimuisti vastaa vain kun haku epäonnistuu. Verkon toimiessa uusi lataus saa siis uuden
+`index.html`:n ja sen myötä uuden bundlen. Välimuisti ei selitä vanhaa versiota.
+
+Todennäköisempi syy on päätelmä, ei mittaus: Pixelin Jako-välilehti avattiin 18.10. klo 22.58,
+ennen kuin 1.2.242 julkaistiin (push klo 23.57), eikä välilehteä ladattu sen jälkeen uudelleen.
+Avoin välilehti ajaa sitä bundlea jonka se latasi. Välilehden latausaikaa ei luettu laitteelta,
+joten päätelmää ei ole todennettu.
+
+Seuraus käytäntöön ei muutu: ennen kuuntelua luetaan laitteen ajama versio. Deploy-skilliin
+lisättiin samana päivänä askel, joka lukee bundlen ja versioleiman laitteelta DevTools-yhteydellä
+ja vertaa niitä tuotantoon, ennen kuin Tommi kuuntelee. Alkuperäinen teksti jää ennalleen.
+
+## Vahtien laajennus 19.10.2026
+
+Retron kolme vahtimuutosta (Tommin valinta 19.10.2026):
+
+- *Toistettavuus.* `ruudunlukija-maat.test.jsx` ja `kultakala-piilokortit.test.jsx` siementävät
+  `Math.random`in pelin ja kierroksen mukaan. Ennen siementä vuoto *"🏠 MÖKKI"* näkyi vain
+  yhdessä viidestä ajosta. Kahden ajon tulos oli sama. Kultakalan kerätyt vaihtoketjut olivat
+  tavulleen samat. Kasinon siemenet 0–11 ajettiin erikseen, eikä *MÖKKI*-vuotoa tullut yhdelläkään.
+  Se on todennäköisesti poistunut J-13:n korjauksissa (päätelmä), mutta alkuperäistä ajoa ei voi
+  toistaa.
+- *Koputuksen piilokortit.* `koputus-piilokortit.test.jsx` yleistää J-36:n testin. KOPUTUS.md:
+  muiden kortit ovat piilossa koko pelin, poistopakka näkyy kaikille. Botin viesti saa nimetä vain
+  poistopakkaan menevän kortin, eikä bottien pöytäkortti saa kuulua. Vuotoja ei löytynyt kolmessa
+  pelissä. Kontrolli: Avoimet kortit näyttää bottien kortit, jolloin sama tunnistin löytää ne.
+- *App-tason näkymät.* `ruudunlukija-app.test.jsx` renderöi Appin ja käy pelin yläpalkissa,
+  tulosruudussa paljastetuilla korteilla ja tilastopaneelissa. Tunnistin (`suitLeaks`) siirtyi
+  tiedostoon `test/ruudunlukija-vuodot.js`, jotta molemmat vahdit tarkistavat saman säännön.
+
+**J-37. Tulosruudun mitali ja tilastopaneelin pelikuvake kuuluvat emojina.** Tila: korjattu
+dev-versiossa 19.10.2026, ei kuunneltu. Uusi App-vahti löysi ne ensimmäisellä ajolla. Tulosruudun
+sija oli pelkkä 🥇, 🥈 tai 🥉, joten TalkBack sanoi mitalin nimen eikä sijaa. Tilastopaneelin
+jokaisen pelin rivi alkoi pelin kuvakkeella (👋, 🤜, ♣ jne.). Pelatun pelin rivi on nappi,
+jonka nimeen kuvake tuli. Sijoitusjakauman rivit alkoivat samoilla mitaleilla. Korjaus J-13:n
+mallilla: kuvake on koriste (`Deco`). Mitali näkyy mutta kuuluu sijana (*"1."*). Testi kaatui
+ilman korjausta (tarkistettu).

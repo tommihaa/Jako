@@ -44,6 +44,31 @@ Vaihtoehto: `npx vercel ls jako` → uusin `● Ready` ja syntyi pushistasi. Mol
 
 7. **Raportoi.** `APP_VERSION` + commit-hash + live-URL. Vahvista erikseen että SEKÄ GitHub ETTÄ Vercel-tuotanto ovat ajan tasalla, se on tämän skillin koko pointti.
 
+8. **Ennen laitekuuntelua: lue laitteen ajama bundle.** Tuotannon todennus ei kerro mitä
+   laitteen välilehti ajaa. Avoin välilehti ajaa sitä bundlea jonka se latasi, joten
+   19.10.2026 Tommi kuunteli Pixelillä 1.2.241:tä, vaikka 1.2.242 oli julkaistu
+   (`docs/AUDITOINTI-RUUDUNLUKIJA.md` › Oikaisu 19.10.2026). Ennen kuin Tommi kuuntelee:
+
+   ```bash
+   "$LOCALAPPDATA/Android/Sdk/platform-tools/adb.exe" -s 43291JEKB08875 forward tcp:9333 localabstract:chrome_devtools_remote
+   ```
+   ```bash
+   node C:/Users/nojop/Documents/Claude/Projects/Tyokalut/laitebundle/laitebundle.mjs --odotettu index-XXXX.js --versio 1.2.NNN
+   ```
+
+   `--odotettu` on vaiheen 6 tuotantobundlen nimi ja `--versio` package.jsonin luku. Apuri
+   tulostaa jokaisen Jako-välilehden skriptit ja `.sr-only`-versioleiman; exit 0 kun kaikki
+   vastaavat, 1 kun jokin poikkeaa (pyydä Tommia lataamaan välilehti uudelleen ja lue uudestaan),
+   2 kun luku ei onnistunut. Pixel on `43291JEKB08875` (USB). Lopuksi
+   `adb -s 43291JEKB08875 forward --remove tcp:9333`.
+
+   **Ansa: älä aktivoi välilehteä.** `Target.activateTarget` ja `/json/activate` tuovat
+   välilehden laitteen ruudulle. 19.10. aktivointi vaihtoi Pixelin näkyvän välilehden Tommin
+   käsissä. Apuri lukee aktivoimatta. Taustalla jäätynyt välilehti ei vastaa evaluointiin, ja
+   kun Chrome itse on taustalla, `/json/list` ei vastaa lainkaan (exit 2). Silloin pyydä Tommia
+   tuomaan Chrome esiin, älä herätä sitä itse. Muut ansat (offline, siivous, TalkBackin puhe):
+   kokoelman muisti `workflow_tabletin_chrome_cdp.md`.
+
 ## Varoitukset & hätävara
 
 - **ÄLÄ käytä `vercel alias set`** julkiselle domainille: luo suojatun 401-aliaksen; domain-aliasointi hoidetaan Vercel-dashboardista.

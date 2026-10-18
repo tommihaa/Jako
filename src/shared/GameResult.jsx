@@ -28,7 +28,8 @@ function colorLabel(label) {
 
 function placeLabel(place) {
   return MEDALS[place]
-    ? <span style={{ fontSize: 18 }}>{MEDALS[place]}</span>
+    // Mitali näkyy, sija kuuluu numerona (retron App-vahti 19.10.2026).
+    ? <span style={{ fontSize: 18 }}><Spoken say={`${place}.`}>{MEDALS[place]}</Spoken></span>
     : <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.dim }}>{place}.</span>;
 }
 

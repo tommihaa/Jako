@@ -14,7 +14,7 @@ ovat `index.html`:n globaalissa tyylissä.
 **Maasymboli ruudunlukijalle (15.10.2026, ruudunlukija-auditointi J-8):** näkyvä teksti, jossa
 on ♠♥♦♣, kulkee `shared/Spoken.jsx`:n kautta (`Spoken` tekstille, `SpokenHtml` HTML-viestille),
 koska TalkBack lukee symbolin emojina. Itse piirretty kortinkuva saa `role="img"` ja
-`aria-label={cardName(c)}` kuten `Card`. `test/ruudunlukija-maat.test.jsx` kaatuu, jos uusi teksti ohittaa tämän.
+`aria-label={cardName(c)}` kuten `Card`. `test/ruudunlukija-maat.test.jsx` (pelit) ja `test/ruudunlukija-app.test.jsx` (yläpalkki, tulosruutu, tilastot) kaatuvat, jos uusi teksti ohittaa tämän.
 Sanasto-termit + `splitWithGlossary` ovat `src/shared/glossary.js`:ssä (Lahja-kokoelman jaettu termiskeema, speksi `Kaanon/TERMIMODUULI.md`; sisarkopio Itussa). MERKISTO siirtyi samaan tiedostoon 5.9.2026 (kompositioauditointi H8).
 Reference docs: `jako_projekti.md` (general), pelikohtaiset säännöt: `KOPUTUS.md`, `LAEPSY.md`, `KULTAKALA.md`, `MAIJA.md`, `KASINO.md`, `MOSKA.md`, `SEISKA.md`, `RISTISEISKA.md`, `PASKAHOUSU.md`. Dev server: `http://localhost:5173/`.
 Repo: `https://github.com/tommihaa/Jako` (nimetty 5.9.2026, oli Korttipeli-kokoelma; GitHub ohjaa vanhan nimen uuteen)

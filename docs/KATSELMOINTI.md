@@ -29,6 +29,8 @@ jokaista koodicommittia.
 | Näkyvä kortti kahdessa kädessä, negatiivinen määrä | `test/allbots-smoke.test.jsx` |
 | Tyyppivirhe | `tsc --noEmit` |
 | Maasymboli kuuluu ruudunlukijalle emojina (auditointi J-8) | `test/ruudunlukija-maat.test.jsx` |
+| Sama App-tason näkymissä: yläpalkki, tulosruutu, tilastot (J-37) | `test/ruudunlukija-app.test.jsx` |
+| Botin viesti nimeää piilokortin (J-36) | `test/kultakala-piilokortit.test.jsx`, `test/koputus-piilokortit.test.jsx` |
 
 Tauon vartija katsoo vain `aiTmr.current = tm(` -kirjoitusmuodon. Uusi ajastustapa voi
 kiertää sen, joten K3 koskee yhä ajastettuja ikkunoita.

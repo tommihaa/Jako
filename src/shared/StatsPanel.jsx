@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { C } from './colors.js';
 import { useT } from './i18n.jsx';
-import Spoken, { Sep } from './Spoken.jsx';
+import Spoken, { Sep, Deco } from './Spoken.jsx';
 
 // Pelikohtaiset tilastot (localStorage: jako:stats). Käännökset ui.stats.* (fi = lähde);
 // vaikeustasojen nimet uudelleenkäytetään ui.settings.ai.<lvl>.label-avaimista.
@@ -80,7 +80,7 @@ export default function StatsPanel({ stats, games = [], sessions = 0, onClear, o
                 background: 'rgba(255,255,255,0.01)', padding: '10px 14px',
                 display: 'flex', alignItems: 'center', gap: 10, opacity: 0.45,
               }}>
-                <span style={{ fontSize: 18 }}>{g.emoji}</span>
+                <span style={{ fontSize: 18 }}><Deco>{g.emoji}</Deco></span>
                 <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 13, color: C.text }}>{g.name}</span>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim }}><Spoken>{t('ui.stats.notPlayed')}</Spoken></span>
               </div>
@@ -100,7 +100,7 @@ export default function StatsPanel({ stats, games = [], sessions = 0, onClear, o
                   cursor: 'pointer', textAlign: 'left',
                 }}
               >
-                <span style={{ fontSize: 18, flexShrink: 0 }}>{g.emoji}</span>
+                <span style={{ fontSize: 18, flexShrink: 0 }}><Deco>{g.emoji}</Deco></span>
                 <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 13, color: C.text }}>{g.name}</span>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }} title={t('ui.stats.winPctTooltip')}>
                   <Spoken>{t('ui.stats.winLine', { w: s.wins, p: played, pct: pct(s.wins, played) })}</Spoken>
@@ -116,7 +116,7 @@ export default function StatsPanel({ stats, games = [], sessions = 0, onClear, o
                     const n = s.places?.[p] || 0;
                     return (
                       <div key={p} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                        <span style={{ width: 22, fontSize: 13, flexShrink: 0, textAlign: 'center' }}>{MEDALS[p]}</span>
+                        <span style={{ width: 22, fontSize: 13, flexShrink: 0, textAlign: 'center' }}><Spoken say={`${p}.`}>{MEDALS[p]}</Spoken></span>
                         <div style={{ flex: 1, height: 8, background: `${C.panelBorder}55`, borderRadius: 4, overflow: 'hidden' }}>
                           <div style={{ width: `${(n / maxPlace) * 100}%`, height: '100%', background: p === 1 ? C.gold : `${C.gold}66`, borderRadius: 4 }} />
                         </div>
