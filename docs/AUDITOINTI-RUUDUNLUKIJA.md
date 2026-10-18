@@ -924,3 +924,11 @@ näyttää kortit kuten nyt.
 korttia, avoimena on. Testi kaatui ilman korjausta (tarkistettu). Selaimessa todennettu Bottien
 Taistelussa: *"Janus vaihtaa: paikka 5: risti neljä, sitten paikka 4: ruutu viisi, …"*, mikä
 todentaa samalla Kultakalan *sitten*-sanan.
+
+## Julkaisu 1.2.243 19.10.2026
+
+J-35 ja J-36 julkaistu (Jako `6e7af78`, push klo 1.26, Tommin *julkaise*). Tuotantobundlesta
+todennettu selaimella pushin jälkeen: molemmat domainit tarjoavat `index-esyo7-Ef.js`:n, jossa on
+`"1.2.243"` ja avain `slotPos`. Hash on sama kuin paikallisen buildin. Kuuntelu tekemättä:
+J-13 (1.2.242), J-35 ja J-36. Pixelillä vanha versio tulee palvelutyöntekijän välimuistista,
+joten ennen kuuntelua tarkistetaan versioleima.
