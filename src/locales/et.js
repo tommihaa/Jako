@@ -44,6 +44,7 @@ export const et = {
     difficulty: { easy: 'Lihtne', medium: 'Keskmine', hard: 'Raske' },
     rulesAria: '{name}: näita reegleid',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `võidud ${w}, mängud ${p}, ${pct} protsenti`,
 
     settings: {
       advanced: "Lisasätted", preset: { beginner: "Algaja", beginnerDesc: "kogu juhendamine nähtaval", experienced: "Kogenud", experiencedDesc: "vähem müra", custom: "Kohandatud — oled sätteid ise muutnud." },
@@ -156,10 +157,10 @@ export const et = {
       replay: ({ n }) => `▶ Kordus (${n})`,
       toMenu: 'Mänguvalik →',
     },
-    replay: { table: 'Laud', pts: 'pts' },
+    replay: { prev: 'Eelmine', next: 'Järgmine', table: 'Laud', pts: 'pts' },
 
     shared: {
-      srTurn: 'käigul', srAttacks: 'ründab', srDefends: 'kaitseb', srSkips: 'kaotab oma käigu',
+      srTurn: 'käigul', srAttacks: 'ründab', srDefends: 'kaitseb', srSkips: 'kaotab oma käigu', srThen: 'siis',
       watchMode: '🤖 VAATLUSREŽIIM',
       resume: '▶ Jätka',
       pause: '⏸ Paus',
@@ -364,6 +365,7 @@ export const et = {
         playPrompt: 'mängi:',
         towers: 'TORNID',
         lowerShort: 'ala-hunnik',
+        srLowerRange: 'kuuest ässani', srUpperRange: 'kaheksast kuningani',
         upperShort: 'üla-hunnik',
       },
       opts: {

@@ -1,6 +1,6 @@
 import { C } from './colors.js';
 import { useT } from './i18n.jsx';
-import { hasSuit, spokenHtml } from './helpers.js';
+import { needsSpoken, spokenHtml } from './helpers.js';
 import { hasEmoji } from './Spoken.jsx';
 
 // Tapahtumalokin paneeli: otsikkorivi joka avaa ja sulkee, ja rivit uusin ensin.
@@ -43,14 +43,14 @@ export default function GameLog({
     <div style={{ border: `1px solid ${C.panelBorder}`, borderRadius: 10, overflow: 'hidden' }}>
       <button onClick={onToggle} style={{ width: '100%', background: headerBg, border: 'none', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: C.dim }}>
         <span style={{ fontFamily: 'sans-serif', fontSize: 10, letterSpacing: 1.5, flex: 1, textAlign: 'left' }}>{t('ui.shared.logTitle')}</span>
-        <span style={{ fontSize: 12, transition: 'transform 0.2s', transform: open ? 'rotate(90deg)' : 'none' }}>›</span>
+        <span aria-hidden="true" style={{ fontSize: 12, transition: 'transform 0.2s', transform: open ? 'rotate(90deg)' : 'none' }}>›</span>
       </button>
       {open && (
         <div>
           {log.map((e, i) => {
             // Rivi jossa on kortti näkyy symbolein, mutta ruudunlukija saa sen sanoina
             // (auditointi J-8), samassa muodossa kuin live-alue sen ilmoitti. Emoji jää pois (J-13).
-            const said = typeof e.m === 'string' && (hasSuit(e.m) || hasEmoji(e.m)) ? spokenHtml(e.m) : null;
+            const said = typeof e.m === 'string' && (needsSpoken(e.m) || hasEmoji(e.m)) ? spokenHtml(e.m) : null;
             const hide = said ? /** @type {const} */ ('true') : undefined;
             return (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: rowBorder, background: i === 0 ? accentBg : 'transparent' }}>

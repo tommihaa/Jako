@@ -14,7 +14,7 @@ import { useStickySetting } from '../shared/storage.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml, Deco, TurnMark } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, TurnMark, Sep } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PoytaPanel from '../shared/PoytaPanel.jsx';
@@ -634,7 +634,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
 
       {/* Pöytä: pinot */}
       <PoytaPanel isMobile={isMobile} minHeight={null}
-        title={<span>{t('games.ristiseiska.ui.towers')} · {t('games.ristiseiska.ui.lowerShort')} [6→A] &nbsp;·&nbsp; [7] &nbsp;·&nbsp; {t('games.ristiseiska.ui.upperShort')} [8→K]</span>}>
+        title={<span><Spoken say={`${t('games.ristiseiska.ui.towers')}, ${t('games.ristiseiska.ui.lowerShort')} ${t('games.ristiseiska.ui.srLowerRange')}, 7, ${t('games.ristiseiska.ui.upperShort')} ${t('games.ristiseiska.ui.srUpperRange')}`}>{t('games.ristiseiska.ui.towers')} · {t('games.ristiseiska.ui.lowerShort')} [6→A] &nbsp;·&nbsp; [7] &nbsp;·&nbsp; {t('games.ristiseiska.ui.upperShort')} [8→K]</Spoken></span>}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: isMobile ? 6 : 16 }}>
           {SUITS.map(s => <StackRow key={s} suit={s} G={G} isMobile={isMobile} cardBack={cardBack} t={t} />)}
         </div>
@@ -672,7 +672,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
       {/* Oma käsi */}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn || isGiving ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '8px 10px' : '12px 14px', marginBottom: isMobile ? 6 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn || isGiving ? C.gold : C.dim, marginBottom: 8 }}>
-          <Deco>👤</Deco> Hero{human.hand.length === 0 ? ` · ${t('ui.shared.emptyHandWin')}` : ''}
+          <Deco>👤</Deco> Hero{human.hand.length === 0 ? <><Sep />{t('ui.shared.emptyHandWin')}</> : ''}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {sortHand(human.hand).map(c => {
@@ -750,7 +750,7 @@ export default function Ristiseiska({ onResult, showLog = true, soundOn = false,
           counts: G.players.slice(1).map(p => ({ name: p.name, n: p.hand.length })),
         })}
       >
-        <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('ui.shared.firstOutWins')} · {t('games.ristiseiska.ui.openings')} {SUITS.filter(s => G.rows[s].active).length}/4
+        <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('ui.shared.firstOutWins')}<Sep />{t('games.ristiseiska.ui.openings')} {SUITS.filter(s => G.rows[s].active).length}/4
       </GameStatusBar>
 
       {allBots && G?.phase !== 'gameover' && (

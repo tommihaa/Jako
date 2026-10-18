@@ -112,12 +112,24 @@ const FRACTION = /(\d+)\/(\d+)/g;
 /** @param {string} text */
 export const spokenFractions = text => getLang() !== 'fi' ? text
   : text.replace(FRACTION, (m, a, b) => NUM_FI[+a] && NUM_FI_ELATIVE[+b] ? `${NUM_FI[+a]} ${NUM_FI_ELATIVE[+b]}` : m);
-/** Tarvitseeko teksti erillisen puhutun muodon: maa tai suomen murtoluku. @param {string} text */
-export const needsSpoken = text => hasSuit(text) || (getLang() === 'fi' && /\d\/\d/.test(text));
+// Erottimet ja suuntamerkit (auditointi J-13 ryhmä 4, Tommin valinta 18.10.2026). TalkBack luki
+// väli-·:n "rivinkeskinen piste". Sanojen välinen · tai → kuuluu pilkkuna, pelkkä suuntamerkki
+// (← Valikko, Käännä →, avautuvan rivin ›) ja ✓ jäävät pois, ja "×3" kuuluu "3".
+const SYMBOL = /[·←→›✓×]/;
+/** @param {string} text */
+export const hasSymbol = text => SYMBOL.test(text);
+/** @param {string} text */
+export const spokenSymbols = text => text
+  .replace(/×(\d)/g, '$1')
+  .replace(/(\S)[  ]*[·→][  ]*(?=\S)/g, '$1, ')
+  .replace(/[·←→›✓×]/g, '')
+  .replace(/\s+,/g, ',').replace(/\s{2,}/g, ' ').trim();
+/** Tarvitseeko teksti erillisen puhutun muodon: maa, suomen murtoluku tai erotin. @param {string} text */
+export const needsSpoken = text => hasSuit(text) || hasSymbol(text) || (getLang() === 'fi' && /\d\/\d/.test(text));
 // Lokirivi (HTML-string `lblColored`ista) ruudunlukijan tekstiksi: tagit pois, maat ja
 // murtoluvut sanoiksi.
 /** @param {string} html */
-export const spokenHtml = html => spokenFractions(spokenSuits(html.replace(VISUAL_ONLY, '').replace(/<[^>]*>/g, '').replace(EMOJI, ''))).replace(/\s+/g, ' ').trim();
+export const spokenHtml = html => spokenSymbols(spokenFractions(spokenSuits(html.replace(VISUAL_ONLY, '').replace(/<[^>]*>/g, '').replace(EMOJI, '')))).replace(/\s+/g, ' ').trim();
 
 // Emoji ilman maasymboleja. Peliviestin emoji näkyy mutta ei kuulu: TalkBack luki Moskan
 // valttivaihdon 💫:n (Tommin kuuntelu 17.10.2026) samoin kuin napin 🧙:n (J-13).

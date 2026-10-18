@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { skipAnnouncements } from './Announcer.jsx';
 import { useT } from './i18n.jsx';
-import { spokenSuits, spokenFractions, spokenHtml, needsSpoken, EMOJI } from './helpers.js';
+import { spokenSuits, spokenFractions, spokenSymbols, spokenHtml, needsSpoken, EMOJI } from './helpers.js';
 
 // Näkyvä teksti jossa on maasymboli: symboli näkyy, ruudunlukija kuulee sanan.
 // TalkBack lukee ♠:n emojina eikä maana (auditointi J-8, Tommin kuuntelu 15.10.2026).
@@ -35,15 +35,19 @@ export default function Spoken({ children, say }) {
     if (typeof children !== 'string') return children;
     const spoken = needsSpoken(children), emoji = hasEmoji(children);
     if (!spoken && !emoji) return children;
-    say = withoutEmoji(spoken ? spokenFractions(spokenSuits(children)) : children);
+    say = withoutEmoji(spoken ? spokenSymbols(spokenFractions(spokenSuits(children))) : children);
   }
   return (
     <>
       <span aria-hidden="true">{children}</span>
-      <span className="sr-only">{say}</span>
+      <span className="sr-only">{spokenSymbols(say)}</span>
     </>
   );
 }
+
+// Väli-· JSX:n keskellä: näkyy pisteenä, kuuluu pilkkuna (J-13 ryhmä 4). Merkkijonossa
+// `Spoken` tekee saman itse.
+export const Sep = () => <><span aria-hidden="true"> · </span><span className="sr-only">, </span></>;
 
 // Pelaajarivin merkit (auditointi J-13, kartoitus 18.10.2026). 🤖 ja 👤 ovat koristeita:
 // rooli kuuluu jo nimestä, joten `Deco` piilottaa ne. Vuoron ja roolin merkit (●, ►, ⚔️, 🛡️)
@@ -119,7 +123,7 @@ export function GameMessageRow({ said, children, as: Tag = 'div', style }) {
   const Wrap = Tag === 'p' ? 'span' : 'div';
   return (
     <Tag data-game-message="" tabIndex={-1} style={style}
-      onFocus={() => { const pending = skipAnnouncements(); setFrozen(pending.length ? pending.join(' ') : said); }}
+      onFocus={() => { const pending = skipAnnouncements(); setFrozen(pending.length ? pending.join(' ') : spokenSymbols(said)); }}
       onBlur={() => setFrozen(null)}>
       {frozen !== null && <span className="sr-only">{frozen}</span>}
       <Wrap aria-hidden={frozen !== null ? 'true' : undefined}>{children}</Wrap>

@@ -42,11 +42,16 @@ const norm = t => t.replace(/(10|[2-9AJQK])[♠♥♦♣]/g, 'X♠').replace(/\d
 
 // Kuvamerkki-emoji. Maasymbolit ovat samaa luokkaa, mutta niillä on oma tarkistuksensa yllä.
 const EMOJI = /(?![♠♥♦♣])\p{Extended_Pictographic}/u;
+// Erotin tai suuntamerkki: TalkBack luki ·:n "rivinkeskinen piste" (J-13 ryhmä 4). Sallittu
+// muoto on `Sep`, `Spoken` tai `aria-hidden`.
+const SYMBOL = /[·←→›✓×]/;
 
 /** Elementin teksti ilman aria-hidden-haaroja. @param {Element} el */
 function spokenText(el) {
   const c = /** @type {Element} */ (el.cloneNode(true));
   c.querySelectorAll('[aria-hidden="true"]').forEach(x => x.remove());
+  // Nimetty kuva (kielilistan ✓ "natiivi") kuuluu nimellään eikä merkkinä.
+  c.querySelectorAll('[role="img"][aria-label]').forEach(x => { x.textContent = x.getAttribute('aria-label'); });
   return c.textContent ?? '';
 }
 
@@ -55,8 +60,8 @@ function suitLeaks(root) {
   const out = [];
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-    const suit = SUIT.test(n.nodeValue ?? ''), emoji = EMOJI.test(n.nodeValue ?? '');
-    if (!suit && !emoji) continue;
+    const suit = SUIT.test(n.nodeValue ?? ''), emoji = EMOJI.test(n.nodeValue ?? ''), symbol = SYMBOL.test(n.nodeValue ?? '');
+    if (!suit && !emoji && !symbol) continue;
     let hidden = false;
     for (let el = n.parentElement; el && el !== root; el = el.parentElement) {
       if (el.getAttribute('aria-hidden') === 'true' || el.tagName === 'STYLE' || labelReplacesContent(el)) { hidden = true; break; }
@@ -64,8 +69,10 @@ function suitLeaks(root) {
     // Emoji muussa kuin napissa: pelaajarivien 🤖/👤, vuoron ja roolin merkit ja viestirivin
     // pelikuvake kuuluivat puheessa (J-13, kartoitus 18.10.2026). Nappi tarkistetaan alla.
     const where = (n.parentElement?.closest('button,[role=button]') ?? n.parentElement)?.textContent ?? '';
+    const inButton = !!n.parentElement?.closest('button,[role=button]');
     if (!hidden && suit) out.push(`teksti "${norm(where)}"`);
-    else if (!hidden && !n.parentElement?.closest('button,[role=button]')) out.push(`emoji tekstissä "${norm(where)}"`);
+    else if (!hidden && emoji && !inButton) out.push(`emoji tekstissä "${norm(where)}"`);
+    else if (!hidden && symbol && !inButton) out.push(`merkki tekstissä "${norm(where)}"`);
   }
   // Chrome Android tekee aria-pressed-elementistä ToggleButtonin ja pudottaa silloin
   // aria-labelin, joten nimi katoaa TalkBackilta (Pixel 8a 15.10.2026, J-12).
@@ -86,6 +93,7 @@ function suitLeaks(root) {
     const text = spokenText(el);
     if (!/[\p{L}\p{N}]/u.test(text)) out.push(`nimetön nappi "${text.trim()}"`);
     else if (EMOJI.test(text)) out.push(`emoji napin puheessa "${norm(text.trim())}"`);
+    else if (SYMBOL.test(text)) out.push(`merkki napin puheessa "${norm(text.trim())}"`);
   });
   root.querySelectorAll('[aria-label],[alt],[title]').forEach(el => {
     if (el.closest('[aria-hidden="true"]')) return;

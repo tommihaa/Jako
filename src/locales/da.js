@@ -44,6 +44,7 @@ export const da = {
     difficulty: { easy: 'Let', medium: 'Mellem', hard: 'Svær' },
     rulesAria: '{name}: vis regler',
     stat: ({ w, p, pct }) => `${w}S / ${p}P · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `sejre ${w}, spil ${p}, ${pct} procent`,
 
     settings: {
       advanced: "Avanceret", preset: { beginner: "Begynder", beginnerDesc: "al vejledning vises", experienced: "Erfaren", experiencedDesc: "mindre støj", custom: "Tilpasset — du har selv ændret indstillinger." },
@@ -156,10 +157,10 @@ export const da = {
       replay: ({ n }) => `▶ Genafspilning (${n})`,
       toMenu: 'Vælg spil →',
     },
-    replay: { table: 'Bord', pts: 'pt' },
+    replay: { prev: 'Forrige', next: 'Næste', table: 'Bord', pts: 'pt' },
 
     shared: {
-      srTurn: 'i tur', srAttacks: 'angriber', srDefends: 'forsvarer', srSkips: 'mister sin tur',
+      srTurn: 'i tur', srAttacks: 'angriber', srDefends: 'forsvarer', srSkips: 'mister sin tur', srThen: 'så',
       watchMode: '🤖 SEERTILSTAND',
       resume: '▶ Fortsæt',
       pause: '⏸ Pause',
@@ -364,6 +365,7 @@ export const da = {
         playPrompt: 'spil:',
         towers: 'TÅRNE',
         lowerShort: 'nedre bunke',
+        srLowerRange: 'seks ned til es', srUpperRange: 'otte op til konge',
         upperShort: 'øvre bunke',
       },
       opts: {

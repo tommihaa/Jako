@@ -6,7 +6,8 @@ import ShareQR from './shared/ShareQR.jsx';
 import Announcer from './shared/Announcer.jsx';
 import { GAME_TITLE_ID } from './shared/GameStartScreen.jsx';
 import { installFocusRescue } from './shared/focusRescue.js';
-import Spoken, { withoutEmoji } from './shared/Spoken.jsx';
+import { hasSymbol } from './shared/helpers.js';
+import Spoken, { withoutEmoji, Sep } from './shared/Spoken.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
 import { loadPref, savePref, useStickySetting } from './shared/storage.js';
 import { KANSA, NAME_GROUPS, POOL_BY_GROUP, firstVisitGroup } from './shared/playerGroups.js';
@@ -208,7 +209,9 @@ const normalizeStats = (raw) => {
 function renderSelitys(text) {
   return text.split(/((?:[2-9]|10|[AJQKT])[♠♥♦♣]|[♠♥♦♣])/).map((p, i) => {
     const suit = p.match(/[♠♥♦♣]/)?.[0];
-    return suit ? <span key={i} style={{ color: SUIT_COLOR_DARK[suit], fontWeight: 700 }}><Spoken>{p}</Spoken></span> : p;
+    if (suit) return <span key={i} style={{ color: SUIT_COLOR_DARK[suit], fontWeight: 700 }}><Spoken>{p}</Spoken></span>;
+    // Säännön nuoli ja väli-· kuuluvat pilkkuna (J-13 ryhmä 4).
+    return hasSymbol(p) ? <span key={i}><Spoken>{p}</Spoken></span> : p;
   });
 }
 
@@ -225,7 +228,7 @@ function RuleRow({ text }) {
   return (
     <div style={{ marginBottom: 4 }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 5 }}>
-        <span style={{ color: C.gold, flexShrink: 0, fontSize: 10, marginTop: 3 }}>▸</span>
+        <span aria-hidden="true" style={{ color: C.gold, flexShrink: 0, fontSize: 10, marginTop: 3 }}>▸</span>
         <span style={{ fontSize: 12, color: C.text, fontFamily: 'sans-serif', lineHeight: 1.55 }}>
           {parts.map((p, i) =>
             p.isTerm
@@ -240,7 +243,7 @@ function RuleRow({ text }) {
       </div>
       {defn && (
         <div style={{ marginLeft: 14, marginTop: 3, padding: '5px 10px', background: `${C.gold}12`, borderLeft: `2px solid ${C.gold}66`, borderRadius: '0 6px 6px 0', fontSize: 11, fontFamily: 'sans-serif', lineHeight: 1.65, color: C.dim }}>
-          <span style={{ color: C.gold, fontWeight: 700 }}><span aria-hidden="true">{defn.emoji}</span> {defnTerm}</span>{' · '}{renderSelitys(defnSelitys)}
+          <span style={{ color: C.gold, fontWeight: 700 }}><span aria-hidden="true">{defn.emoji}</span> {defnTerm}</span><Sep />{renderSelitys(defnSelitys)}
         </div>
       )}
     </div>
@@ -265,7 +268,7 @@ function SanastoRivi({ s }) {
         <span aria-hidden="true" style={{ fontSize: 15, flexShrink: 0, minWidth: 22, ...(s.emojiStyle || {}) }}>{s.emoji}</span>
         <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 13, color: open ? C.gold : C.text, transition: 'color 0.15s' }}>{term}</span>
         {gameNames && <span style={{ fontFamily: 'sans-serif', fontSize: 10, color: C.dim, opacity: 0.6, marginRight: 4 }}>{gameNames}</span>}
-        <span style={{ fontSize: 13, color: C.dim, transition: 'transform 0.15s', transform: open ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+        <span aria-hidden="true" style={{ fontSize: 13, color: C.dim, transition: 'transform 0.15s', transform: open ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
       </button>
       {open && (
         <div style={{ padding: '0 4px 10px 30px', fontSize: 12, fontFamily: 'sans-serif', lineHeight: 1.65, color: C.dim }}>
@@ -283,7 +286,7 @@ function StatBadge({ s }) {
   const color = pct >= 60 ? '#4caf7d' : pct >= 40 ? '#c9a84c' : '#e05c3b';
   return (
     <div style={{ fontFamily: 'sans-serif', fontSize: 10, color, marginTop: 2, letterSpacing: 0.5 }}>
-      {t('ui.stat', { w: s.wins, p: s.played, pct })}
+      <Spoken say={`, ${t('ui.statSpoken', { w: s.wins, p: s.played, pct })}`}>{t('ui.stat', { w: s.wins, p: s.played, pct })}</Spoken>
     </div>
   );
 }
@@ -383,7 +386,7 @@ function GameBtn({ g, stats, onSelect, onOpenGlossary }) {
 // Testatut (status native/auto) ja Testaamattomat (status untested).
 // Merkki nimen jäljessä: kulta ✓ = natiivi, "web" = konevarmistettu (auto).
 function langMarker(status) {
-  if (status === 'native') return <span title="natiivi" style={{ fontSize: 11, color: C.gold, lineHeight: 1 }}>✓</span>;
+  if (status === 'native') return <span role="img" aria-label="natiivi" title="natiivi" style={{ fontSize: 11, color: C.gold, lineHeight: 1 }}>✓</span>;
   if (status === 'auto') return <span title="konevarmistettu (web), ei natiivitarkistusta" style={{ fontSize: 8, color: C.dim, opacity: 0.7, border: `1px solid ${C.panelBorder}`, borderRadius: 3, padding: '0 3px', lineHeight: 1.5, fontFamily: 'sans-serif' }}>web</span>;
   return null;
 }
@@ -456,7 +459,7 @@ function LangSelector({ lang, setLang, t, isMobile }) {
               </div>
             ))}
             <div style={{ fontFamily: 'Georgia,serif', fontSize: 9, color: C.dim, opacity: 0.5, margin: '2px 4px 0' }}>
-              {t('ui.lang.note')}
+              <Spoken>{t('ui.lang.note')}</Spoken>
             </div>
           </div>
         </>
@@ -481,7 +484,7 @@ function GameHeader({ title, onBack, gearBtn, isMobile }) {
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <button onClick={onBack} style={{ ...btnBase, flexShrink: 0, position: 'absolute', left: 8 }}>
-          {t('ui.menu.back')}
+          <Spoken>{t('ui.menu.back')}</Spoken>
         </button>
         {/* Otsikko ottaa kohdistuksen pelin alkaessa (GameStartScreen, auditointi J-9).
             Muuten kadonneen Aloita-napin kohdistus putoaa sivun juureen, ja TalkBack lukee
@@ -793,7 +796,7 @@ export default function App() {
       <div style={{ width: '100%', maxWidth: 480, display: 'flex', flexDirection: 'column', gap: 16 }}>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '6px 14px', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13 }}>{t('glossary.backInfo')}</button>
+          <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '6px 14px', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13 }}><Spoken>{t('glossary.backInfo')}</Spoken></button>
           <span style={{ fontFamily: 'Georgia,serif', fontSize: 16, color: C.gold, letterSpacing: 2 }}><Spoken>{t('glossary.title')}</Spoken></span>
           <div style={{ width: 90 }} />
         </div>
@@ -830,8 +833,8 @@ export default function App() {
                   <span aria-hidden="true" style={{ fontSize: 15, flexShrink: 0, minWidth: 22, textAlign: 'center', lineHeight: 1 }}>{m.icon}</span>
                   <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text, flexShrink: 0, minWidth: 130 }}>{lang === 'fi' ? m.label : t(`glossary.merkisto.${m.label}.label`)}</span>
                   <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, lineHeight: 1.45, flex: 1 }}>
-                    {lang === 'fi' ? m.selitys : t(`glossary.merkisto.${m.label}.selitys`)}
-                    {m.peli && <span style={{ color: C.gold, opacity: 0.6, marginLeft: 4 }}>({m.peli})</span>}
+                    <Spoken>{lang === 'fi' ? m.selitys : t(`glossary.merkisto.${m.label}.selitys`)}</Spoken>
+                    {m.peli && <span style={{ color: C.gold, opacity: 0.6, marginLeft: 4 }}><Spoken>{`(${m.peli})`}</Spoken></span>}
                   </span>
                 </div>
               ))}
@@ -839,7 +842,7 @@ export default function App() {
           ))}
         </div>
 
-        <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '10px 0', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13, width: '100%' }}>{t('glossary.backToInfo')}</button>
+        <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '10px 0', cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13, width: '100%' }}><Spoken>{t('glossary.backToInfo')}</Spoken></button>
       </div>
     </div>
   );
@@ -870,7 +873,7 @@ export default function App() {
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
             <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.settings.gameSettings')}</span>
-            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showPeliasetukset ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+            <span aria-hidden="true" style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showPeliasetukset ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showPeliasetukset && (
             <div style={{ padding: '0 14px 14px' }}>
@@ -909,7 +912,7 @@ export default function App() {
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '8px 0', background: 'transparent', border: 'none', borderTop: `1px solid ${C.panelBorder}`, marginTop: 4, cursor: 'pointer', textAlign: 'left' }}
               >
                 <span style={{ fontFamily: 'Georgia,serif', fontSize: 12, color: C.dim, opacity: 0.8 }}>{t('ui.settings.advanced')}</span>
-                <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showLisaasetukset ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+                <span aria-hidden="true" style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showLisaasetukset ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
               </button>
               {showLisaasetukset && (() => {
                 const isAllBots = siirtorekisteri.length > 0 || !!botResult;
@@ -973,7 +976,7 @@ export default function App() {
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
             <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken>{t('ui.settings.aiTitle')}</Spoken></span>
-            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showKonealy ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+            <span aria-hidden="true" style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showKonealy ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showKonealy && (
             <div style={{ padding: '0 14px 14px' }}>
@@ -1011,7 +1014,7 @@ export default function App() {
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
             >
               <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>🔊 Kokeile ääniä</span>
-              <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showKokeileAania ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+              <span aria-hidden="true" style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showKokeileAania ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
             </button>
             {showKokeileAania && (
               <div style={{ padding: '0 14px 14px' }}>
@@ -1051,7 +1054,7 @@ export default function App() {
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
             <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken>{t('ui.settings.playersTitle')}</Spoken></span>
-            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showPelaajat ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+            <span aria-hidden="true" style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showPelaajat ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showPelaajat && (
           <div style={{ padding: '0 14px 14px' }}>
@@ -1090,10 +1093,10 @@ export default function App() {
               display: 'inline-flex', alignItems: 'center', gap: 6, margin: '0 0 8px',
               color: C.gold, fontSize: 11, fontFamily: 'sans-serif', textDecoration: 'none',
               border: `1px solid ${C.gold}55`, borderRadius: 8, padding: '5px 10px',
-            }}>▶ Ihmisten Puolue · YouTube (English subtitles)</a>
+            }}><Spoken>{'▶ Ihmisten Puolue · YouTube (English subtitles)'}</Spoken></a>
           )}
           <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', lineHeight: 1.8, opacity: 0.7 }}>
-            {playerPool.join(' · ')}
+            <Spoken>{playerPool.join(' · ')}</Spoken>
           </div>
           </div>
           )}
@@ -1132,7 +1135,7 @@ export default function App() {
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
             <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}>{t('ui.infoPanel.esittely')}</span>
-            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showEsittely ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+            <span aria-hidden="true" style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showEsittely ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showEsittely && (
             <div style={{ padding: '0 14px 14px' }}>
@@ -1195,7 +1198,7 @@ export default function App() {
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', cursor: 'pointer', textAlign: 'left' }}
         >
           <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken>{t('ui.stats.menuLink')}</Spoken></span>
-          <span style={{ color: C.gold, fontSize: 16 }}>›</span>
+          <span aria-hidden="true" style={{ color: C.gold, fontSize: 16 }}>›</span>
         </button>
 
         {/* Sanasto & Merkistö */}
@@ -1204,7 +1207,7 @@ export default function App() {
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', border: `1px solid ${C.panelBorder}`, borderRadius: 12, background: 'rgba(255,255,255,0.02)', cursor: 'pointer', textAlign: 'left' }}
         >
           <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken>{t('ui.infoPanel.glossaryLink')}</Spoken></span>
-          <span style={{ color: C.gold, fontSize: 16 }}>›</span>
+          <span aria-hidden="true" style={{ color: C.gold, fontSize: 16 }}>›</span>
         </button>
 
         {/* Ruudunlukija: ohje nimeää Tilanne-napin ja muistissa-sanan samoista avaimista
@@ -1234,7 +1237,7 @@ export default function App() {
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
             <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken say={withoutEmoji(t('ui.infoPanel.a2hs.title')).replace('⁹', '')}>{withSilentNine(t('ui.infoPanel.a2hs.title'))}</Spoken></span>
-            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showA2hs ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+            <span aria-hidden="true" style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showA2hs ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showA2hs && (
             <div style={{ padding: '0 14px 14px' }}>
@@ -1261,7 +1264,7 @@ export default function App() {
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
             <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken>{t('ui.infoPanel.changelog')}</Spoken></span>
-            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showChangelog ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+            <span aria-hidden="true" style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showChangelog ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showChangelog && changelogData && (
             <div style={{ padding: '0 14px 14px' }}>
@@ -1307,7 +1310,7 @@ export default function App() {
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
           >
             <span style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: C.dim, opacity: 0.8 }}><Spoken>{t('ui.infoPanel.todo')}</Spoken></span>
-            <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showTodo ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+            <span aria-hidden="true" style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: showTodo ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
           </button>
           {showTodo && (() => {
             // Teksti lokalisoidusta taulukosta VAIN jos se on linjassa TODO-vakion kanssa
@@ -1354,7 +1357,7 @@ export default function App() {
           <button
             onClick={copyShareLink}
             style={{ flex: 1, padding: '10px', borderRadius: 9, cursor: 'pointer', fontFamily: 'sans-serif', fontSize: 13, background: shareCopied ? `${C.gold}22` : 'transparent', border: `1px solid ${shareCopied ? C.gold : C.panelBorder}`, color: shareCopied ? C.gold : C.text }}
-          >{shareCopied ? `✓ ${t('ui.share.copied')}` : t('ui.share.copy')}</button>
+          ><Spoken>{shareCopied ? `✓ ${t('ui.share.copied')}` : t('ui.share.copy')}</Spoken></button>
           {typeof navigator !== 'undefined' && navigator.share && (
             <button
               onClick={shareNative}

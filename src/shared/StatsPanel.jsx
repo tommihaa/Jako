@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { C } from './colors.js';
 import { useT } from './i18n.jsx';
+import Spoken, { Sep } from './Spoken.jsx';
 
 // Pelikohtaiset tilastot (localStorage: jako:stats). Käännökset ui.stats.* (fi = lähde);
 // vaikeustasojen nimet uudelleenkäytetään ui.settings.ai.<lvl>.label-avaimista.
@@ -31,7 +32,7 @@ export default function StatsPanel({ stats, games = [], sessions = 0, onClear, o
 
         {/* Otsikko + sulje */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontFamily: 'Georgia,serif', fontSize: 18, color: C.gold, letterSpacing: 2 }}>{t('ui.stats.title')}</span>
+          <span style={{ fontFamily: 'Georgia,serif', fontSize: 18, color: C.gold, letterSpacing: 2 }}><Spoken>{t('ui.stats.title')}</Spoken></span>
           <button
             onClick={onClose}
             style={{
@@ -39,7 +40,7 @@ export default function StatsPanel({ stats, games = [], sessions = 0, onClear, o
               color: C.dim, borderRadius: 8, padding: '6px 14px',
               cursor: 'pointer', fontFamily: 'Georgia,serif', fontSize: 13,
             }}
-          >{t('ui.info.close')}</button>
+          ><Spoken>{t('ui.info.close')}</Spoken></button>
         </div>
 
         {/* Yhteenveto — kolme eri mittaria, yksiköt selvästi eroteltuina:
@@ -63,7 +64,7 @@ export default function StatsPanel({ stats, games = [], sessions = 0, onClear, o
 
         {totalPlayed === 0 && (
           <p style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim, textAlign: 'center', lineHeight: 1.6 }}>
-            {t('ui.stats.empty')}
+            <Spoken>{t('ui.stats.empty')}</Spoken>
           </p>
         )}
 
@@ -81,7 +82,7 @@ export default function StatsPanel({ stats, games = [], sessions = 0, onClear, o
               }}>
                 <span style={{ fontSize: 18 }}>{g.emoji}</span>
                 <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 13, color: C.text }}>{g.name}</span>
-                <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim }}>{t('ui.stats.notPlayed')}</span>
+                <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim }}><Spoken>{t('ui.stats.notPlayed')}</Spoken></span>
               </div>
             );
           }
@@ -102,15 +103,15 @@ export default function StatsPanel({ stats, games = [], sessions = 0, onClear, o
                 <span style={{ fontSize: 18, flexShrink: 0 }}>{g.emoji}</span>
                 <span style={{ flex: 1, fontFamily: 'sans-serif', fontSize: 13, color: C.text }}>{g.name}</span>
                 <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim }} title={t('ui.stats.winPctTooltip')}>
-                  {t('ui.stats.winLine', { w: s.wins, p: played, pct: pct(s.wins, played) })}
+                  <Spoken>{t('ui.stats.winLine', { w: s.wins, p: played, pct: pct(s.wins, played) })}</Spoken>
                 </span>
-                <span style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: open ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
+                <span aria-hidden="true" style={{ color: C.dim, fontSize: 13, transition: 'transform 0.15s', transform: open ? 'rotate(90deg)' : 'none', display: 'inline-block' }}>›</span>
               </button>
 
               {open && (
                 <div style={{ padding: '0 14px 14px' }}>
                   {/* Sijoitusjakauma */}
-                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold, letterSpacing: 1, marginBottom: 6, textTransform: 'uppercase' }}>{t('ui.stats.placesTitle')}</div>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold, letterSpacing: 1, marginBottom: 6, textTransform: 'uppercase' }}><Spoken>{t('ui.stats.placesTitle')}</Spoken></div>
                   {[1, 2, 3, 4].map(p => {
                     const n = s.places?.[p] || 0;
                     return (
@@ -125,7 +126,7 @@ export default function StatsPanel({ stats, games = [], sessions = 0, onClear, o
                   })}
 
                   {/* Vaikeustaso-erittely — vaikeustasojen nimet ui.settings.ai.<lvl>.label */}
-                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold, letterSpacing: 1, margin: '12px 0 6px', textTransform: 'uppercase' }}>{t('ui.stats.levelsTitle')}</div>
+                  <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.gold, letterSpacing: 1, margin: '12px 0 6px', textTransform: 'uppercase' }}><Spoken>{t('ui.stats.levelsTitle')}</Spoken></div>
                   {['beginner', 'normal', 'hard'].map(lvl => {
                     const lr = s.byLevel?.[lvl] || { played: 0, wins: 0 };
                     return (
@@ -133,7 +134,7 @@ export default function StatsPanel({ stats, games = [], sessions = 0, onClear, o
                         <span style={{ flex: 1, color: C.text }}>{t(`ui.settings.ai.${lvl}.label`)}</span>
                         <span style={{ color: C.dim }}>
                           {lr.played > 0
-                            ? <>{lr.wins}/{lr.played} · <strong style={{ color: C.gold }} title={t('ui.stats.winPctTooltip')}>{pct(lr.wins, lr.played)}%</strong></>
+                            ? <>{lr.wins}/{lr.played}<Sep /><strong style={{ color: C.gold }} title={t('ui.stats.winPctTooltip')}>{pct(lr.wins, lr.played)}%</strong></>
                             : <span style={{ opacity: 0.5 }} title={t('ui.stats.levelNotPlayed')}>—</span>}
                         </span>
                       </div>
@@ -149,16 +150,16 @@ export default function StatsPanel({ stats, games = [], sessions = 0, onClear, o
         <div style={{ marginTop: 4, textAlign: 'center' }}>
           {confirmClear ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
-              <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}>{t('ui.stats.clearConfirm')}</span>
+              <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.text }}><Spoken>{t('ui.stats.clearConfirm')}</Spoken></span>
               <div style={{ display: 'flex', gap: 8 }}>
                 <button
                   onClick={() => { onClear?.(); setConfirmClear(false); setOpenId(null); }}
                   style={{ background: 'transparent', border: `1px solid ${C.red}88`, color: C.red, borderRadius: 8, padding: '6px 14px', cursor: 'pointer', fontFamily: 'sans-serif', fontSize: 12 }}
-                >{t('ui.stats.clearYes')}</button>
+                ><Spoken>{t('ui.stats.clearYes')}</Spoken></button>
                 <button
                   onClick={() => setConfirmClear(false)}
                   style={{ background: 'transparent', border: `1px solid ${C.panelBorder}`, color: C.dim, borderRadius: 8, padding: '6px 14px', cursor: 'pointer', fontFamily: 'sans-serif', fontSize: 12 }}
-                >{t('ui.stats.clearCancel')}</button>
+                ><Spoken>{t('ui.stats.clearCancel')}</Spoken></button>
               </div>
             </div>
           ) : (
@@ -170,7 +171,7 @@ export default function StatsPanel({ stats, games = [], sessions = 0, onClear, o
                 color: totalPlayed === 0 ? `${C.dim}66` : C.dim, borderRadius: 8, padding: '8px 16px',
                 cursor: totalPlayed === 0 ? 'default' : 'pointer', fontFamily: 'sans-serif', fontSize: 12,
               }}
-            >{t('ui.stats.clear')}</button>
+            ><Spoken>{t('ui.stats.clear')}</Spoken></button>
           )}
         </div>
 

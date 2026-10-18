@@ -9,7 +9,7 @@ import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11y
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml, Deco, RoleWord } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, RoleWord, Sep } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -1228,7 +1228,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
                 <div key={p.id} style={{ flex: 1, minWidth: 80, background: 'rgba(255,255,255,0.03)', border: `1px solid ${p.id === G.defender ? C.blue + '55' : p.id === G.primaryAtk ? '#e05c3b55' : C.panelBorder}`, borderRadius: 10, padding: isMobile ? '5px 8px' : '7px 10px', textAlign: 'center', opacity: p.rank !== null ? 0.35 : 1 }}>
                   <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: p.id === G.primaryAtk ? C.red : p.id === G.defender ? C.blue : C.dim, marginBottom: 4 }}>
                     <Deco>{p.id === G.primaryAtk ? '⚔' : p.id === G.defender ? '🛡' : '🤖'}</Deco> {p.name}<RoleWord role={p.id === G.primaryAtk ? 'attack' : p.id === G.defender && 'defend'} />
-                    {p.rank !== null ? ` · sija ${p.rank}` : ''}
+                    {p.rank !== null ? <><Sep />sija {p.rank}</> : ''}
                   </div>
                   <div style={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
                     {revealAll
@@ -1249,8 +1249,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       <PoytaPanel isMobile={isMobile}
         minHeight={{ m: 130, t: 200 }}
         border={G.table.length > 0 ? '#e05c3b33' : C.panelBorder}
-        title={<span>{t('ui.shared.tableLabel')} · {G.table.length === 0 ? t('ui.shared.emptyLower') : t('games.moska.ui.pairs', { n: G.table.length })}
-          {defBeaten > 0 && <span style={{ color: C.tikki, marginLeft: 8 }}>{t('games.moska.ui.beaten', { n: defBeaten })}</span>}
+        title={<span>{t('ui.shared.tableLabel')}<Sep />{G.table.length === 0 ? t('ui.shared.emptyLower') : t('games.moska.ui.pairs', { n: G.table.length })}
+          {defBeaten > 0 && <span style={{ color: C.tikki, marginLeft: 8 }}><Spoken>{t('games.moska.ui.beaten', { n: defBeaten })}</Spoken></span>}
           {unbeatenSlots.length > 0 && <span style={{ color: C.red, marginLeft: 8 }}>{t('games.moska.ui.unbeaten', { n: unbeatenSlots.length })}</span>}
         </span>}
         right={<PakkaCount count={G.deck.length} flash={pakaAnim} />}>
@@ -1310,7 +1310,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${myTurn ? C.gold + '44' : C.panelBorder}`, borderRadius: 14, padding: isMobile ? '6px 8px' : '12px 14px', marginBottom: isMobile ? 4 : 10, transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: myTurn ? C.gold : C.dim, marginBottom: 8 }}>
           <Deco>{allBots ? '🤖' : '👤'}</Deco> {human.name} <Deco>{G.primaryAtk === 0 ? '⚔' : G.defender === 0 ? '🛡' : ''}</Deco><RoleWord role={G.primaryAtk === 0 ? 'attack' : G.defender === 0 && 'defend'} />
-          {human.rank !== null ? <span style={{ color: C.gold, marginLeft: 6 }}>{t('ui.result.place', { n: human.rank })}</span> : ` · ${t('ui.action.cards', { n: human.hand.length })} ${t('ui.shared.inHand')}`}
+          {human.rank !== null ? <span style={{ color: C.gold, marginLeft: 6 }}>{t('ui.result.place', { n: human.rank })}</span> : <><Sep />{t('ui.action.cards', { n: human.hand.length })} {t('ui.shared.inHand')}</>}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {sortHand(human.hand).map(c => {
@@ -1410,7 +1410,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         {awaitingPlayerContinue && showNextBtn && (
           <button onClick={continueToNextRound}
             style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '12px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif', alignSelf: 'stretch', marginTop: 8 }}>
-            Seuraava kierros →
+            <Spoken>{'Seuraava kierros →'}</Spoken>
           </button>
         )}
       </div>

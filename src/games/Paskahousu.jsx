@@ -14,7 +14,7 @@ import { useGameState } from '../shared/useGameState.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml, Deco, TurnMark, SrWord } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, TurnMark, SrWord, Sep } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -1105,7 +1105,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         border={G.top ? C.gold + '33' : C.panelBorder}
         minHeight={{ m: 90, t: 130 }}
         animation={kasaAnim === 'quad' ? 'kasaQuad 2s ease forwards' : kasaAnim === 'clear' ? 'kasaClear 1.4s ease forwards' : kasaAnim === 'take' ? 'kasaTake 0.85s ease forwards' : undefined}
-        title={<span style={{ color: C.dim }}>{t('ui.shared.pileLabel')} · {G.pile.length === 0 ? t('ui.shared.emptyLower') : korttia(G.pile.length)}</span>}
+        title={<span style={{ color: C.dim }}>{t('ui.shared.pileLabel')}<Sep />{G.pile.length === 0 ? t('ui.shared.emptyLower') : korttia(G.pile.length)}</span>}
         right={<PakkaCount count={G.draw.length} flash={pakaAnim} />}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           {G.top
@@ -1140,7 +1140,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
                 </div>
                 {sameRankCount > 1 && (
                   <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.tikki, marginBottom: 2 }}>
-                    {t('games.paskahousu.ui.sameRankTop', { n: sameRankCount })}
+                    <Spoken>{t('games.paskahousu.ui.sameRankTop', { n: sameRankCount })}</Spoken>
                   </div>
                 )}
                 {G.pile.length > sameRankCount && (
@@ -1233,7 +1233,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         )}
       <div style={{ background: 'rgba(255,255,255,0.02)', border: `2px solid ${isMyTurn ? C.gold + '44' : G.phase === 'swap_offer' && G.swapData?.pidx === 0 ? C.gold + '22' : C.panelBorder}`, borderRadius: 14, padding: '12px 14px', transition: 'border-color 0.2s' }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn ? C.gold : C.dim, marginBottom: 8 }}>
-          <Deco>👤</Deco> Hero · {korttia(human.hand.length)} {t('ui.shared.inHand')}
+          <Deco>👤</Deco> Hero<Sep />{korttia(human.hand.length)} {t('ui.shared.inHand')}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {sortHand(human.hand).map(c => {

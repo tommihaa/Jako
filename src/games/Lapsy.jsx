@@ -10,7 +10,7 @@ import FanStack from '../shared/FanStack.jsx';
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml, Deco, TurnMark } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, TurnMark, Sep } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
@@ -655,7 +655,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: isMobile ? 16 : 28, marginBottom: isMobile ? 8 : 16, padding: isMobile ? '6px 0' : '14px 0' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 8, letterSpacing: 1.5 }}>{t('ui.shared.pileLabel')} · {center.length} {t('ui.shared.pcs')}</div>
+          <div style={{ fontSize: 11, color: C.dim, fontFamily: 'sans-serif', marginBottom: 8, letterSpacing: 1.5 }}>{t('ui.shared.pileLabel')}<Sep />{center.length} {t('ui.shared.pcs')}</div>
           <div style={{ position: 'relative', width: 82, height: 130, margin: '0 auto' }}>
             {/* Flippaaja-animaatio */}
             {flipAnim && (
@@ -734,7 +734,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
             <div style={{ fontFamily: 'sans-serif', fontSize: 11, color: C.dim, marginTop: 5 }}>{korttia(humanPile.length)}</div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
-            <button onClick={humanFlip} disabled={!humanTurn} style={{ padding: '12px 22px', borderRadius: 10, border: `1px solid ${humanTurn ? C.red : C.dim + '44'}`, background: humanTurn ? `linear-gradient(135deg,${C.red},#8a1500)` : 'transparent', color: humanTurn ? C.text : C.dim + '66', fontFamily: 'Georgia,serif', fontSize: 13, fontWeight: 700, cursor: humanTurn ? 'pointer' : 'not-allowed', transition: 'all 0.2s' }}>{t('games.lapsy.ui.flip')}</button>
+            <button onClick={humanFlip} disabled={!humanTurn} style={{ padding: '12px 22px', borderRadius: 10, border: `1px solid ${humanTurn ? C.red : C.dim + '44'}`, background: humanTurn ? `linear-gradient(135deg,${C.red},#8a1500)` : 'transparent', color: humanTurn ? C.text : C.dim + '66', fontFamily: 'Georgia,serif', fontSize: 13, fontWeight: 700, cursor: humanTurn ? 'pointer' : 'not-allowed', transition: 'all 0.2s' }}><Spoken>{t('games.lapsy.ui.flip')}</Spoken></button>
             {humanTurn && <AdviceButton onClick={askAdvice} />}
           </div>
         </div>

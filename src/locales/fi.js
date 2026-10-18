@@ -55,6 +55,7 @@ export const fi = {
       moskaDefend: 'kaada kortit tai nosta ne',
     },
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `voitot ${w}, pelit ${p}, ${pct} prosenttia`,
 
     settings: {
       title: '⚙ Asetukset',
@@ -198,10 +199,10 @@ export const fi = {
       replay: ({ n }) => `▶ Toisto (${n})`,
       toMenu: 'Pelivalinta →',
     },
-    replay: { table: 'Pöytä', pts: 'pts' },
+    replay: { prev: 'Edellinen', next: 'Seuraava', table: 'Pöytä', pts: 'pts' },
 
     shared: {
-      srTurn: 'vuorossa', srAttacks: 'hyökkää', srDefends: 'puolustaa', srSkips: 'menettää vuoronsa',
+      srTurn: 'vuorossa', srAttacks: 'hyökkää', srDefends: 'puolustaa', srSkips: 'menettää vuoronsa', srThen: 'sitten',
       watchMode: '🤖 KATSELUTILA',
       resume: '▶ Jatka',
       pause: '⏸ Tauko',
@@ -406,6 +407,7 @@ export const fi = {
         playPrompt: 'pelaa:',
         towers: 'TORNIT',
         lowerShort: 'alapino',
+        srLowerRange: 'kuutosesta ässään', srUpperRange: 'kasista kuninkaaseen',
         upperShort: 'yläpino',
       },
       advice: {

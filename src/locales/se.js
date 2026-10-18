@@ -42,6 +42,7 @@ export const se = {
     difficulty: { easy: 'Álki', medium: 'Gaska', hard: 'Váttis' },
     rulesAria: '{name}: čájet njuolggadusaid',
     stat: ({ w, p, pct }) => `${w}V / ${p}S · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `vuoittut ${w}, speallut ${p}, ${pct} proseanta`,
 
     settings: {
       advanced: "Liigeheivehusat", preset: { beginner: "Álgáláš", beginnerDesc: "buot bagadeapmi oidno", experienced: "Hárjánan", experiencedDesc: "unnit ráfehisvuohta", custom: "Iešheivehuvvon — leat ieš rievdadan heivehusaid." },
@@ -158,10 +159,10 @@ export const se = {
       replay: ({ n }) => `▶ Geardduheapmi (${n})`,
       toMenu: 'Spealloválljen →',
     },
-    replay: { table: 'Beavdi', pts: 'čuog' },
+    replay: { prev: 'Ovddit', next: 'Boahtte', table: 'Beavdi', pts: 'čuog' },
 
     shared: {
-      srTurn: 'vuorus', srAttacks: 'fallehat', srDefends: 'bealušta', srSkips: 'massá vuorus',
+      srTurn: 'vuorus', srAttacks: 'fallehat', srDefends: 'bealušta', srSkips: 'massá vuorus', srThen: 'dasto',
       watchMode: '🤖 GEAHČČANDÁSSI',
       resume: '▶ Joatkke',
       pause: '⏸ Bottu',
@@ -366,6 +367,7 @@ export const se = {
         playPrompt: 'speala:',
         towers: 'TOORNAT',
         lowerShort: 'vuolle-roavgi',
+        srLowerRange: 'guđas ássii', srUpperRange: 'gávccis gonagassii',
         upperShort: 'badje-roavgi',
       },
       opts: {

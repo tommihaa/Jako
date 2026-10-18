@@ -44,6 +44,7 @@ export const it = {
     difficulty: { easy: 'Facile', medium: 'Intermedio', hard: 'Difficile' },
     rulesAria: '{name}: mostra le regole',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `vittorie ${w}, partite ${p}, ${pct} percento`,
 
     settings: {
       advanced: "Avanzate", preset: { beginner: "Principiante", beginnerDesc: "tutta la guida visibile", experienced: "Esperto", experiencedDesc: "meno rumore", custom: "Personalizzato — hai modificato le impostazioni tu stesso." },
@@ -156,10 +157,10 @@ export const it = {
       replay: ({ n }) => `▶ Replay (${n})`,
       toMenu: 'Scelta gioco →',
     },
-    replay: { table: 'Tavolo', pts: 'pti' },
+    replay: { prev: 'Precedente', next: 'Successivo', table: 'Tavolo', pts: 'pti' },
 
     shared: {
-      srTurn: 'di turno', srAttacks: 'attacca', srDefends: 'difende', srSkips: 'perde il turno',
+      srTurn: 'di turno', srAttacks: 'attacca', srDefends: 'difende', srSkips: 'perde il turno', srThen: 'poi',
       watchMode: '🤖 MODALITÀ SPETTATORE',
       resume: '▶ Riprendi',
       pause: '⏸ Pausa',
@@ -364,6 +365,7 @@ export const it = {
         playPrompt: 'gioca:',
         towers: 'TORRI',
         lowerShort: 'cumulo basso',
+        srLowerRange: 'dal sei all’asso', srUpperRange: 'dall’otto al re',
         upperShort: 'cumulo alto',
       },
       opts: {

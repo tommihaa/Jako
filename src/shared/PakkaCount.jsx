@@ -1,5 +1,6 @@
 import { C } from './colors.js';
 import { useT } from './i18n.jsx';
+import Spoken from './Spoken.jsx';
 
 // Yksi kanoninen "pakka ehtyi" -välähdys (korvaa pelikohtaiset pakaFlash-duplikaatit).
 // Injektoidaan kerran <head>:iin moduulin latautuessa — eri nimi (pakkaFlash) kuin
@@ -48,7 +49,7 @@ export default function PakkaCount({ count, empty, flash = false, variant = 'hea
       animation: flash ? 'pakkaFlash 2.5s ease forwards' : undefined,
       ...style,
     }}>
-      {text}
+      <Spoken>{text}</Spoken>
     </span>
   );
 }

@@ -44,6 +44,7 @@ export const is = {
     difficulty: { easy: 'Auðvelt', medium: 'Miðlungs', hard: 'Erfitt' },
     rulesAria: '{name}: sýna reglur',
     stat: ({ w, p, pct }) => `${w}S / ${p}L · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `sigrar ${w}, leikir ${p}, ${pct} prósent`,
 
     settings: {
       advanced: "Nánar", preset: { beginner: "Byrjandi", beginnerDesc: "öll leiðsögn sýnd", experienced: "Vanur", experiencedDesc: "minna af áreiti", custom: "Sérsniðið — þú hefur breytt stillingum sjálf." },
@@ -156,10 +157,10 @@ export const is = {
       replay: ({ n }) => `▶ Endursýning (${n})`,
       toMenu: 'Velja leik →',
     },
-    replay: { table: 'Borð', pts: 'st' },
+    replay: { prev: 'Fyrri', next: 'Næsta', table: 'Borð', pts: 'st' },
 
     shared: {
-      srTurn: 'á leik', srAttacks: 'sækir', srDefends: 'ver', srSkips: 'missir umferð sína',
+      srTurn: 'á leik', srAttacks: 'sækir', srDefends: 'ver', srSkips: 'missir umferð sína', srThen: 'svo',
       watchMode: '🤖 ÁHORFSHAMUR',
       resume: '▶ Halda áfram',
       pause: '⏸ Hlé',
@@ -364,6 +365,7 @@ export const is = {
         playPrompt: 'spila:',
         towers: 'TURNAR',
         lowerShort: 'neðri bunki',
+        srLowerRange: 'frá sexu niður í ás', srUpperRange: 'frá áttu upp í kóng',
         upperShort: 'efri bunki',
       },
       opts: {

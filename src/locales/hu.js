@@ -43,6 +43,7 @@ export const hu = {
     difficulty: { easy: 'Könnyű', medium: 'Közepes', hard: 'Nehéz' },
     rulesAria: '{name}: szabályok megjelenítése',
     stat: ({ w, p, pct }) => `${w}Gy / ${p}J · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `győzelmek ${w}, játékok ${p}, ${pct} százalék`,
 
     settings: {
       advanced: "További beállítások", preset: { beginner: "Kezdő", beginnerDesc: "minden segítség látszik", experienced: "Haladó", experiencedDesc: "kevesebb zaj", custom: "Egyéni — magad módosítottad a beállításokat." },
@@ -159,10 +160,10 @@ export const hu = {
       replay: ({ n }) => `▶ Visszajátszás (${n})`,
       toMenu: 'Játékválasztás →',
     },
-    replay: { table: 'Asztal', pts: 'pt' },
+    replay: { prev: 'Előző', next: 'Következő', table: 'Asztal', pts: 'pt' },
 
     shared: {
-      srTurn: 'soron', srAttacks: 'támad', srDefends: 'véd', srSkips: 'elveszti a körét',
+      srTurn: 'soron', srAttacks: 'támad', srDefends: 'véd', srSkips: 'elveszti a körét', srThen: 'majd',
       watchMode: '🤖 NÉZŐ MÓD',
       resume: '▶ Folytatás',
       pause: '⏸ Szünet',
@@ -367,6 +368,7 @@ export const hu = {
         playPrompt: 'játszd:',
         towers: 'TORNYOK',
         lowerShort: 'alsó kup.',
+        srLowerRange: 'hatostól ászig', srUpperRange: 'nyolcastól királyig',
         upperShort: 'felső kup.',
       },
       opts: {

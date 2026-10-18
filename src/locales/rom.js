@@ -43,6 +43,7 @@ export const rom = {
     difficulty: { easy: 'Loko', medium: 'Maškarutno', hard: 'Pharo' },
     rulesAria: '{name}: sikav o regule',
     stat: ({ w, p, pct }) => `${w}N / ${p}K · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `jerinimata ${w}, khelimata ${p}, ${pct} procento`,
 
     settings: {
       advanced: "Avansa", preset: { beginner: "Anglutno", beginnerDesc: "sa o sikajipen dikhol pe", experienced: "Sikado", experiencedDesc: "maj cïra bujanga", custom: "Korkoro — korkoro paruvdan le setărja." },
@@ -159,10 +160,10 @@ export const rom = {
       replay: ({ n }) => `▶ Palem (${n})`,
       toMenu: 'Alosaripe khelimasko →',
     },
-    replay: { table: 'Skafidi', pts: 'pnk' },
+    replay: { prev: 'Anglal', next: 'Palal', table: 'Skafidi', pts: 'pnk' },
 
     shared: {
-      srTurn: 'si o rindo', srAttacks: 'marel', srDefends: 'braninil', srSkips: 'xasarel pesko rindo',
+      srTurn: 'si o rindo', srAttacks: 'marel', srDefends: 'braninil', srSkips: 'xasarel pesko rindo', srThen: 'pala',
       watchMode: '🤖 MODO DIKHIMASKO',
       resume: '▶ Ja angle',
       pause: '⏸ Ačhipe',
@@ -367,6 +368,7 @@ export const rom = {
         playPrompt: 'khel:',
         towers: 'TURNURA',
         lowerShort: 'telal gram.',
+        srLowerRange: 'katar o šov dži o aso', srUpperRange: 'katar o oxto dži o kraj',
         upperShort: 'opral gram.',
       },
       opts: {

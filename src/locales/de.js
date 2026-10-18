@@ -44,6 +44,7 @@ export const de = {
     difficulty: { easy: 'Leicht', medium: 'Mittel', hard: 'Schwer' },
     rulesAria: '{name}: Regeln anzeigen',
     stat: ({ w, p, pct }) => `${w}S / ${p}P · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `Siege ${w}, Spiele ${p}, ${pct} Prozent`,
 
     settings: {
       advanced: "Erweitert", preset: { beginner: "Anfänger", beginnerDesc: "volle Hilfe sichtbar", experienced: "Erfahren", experiencedDesc: "weniger Ablenkung", custom: "Benutzerdefiniert — du hast Einstellungen selbst geändert." },
@@ -156,10 +157,10 @@ export const de = {
       replay: ({ n }) => `▶ Wiederholung (${n})`,
       toMenu: 'Spielauswahl →',
     },
-    replay: { table: 'Tisch', pts: 'P' },
+    replay: { prev: 'Zurück', next: 'Weiter', table: 'Tisch', pts: 'P' },
 
     shared: {
-      srTurn: 'am Zug', srAttacks: 'greift an', srDefends: 'verteidigt', srSkips: 'verliert seinen Zug',
+      srTurn: 'am Zug', srAttacks: 'greift an', srDefends: 'verteidigt', srSkips: 'verliert seinen Zug', srThen: 'dann',
       watchMode: '🤖 ZUSCHAUERMODUS',
       resume: '▶ Weiter',
       pause: '⏸ Pause',
@@ -364,6 +365,7 @@ export const de = {
         playPrompt: 'spiele:',
         towers: 'TÜRME',
         lowerShort: 'unten',
+        srLowerRange: 'Sechs abwärts bis Ass', srUpperRange: 'Acht aufwärts bis König',
         upperShort: 'oben',
       },
       opts: {

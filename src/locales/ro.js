@@ -42,6 +42,7 @@ export const ro = {
     difficulty: { easy: 'Ușor', medium: 'Mediu', hard: 'Greu' },
     rulesAria: '{name}: arată regulile',
     stat: ({ w, p, pct }) => `${w}V / ${p}J · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `victorii ${w}, jocuri ${p}, ${pct} la sută`,
 
     settings: {
       advanced: "Avansate", preset: { beginner: "Începător", beginnerDesc: "tot ghidajul vizibil", experienced: "Experimentat", experiencedDesc: "mai puțină aglomerare", custom: "Personalizat — ai ajustat tu setările." },
@@ -158,10 +159,10 @@ export const ro = {
       replay: ({ n }) => `▶ Reluare (${n})`,
       toMenu: 'Alegere joc →',
     },
-    replay: { table: 'Masă', pts: 'pct' },
+    replay: { prev: 'Anterior', next: 'Următor', table: 'Masă', pts: 'pct' },
 
     shared: {
-      srTurn: 'la rând', srAttacks: 'atacă', srDefends: 'apără', srSkips: 'pierde rândul',
+      srTurn: 'la rând', srAttacks: 'atacă', srDefends: 'apără', srSkips: 'pierde rândul', srThen: 'apoi',
       watchMode: '🤖 MOD SPECTATOR',
       resume: '▶ Continuă',
       pause: '⏸ Pauză',
@@ -366,6 +367,7 @@ export const ro = {
         playPrompt: 'joacă:',
         towers: 'TURNURI',
         lowerShort: 'grăm. jos',
+        srLowerRange: 'de la șase la as', srUpperRange: 'de la opt la rege',
         upperShort: 'grăm. sus',
       },
       opts: {

@@ -45,6 +45,7 @@ export const krl = {
     difficulty: { easy: 'Kebie', medium: 'Keskitaso', hard: 'Vaigie' },
     rulesAria: '{name}: ozuta šiännöt',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `voitot ${w}, pelit ${p}, ${pct} prosenttie`,
 
     settings: {
       advanced: "Lizäazetukset", preset: { beginner: "Alguniekku", beginnerDesc: "kogo opastus nägyy", experienced: "Kogenut", experiencedDesc: "vähembi ptöriegö", custom: "Mugavoitettu — olet iče muuttanuh azetuksii." },
@@ -157,10 +158,10 @@ export const krl = {
       replay: ({ n }) => `▶ Toisto (${n})`,
       toMenu: 'Kizavalinda →',
     },
-    replay: { table: 'Stola', pts: 'pts' },
+    replay: { prev: 'Edelline', next: 'Jälgimäine', table: 'Stola', pts: 'pts' },
 
     shared: {
-      srTurn: 'vuorošša', srAttacks: 'hyökkiäy', srDefends: 'puolistau', srSkips: 'mänettäy vuoruoh',
+      srTurn: 'vuorošša', srAttacks: 'hyökkiäy', srDefends: 'puolistau', srSkips: 'mänettäy vuoruoh', srThen: 'sit',
       watchMode: '🤖 KAČČELUTILA',
       resume: '▶ Jatka',
       pause: '⏸ Tauko',
@@ -365,6 +366,7 @@ export const krl = {
         playPrompt: 'kizuau:',
         towers: 'TORNIT',
         lowerShort: 'ala-pino',
+        srLowerRange: 'kuuvešta ässäh', srUpperRange: 'kahekšašta kuninkahah',
         upperShort: 'ylä-pino',
       },
       opts: {

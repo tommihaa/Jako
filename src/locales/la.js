@@ -42,6 +42,7 @@ export const la = {
     difficulty: { easy: 'Facilis', medium: 'Medius', hard: 'Difficilis' },
     rulesAria: '{name}: monstra regulas',
     stat: ({ w, p, pct }) => `${w}V / ${p}L · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `victoriae ${w}, ludi ${p}, ${pct} centesimae`,
 
     settings: {
       advanced: "Provecta", preset: { beginner: "Tiro", beginnerDesc: "omnis ductus apparet", experienced: "Peritus", experiencedDesc: "minus strepitus", custom: "Proprium — optiones ipse mutavisti." },
@@ -158,10 +159,10 @@ export const la = {
       replay: ({ n }) => `▶ Iteratio (${n})`,
       toMenu: 'Electio lusus →',
     },
-    replay: { table: 'Mensa', pts: 'pts' },
+    replay: { prev: 'Prior', next: 'Sequens', table: 'Mensa', pts: 'pts' },
 
     shared: {
-      srTurn: 'agit', srAttacks: 'oppugnat', srDefends: 'defendit', srSkips: 'vices suas amittit',
+      srTurn: 'agit', srAttacks: 'oppugnat', srDefends: 'defendit', srSkips: 'vices suas amittit', srThen: 'deinde',
       watchMode: '🤖 MODUS SPECTANDI',
       resume: '▶ Perge',
       pause: '⏸ Mora',
@@ -366,6 +367,7 @@ export const la = {
         playPrompt: 'lude:',
         towers: 'TURRES',
         lowerShort: 'struis inf.',
+        srLowerRange: 'a senione ad assem', srUpperRange: 'ab octonione ad regem',
         upperShort: 'struis sup.',
       },
       opts: {

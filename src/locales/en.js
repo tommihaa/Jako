@@ -44,6 +44,7 @@ export const en = {
     difficulty: { easy: 'Easy', medium: 'Medium', hard: 'Hard' },
     rulesAria: '{name}: show rules',
     stat: ({ w, p, pct }) => `${w}W / ${p}P · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `wins ${w}, games ${p}, ${pct} percent`,
 
     settings: {
       advanced: "Advanced", preset: { beginner: "Beginner", beginnerDesc: "full guidance shown", experienced: "Experienced", experiencedDesc: "less guidance", custom: "Custom: you've adjusted settings yourself." },
@@ -160,10 +161,10 @@ export const en = {
       replay: ({ n }) => `▶ Replay (${n})`,
       toMenu: 'Game select →',
     },
-    replay: { table: 'Table', pts: 'pts' },
+    replay: { prev: 'Previous', next: 'Next', table: 'Table', pts: 'pts' },
 
     shared: {
-      srTurn: 'to play', srAttacks: 'attacks', srDefends: 'defends', srSkips: 'loses their turn',
+      srTurn: 'to play', srAttacks: 'attacks', srDefends: 'defends', srSkips: 'loses their turn', srThen: 'then',
       watchMode: '🤖 WATCH MODE',
       resume: '▶ Resume',
       pause: '⏸ Pause',
@@ -368,6 +369,7 @@ export const en = {
         playPrompt: 'play:',
         towers: 'TOWERS',
         lowerShort: 'low pile',
+        srLowerRange: 'six down to ace', srUpperRange: 'eight up to king',
         upperShort: 'high pile',
       },
       opts: {

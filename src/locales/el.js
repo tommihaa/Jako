@@ -44,6 +44,7 @@ export const el = {
     difficulty: { easy: 'Εύκολο', medium: 'Μεσαίο', hard: 'Δύσκολο' },
     rulesAria: '{name}: εμφάνιση κανόνων',
     stat: ({ w, p, pct }) => `${w}Ν / ${p}Π · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `νίκες ${w}, παιχνίδια ${p}, ${pct} τοις εκατό`,
 
     settings: {
       advanced: "Για προχωρημένους", preset: { beginner: "Αρχάριος", beginnerDesc: "όλη η καθοδήγηση ορατή", experienced: "Έμπειρος", experiencedDesc: "λιγότερος θόρυβος", custom: "Προσαρμοσμένο — άλλαξες ρυθμίσεις μόνος σου." },
@@ -156,10 +157,10 @@ export const el = {
       replay: ({ n }) => `▶ Επανάληψη (${n})`,
       toMenu: 'Επιλογή παιχνιδιού →',
     },
-    replay: { table: 'Τραπέζι', pts: 'πόντοι' },
+    replay: { prev: 'Προηγούμενο', next: 'Επόμενο', table: 'Τραπέζι', pts: 'πόντοι' },
 
     shared: {
-      srTurn: 'παίζει', srAttacks: 'επιτίθεται', srDefends: 'αμύνεται', srSkips: 'χάνει τη σειρά του',
+      srTurn: 'παίζει', srAttacks: 'επιτίθεται', srDefends: 'αμύνεται', srSkips: 'χάνει τη σειρά του', srThen: 'μετά',
       watchMode: '🤖 ΛΕΙΤΟΥΡΓΙΑ ΘΕΑΣΗΣ',
       resume: '▶ Συνέχεια',
       pause: '⏸ Παύση',
@@ -364,6 +365,7 @@ export const el = {
         playPrompt: 'παίξε:',
         towers: 'ΠΥΡΓΟΙ',
         lowerShort: 'κάτω σωρός',
+        srLowerRange: 'από το έξι ως τον άσσο', srUpperRange: 'από το οκτώ ως τον ρήγα',
         upperShort: 'πάνω σωρός',
       },
       opts: {

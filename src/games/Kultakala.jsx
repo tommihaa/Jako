@@ -4,7 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, truncName, newDeck, cardName, spokenSuits, shuffledAINames, lblColored, BOT_RESULT_DELAY, UNKNOWN_EV, opponentsInTurnOrder } from '../shared/helpers.js';
+import { isRed, lbl, truncName, newDeck, cardName, spokenSuits, shuffledAINames, lblColored, eyeAndEar, BOT_RESULT_DELAY, UNKNOWN_EV, opponentsInTurnOrder } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -454,7 +454,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
       if (sndRef.current) SFX.swap();
 
       // Logita ketjuvaihto - näytä kaikki välivaiheet väreillä
-      const swapChain = swaps.map(s => t('games.kultakala.msg.slotItem', { pos: s.pos, card: lblColored(s.card) })).join(' → ');
+      const swapChain = swaps.map(s => t('games.kultakala.msg.slotItem', { pos: s.pos, card: lblColored(s.card) })).join(eyeAndEar(' → ', `, ${t('ui.shared.srThen')} `));
       commit(newG, t('games.kultakala.msg.aiSwapChain', { name: g2.players[idx].name, chain: swapChain, card: lblColored(held) }));
       // Paikasta 1 ulos ajettu pikkukortti kohahduttaa, sama ehto kuin humanSwapRow:ssa.
       if (swaps[swaps.length - 1].pos === 1 && held.v <= 2) triggerKohahdus(held);

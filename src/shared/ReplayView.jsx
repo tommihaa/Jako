@@ -56,7 +56,7 @@ export default function ReplayView({ frames, onClose, isMobile }) {
         padding: isMobile ? '8px 10px' : '10px 16px',
         display:'flex', alignItems:'center', gap:8,
       }}>
-        <button onClick={() => setIdx(i => Math.max(0, i - 1))} disabled={safeIdx === 0} style={navBtn(safeIdx === 0)}>←</button>
+        <button onClick={() => setIdx(i => Math.max(0, i - 1))} disabled={safeIdx === 0} aria-label={t('ui.replay.prev')} style={navBtn(safeIdx === 0)}>←</button>
         <div style={{ flex:1, display:'flex', flexDirection:'column', gap:3 }}>
           <div style={{ textAlign:'center', fontFamily:'sans-serif', fontSize:11, color:C.dim }}>
             {safeIdx + 1} / {frames.length}
@@ -66,7 +66,7 @@ export default function ReplayView({ frames, onClose, isMobile }) {
             style={{ width:'100%', cursor:'pointer', accentColor:C.gold }}
           />
         </div>
-        <button onClick={() => setIdx(i => Math.min(frames.length - 1, i + 1))} disabled={safeIdx === frames.length - 1} style={navBtn(safeIdx === frames.length - 1)}>→</button>
+        <button onClick={() => setIdx(i => Math.min(frames.length - 1, i + 1))} disabled={safeIdx === frames.length - 1} aria-label={t('ui.replay.next')} style={navBtn(safeIdx === frames.length - 1)}>→</button>
         <button onClick={onClose} aria-label={t('ui.shared.close')} style={{ background:'transparent', border:`1px solid ${C.panelBorder}`, color:C.dim, borderRadius:8, padding:'7px 12px', cursor:'pointer', fontFamily:'sans-serif', fontSize:13 }}>✕</button>
       </div>
 

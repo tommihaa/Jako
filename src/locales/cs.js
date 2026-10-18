@@ -51,6 +51,7 @@ export const cs = {
     difficulty: { easy: 'Lehká', medium: 'Střední', hard: 'Těžká' },
     rulesAria: '{name}: zobrazit pravidla',
     stat: ({ w, p, pct }) => `${w}V / ${p}H · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `výhry ${w}, hry ${p}, ${pct} procent`,
 
     settings: {
       advanced: "Pokročilé", preset: { beginner: "Začátečník", beginnerDesc: "všechna vodítka viditelná", experienced: "Zkušený", experiencedDesc: "méně rušení", custom: "Vlastní — nastavení sis upravil sám." },
@@ -167,10 +168,10 @@ export const cs = {
       replay: ({ n }) => `▶ Přehrát (${n})`,
       toMenu: 'Výběr hry →',
     },
-    replay: { table: 'Stůl', pts: 'b' },
+    replay: { prev: 'Předchozí', next: 'Další', table: 'Stůl', pts: 'b' },
 
     shared: {
-      srTurn: 'na tahu', srAttacks: 'útočí', srDefends: 'brání', srSkips: 'ztrácí tah',
+      srTurn: 'na tahu', srAttacks: 'útočí', srDefends: 'brání', srSkips: 'ztrácí tah', srThen: 'pak',
       watchMode: '🤖 REŽIM SLEDOVÁNÍ',
       resume: '▶ Pokračovat',
       pause: '⏸ Pauza',
@@ -375,6 +376,7 @@ export const cs = {
         playPrompt: 'hraj:',
         towers: 'VĚŽE',
         lowerShort: 'dolní hrom.',
+        srLowerRange: 'od šestky k esu', srUpperRange: 'od osmy ke králi',
         upperShort: 'horní hrom.',
       },
       opts: {

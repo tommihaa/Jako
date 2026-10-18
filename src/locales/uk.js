@@ -53,6 +53,7 @@ export const uk = {
     difficulty: { easy: 'Легко', medium: 'Середній', hard: 'Складний' },
     rulesAria: '{name}: показати правила',
     stat: ({ w, p, pct }) => `${w}П / ${p}І · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `перемоги ${w}, ігри ${p}, ${pct} відсотків`,
 
     settings: {
       advanced: "Додатково", preset: { beginner: "Початківець", beginnerDesc: "усі підказки видно", experienced: "Досвідчений", experiencedDesc: "менше зайвого", custom: "Власні — ви змінили налаштування самі." },
@@ -165,10 +166,10 @@ export const uk = {
       replay: ({ n }) => `▶ Повтор (${n})`,
       toMenu: 'Вибір гри →',
     },
-    replay: { table: 'Стіл', pts: 'оч' },
+    replay: { prev: 'Назад', next: 'Далі', table: 'Стіл', pts: 'оч' },
 
     shared: {
-      srTurn: 'ходить', srAttacks: 'атакує', srDefends: 'захищається', srSkips: 'втрачає свій хід',
+      srTurn: 'ходить', srAttacks: 'атакує', srDefends: 'захищається', srSkips: 'втрачає свій хід', srThen: 'потім',
       watchMode: '🤖 РЕЖИМ СПОСТЕРЕЖЕННЯ',
       resume: '▶ Продовжити',
       pause: '⏸ Пауза',
@@ -373,6 +374,7 @@ export const uk = {
         playPrompt: 'грай:',
         towers: 'ВЕЖІ',
         lowerShort: 'нижня стопка',
+        srLowerRange: 'від шістки до туза', srUpperRange: 'від вісімки до короля',
         upperShort: 'верхня стопка',
       },
       opts: {

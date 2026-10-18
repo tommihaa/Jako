@@ -44,6 +44,7 @@ export const fr = {
     difficulty: { easy: 'Facile', medium: 'Intermédiaire', hard: 'Difficile' },
     rulesAria: '{name} : afficher les règles',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `victoires ${w}, parties ${p}, ${pct} pour cent`,
 
     settings: {
       advanced: "Paramètres avancés", preset: { beginner: "Débutant", beginnerDesc: "toute l’aide affichée", experienced: "Expérimenté", experiencedDesc: "moins d’encombrement", custom: "Personnalisé — tu as modifié des réglages toi-même." },
@@ -156,10 +157,10 @@ export const fr = {
       replay: ({ n }) => `▶ Replay (${n})`,
       toMenu: 'Choix du jeu →',
     },
-    replay: { table: 'Table', pts: 'pts' },
+    replay: { prev: 'Précédent', next: 'Suivant', table: 'Table', pts: 'pts' },
 
     shared: {
-      srTurn: 'à jouer', srAttacks: 'attaque', srDefends: 'défend', srSkips: 'perd son tour',
+      srTurn: 'à jouer', srAttacks: 'attaque', srDefends: 'défend', srSkips: 'perd son tour', srThen: 'puis',
       watchMode: '🤖 MODE SPECTATEUR',
       resume: '▶ Reprendre',
       pause: '⏸ Pause',
@@ -364,6 +365,7 @@ export const fr = {
         playPrompt: 'joue :',
         towers: 'TOURS',
         lowerShort: 'pile basse',
+        srLowerRange: 'du six à l’as', srUpperRange: 'du huit au roi',
         upperShort: 'pile haute',
       },
       opts: {

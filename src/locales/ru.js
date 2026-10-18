@@ -53,6 +53,7 @@ export const ru = {
     difficulty: { easy: 'Лёгкая', medium: 'Средняя', hard: 'Сложная' },
     rulesAria: '{name}: показать правила',
     stat: ({ w, p, pct }) => `${w}П / ${p}И · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `победы ${w}, игры ${p}, ${pct} процентов`,
 
     settings: {
       advanced: "Дополнительно", preset: { beginner: "Новичок", beginnerDesc: "все подсказки видны", experienced: "Опытный", experiencedDesc: "меньше лишнего", custom: "Своё — вы сами изменили настройки." },
@@ -165,10 +166,10 @@ export const ru = {
       replay: ({ n }) => `▶ Повтор (${n})`,
       toMenu: 'Выбор игры →',
     },
-    replay: { table: 'Стол', pts: 'очк.' },
+    replay: { prev: 'Назад', next: 'Далее', table: 'Стол', pts: 'очк.' },
 
     shared: {
-      srTurn: 'ходит', srAttacks: 'атакует', srDefends: 'защищается', srSkips: 'теряет ход',
+      srTurn: 'ходит', srAttacks: 'атакует', srDefends: 'защищается', srSkips: 'теряет ход', srThen: 'затем',
       watchMode: '🤖 РЕЖИМ ПРОСМОТРА',
       resume: '▶ Продолжить',
       pause: '⏸ Пауза',
@@ -373,6 +374,7 @@ export const ru = {
         playPrompt: 'играет:',
         towers: 'БАШНИ',
         lowerShort: 'нижн. стопка',
+        srLowerRange: 'от шестёрки до туза', srUpperRange: 'от восьмёрки до короля',
         upperShort: 'верхн. стопка',
       },
       opts: {

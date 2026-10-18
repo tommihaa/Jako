@@ -362,6 +362,24 @@ Merkistön kuvakkeet piilotettiin, koska selitys on vieressä. Selaimessa todenn
 rivi kuuluu *"Mikael, hyökkää"* ja *"Hero, puolustaa · 6 korttia kädessä"*, Kultakalan
 *"Hero, vuorossa"*. Ryhmä 4 (erottimet ja nuolet) on yhä auki.
 
+*Ryhmä 4 korjattu dev-versiossa 18.10.2026, ei kuunneltu* (Tommin valinta: ehdotuksen mukaan).
+`helpers.js`:n `spokenSymbols` muuttaa puheen: sanojen välinen `·` tai `→` kuuluu pilkkuna,
+pelkkä suuntamerkki (`← Valikko`, `Käännä →`, `›`) ja `✓` jäävät pois, ja `×3` kuuluu "3".
+Sitä käyttävät `Spoken` (myös annettu `say`), `SpokenHtml`, viestirivi, loki ja live-alue.
+JSX:n keskellä oleva väli-piste on `Sep` (näkyy `·`, kuuluu pilkku). Erikseen sanoiksi:
+valikon tilasto (`ui.statSpoken`: *"Kultakala, voitot 0, pelit 1, 0 prosenttia"*),
+Kultakalan vaihtoketju (nuolen tilalla *sitten*, `ui.shared.srThen`) ja Ristiseiskan tornit
+(*"alapino kuutosesta ässään, 7, yläpino kasista kuninkaaseen"*,
+`games.ristiseiska.ui.srLowerRange`/`srUpperRange`). Toistonäkymän nimettömät ←/→-napit
+saivat nimet (`ui.replay.prev`/`next`). Uudet avaimet 23 kielellä. Samalla korjattiin
+pelinapin ja Bottien Taistelun napin nimi, joissa kaksi riviä liimautui yhteen
+(*"Kultakalavoitot"*, *"Bottien Taistelu4 bottia"*). Vahtitesti tarkistaa nyt myös merkit
+`· ← → › ✓ ×`. Testin pelit eivät ole täysin toistettavia (botit arpovat siemenen ohi):
+Kasinon mökkirivi *"🏠 MÖKKI"* vuoti yhdessä viidestä ajosta ja korjattiin. Selaimessa
+todennettu valikon tilasto, Bottien Taistelun nappi, Ristiseiskan tornit, ← Valikko ja LOKI.
+Kultakalan *sitten* on todennettu vain koodista. Tila: J-13 korjattu kokonaan dev-versiossa,
+kuuntelu tekemättä.
+
 ## Kuuntelu 1.2.237:llä 16.10.2026 klo 19.13
 
 Tommi kuunteli julkaistun 1.2.237:n Pixelillä: *"kuulosti hyvältä, kunnes pelasin yhden

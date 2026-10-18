@@ -53,6 +53,7 @@ export const pl = {
     difficulty: { easy: 'Łatwy', medium: 'Średni', hard: 'Trudny' },
     rulesAria: '{name}: pokaż zasady',
     stat: ({ w, p, pct }) => `${w}W / ${p}G · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `wygrane ${w}, gry ${p}, ${pct} procent`,
 
     settings: {
       advanced: "Zaawansowane", preset: { beginner: "Początkujący", beginnerDesc: "pełne wskazówki widoczne", experienced: "Doświadczony", experiencedDesc: "mniej szumu", custom: "Własne — samodzielnie zmieniłeś ustawienia." },
@@ -165,10 +166,10 @@ export const pl = {
       replay: ({ n }) => `▶ Powtórka (${n})`,
       toMenu: 'Wybór gry →',
     },
-    replay: { table: 'Stół', pts: 'pkt' },
+    replay: { prev: 'Poprzedni', next: 'Następny', table: 'Stół', pts: 'pkt' },
 
     shared: {
-      srTurn: 'na ruchu', srAttacks: 'atakuje', srDefends: 'broni się', srSkips: 'traci turę',
+      srTurn: 'na ruchu', srAttacks: 'atakuje', srDefends: 'broni się', srSkips: 'traci turę', srThen: 'potem',
       watchMode: '🤖 TRYB OGLĄDANIA',
       resume: '▶ Wznów',
       pause: '⏸ Pauza',
@@ -373,6 +374,7 @@ export const pl = {
         playPrompt: 'gra:',
         towers: 'WIEŻE',
         lowerShort: 'doln. stos',
+        srLowerRange: 'od szóstki do asa', srUpperRange: 'od ósemki do króla',
         upperShort: 'górn. stos',
       },
       opts: {

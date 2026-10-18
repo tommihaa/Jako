@@ -1,5 +1,6 @@
 import { C } from './colors.js';
 import { useT } from './i18n.jsx';
+import Spoken from './Spoken.jsx';
 
 export default function HandoffScreen({ playerName, onReady }) {
   const t = useT();
@@ -25,7 +26,7 @@ export default function HandoffScreen({ playerName, onReady }) {
           fontSize: 15, color: '#8aaa90',
           fontFamily: 'sans-serif', letterSpacing: 1,
         }}>
-          {t('ui.shared.yourTurn')}
+          <Spoken>{t('ui.shared.yourTurn')}</Spoken>
         </div>
       </div>
       <button
@@ -39,7 +40,7 @@ export default function HandoffScreen({ playerName, onReady }) {
           letterSpacing: 2, marginTop: 8,
         }}
       >
-        {t('ui.shared.startTurn')}
+        <Spoken>{t('ui.shared.startTurn')}</Spoken>
       </button>
     </div>
   );

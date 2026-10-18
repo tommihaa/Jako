@@ -44,6 +44,7 @@ export const sv = {
     difficulty: { easy: 'Lätt', medium: 'Medel', hard: 'Svår' },
     rulesAria: '{name}: visa regler',
     stat: ({ w, p, pct }) => `${w}V / ${p}S · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `vinster ${w}, spel ${p}, ${pct} procent`,
 
     settings: {
       advanced: "Avancerat", preset: { beginner: "Nybörjare", beginnerDesc: "all vägledning visas", experienced: "Erfaren", experiencedDesc: "mindre brus", custom: "Anpassad — du har ändrat inställningar själv." },
@@ -156,10 +157,10 @@ export const sv = {
       replay: ({ n }) => `▶ Repris (${n})`,
       toMenu: 'Spelval →',
     },
-    replay: { table: 'Bord', pts: 'p' },
+    replay: { prev: 'Föregående', next: 'Nästa', table: 'Bord', pts: 'p' },
 
     shared: {
-      srTurn: 'på tur', srAttacks: 'anfaller', srDefends: 'försvarar', srSkips: 'förlorar sin tur',
+      srTurn: 'på tur', srAttacks: 'anfaller', srDefends: 'försvarar', srSkips: 'förlorar sin tur', srThen: 'sedan',
       watchMode: '🤖 ÅSKÅDARLÄGE',
       resume: '▶ Fortsätt',
       pause: '⏸ Paus',
@@ -364,6 +365,7 @@ export const sv = {
         playPrompt: 'spela:',
         towers: 'TORN',
         lowerShort: 'nedre hög',
+        srLowerRange: 'sex ner till ess', srUpperRange: 'åtta upp till kung',
         upperShort: 'övre hög',
       },
       opts: {

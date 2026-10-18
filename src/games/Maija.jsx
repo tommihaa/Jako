@@ -8,7 +8,7 @@ import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml, Deco, RoleWord } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, RoleWord, Sep } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -787,7 +787,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       {/* Pöytä */}
       <PoytaPanel isMobile={isMobile}
         minHeight={{ m: 170, t: 220 }}
-        title={<span>{t('ui.shared.tableLabel')} · {phase==='attacking' ? t('games.maija.ui.phaseAtk') : t('games.maija.ui.phaseDef')}</span>}
+        title={<span>{t('ui.shared.tableLabel')}<Sep />{phase==='attacking' ? t('games.maija.ui.phaseAtk') : t('games.maija.ui.phaseDef')}</span>}
         right={<PakkaCount count={G.deck.length} flash={pakaAnim} />}>
         {table.length === 0
           ? <div style={{ textAlign:'center', color:C.dim, fontFamily:'sans-serif', fontSize:12,

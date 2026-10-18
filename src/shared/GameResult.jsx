@@ -76,7 +76,7 @@ export default function GameResult({
         margin: 0,
         textAlign: 'center',
       }}>
-        {t('ui.result.title')}
+        <Spoken>{t('ui.result.title')}</Spoken>
       </h1>
 
       {/* Ranking-lista */}
@@ -109,7 +109,7 @@ export default function GameResult({
             }}>
               {r.name}
               {r.place === 1 && !r.isHuman &&
-                <span style={{ fontSize: 11, color: C.dim, marginLeft: 8, fontFamily: 'sans-serif' }}>{t('ui.result.won')}</span>
+                <span style={{ fontSize: 11, color: C.dim, marginLeft: 8, fontFamily: 'sans-serif' }}><Spoken>{t('ui.result.won')}</Spoken></span>
               }
             </div>
             {/* Pisteet */}
@@ -137,7 +137,7 @@ export default function GameResult({
             letterSpacing: 1.5,
             marginBottom: 10,
           }}>
-            {t('ui.result.revealed')}
+            <Spoken>{t('ui.result.revealed')}</Spoken>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {revealCards.map(p => (
@@ -197,7 +197,7 @@ export default function GameResult({
             letterSpacing: 1.5,
             marginBottom: 10,
           }}>
-            {t('ui.result.breakdown')}
+            <Spoken>{t('ui.result.breakdown')}</Spoken>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {scoreBreakdown.map(p => (
@@ -268,7 +268,7 @@ export default function GameResult({
             letterSpacing: 1,
           }}
         >
-          {t('ui.result.newGame')}
+          <Spoken>{t('ui.result.newGame')}</Spoken>
         </button>
         <button
           onClick={onMenu}
@@ -283,7 +283,7 @@ export default function GameResult({
             fontFamily: 'Georgia,serif',
           }}
         >
-          {t('ui.menu.back')}
+          <Spoken>{t('ui.menu.back')}</Spoken>
         </button>
       </div>
     </div>

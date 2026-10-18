@@ -44,6 +44,7 @@ export const es = {
     difficulty: { easy: 'Fácil', medium: 'Medio', hard: 'Difícil' },
     rulesAria: '{name}: mostrar reglas',
     stat: ({ w, p, pct }) => `${w}V / ${p}P · ${pct}%`,
+    statSpoken: ({ w, p, pct }) => `victorias ${w}, partidas ${p}, ${pct} por ciento`,
 
     settings: {
       advanced: "Avanzado", preset: { beginner: "Principiante", beginnerDesc: "toda la ayuda visible", experienced: "Experto", experiencedDesc: "menos ruido", custom: "Personalizado — has ajustado opciones tú mismo." },
@@ -156,10 +157,10 @@ export const es = {
       replay: ({ n }) => `▶ Repetición (${n})`,
       toMenu: 'Elegir juego →',
     },
-    replay: { table: 'Mesa', pts: 'pts' },
+    replay: { prev: 'Anterior', next: 'Siguiente', table: 'Mesa', pts: 'pts' },
 
     shared: {
-      srTurn: 'en turno', srAttacks: 'ataca', srDefends: 'defiende', srSkips: 'pierde su turno',
+      srTurn: 'en turno', srAttacks: 'ataca', srDefends: 'defiende', srSkips: 'pierde su turno', srThen: 'luego',
       watchMode: '🤖 MODO ESPECTADOR',
       resume: '▶ Continuar',
       pause: '⏸ Pausa',
@@ -364,6 +365,7 @@ export const es = {
         playPrompt: 'juega:',
         towers: 'TORRES',
         lowerShort: 'montón inf.',
+        srLowerRange: 'del seis al as', srUpperRange: 'del ocho al rey',
         upperShort: 'montón sup.',
       },
       opts: {

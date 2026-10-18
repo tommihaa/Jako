@@ -9,7 +9,7 @@ import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11y
 import Card from '../shared/Card.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
 import BotBattleBar from '../shared/BotBattleBar.jsx';
-import Spoken, { SpokenHtml, Deco, TurnMark } from '../shared/Spoken.jsx';
+import Spoken, { SpokenHtml, Deco, TurnMark, Sep } from '../shared/Spoken.jsx';
 import GameLog from '../shared/GameLog.jsx';
 import GameStatusBar from '../shared/GameStatusBar.jsx';
 import PakkaCount from '../shared/PakkaCount.jsx';
@@ -1295,8 +1295,8 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: isMyTurn ? C.gold : C.dim, marginBottom: 8 }}>
           <Deco>{displayP?.isHuman ? '👤' : '🤖'}</Deco> {displayP?.name}
           {displayP?.hand.length > 0
-            ? ` · ${korttia(displayP.hand.length)} ${t('ui.shared.inHand')}`
-            : ` · ${t('ui.shared.emptyHandWin')}`}
+            ? <><Sep />{korttia(displayP.hand.length)} {t('ui.shared.inHand')}</>
+            : <><Sep />{t('ui.shared.emptyHandWin')}</>}
           {G.lappuSaid.has(displayP?.id) && displayP?.hand.length === 1 && <span style={{ color: C.gold, marginLeft: 8 }}>LAPPU</span>}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', minHeight: isMobile ? 90 : 216 }}>
@@ -1387,7 +1387,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
             onClick={() => onResult?.(pendingResult)}
             style={{ background: `linear-gradient(135deg,${C.gold},#a07830)`, border: 'none', borderRadius: 10, padding: '10px 24px', color: '#0d2118', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Georgia,serif' }}
           >
-            {t('ui.result.results')}
+            <Spoken>{t('ui.result.results')}</Spoken>
           </button>
         )}
         {canAct && (
@@ -1428,14 +1428,14 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
         })}
       >
         <span style={{ color: C.gold, fontWeight: 700 }}>{t('ui.shared.goal')}</span> {t('ui.shared.firstOutWins')}
-        {' · '}
+        <Sep />
         <span style={{
           color: G.deck.length === 0 && G.discardPile.length <= 1 ? C.red : 'inherit',
           fontWeight: G.deck.length === 0 && G.discardPile.length <= 1 ? 700 : 'inherit',
           animation: pakaAnim ? 'pakkaFlash 2.5s ease forwards' : undefined }}>
           {G.deck.length === 0 && G.discardPile.length <= 1 ? t('games.seiska.ui.deckEmpty') : t('games.seiska.ui.deckCount', { n: G.deck.length })}
         </span>
-        {' · '}<Spoken>{G.reqSuit ? t('games.seiska.ui.required', { suit: G.reqSuit }) : t('games.seiska.ui.topCard', { card: lbl(G.discardTop) })}</Spoken>
+        <Sep /><Spoken>{G.reqSuit ? t('games.seiska.ui.required', { suit: G.reqSuit }) : t('games.seiska.ui.topCard', { card: lbl(G.discardTop) })}</Spoken>
       </GameStatusBar>
 
       {/* Loki */}
