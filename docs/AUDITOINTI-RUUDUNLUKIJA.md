@@ -306,6 +306,47 @@ puhutussa muodossa on emoji. Kolme testiä tunnisti Bottien Taistelun napin nime
 ne lukevat sen nyt näkyvästä tekstistä. Tila: napit korjattu, muu teksti (lokirivit,
 pelaajarivien 🤖 ja 👤) yhä auki.
 
+*Kartoitus 18.10.2026* (HEAD `4e5ae29`, 1.2.241, dev-preview `?lang=fi`). Menetelmä: sivun
+DOMista haettiin tekstisolmut ja `aria-label`/`title`/`alt`-arvot, joissa on emoji tai
+symboli (`EMOJI` sekä `· → ← › ● ★ ✓ ×` ja numeronäppäin), ja ohitettiin `aria-hidden`,
+näkymätön ja nimetyn napin sisällä oleva teksti. Haku ajettiin valikossa, Asetuksissa ja
+Infossa sekä jokaisessa yhdeksässä pelissä aloitushetkellä (loki ja Tilanne auki) ja
+Bottien Taistelussa noin 36 sekuntia. Kartoitus kertoo mitä selain antaa ruudunlukijalle.
+Kuuntelua ei tehty, joten symbolin sanamuoto TalkBackissa on päätelmä, paitsi `·`, jonka
+Tommi kuuli (*Rivinkeskinen piste*). Ryhmät:
+
+1. *Pelaajarivien 🤖 ja 👤, kaikki yhdeksän peliä.* Koriste: rooli kuuluu jo nimestä
+   (Hero tai botin nimi). Koodissa 23 riviä pelikomponenteissa, esim.
+   `Kultakala.jsx:619`, `Paskahousu.jsx:1070`, `Seiska.jsx:1174`. Sama `🤖` on Bottien
+   Taistelun bannerissa (`🤖 KATSELUTILA`, `fi.js:204`).
+2. *Vuoron ja roolin merkit, tietoa eikä koristetta.* `●` vuorossa olevan perässä
+   (Kultakala, Läpsy, Kasino, Koputus), `►` vuorossa olevan edessä (Paskahousu, Ristiseiska),
+   `⚔️`/`🛡️` hyökkääjä ja puolustaja (Maija, Moska, Kasinon `⚔ 11`). Pelkkä `aria-hidden`
+   hävittäisi tiedon, joten nämä tarvitsevat puhutun sanan (`Spoken say=`).
+3. *Viestirivin pelikuvake.* Pelin oma emoji viestin edessä (🐟 👋 🪙 🤜 🃏 ⚔️), kuuluu
+   ennen jokaista viestiä kun riviä pyyhkäisee. Live-alue ei sano sitä (`spokenHtml` poistaa
+   emojit), mutta näkyvä rivi sanoo. Seiskassa ja Ristiseiskassa kuvaketta ei tullut esiin.
+4. *Erottimet ja nuolet näkyvässä tekstissä.* `·` tilariveillä (`PÖYTÄ · tyhjä`,
+   `KASA · 0 kpl`, `Hero · 6 korttia kädessä`, Seiskan Tilanne), valikon pelitilastossa
+   (`0V / 1P · 0%`) ja Bottien Taistelun napissa (`4 bottia · Mestari`). `→` lokissa
+   (Kultakalan vaihtoketju, Moskan `hyökkää → puolustaa`), Ristiseiskan torneissa (`[6→A]`)
+   ja Läpsyn `Käännä →` -napissa. `←` Valikko-napissa ja Kasinon kaappausrivillä. `›`
+   LOKI-napissa ja Asetusten ja Infon avautuvissa riveissä. `✓` Moskan pöytärivillä
+   (`✓ 1 kaadettu`) ja `×3` Paskahousussa.
+5. *Infon napit, jotka nappikorjaus ohitti.* Tilastot 📊, Ruudunlukijalle 🔊, Lisää Jako
+   aloitusnäytölle 📲, Muutosloki 📋 ja Tulossa 🗺. Teksti tulee käännösavaimesta suoraan
+   (`fi.js:127–175`) eikä `Spoken`in kautta, toisin kuin Asetusten vastaavat rivit.
+   Vahtitesti ei katso Info-paneelia.
+6. *Yksittäiset.* Seiskan lokin `🔮 Katsomotila`, Koputuksen irrallinen `⚡` ja `·`.
+   Valikon `★` on roolittomassa `<span aria-label>`issa (sama malli kuin Itun I-5):
+   Chrome näyttää nimen *Suosittu peli*, TalkBackin käytös kuulematta.
+
+Ei kartoitettu: tulosruutu, Tilastot-paneelin sisältö, Sanasto ja Merkistö (siellä kuvake on
+itse selitettävä asia) sekä muut kielet kuin suomi. Avoimet päätökset Tommille: puhutaanko
+ryhmän 2 merkit sanoina (esim. *vuorossa*, *hyökkää*, *puolustaa*), ja piilotetaanko ryhmän 4
+erottimet ja nuolet kokonaan vai vaihdetaanko osa sanaksi (lokin nuoli kertoo
+vaihdon järjestyksen, joka on sisältöä).
+
 ## Kuuntelu 1.2.237:llä 16.10.2026 klo 19.13
 
 Tommi kuunteli julkaistun 1.2.237:n Pixelillä: *"kuulosti hyvältä, kunnes pelasin yhden
