@@ -2,7 +2,7 @@ import { C, SUIT_COLOR } from './colors.js';
 import Card from './Card.jsx';
 import { useT } from './i18n.jsx';
 import Spoken from './Spoken.jsx';
-import { spokenSuits } from './helpers.js';
+import { spokenSuits, cardName } from './helpers.js';
 
 // ranking:        [{name, place, score?, isHuman}]  – sorted by place asc
 // revealCards:    [{name, cards: [...], label}]       – Koputus, Kultakala
@@ -153,7 +153,10 @@ export default function GameResult({
                   padding: isMobile ? '6px 10px' : '8px 12px',
                 }}
               >
-                <div style={{
+                {/* Rivi kuuluu yhtenä lauseena: kortti kerrallaan TalkBack sanoi jokaisen perään
+                    "kuva" (Tommin kuuntelu 19.10.2026, auditointi J-35). */}
+                <span className="sr-only">{`${p.name}: ${p.cards.filter(Boolean).map(c => cardName(c)).join(', ')}`}</span>
+                <div aria-hidden="true" style={{
                   fontFamily: 'sans-serif',
                   fontSize: 11,
                   color: C.text,
@@ -164,7 +167,7 @@ export default function GameResult({
                 </div>
                 {p.cards.length > 4
                   /* Kultakala: tuntematon + pieni väli + 5 kenttäkorttia */
-                  ? <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  ? <div aria-hidden="true" style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       {p.cards[0]
                         ? <Card key={0} card={p.cards[0]} faceUp xsmall />
                         : <Card key={0} empty xsmall />
@@ -175,7 +178,7 @@ export default function GameResult({
                       )}
                     </div>
                   /* Koputus: 4 kenttäkorttia vierekkäin */
-                  : <div style={{ display: 'flex', gap: 2 }}>
+                  : <div aria-hidden="true" style={{ display: 'flex', gap: 2 }}>
                       {p.cards.map((c, i) =>
                         c ? <Card key={i} card={c} faceUp xsmall /> : <Card key={i} empty xsmall />
                       )}

@@ -884,3 +884,35 @@ Molemmat domainit tarjoavat `index-DRqXQ7d6.js`:n, jossa on `"1.2.242"` sekä av
 deploy-skillin mukaan ei ole virhe. Kuuntelu tekemättä: J-13:n korjaukset, kuvausvirkkeen
 palaavan kävijän linkki ja J-34. Pixelin tuotantotallennuksessa oli 18.10. klo 23 nolla
 pelattua peliä, joten linkki tulee näkyviin vasta yhden loppuun pelatun pelin jälkeen.
+
+## Kuuntelu tuotannossa 19.10.2026
+
+Tommi kuunteli Pixelillä tuotanto-osoitteessa. Versioleima sanoi 1.2.241, ja Pixelin
+Jako-välilehti ajoi bundlea `index-DttMCpf-.js` (1.2.241) vaikka 1.2.242 oli julkaistu.
+Palvelutyöntekijä antoi vanhan version välimuistista, kuten 1.2.238:n ja 1.2.239:n
+julkaisuissa. Kuuntelu koski siis 1.2.241:tä, eikä J-13:n korjauksia ole vielä kuultu.
+
+- *J-34 kuunneltu ok:* Moska sanoi *"kaatamatta kaksi"*.
+- *Palaavan kävijän linkki ok* (kohta 2): Kultakalan loppuun pelatun pelin jälkeen.
+- *Valikon tilasto* kuului *"Kultakala nolla volttia yksi p nolla prosenttia"*. Se on
+  1.2.241:n muoto, jonka 1.2.242 korjasi (`ui.statSpoken`). Kuunneltava uudelleen.
+- *Pelaajarivit:* Tommi kuuli *vuorossa* ja *puolustaa* oikein eikä emojeja. Koska versio oli
+  1.2.241, sanat tulivat todennäköisesti viesteistä eivätkä 1.2.242:n riveistä (päätelmä).
+- *Moskan Ohita* toisti kerran *"Ohita, painike"* useita kertoja. Tommi yritti toistaa sitä
+  useamman kerran, eikä se toistunut. Kirjattu toistumattomana, syy tuntematon.
+- *Kultakalan vaihto tuntui kankealta.* Tarkempi kuvaus puuttuu.
+
+**J-35. Lopun korttiluettelo sanoo jokaisen kortin perään "kuva".** Tila: korjattu
+dev-versiossa 19.10.2026, ei kuunneltu. Tulosruudun paljastetut kortit (Kultakala, Koputus)
+olivat kukin oma `role="img"`. Nyt pelaajan rivi kuuluu yhtenä lauseena
+(*"Jens: pata kuusi, risti neljä, …"*), ja näkyvä rivi on `aria-hidden`.
+
+**J-36. Kultakalan botin vaihtoviesti paljastaa botin piilokortit.** Tila: auki, odottaa
+Tommin vahvistusta. Tommi kuuli bottien kaikki kortit, vaikka Avoimet kortit oli pois.
+Viesti `aiSwapChain` nimeää jokaisen kortin, jonka botti vaihtaa piilossa oleviin paikkoihin
+(*"Jens vaihtaa: paikka 5: pata kuusi → paikka 4: risti neljä, pata kuningas poistopakkaan"*).
+Sama näkyy myös ruudulla, joten vuoto koskee näkevääkin. KULTAKALA.md:15: *"Muiden pelaajien
+kortit ovat piilossa koko pelin ajan."* Koodi rikkoo kaanonia. Tommin toive: kuulla vain
+poistopakkaan menevä kortti ja vaihtojen paikat. Ehdotettu muoto: *"Jens vaihtaa: paikka 5,
+sitten paikka 4, pata kuningas poistopakkaan"*, ja Avoimet kortit tai Bottien Taistelu
+näyttää kortit kuten nyt.
