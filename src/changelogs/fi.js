@@ -13,6 +13,14 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '18.10.2026',
+    items: [
+      'Saavutettavuus: ruudunlukija ei enää lue koristeemojeja pelaajien nimien edessä, viestien alussa, lokissa eikä otsikoissa.',
+      'Saavutettavuus: vuoro ja rooli kerrotaan sanoina nimen perässä, esimerkiksi "Jens, vuorossa", "Hero, puolustaa" ja Paskahousussa "menettää vuoronsa".',
+      'Saavutettavuus: välipisteet kuuluvat pilkkuina, eikä pelkkiä nuolia enää lueta. Valikon tilasto kuuluu muodossa "voitot 2, pelit 5, 40 prosenttia", ja Ristiseiskan tornit kerrotaan sanoin "kuutosesta ässään" ja "kasista kuninkaaseen".',
+    ],
+  },
+  {
     date: '17.10.2026',
     items: [
       'Valikon yläreunan virke kertoo, mitä sivulla on ja mitkä vastustajat ja taso ovat nyt valittuina. Ensimmäisellä käynnillä virke näkyy, myöhemmin sen saa auki linkistä "Mitä sivulla on?". Ruudunlukija kuulee virkkeen aina. Virke korvaa aiemman ★-vihjeen.',
