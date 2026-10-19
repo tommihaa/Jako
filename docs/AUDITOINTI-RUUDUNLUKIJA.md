@@ -1031,3 +1031,11 @@ ennallaan (*"Vaihda 4♠ paikan 4 korttiin"*). Testi `kultakala-poistopakka.test
 korjausta (tarkistettu). Selaimessa todennettu: *"Vaihda risti jätkä paikan viisi korttiin"* ja
 vaihdon jälkeen *"Vaihda pata neljä paikan neljä korttiin"*. Puhesyntetisaattorin käytös
 perusmuotoisen numerosanan kanssa on kuulematta.
+
+## Julkaisu 1.2.245 19.10.2026
+
+J-38 ja J-39 julkaistu (Jako `c360435`, push klo 6.06, Tommin *julkaise Jako 1.2.245*).
+Tuotantobundlesta todennettu: molemmat domainit tarjoavat `index-CsXA1bhm.js`:n, jossa on
+`"1.2.245"`, ja hash on sama kuin paikallisen buildin. Pixelillä on enää yksi Jako-välilehti
+(`?v=237`), ja se ajoi pushin jälkeen yhä 1.2.244:ää (`DCUN4w3P`), joten se pitää ladata
+uudelleen ennen kuuntelua. Kuuntelu tekemättä: J-35, J-37, J-38, J-39 ja pelaajarivit (J-13).
