@@ -35,7 +35,7 @@ const props = {
 
 const nimi = name => el => el.getAttribute('aria-label') === name;
 
-describe('Kultakala: poistopakka ruudunlukijalle (J-38)', () => {
+describe('Kultakala: poistopakka ja Vaihda-nappi ruudunlukijalle (J-38, J-39)', () => {
   it('poistopakka on nimetty nappi, kun siinä on kortti ja on Heron nostovuoro', async () => {
     let utils;
     await act(async () => { utils = render(<LangProvider><Kultakala {...props} /></LangProvider>); });
@@ -62,5 +62,11 @@ describe('Kultakala: poistopakka ruudunlukijalle (J-38)', () => {
     await act(async () => { fireEvent.keyDown(nappi, { key: 'Enter' }); });
     expect([...root.querySelectorAll('[role=button]')].find(nimi('Nosta poistopakasta'))).toBeUndefined();
     expect([...root.querySelectorAll('[role=button]')].find(nimi('Nosta pakasta'))).toBeUndefined();
+
+    // Poistopakasta nostettu menee paikkaan 5. Paikan numero sanotaan sanana, koska TalkBack
+    // taivutti numeron: "paikan neljään korttiin" (J-39). Näkyvä teksti pitää numeron.
+    const vaihda = [...root.querySelectorAll('button')].find(b => /^Vaihda /.test(b.getAttribute('aria-label') ?? ''));
+    expect(vaihda.getAttribute('aria-label')).toMatch(/^Vaihda \S+ \S+ paikan viisi korttiin$/);
+    expect(vaihda.textContent).toMatch(/paikan 5 korttiin$/);
   }, 60_000);
 });

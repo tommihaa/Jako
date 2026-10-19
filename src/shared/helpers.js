@@ -81,8 +81,12 @@ export const suitName = s => SUIT_NAME[getLang()]?.[s] || SUIT_NAME.fi[s] || s;
 // ympäröivien sanojen mukaan: "ruutu 5" kuului "ruutu viiteen" ja "risti 3" "risti kolmesta"
 // (Tommin kuuntelu Pixelillä 16.10.2026, auditointi J-18).
 const RANK_WORD = {
-  fi: { 2: 'kaksi', 3: 'kolme', 4: 'neljä', 5: 'viisi', 6: 'kuusi', 7: 'seitsemän', 8: 'kahdeksan', 9: 'yhdeksän', 10: 'kymmenen' },
+  fi: { 1: 'yksi', 2: 'kaksi', 3: 'kolme', 4: 'neljä', 5: 'viisi', 6: 'kuusi', 7: 'seitsemän', 8: 'kahdeksan', 9: 'yhdeksän', 10: 'kymmenen' },
 };
+// Sama luvulle tekstin keskellä: "paikan 4 korttiin" kuului "paikan neljään korttiin"
+// (Tommin kuuntelu 19.10.2026, auditointi J-39). Muut kielet pitävät numeron.
+/** @param {number} n */
+export const spokenNumber = n => RANK_WORD[getLang()]?.[n] || String(n);
 /** @param {any} c kortti { r, s } @param {{ digit?: boolean }} [opts] digit: numero numerona */
 export const cardName = (c, { digit = false } = {}) => {
   const L = getLang();

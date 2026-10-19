@@ -4,7 +4,7 @@ import GameStartScreen from '../shared/GameStartScreen.jsx';
 import TurnPrompt from '../shared/TurnPrompt.jsx';
 import { BACKS } from '../shared/BACKS.jsx';
 import { SFX } from '../shared/audio.js';
-import { isRed, lbl, truncName, newDeck, cardName, spokenSuits, shuffledAINames, lblColored, eyeAndEar, BOT_RESULT_DELAY, UNKNOWN_EV, opponentsInTurnOrder } from '../shared/helpers.js';
+import { isRed, lbl, truncName, newDeck, cardName, spokenSuits, spokenNumber, shuffledAINames, lblColored, eyeAndEar, BOT_RESULT_DELAY, UNKNOWN_EV, opponentsInTurnOrder } from '../shared/helpers.js';
 import { statusText, spokenCard, spokenCards, spokenRange } from '../shared/a11yStatus.js';
 import FanStack from '../shared/FanStack.jsx';
 import ShuffleOverlay from '../shared/ShuffleOverlay.jsx';
@@ -760,7 +760,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
         <div style={{ minHeight: isMobile ? 32 : 44, display: 'flex', gap: isMobile ? 6 : 10, alignItems: 'center', marginBottom: isMobile ? 4 : 10, flexWrap: 'wrap' }}>
           {canSwapRow && swapIdx !== null && (
             <button onClick={() => humanSwapRow(swapIdx)} style={{ background: C.gold + '18', border: `1px solid ${C.gold}`, borderRadius: 9, padding: isMobile ? '6px 12px' : '10px 18px', color: C.gold, fontSize: isMobile ? 12 : 13, cursor: 'pointer', fontFamily: 'Georgia,serif', letterSpacing: 0.5 }}
-              aria-label={spokenSuits(t('games.kultakala.ui.swapTo', { card: lbl(held), n: swapIdx + 1 }))}
+              aria-label={spokenSuits(t('games.kultakala.ui.swapTo', { card: lbl(held), n: spokenNumber(swapIdx + 1) }))}
               dangerouslySetInnerHTML={{ __html: t('games.kultakala.ui.swapTo', { card: lblColored(held), n: swapIdx + 1 }) }} />
           )}
           {canStop && (

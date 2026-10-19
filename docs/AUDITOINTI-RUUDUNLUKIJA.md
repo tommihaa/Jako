@@ -1016,9 +1016,18 @@ poistopakasta. Vaihto on pakollinen…"*). Samalla havaittiin, että DOM-kohdist
 `focusRescue` reagoi siihen. Pakasta nostaessa käy samoin jo tuotannossa. TalkBackin
 kohdistukseen vaikutusta ei ole mitattu.
 
-**J-39. Vaihda-nappi kuuluu "paikan neljään korttiin".** Tila: auki, sanamuoto odottaa
-Tommin valintaa. Tommi kuuli Kultakalassa *"Vaihda ruutu kymmenen paikan neljään
+**J-39. Vaihda-nappi kuuluu "paikan neljään korttiin".** Tila: korjattu dev-versiossa
+19.10.2026 Tommin sanamuodolla, ei kuunneltu. Tommi kuuli Kultakalassa *"Vaihda ruutu kymmenen paikan neljään
 korttiin"* ja sanoi sen lausuttavan väärin. Nimi tulee avaimesta
 `games.kultakala.ui.swapTo` (*Vaihda {card} paikan {n} korttiin*), ja puhesyntetisaattori
 taivuttaa numeron seuraavan sanan mukaan, kuten J-18:ssa. J-36:n *"paikka 5"* kuului
 oikein, koska numero on perusmuodossa lauseen lopussa.
+
+*J-39:n korjaus.* Claude ehdotti muotoa *"Vaihda ruutu kymmenen, paikka neljä"*. Tommi
+hylkäsi sen ja valitsi *"vaihda ruutu kymmenen paikan neljä korttiin"*: lause pysyy ennallaan,
+mutta numero sanotaan perusmuodossa sanana. Uusi `spokenNumber` (`helpers.js`) käyttää J-18:n
+`RANK_WORD`-taulua, johon lisättiin *yksi*. Muut kielet pitävät numeron. Näkyvä teksti on
+ennallaan (*"Vaihda 4♠ paikan 4 korttiin"*). Testi `kultakala-poistopakka.test.jsx` kaatui ilman
+korjausta (tarkistettu). Selaimessa todennettu: *"Vaihda risti jätkä paikan viisi korttiin"* ja
+vaihdon jälkeen *"Vaihda pata neljä paikan neljä korttiin"*. Puhesyntetisaattorin käytös
+perusmuotoisen numerosanan kanssa on kuulematta.
