@@ -15,6 +15,13 @@ export const CHANGELOG = [
   {
     date: '19.10.2026',
     items: [
+      'Kultakala, saavutettavuus: poistopakasta voi nyt nostaa ruudunlukijalla ja näppäimistöllä. Poistopakka on nostovuorossa nappi "Nosta poistopakasta".',
+      'Kultakala, saavutettavuus: Vaihda-napin paikka kuuluu perusmuodossa, esimerkiksi "paikan neljä korttiin", eikä enää "paikan neljään korttiin".',
+    ],
+  },
+  {
+    date: '19.10.2026',
+    items: [
       'Saavutettavuus: tulosruudun ja tilastojen mitali kuuluu sijana, esimerkiksi "1.", eikä mitalin nimenä. Tilastojen pelikuvaketta ei enää lueta.',
     ],
   },
