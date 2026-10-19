@@ -1068,3 +1068,10 @@ nubbi, goalmmát, njealját*) ja romanin (*angluno, dujto, trinto, štarto*) muo
 omasta kielitiedosta eikä lähteestä tarkistettuja. Romanin murre-erot ovat suurimmat.
 `ruudunlukija-app.test.jsx` tarkistaa suomen järjestysluvut tulosruudusta ja tilastoista, ja
 se kaatui ilman korjausta (tarkistettu).
+
+## Julkaisu 1.2.246 19.10.2026
+
+J-37:n järjestysluku julkaistu (Jako `afd1f10`, push klo 6.35, Tommin *julkaise Jako 1.2.246*).
+Tuotantobundlesta todennettu: molemmat domainit tarjoavat `index-DlHmFh0-.js`:n, jossa on
+`"1.2.246"` ja avain `placeOrdinal`, ja hash on sama kuin paikallisen buildin. Kuuntelu
+tekemättä. Ennen kuuntelua luetaan laitteen versio deploy-skillin vaiheen 8 mukaan.
