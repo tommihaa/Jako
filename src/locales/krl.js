@@ -5,6 +5,7 @@
 // rules are translated. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const krl = {
   ui: {
+    placeOrdinal: ({ n }) => ["ensimmäine","toine","kolmas","nelläs"][n - 1] || `${n}.`,
     docTitle: 'korttipelikokoelma',
     a11y: {
       opponents: ({ names }) => `Vastuštajat vuoron mukah: ${names}.`,

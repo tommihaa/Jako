@@ -7,6 +7,7 @@
 // tai taulukko/objekti (esim. sääntölistat) — t() palauttaa ei-string-arvot sellaisenaan.
 export const fi = {
   ui: {
+    placeOrdinal: ({ n }) => ["ensimmäinen","toinen","kolmas","neljäs"][n - 1] || `${n}.`,
     // Vain ruudunlukijalle (Announcer), ei näy ruudulla.
     docTitle: 'korttipelikokoelma',
     a11y: {

@@ -116,7 +116,7 @@ export default function StatsPanel({ stats, games = [], sessions = 0, onClear, o
                     const n = s.places?.[p] || 0;
                     return (
                       <div key={p} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                        <span style={{ width: 22, fontSize: 13, flexShrink: 0, textAlign: 'center' }}><Spoken say={`${p}.`}>{MEDALS[p]}</Spoken></span>
+                        <span style={{ width: 22, fontSize: 13, flexShrink: 0, textAlign: 'center' }}><Spoken say={t('ui.placeOrdinal', { n: p })}>{MEDALS[p]}</Spoken></span>
                         <div style={{ flex: 1, height: 8, background: `${C.panelBorder}55`, borderRadius: 4, overflow: 'hidden' }}>
                           <div style={{ width: `${(n / maxPlace) * 100}%`, height: '100%', background: p === 1 ? C.gold : `${C.gold}66`, borderRadius: 4 }} />
                         </div>

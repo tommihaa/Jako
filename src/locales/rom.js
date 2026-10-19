@@ -3,6 +3,7 @@
 // Pelien erisnimet pidetään suomeksi (altName).
 export const rom = {
   ui: {
+    placeOrdinal: ({ n }) => ["angluno","dujto","trinto","štarto"][n - 1] || `${n}.`,
     docTitle: 'kidipe khelenge karti',
     a11y: {
       opponents: ({ names }) => `Le riventa: ${names}.`,

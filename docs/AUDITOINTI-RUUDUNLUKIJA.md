@@ -1039,3 +1039,32 @@ Tuotantobundlesta todennettu: molemmat domainit tarjoavat `index-CsXA1bhm.js`:n,
 `"1.2.245"`, ja hash on sama kuin paikallisen buildin. Pixelillä on enää yksi Jako-välilehti
 (`?v=237`), ja se ajoi pushin jälkeen yhä 1.2.244:ää (`DCUN4w3P`), joten se pitää ladata
 uudelleen ennen kuuntelua. Kuuntelu tekemättä: J-35, J-37, J-38, J-39 ja pelaajarivit (J-13).
+
+## Kuuntelu 1.2.245:llä 19.10.2026 aamulla
+
+Pixelin välilehti `?v=237` ladattiin uudelleen, ja apuri luki ennen kuuntelua bundlen
+`index-CsXA1bhm.js` ja leiman *1.2.245, julkaistu 19.10.2026 klo 06.06* (exit 0). Tommi pelasi
+Kultakalan loppuun ja yhden Moskan.
+
+- *J-35 kuunneltu ok:* lopun korttiluettelossa ei kuulu *kuva*.
+- *J-37:* sija kuuluu, mutta Tommin mukaan se *"voisi kuulua järjestysnumerona"*. Ehdotus,
+  ei vika. Avoin.
+- *Moska:* *"kuulosti aika hyvältä"*. Kierroksen jälkeen kohdistus siirtyi
+  Seuraava kierros -nappiin.
+- *J-38 ja J-39:* Tommi ei maininnut niitä ensin. Kysyttäessä: molemmat kuuluivat oikein.
+  J-38 ja J-39 kuunneltu ok.
+- *Moskan kohdistus Seuraava kierros -nappiin:* Tommin mukaan oikea paikka.
+- *J-37:n järjestysluku:* Tommi vahvisti tulkinnan (*ensimmäinen, toinen, kolmas, neljäs*)
+  ja valitsi kaikki kielet, ei vain suomea.
+- *Yleisarvio:* *"ruudunlukijassa on paljon toistoa ja kohdistuksen siirtyminen oikeaan
+  paikkaan on haastava rasti"*. Yksittäisiä kohtia ei nimetty.
+
+*J-37:n järjestysluku 19.10.2026.* Tila: korjattu dev-versiossa, ei kuunneltu. Uusi avain
+`ui.placeOrdinal` 23 kielellä (funktio, sijat 1–4, muuten numero ja piste). Tulosruudun sija
+(myös mitaliton, jonka näkyvä *4.* ei aiemmin saanut puhuttua muotoa) ja tilastopaneelin
+sijoitusjakauma kuuluvat järjestyslukuna: *ensimmäinen, toinen, kolmas, neljäs*. Näkyvä mitali ja
+numero ovat ennallaan. Karjalan (*ensimmäine, toine, kolmas, nelläs*), pohjoissaamen (*vuosttaš,
+nubbi, goalmmát, njealját*) ja romanin (*angluno, dujto, trinto, štarto*) muodot ovat Clauden
+omasta kielitiedosta eikä lähteestä tarkistettuja. Romanin murre-erot ovat suurimmat.
+`ruudunlukija-app.test.jsx` tarkistaa suomen järjestysluvut tulosruudusta ja tilastoista, ja
+se kaatui ilman korjausta (tarkistettu).

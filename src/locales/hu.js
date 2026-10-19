@@ -3,6 +3,7 @@
 // Unkarissa lukusanan jälkeen yksikkö: "2 kártya" (ei monikkoa).
 export const hu = {
   ui: {
+    placeOrdinal: ({ n }) => ["első","második","harmadik","negyedik"][n - 1] || `${n}.`,
     docTitle: 'kártyajáték-gyűjtemény',
     a11y: {
       opponents: ({ names }) => `Ellenfelek a lépések sorrendjében: ${names}.`,

@@ -4,6 +4,7 @@
 // regler oversættes. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const da = {
   ui: {
+    placeOrdinal: ({ n }) => ["første","anden","tredje","fjerde"][n - 1] || `${n}.`,
     docTitle: 'kortspilssamling',
     a11y: {
       opponents: ({ names }) => `Modstandere i turrækkefølge: ${names}.`,

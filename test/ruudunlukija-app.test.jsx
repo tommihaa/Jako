@@ -94,6 +94,8 @@ describe('ruudunlukija: App-tason näkymät (retro 19.10.2026)', () => {
     await act(async () => { fireEvent.click(await waitFor(() => button(root, /Lopeta peli/))); });
     // Positiivinen kontrolli: paljastetut kortit kuuluvat sanoina (J-35), joten näkymä on se jota haettiin.
     expect(root.textContent).toMatch(/Aapo: (pata|hertta|ruutu|risti) /);
+    // Sija kuuluu järjestyslukuna (Tommin kuuntelu 19.10.2026, kaikki kielet).
+    expect(root.textContent).toMatch(/ensimmäinen[\s\S]*toinen[\s\S]*kolmas/);
     scan('tulosruutu');
 
     // Tilastopaneeli Info-paneelista, jokainen pelirivi auki.
@@ -111,6 +113,7 @@ describe('ruudunlukija: App-tason näkymät (retro 19.10.2026)', () => {
       expect(root.textContent, 'rivi aukesi').toContain('Sijoitukset');
       scan('tilastot auki');
     }
+    expect(root.textContent, 'sijoitusjakauman neljäs sija').toContain('neljäs');
 
     expect([...leaks]).toEqual([]);
   });

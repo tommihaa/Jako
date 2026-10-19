@@ -2,6 +2,7 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const se = {
   ui: {
+    placeOrdinal: ({ n }) => ["vuosttaš","nubbi","goalmmát","njealját"][n - 1] || `${n}.`,
     docTitle: 'goartaspealločoakkáldat',
     a11y: {
       opponents: ({ names }) => `Vuostebealit vuoru mielde: ${names}.`,

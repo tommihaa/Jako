@@ -26,11 +26,14 @@ function colorLabel(label) {
   return parts.length === 1 && typeof parts[0] === 'string' ? label : <Spoken say={spokenSuits(label)}>{parts}</Spoken>;
 }
 
-function placeLabel(place) {
+/** @param {number} place @param {(key: string, params?: any) => string} t */
+function placeLabel(place, t) {
+  // Mitali tai numero näkyy, sija kuuluu järjestyslukuna (retron App-vahti 19.10.2026,
+  // järjestysluku Tommin kuuntelusta 19.10.2026).
+  const say = t('ui.placeOrdinal', { n: place });
   return MEDALS[place]
-    // Mitali näkyy, sija kuuluu numerona (retron App-vahti 19.10.2026).
-    ? <span style={{ fontSize: 18 }}><Spoken say={`${place}.`}>{MEDALS[place]}</Spoken></span>
-    : <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.dim }}>{place}.</span>;
+    ? <span style={{ fontSize: 18 }}><Spoken say={say}>{MEDALS[place]}</Spoken></span>
+    : <span style={{ fontFamily: 'sans-serif', fontSize: 13, color: C.dim }}><Spoken say={say}>{`${place}.`}</Spoken></span>;
 }
 
 /**
@@ -99,7 +102,7 @@ export default function GameResult({
           >
             {/* Sijamerkki */}
             <div style={{ minWidth: 28, textAlign: 'center', flexShrink: 0 }}>
-              {placeLabel(r.place)}
+              {placeLabel(r.place, t)}
             </div>
             {/* Nimi */}
             <div style={{

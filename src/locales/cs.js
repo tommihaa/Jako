@@ -11,6 +11,7 @@ const plural = (n, one, few, many) => {
 
 export const cs = {
   ui: {
+    placeOrdinal: ({ n }) => ["první","druhý","třetí","čtvrtý"][n - 1] || `${n}.`,
     docTitle: 'sbírka karetních her',
     a11y: {
       opponents: ({ names }) => `Soupeři v pořadí tahů: ${names}.`,

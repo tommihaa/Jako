@@ -4,6 +4,7 @@
 // solo se traducen las descripciones y las reglas.
 export const es = {
   ui: {
+    placeOrdinal: ({ n }) => ["primero","segundo","tercero","cuarto"][n - 1] || `${n}.`,
     docTitle: 'colección de juegos de cartas',
     a11y: {
       opponents: ({ names }) => `Rivales en orden de turno: ${names}.`,

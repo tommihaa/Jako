@@ -2,6 +2,7 @@
 // Rakenne identtinen fi.js:n kanssa. Pelien erisnimet pidetään suomeksi (altName).
 export const ro = {
   ui: {
+    placeOrdinal: ({ n }) => ["primul","al doilea","al treilea","al patrulea"][n - 1] || `${n}.`,
     docTitle: 'colecție de jocuri de cărți',
     a11y: {
       opponents: ({ names }) => `Adversari în ordinea mutărilor: ${names}.`,

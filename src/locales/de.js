@@ -4,6 +4,7 @@
 // nur Beschreibungen und Regeln werden übersetzt. Muutosloki on vain suomeksi (päätös 3.7.2026), ks. src/changelogs/fi.js.
 export const de = {
   ui: {
+    placeOrdinal: ({ n }) => ["Erster","Zweiter","Dritter","Vierter"][n - 1] || `${n}.`,
     docTitle: 'Kartenspielsammlung',
     a11y: {
       opponents: ({ names }) => `Gegner in Zugreihenfolge: ${names}.`,
