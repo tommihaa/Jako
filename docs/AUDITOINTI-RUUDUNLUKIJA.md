@@ -983,3 +983,42 @@ J-37 ja retron tarkistimet (`b76509d`) julkaistu (Jako `4edaeca`, push klo 2.24,
 `index-DkXP64nJ.js`:n, jossa on `"1.2.244"`, ja hash on sama kuin paikallisen buildin.
 Kuuntelu tekemättä: J-13, J-35, J-36 ja J-37. Ennen kuuntelua luetaan laitteen versio
 deploy-skillin vaiheen 8 mukaan.
+
+## Kuuntelu 1.2.244:llä 19.10.2026 aamulla
+
+Laitteen versio luettiin ennen kuuntelua deploy-skillin vaiheen 8 apurilla. Pixelin Chromessa
+oli neljä Jako-välilehteä: `?v=237` ajoi tuotannon bundlea `index-DCUN4w3P.js` (1.2.244), kolme
+muuta 1.2.236:ta, 1.2.238:aa ja 1.2.241:tä. Tommi kuunteli `?v=237`-välilehdellä. Tuotannon hash
+oli eri kuin yllä kirjattu `DkXP64nJ`, mutta versio sama. Syy on päätelmä: pelkkä docs-commit
+`9239b93` käynnisti Vercelissä uuden buildin. Apuri hälytti oikeastakin välilehdestä, koska
+leima on puhuttu muoto (*"1 piste 2 piste 244"*). Korjattu: `Tyokalut` `8d87135`.
+
+Tulokset Clauden kuunteluohjeen kohdista:
+
+- *Valikon tilasto* (J-13 ryhmä 4): ok.
+- *Kultakalan botin vaihto ilman Avoimia kortteja* (J-36, *sitten*): ok.
+- Kohdat 3–6 (J-35, J-37, pelaajarivit) jäivät kuulematta, koska kuuntelu pysähtyi alla
+  oleviin kahteen löydökseen.
+
+**J-38. Kultakalan poistopakasta ei voi nostaa ruudunlukijalla.** Tila: korjattu
+dev-versiossa 19.10.2026, ei kuunneltu. Tommi: *"tuli tilanne missä haluaisin nostaa
+poistopakasta, mutta UI ei anna"*. KULTAKALA.md:9 sallii noston poistopakasta. Syy koodista:
+poistopakka oli pelkkä klikattava `div`, jolla ei ollut roolia, nimeä eikä näppäimistöä.
+TalkBack näki siitä vain kortin kuvan. Pakka oli nappi (*Nosta pakasta*). Koputuksen
+poistopakka oli jo nappi, mutta Kultakalaan sitä ei viety. Korjaus Koputuksen mallilla:
+nostovuorossa, kun poistopakassa on kortti, se on `role="button"`, nimi
+`ui.shared.drawDiscardAria` (*Nosta poistopakasta*, valmiina 23 kielellä) ja Enter tai Space
+nostaa. Testi `kultakala-poistopakka.test.jsx` kaatui ilman korjausta (tarkistettu).
+Selaimessa todennettu: pelin alussa poistopakka ei ole nappi (tyhjä), Heron toisella
+vuorolla on *Nosta poistopakasta*, ja Enter nosti kortin (*"Nostit ruutu jätkä (11 p)
+poistopakasta. Vaihto on pakollinen…"*). Samalla havaittiin, että DOM-kohdistus putoaa
+`body`yn noston jälkeen, koska nappi jää sivulle mutta menettää roolinsa, eikä
+`focusRescue` reagoi siihen. Pakasta nostaessa käy samoin jo tuotannossa. TalkBackin
+kohdistukseen vaikutusta ei ole mitattu.
+
+**J-39. Vaihda-nappi kuuluu "paikan neljään korttiin".** Tila: auki, sanamuoto odottaa
+Tommin valintaa. Tommi kuuli Kultakalassa *"Vaihda ruutu kymmenen paikan neljään
+korttiin"* ja sanoi sen lausuttavan väärin. Nimi tulee avaimesta
+`games.kultakala.ui.swapTo` (*Vaihda {card} paikan {n} korttiin*), ja puhesyntetisaattori
+taivuttaa numeron seuraavan sanan mukaan, kuten J-18:ssa. J-36:n *"paikka 5"* kuului
+oikein, koska numero on perusmuodossa lauseen lopussa.

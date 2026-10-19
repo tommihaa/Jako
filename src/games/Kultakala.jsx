@@ -692,6 +692,7 @@ export default function Kultakala({ onResult, showLog = true, soundOn = false, s
           <div style={{ fontSize: 10, color: C.dim, fontFamily: 'sans-serif', marginBottom: 5, letterSpacing: 1.5 }}>{t('ui.shared.discardLabel')}</div>
           <div
             onClick={canDraw ? () => humanDraw(true) : canDiscard ? humanStopSwap : undefined}
+            {...(canDraw && discardTop ? { role: 'button', tabIndex: 0, 'aria-label': t('ui.shared.drawDiscardAria'), onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); humanDraw(true); } } } : {})}
             style={{ cursor: (canDraw && discardTop) || canDiscard ? 'pointer' : 'default', position: 'relative', width: pw, height: ph }}
           >
             {!discardTop
