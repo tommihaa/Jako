@@ -13,6 +13,12 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '20.10.2026',
+    items: [
+      'Ohje, Ruudunlukijalle: NVDA:n selaustilassa H-näppäin on NVDA:n oma otsikkonäppäin eikä mene pelille. Ohje kertoo nyt, että silloin Tilanne kuuluu Tilanne-napista Enterillä ja kohdistustilassa (NVDA+välilyönti) H toimii.',
+    ],
+  },
+  {
     date: '19.10.2026',
     items: [
       'Saavutettavuus: tulosruudun ja tilastojen sija kuuluu järjestyslukuna, esimerkiksi "ensimmäinen" ja "toinen", kaikilla kielillä.',

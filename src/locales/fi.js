@@ -133,6 +133,7 @@ export const fi = {
         body: ({ button, remembered }) => [
           'Peli kertoo tapahtumat ruudunlukijalle itse: kuka pelasi minkä kortin ja kenen vuoro on. Kortit sanotaan nimillä eikä maamerkkeinä.',
           `${button}-nappi kertoo koko pöydän kerralla: vuoron, oman kätesi, pöydän kortit ja muiden korttimäärät. Nappi on pelinäkymän tilarivillä. Se näkyy vain ruudunlukijalle ja näppäimistön kohdistukselle. Näppäimistöllä saman saa H-näppäimellä.`,
+          `NVDA:n selaustilassa H on NVDA:n oma otsikkonäppäin eikä mene pelille. Käytä silloin ${button}-nappia Enterillä. Kohdistustilassa (NVDA+välilyönti) H toimii.`,
           `${button} kertoo vain sen, minkä näkevä pelaaja näkee. Koputuksessa muistamasi kortti on ”${remembered}” eikä sen arvoa sanota, koska näkevänkin on muistettava se itse.`,
         ],
       },

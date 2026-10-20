@@ -101,6 +101,7 @@ export const no = {
         body: ({ button, remembered }) => [
           'Spillet forteller selv skjermleseren hva som skjer: hvem som spilte hvilket kort og hvem sin tur det er. Kortene sies med navn, ikke som fargesymboler.',
           `Knappen ${button} leser opp hele bordet på én gang: hvem sin tur det er, hånden din, kortene på bordet og hvor mange kort de andre har. Den ligger i spillets statuslinje og vises bare for skjermlesere og tastaturfokus. Med tastatur gir H det samme.`,
+          `I NVDAs lesemodus er H NVDAs egen tast for neste overskrift og når ikke fram til spillet. Bruk da knappen ${button} med Enter. I fokusmodus (NVDA+mellomrom) virker H.`,
           `${button} forteller bare det en seende spiller ser. I Koputus er et kort du husker «${remembered}», og verdien sies ikke, fordi også en seende må huske det selv.`,
         ],
       },

@@ -101,6 +101,7 @@ export const es = {
         body: ({ button, remembered }) => [
           'El juego le dice al lector de pantalla lo que ocurre: quién jugó qué carta y a quién le toca. Las cartas se dicen por su nombre, no como símbolos de palo.',
           `El botón ${button} lee toda la mesa de una vez: a quién le toca, tu mano, las cartas de la mesa y cuántas cartas tienen los demás. Está en la barra de estado del juego y solo lo ven los lectores de pantalla y el foco del teclado. Con teclado, la tecla H hace lo mismo.`,
+          `En el modo exploración de NVDA, H es la tecla propia de NVDA para el siguiente encabezado y no llega al juego. Usa entonces el botón ${button} con Intro. En el modo foco (NVDA+Espacio), H funciona.`,
           `${button} solo dice lo que ve un jugador vidente. En Koputus una carta que recuerdas está «${remembered}» y no se dice su valor, porque un jugador vidente también tiene que recordarla.`,
         ],
       },

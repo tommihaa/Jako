@@ -109,6 +109,7 @@ export const cs = {
         body: ({ button, remembered }) => [
           'Hra sama říká čtečce obrazovky, co se děje: kdo zahrál kterou kartu a kdo je na tahu. Karty se říkají jménem, ne jako symboly barev.',
           `Tlačítko „${button}“ přečte celý stůl najednou: kdo je na tahu, tvou ruku, karty na stole a kolik karet mají ostatní. Je ve stavovém řádku hry a vidí ho jen čtečky obrazovky a fokus klávesnice. Na klávesnici totéž udělá klávesa H.`,
+          `V režimu prohlížení NVDA je H vlastní klávesa NVDA pro další nadpis a do hry nedojde. Pak použij tlačítko „${button}“ a stiskni Enter. V režimu fokusu (NVDA+mezerník) H funguje.`,
           `„${button}“ říká jen to, co vidí vidící hráč. V Koputus je karta, kterou si pamatuješ, „${remembered}“ a její hodnota se neříká, protože i vidící si ji musí pamatovat sám.`,
         ],
       },

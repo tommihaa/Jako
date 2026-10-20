@@ -101,6 +101,7 @@ export const hu = {
         body: ({ button, remembered }) => [
           'A játék maga mondja el a képernyőolvasónak, mi történik: ki melyik lapot játszotta, és ki következik. A lapokat névvel mondja, nem színszimbólumként.',
           `A(z) „${button}” gomb egyszerre felolvassa az egész asztalt: ki következik, a kezedet, az asztalon lévő lapokat és hogy a többieknél hány lap van. A játék állapotsorában van, és csak a képernyőolvasók és a billentyűzetfókusz látja. Billentyűzeten a H ugyanezt teszi.`,
+          `Az NVDA böngésző módjában a H az NVDA saját billentyűje a következő címsorhoz, és nem jut el a játékhoz. Ilyenkor használd a(z) „${button}” gombot Enterrel. Fókusz módban (NVDA+Szóköz) a H működik.`,
           `A(z) „${button}” csak azt mondja el, amit egy látó játékos lát. A Koputusban egy lap, amire emlékszel, „${remembered}”, és az értékét nem mondja, mert a látónak is magának kell emlékeznie rá.`,
         ],
       },

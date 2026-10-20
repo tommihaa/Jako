@@ -101,6 +101,7 @@ export const rom = {
         body: ({ button, remembered }) => [
           'O khelipe korkoro phenel e ekranoskere drabaripnaske so kerdol: kon khelda savi karta thaj kasko si o rindo. E karte phenen pe anavença, na sar simbolura.',
           `O butono ${button} drabarel sasti mesal jekhvareste: kasko si o rindo, ćiro vast, e karte pe mesal thaj keti karte si le averen. Si ando statusoskoro rindo e khelipnasko thaj dikhol ferdi e ekranoskere drabaripnaske thaj e klaviaturaki fokusoske. Klaviaturaça o H kerel o isto.`,
+          `Ando NVDA-esko drabaripnasko modo o H si e NVDA-eski klava vaš o avutno šero thaj na resel ko khelipe. Atunći le o butono ${button} Enter-eça. Ando fokusosko modo (NVDA+Space) o H kerel butji.`,
           `${button} phenel ferdi so dikhel jekh dikhindo khelitori. Ando Koputus jekh karta savi tu gođi tut si ”${remembered}” thaj lako mol na phenel pe, kaj vi o dikhindo trubul te gođi la korkoro.`,
         ],
       },

@@ -101,6 +101,7 @@ export const de = {
         body: ({ button, remembered }) => [
           'Das Spiel sagt dem Screenreader selbst, was passiert: wer welche Karte gespielt hat und wer am Zug ist. Karten werden mit Namen genannt, nicht als Farbsymbole.',
           `Die Schaltfläche ${button} liest den ganzen Tisch auf einmal vor: wer am Zug ist, deine Hand, die Karten auf dem Tisch und wie viele Karten die anderen haben. Sie liegt in der Statusleiste des Spiels und ist nur für Screenreader und den Tastaturfokus sichtbar. Mit der Tastatur bewirkt H dasselbe.`,
+          `Im Lesemodus von NVDA ist H die eigene NVDA-Taste für die nächste Überschrift und erreicht das Spiel nicht. Nutze dann die Schaltfläche ${button} mit Enter. Im Fokusmodus (NVDA+Leertaste) funktioniert H.`,
           `${button} sagt nur, was eine sehende Person sieht. In Koputus ist eine Karte, die du dir merkst, „${remembered}“, und ihr Wert wird nicht genannt, weil auch Sehende sie sich selbst merken müssen.`,
         ],
       },

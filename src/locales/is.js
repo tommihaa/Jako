@@ -101,6 +101,7 @@ export const is = {
         body: ({ button, remembered }) => [
           'Leikurinn segir skjálesaranum sjálfur hvað gerist: hver spilaði hvaða spili og hver á leik. Spilin eru nefnd með nafni, ekki sem litatákn.',
           `Hnappurinn ${button} les allt borðið í einu: hver á leik, höndina þína, spilin á borðinu og hve mörg spil hinir hafa. Hann er í stöðustiku leiksins og sést aðeins skjálesurum og lyklaborðsfókus. Á lyklaborði gefur H það sama.`,
+          `Í vafraham NVDA er H flýtilykill NVDA fyrir næstu fyrirsögn og nær ekki til leiksins. Notaðu þá hnappinn ${button} með Enter. Í fókusham (NVDA+bilslá) virkar H.`,
           `${button} segir aðeins það sem sjáandi leikmaður sér. Í Koputus er spil sem þú manst „${remembered}“ og gildi þess er ekki sagt, því sjáandi þarf líka að muna það sjálfur.`,
         ],
       },

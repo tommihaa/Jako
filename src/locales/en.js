@@ -102,6 +102,7 @@ export const en = {
         body: ({ button, remembered }) => [
           'The game tells your screen reader what happens: who played which card and whose turn it is. Cards are spoken by name, not as suit symbols.',
           `The ${button} button reads the whole table at once: whose turn it is, your hand, the cards on the table and how many cards the others hold. It sits in the game status bar and is visible only to screen readers and keyboard focus. On a keyboard, press H for the same.`,
+          `In NVDA browse mode, H is NVDA’s own key for the next heading and does not reach the game. Then use the ${button} button with Enter. In focus mode (NVDA+Space), H works.`,
           `${button} tells only what a sighted player can see. In Koputus a card you remember is “${remembered}” and its value is not said, because a sighted player has to remember it too.`,
         ],
       },

@@ -102,6 +102,7 @@ export const krl = {
         body: ({ button, remembered }) => [
           'Peli sanou ičeh ruutulugijale, mi tapahtuu: ken pani min kortan da kenen vuoro on. Kortat sanotah nimilöil eigo maamerkilöil.',
           `${button}-nappi sanou kaiken pöüvän kerral: vuoron, sinun käin, pöüvän kortat da toizien korttulugut. Nappi on pelin tilarivil da nävüü vaigu ruutulugijale da näppäimistön kohtistukseh. Näppäimistöl sen saat H-näppäimel.`,
+          `NVDA:n selailutilas H on NVDA:n oma otsikkonäppäin eigo mene pelih. Käytä sit ${button}-nappii Enterial. Kohtistustilas (NVDA+välilyönti) H ruadau.`,
           `${button} sanou vaigu sen, min nägii nägijü pelaiju. Koputukses kortta, kudaman muistat, on ”${remembered}”, eigo sen arvuo sanota, ku nägijängi pidäü muistua se iče.`,
         ],
       },

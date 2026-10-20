@@ -110,6 +110,7 @@ export const pl = {
         body: ({ button, remembered }) => [
           'Gra sama mówi czytnikowi ekranu, co się dzieje: kto zagrał jaką kartę i czyja jest kolej. Karty są wymawiane nazwami, a nie jako symbole kolorów.',
           `Przycisk „${button}” odczytuje cały stół naraz: czyja kolej, twoją rękę, karty na stole i ile kart mają pozostali. Jest na pasku stanu gry i widać go tylko dla czytników ekranu i fokusu klawiatury. Na klawiaturze to samo robi klawisz H.`,
+          `W trybie przeglądania NVDA klawisz H to skrót NVDA do następnego nagłówka i nie trafia do gry. Użyj wtedy przycisku „${button}” klawiszem Enter. W trybie formularza (NVDA+spacja) H działa.`,
           `„${button}” mówi tylko to, co widzi widzący gracz. W Koputus karta, którą pamiętasz, jest „${remembered}” i jej wartość nie jest wymawiana, bo widzący też musi ją zapamiętać sam.`,
         ],
       },

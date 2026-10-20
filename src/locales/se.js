@@ -100,6 +100,7 @@ export const se = {
         body: ({ button, remembered }) => [
           'Speallu muitala ieš šearbmalohkkái mii dáhpáhuvvá: gii čuoččuhii man koartta ja gean vuorru lea. Koarttat dadjojuvvojit namain, eai ivdnemearkkain.',
           `Boallu ${button} lohká olles beavddi oktanaga: gean vuorru lea, du gieđa, beavddi koarttaid ja man ollu koarttat earáin leat. Dat lea spealu dilleráiddus ja oidno dušše šearbmalohkkái ja boallobeavddi fokusii. Boallobeavddiin H dahká seammá.`,
+          `NVDA bláđđenmodusis H lea NVDA iežas boallu boahtte bajilčállagii iige joavdda spealu lusa. Geavat dalle boalu ${button} Enteriin. Fokusmodusis (NVDA+gaskaboallu) H doaibmá.`,
           `${button} muitala dušše dan maid oaidni speallu oaidná. Koputusas koarta man muittát lea ”${remembered}”, iige dan árvu dadjojuvvo, go oaidnige ferte muitit dan ieš.`,
         ],
       },

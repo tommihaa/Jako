@@ -100,6 +100,7 @@ export const ro = {
         body: ({ button, remembered }) => [
           'Jocul îi spune singur cititorului de ecran ce se întâmplă: cine a jucat ce carte și cine este la rând. Cărțile sunt spuse cu numele, nu ca simboluri de culoare.',
           `Butonul „${button}” citește toată masa deodată: cine este la rând, mâna ta, cărțile de pe masă și câte cărți au ceilalți. Se află în bara de stare a jocului și este vizibil doar pentru cititoarele de ecran și focalizarea tastaturii. De la tastatură, tasta H face același lucru.`,
+          `În modul de navigare al NVDA, H este tasta proprie a NVDA pentru titlul următor și nu ajunge la joc. Folosește atunci butonul „${button}” cu Enter. În modul focalizare (NVDA+Spațiu), H funcționează.`,
           `„${button}” spune doar ce vede un jucător văzător. În Koputus o carte pe care ți-o amintești este „${remembered}” și valoarea ei nu se spune, pentru că și un văzător trebuie să și-o amintească singur.`,
         ],
       },
