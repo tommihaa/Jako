@@ -54,7 +54,9 @@ export default function GameLog({
             const hide = said ? /** @type {const} */ ('true') : undefined;
             return (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: rowBorder, background: i === 0 ? accentBg : 'transparent' }}>
-                <span style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
+                {/* Kellonaika vain näkevälle: NVDA:n Heidi luki muodon 18.11.05 päivämääränä, ja
+                    tapahtuma kuului jo ilmoitusalueesta silloin kun se tapahtui (20.10.2026). */}
+                <span aria-hidden="true" style={{ fontSize: 10, color: C.dim, fontFamily: 'monospace', flexShrink: 0, marginTop: 1 }}>{e.t}</span>
                 {said && <span className="sr-only">{said}</span>}
                 {renderMessage
                   ? <div aria-hidden={hide} style={{ fontSize: 12, color: i === 0 ? firstColor : restColor, fontFamily: 'sans-serif', lineHeight: 1.5 }}>{renderMessage(e.m)}</div>
