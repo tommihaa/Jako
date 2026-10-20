@@ -1423,7 +1423,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         status={allBots || !G ? undefined : () => statusText({
           // Maijan lause eikä Moskan oma nextRound, jonka nuolen (→) ruudunlukija lukisi ääneen.
           roles: t('games.maija.msg.newAttack', { attacker: G.attackers.map(i => G.players[i].name).join(', '), defender: G.players[G.defender]?.name }),
-          hand: G.players[0].hand,
+          hand: sortHand(G.players[0].hand),  // samassa järjestyksessä kuin ruudulla (NVDA-kuuntelu 20.10.2026)
           table: G.table.map(r => r.def ? t('ui.a11y.covered', { atk: spokenCard(r.atk), def: spokenCard(r.def) }) : spokenCard(r.atk)),
           trump: G.ts,
           deck: G.deck.length,

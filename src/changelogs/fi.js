@@ -17,6 +17,7 @@ export const CHANGELOG = [
     items: [
       'Ohje, Ruudunlukijalle: NVDA:n selaustilassa H-näppäin on NVDA:n oma otsikkonäppäin eikä mene pelille. Ohje kertoo nyt, että silloin Tilanne kuuluu Tilanne-napista Enterillä ja kohdistustilassa (NVDA+välilyönti) H toimii.',
       'Saavutettavuus: ruudunlukija ei enää lue tapahtumalokin kellonaikaa. Se kuulosti päivämäärältä, ja tapahtuma kuuluu jo silloin kun se tapahtuu. Näkevälle aika näkyy kuten ennen.',
+      'Saavutettavuus: Tilanne lukee oman kätesi samassa järjestyksessä kuin se näkyy ruudulla. Ennen kortit kuuluivat jakojärjestyksessä Kasinossa, Maijassa, Moskassa, Paskahousussa, Ristiseiskassa ja Seiskassa.',
     ],
   },
   {

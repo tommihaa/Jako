@@ -1649,7 +1649,7 @@ export default function Kasino({ game, onResult, showLog = true, soundOn = false
         isMobile={isMobile}
         status={allBots || !G ? undefined : () => statusText({
           turn: G.players[G.cur]?.name,
-          hand: G.players[0].hand,
+          hand: orderedHand,  // samassa järjestyksessä kuin ruudulla (NVDA-kuuntelu 20.10.2026)
           table: [...G.table.map(spokenCard), ...G.builds.map(b => t('ui.a11y.build', { value: b.value, cards: spokenCards(b.cards) }))],
           deck: G.deck.length,
           counts: G.players.slice(1).map(p => ({ name: p.name, n: p.hand.length })),

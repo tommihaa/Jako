@@ -1312,7 +1312,7 @@ export default function Paskahousu({ onResult, showLog = true, soundOn = false, 
         isMobile={isMobile}
         status={allBots || !G ? undefined : () => statusText({
           turn: G.players[G.turn]?.name,
-          hand: G.players[0].hand,
+          hand: sortHand(G.players[0].hand),  // samassa järjestyksessä kuin ruudulla (NVDA-kuuntelu 20.10.2026)
           top: G.top ?? undefined,
           pile: G.pile.length,
           deck: G.draw.length,

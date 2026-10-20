@@ -1420,7 +1420,7 @@ export default function Seiska({ onResult, showLog = true, soundOn = false, seeA
         isMobile={isMobile}
         status={allBots || !G ? undefined : () => statusText({
           turn: G.players[G.activePlayer]?.name,
-          hand: G.players[0].hand,
+          hand: sortHand(G.players[0].hand),  // samassa järjestyksessä kuin ruudulla (NVDA-kuuntelu 20.10.2026)
           top: G.discardTop,
           suitReq: G.reqSuit ?? undefined,
           deck: G.deck.length,
