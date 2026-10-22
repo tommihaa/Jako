@@ -137,8 +137,8 @@ luettu kuten Maijassa: Villen ohje vasten `RISTISEISKA.md`:tä ja `ristiseiskaEn
 
 **Kaanonin ja koodin ero löytyi samalla:** `RISTISEISKA.md` sanoo antajan olevan edellinen
 pelaaja *jolla on vielä kortteja*, mutta `prevWithCards` vaatii yli yhden kortin, kuten
-Villellä. Koodi on Villen kanssa samaa mieltä ja kaanoni ei. Korjataanko kaanoni on Tommin
-päätös, eikä kumpaakaan ole muutettu.
+Villellä. Tommi päätti 22.10.2026 korjata kaanonin koodin mukaiseksi, ja `RISTISEISKA.md` ›
+Pantti on korjattu.
 
 ## Tommin tilaus 22.10.2026: kaatotapa Maijaan ja Moskaan
 

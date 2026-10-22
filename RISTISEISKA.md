@@ -41,7 +41,7 @@ A
 ## Pantti: passaaminen maksaa toiselle pelaajalle kortin
 
 Passaaminen ei ole ilmaista, ja tämä on pelin taktinen ydin: **passaava saa panttikortin
-edelliseltä pelaajalta jolla on vielä kortteja.** Passaajan käsi siis kasvaa yhdellä, ja
+edelliseltä pelaajalta jolla on yli yksi kortti.** Passaajan käsi siis kasvaa yhdellä, ja
 antajan pienenee yhdellä.
 
 Kolme tarkennusta:
@@ -49,8 +49,10 @@ Kolme tarkennusta:
 1. **Ensimmäisellä kierroksella panttia ei anneta.** Kun jokainen on ollut vuorossa kerran,
    sääntö astuu voimaan. Alussa pöytä on niin tyhjä että passaaminen olisi muuten pelkkää
    sattumaa.
-2. **Antaja on edellinen pelaaja jolla on kortteja**, ei välttämättä istumajärjestyksessä
-   edellinen: jo lopettaneet ohitetaan.
+2. **Antaja on edellinen pelaaja jolla on yli yksi kortti**, ei välttämättä istumajärjestyksessä
+   edellinen: jo lopettaneet ja yhden kortin haltijat ohitetaan (`prevWithCards`,
+   `ristiseiskaEngine.js`). Kanoni korjattiin koodin mukaiseksi 22.10.2026 Tommin päätöksellä;
+   ero löytyi vertailussa Ville Lammisen Ristiseiskaan (`docs/VERTAILU-ACCESSIBLEBRIDGE.md`).
 3. **Panttikortin valintatapa on aloitusnäytön sääntövalinta.** Vakiona antaja valitsee kortin
    itse (ihmiseltä kysytään, botti antaa strategisesti huonoimman eli kauimpana
    pelattavuudesta olevan). Toisessa asennossa kortti arvotaan myös ihmiseltä. Valinta
