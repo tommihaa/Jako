@@ -88,6 +88,25 @@ Ristiseiskan sääntö on sama kuin Jaossa: kortin pyytää edelliseltä pelaaja
 kortteja (`RISTISEISKA.md` › Pantti). Jaossa antotapa on aloitusnäytön valinta, Villellä antaja
 valitsee aina.
 
+## Tommin tilaus 22.10.2026: kaatotapa Maijaan ja Moskaan
+
+Tommi pelasi Villen Maijaa ja totesi Jaon Maijan ja Moskan raskaiksi TalkBackilla. Hänen
+sanansa: *"ehdottomasti pitää ottaa Jako-koodiin"*. Jaossa puolustaja valitsee ensin pöydän
+kortin (`selDefTargetIdx`, `Maija.jsx`, ja `selDefTarget`, `Moska.jsx`) ja sitten kaatavan
+kortin. Villellä puolustaja valitsee kaatavat kortit kerralla ja painaa L, ja peli parittaa ne
+pöydän kortteihin. Kaatamatta jääneet nostetaan. Monivalinnassa Tommi valitsi Villen tavan,
+eikä vaihtoehtoa *seuraava kaatamaton kortti automaattisesti kohteeksi*.
+
+**Ei toteutettu.** Avoinna toteutusta varten: miten peli parittaa kun sama kortti kaataisi
+kaksi pöydän korttia, ja säilyykö nykyinen kahden vaiheen tapa näkijälle rinnalla. Moskassa
+on lisäksi siirtäminen (`isPassSel`), joten sen valinta ei ole sama kuin Maijan. Lue
+`MAIJA.md` ja `MOSKA.md` ja toista sääntö Tommille ennen koodia (`CLAUDE.md` ›
+Sääntölogiikan muokkaus).
+
+Toinen havainto samalta pelikerralta: Villen pelissä uusi tapahtuma keskeytti edellisen
+lukemisen, eikä Tommi pitänyt siitä. Kohdan 2 ilmoitusten kärkeen nostaminen on siis
+punnittava, eikä sitä oteta sellaisenaan.
+
 ## Mitä Villelle voisi tarjota
 
 Tommin ajatus 22.10.2026: Jaon julkinen repo (`github.com/tommihaa/Jako`) voisi olla Villelle
