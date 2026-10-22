@@ -1,7 +1,7 @@
 import { cardName, suitName, RANKS } from './helpers.js';
 import { tr } from './i18n.jsx';
 
-// Tilanne-komento ruudunlukijalle (Tommin kuittaus 14.10.2026, DGAndroid/docs/
+// Tilanne-komento ruudunlukijalle (Tommin kuittaus 14.10.2026, Kaanon/docs/
 // YHTEYDENOTTO_NKL.md › Grillaus). Näkövammaisten liiton Ville Lammisen kohta 4: koko
 // pöytä yhdellä komennolla niin kuin näkevä näkee sen silmäyksellä, kunhan siitä ei saa
 // pelillistä etua. Siksi kukin peli antaa tähän vain sen, minkä se näyttää ihmiselle:

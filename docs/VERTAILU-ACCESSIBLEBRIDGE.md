@@ -1,7 +1,7 @@
 # Vertailu: Ville Lammisen AccessibleBridge
 
 Ville Lamminen (Näkövammaisten liitto, sokea ruudunlukuohjelmien tehokäyttäjä) lähetti
-21.10.2026 linkin omaan korttipelialustaansa (`DGAndroid/docs/YHTEYDENOTTO_NKL.md` › Villen
+21.10.2026 linkin omaan korttipelialustaansa (`Kaanon/docs/YHTEYDENOTTO_NKL.md` › Villen
 toinen vastaus). Osoite on hänen viestissään eikä tässä. Claude luki 22.10.2026 sivut,
 ohjeet ja selainpuolen skriptit (`maija.js`, `ristiseiska.js`, `hertta.js`, `kortit.js`).
 **Peliä ei pelattu**, koska pöydän luonti olisi kirjoittanut hänen palvelimelleen. Palvelimen
@@ -52,7 +52,7 @@ Järjestys on arvio hyödystä. Mikään ei ole päätös.
    samalla kertoimella kuin selain (45 ms merkiltä) ja lisää sen robotin odotukseen. Siksi
    jono ei kasva pelin aikana. Jaossa bottiajastus (`useAIScheduler`) ja ilmoitusjono
    (`Announcer.jsx`, 75 ms merkiltä, vähintään 1 s ja 700 ms tauko) ovat erillään, ja Läpsyn
-   punninta osoitti jonon kasvavan (`DGAndroid/docs/YHTEYDENOTTO_NKL.md` › Läpsyn perustelu).
+   punninta osoitti jonon kasvavan (`Kaanon/docs/YHTEYDENOTTO_NKL.md` › Läpsyn perustelu).
    Sama kytkentä korjaisi viiveen kaikissa peleissä eikä vain Läpsyssä.
 2. **Kaksi kanavaa.** Pelitapahtumat menevät jonoon (`announce`). Vastaus pelaajan omaan
    komentoon (lukukomento, valinta, virhe) menee jonon kärkeen ja katkaisee kesken olevan
