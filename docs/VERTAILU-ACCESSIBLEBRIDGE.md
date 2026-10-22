@@ -88,6 +88,34 @@ Ristiseiskan sääntö on sama kuin Jaossa: kortin pyytää edelliseltä pelaaja
 kortteja (`RISTISEISKA.md` › Pantti). Jaossa antotapa on aloitusnäytön valinta, Villellä antaja
 valitsee aina.
 
+## Maijan säännöt rinnakkain
+
+Tommi 22.10.2026: monissa peleissä on paikallisia muunnelmia, ja Maija on kiva vertailla, koska
+säännöt näyttävät samoilta. Villen puoli on luettu hänen ohjeestaan (`maija/ohje.html`), koska
+palvelimen koodi ei näy. Jaon puoli on luettu `MAIJA.md`:stä ja `src/games/Maija.jsx`:stä
+22.10.2026.
+
+| Kohta | Ville | Jako | Sama? |
+|---|---|---|---|
+| Pelaajia | 2–5 | 2–4 (`counts={[2, 3, 4]}`) | ei |
+| Käsi | 5 korttia | 5 korttia | kyllä |
+| Valtti | pakan pohjimmaisen maa, nostetaan viimeisenä | sama | kyllä |
+| Pata valttina | ei voi olla, tapaa ei kerrota | ei voi olla, pakka sekoitetaan uudelleen (`initGame`) | sääntö kyllä, tapa tuntematon |
+| Hyökkäys | 1–5 saman maan korttia, enintään vastaanottajan käden verran | saman maan kortteja, enintään vastaanottajan käden verran; viiden rajaa ei ole | lähes: ero näkyy vain kun hyökkääjällä on yli viisi samaa maata ja vastaanottajalla yli viisi korttia |
+| Kaato | saman maan suuremmalla tai valtilla, valtin vain suuremmalla valtilla | sama (`canBeat`) | kyllä |
+| Musta Maija | ei voi kaataa eikä sillä voi kaataa | sama | kyllä |
+| Kaatamatta jääneet | kaatajan käteen | sama | kyllä |
+| Seuraava hyökkääjä | kaiken kaatanut lyö; muuten vuoro ohittaa kaatajan | sama (`nextAttDef`) | kyllä |
+| Täydennys | viiteen niin kauan kuin pakkaa on | hyökkääjä heti lyönnin jälkeen, kaataja kaadon jälkeen | ajoitus Villellä kertomatta |
+| Loppukiri | pakan loputtua korteista eroon päässyt pääsee pois | sama | kyllä |
+| Häviäjä | viimeiseksi jäänyt pitää pata rouvaa | Maijan viimeinen omistaja | kyllä |
+| Aloittaja | jakovuoro kiertää, jakajaa seuraava aloittaa, ensimmäinen jakaja arvotaan | Hero hyökkää aina ensin (`attackerIdx:0`) | ei |
+
+**Erot ovat kolme:** pelaajamäärä, aloittaja ja viiden kortin hyökkäysraja. Aloittajan ero
+on suurin, koska Jaossa ihminen saa aina ensimmäisen hyökkäyksen. Pelitapa itse on sama.
+Onko jokin eroista muutettava, on Tommin päätös, eikä mitään ole muutettu (`CLAUDE.md` ›
+Sääntölogiikan muokkaus).
+
 ## Tommin tilaus 22.10.2026: kaatotapa Maijaan ja Moskaan
 
 Tommi pelasi Villen Maijaa ja totesi Jaon Maijan ja Moskan raskaiksi TalkBackilla. Hänen
