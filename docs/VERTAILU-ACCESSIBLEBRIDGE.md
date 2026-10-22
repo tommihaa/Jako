@@ -116,6 +116,30 @@ on suurin, koska Jaossa ihminen saa aina ensimmäisen hyökkäyksen. Pelitapa it
 Onko jokin eroista muutettava, on Tommin päätös, eikä mitään ole muutettu (`CLAUDE.md` ›
 Sääntölogiikan muokkaus).
 
+## Ristiseiskan säännöt rinnakkain
+
+Tommi 22.10.2026 nimesi eron: Jaossa ensimmäisellä kierroksella ei anneta panttia. Villen ohje
+ei mainitse poikkeusta, joten hänellä kortti pyydetään heti ensimmäisestä passista. Muu on
+luettu kuten Maijassa: Villen ohje vasten `RISTISEISKA.md`:tä ja `ristiseiskaEngine.js`:ää.
+
+| Kohta | Ville | Jako | Sama? |
+|---|---|---|---|
+| Pelaajia | 2–8 | 3–4 (`counts={[3, 4]}`) | ei |
+| Aloitus | ristiseiskan haltija, seiska pelataan automaattisesti | ristiseiskan haltija lyö sen | kyllä, Villellä automaattinen |
+| Pöydän rakentuminen | 6 vaatii 7, 8 vaatii 7 ja 6, sitten 5–A alas ja 9–K ylös | sama | kyllä |
+| Ässä ja kuningas | saa lyödä vielä yhden tai lopettaa | ei-pakollinen bonusvuoro | kyllä |
+| Pakko lyödä | jos voi, on lyötävä | passaus vain jos ei käy | kyllä |
+| Pantti ensimmäisellä kierroksella | pyydetään | ei anneta | **ei** |
+| Antaja | edellinen pelaaja; yhden kortin haltija ohitetaan | edellinen jolla on yli yksi kortti (`prevWithCards`) | kyllä |
+| Antotapa | antaja valitsee | aloitusnäytön valinta: antaja valitsee tai arvotaan | Jaossa lisävalinta |
+| Saatu kortti | ei lyödä samalla vuorolla | pantti päättää vuoron | kyllä |
+| Lyötävien näyttö | peli ei kerro | (ei verrattu) | |
+
+**Kaanonin ja koodin ero löytyi samalla:** `RISTISEISKA.md` sanoo antajan olevan edellinen
+pelaaja *jolla on vielä kortteja*, mutta `prevWithCards` vaatii yli yhden kortin, kuten
+Villellä. Koodi on Villen kanssa samaa mieltä ja kaanoni ei. Korjataanko kaanoni on Tommin
+päätös, eikä kumpaakaan ole muutettu.
+
 ## Tommin tilaus 22.10.2026: kaatotapa Maijaan ja Moskaan
 
 Tommi pelasi Villen Maijaa ja totesi Jaon Maijan ja Moskan raskaiksi TalkBackilla. Hänen
