@@ -302,6 +302,8 @@ Puhtain yhdeksästä.
 **R-1, luokka D.** Antajaksi ei kelpaa pelaaja jolla on täsmälleen yksi kortti (moottori
 110, `hand.length > 1`). Kanoni: antaja on edellinen pelaaja jolla on kortteja.
 Todennäköisesti tarkoitettu (estää voiton antamalla), mutta kanoni ei sano sitä.
+**Ratkaistu 22.10.2026:** kanoni korjattiin koodin mukaiseksi Tommin päätöksellä
+(`RISTISEISKA.md` › Pantti). Ville Lammisen Ristiseiskassa sääntö on sama.
 
 **R-2, luokka D, lievä.** Bottien välinen panttikortti näkyy ihmisen lokissa (383–385).
 Kanoni ei sano onko pantti avoin vai suljettu siirto.
