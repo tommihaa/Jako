@@ -1150,3 +1150,14 @@ kuten ennen. Uusi avain `ui.a11y.selected` 23 kielellä. Romanin *alosardi* ja p
 valittu. Valitsin"*. Tommi: *"nyt meni oikein"*.
 
 J-42 (verkkonäkymä lyönnin jälkeen) on yhä auki ja mittaamatta.
+
+## Julkaisu 1.2.249 23.10.2026
+
+Korttiryhmät, *Botti odottaa ilmoitukset*, J-40 ja J-41 julkaistu (Jako `ffa0517`, push klo 23.02,
+Tommin *julkaise*). Tuotantobundlesta todennettu selaimessa: molemmat domainit tarjoavat
+`index-B7aCxERp.js`:n, jossa on `"1.2.249"`, `waitSpeech` ja `selected:"valittu"`. Kaikki neljä
+kuunneltiin dev-versiolla ennen julkaisua. J-42 on auki.
+
+Mittauksen sivuvaikutus: Pixelin välilehti aktivoitiin kerran `/json/activate`illa, mikä on
+deploy-skillin nimeämä ansa. Välilehti latautui uudelleen ja peli katosi, mutta muuta haittaa
+ei tullut.
