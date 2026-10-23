@@ -1235,3 +1235,43 @@ Karjalan *n’el’läs* jäi ilman liudennusmerkkejä, koska `krl.js` kirjoitta
 ensimmäinen) jää muihin avaimiin, joissa se tarkoittaa ensimmäistä tekijää eikä sijaa.
 Sovellus käyttää romanista yleisromania, joten Suomen romanin *iekto* tai *vaaguno* eivät
 kuulu tähän. Ei kuunneltu, koska TalkBackissa ei ole karjalan, saamen eikä romanin ääntä.
+
+## Moskan kuuntelu ja J-43 24.10.2026 klo 23.55–00.40
+
+Pixel 8a, `localhost:5175`, Moska (kaatotapa 1.2.248). TalkBack kytkettiin adb:llä kunkin
+kierroksen ajaksi ja purettiin heti. Lokitaso oli VERBOSE ja palautettiin ERRORiin. Lokit ovat
+versioimattomassa kansiossa `raakasivut/talkback-24-10-moska/` (`tb-moska*.txt` logcat,
+`tb-koe.txt` kohdistuskoe, `dom-moska3.txt` sivun kohdistuskirjuri kolmannelta kierrokselta).
+
+**J-43. Ota kortit, Ohita ja Seuraava kierros vievät TalkBackin sivun juureen.** Tila: auki,
+kaksi korjausyritystä ei riittänyt. Tommi: *"otin kortit ja kohdistus siirtyi sivuun joka alkoi
+kertomaan sivulla näkyvää kokonaisuutta"*, sama Seuraava kierros -napista, ja Ohita sanoi
+*"Jako korttipelikokoelma verkkonäkymä"*.
+
+- *Ensimmäinen kierros, mitattu.* TalkBack painoi napin `ACTION_CLICK`illä. Kun nappi katosi,
+  TalkBack haki itse korvaajan napin paikalta (`ENSURE_ACCESSIBILITY_FOCUS_ON_SCREEN`,
+  `RESTORED_LAST_FOCUS`) ja päätyi Reactin juurielementtiin `id="root"`, jonka Chrome merkitsee
+  klikattavaksi. Siitä tuli koko sivun luku. Chrome ei lähettänyt viestirivistä
+  `TYPE_VIEW_FOCUSED`-tapahtumaa yhdenkään näistä napeista jälkeen, mutta lähetti sen Kaada- ja
+  Hyökkää-napin jälkeen.
+- *Ei valittu, mitattu.* Juuressa ollessaan TalkBack sanoo alempien kytkinten tilamuutokset
+  (`CONTENT_CHANGE_TYPE_CHECKED`, `isSelfOrAncestorFocused=true`). Kaikki viisi *ei valittu*
+  -sanaa tulivat koko sivun luvun jälkeen. Toisella ja kolmannella kierroksella sitä ei kuulunut.
+- *Kohdistuskoe, mitattu.* Chrome ei ilmoita kohdistusta, kun se asetetaan jo kohdistettuun
+  viestiriviin, ei blurin jälkeen samassa tahdissa eikä blurin ja ajastimen jälkeen. Ilmoitus
+  tuli vain, kun kohdistus siirtyi toiseen elementtiin (rivin sr-only-teksti).
+- *Korjaus 1* (`70229fe`): painettu nappi siirtää kohdistuksen katoaessaan, vaikka DOM-kohdistus
+  olisi muualla, ja jo kohdistettu rivi antaa sen puhutulle tekstilleen. CDP-klikkauksella
+  ilman kohdistusta toimii puhelimella. Toisella kierroksella Ota kortit ja Seuraava kierros
+  veivät silti koko sivulle, eikä Chrome lähettänyt kohdistustapahtumaa.
+- *Kolmas kierros, sivun kirjuri.* Nyt Chrome kohdisti napin ennen klikkausta (`focusin` ennen
+  `click`), nappi katosi, ja turvaverkko vei kohdistuksen viestiriville 10–20 ms myöhemmin
+  samassa tahdissa. Sivun puolella kaikki meni kuten Ristiseiskassa, jossa J-42 kuunneltiin ok.
+  Silti Ohita ja Ota kortit veivät verkkonäkymään. Kolmannen kierroksen logcatia ei ole
+  vielä luettu.
+
+Seuraava askel: lue `tb-moska3.txt` kirjurin aikaleimoja vasten (kirjuri on UTC, logcat
+paikallista aikaa, +3 h) ja selvitä, lähettikö Chrome viestirivin kohdistuksen ja missä
+järjestyksessä se tuli TalkBackin oman palautuksen kanssa. Ero Ristiseiskaan voi olla siinä,
+mitä napin tilalle piirtyy, koska TalkBack palauttaa kohdistuksen *samasta kohdasta*. Arvaus,
+ei mitattu.
