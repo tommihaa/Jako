@@ -13,6 +13,16 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '23.10.2026',
+    items: [
+      'Maija ja Moska: puolustus on suoraviivaisempi. Valitse kädestä kaatavat kortit ja paina Kaada, niin peli parittaa ne pöydän kortteihin. Pöydän korttia ei enää valita erikseen.',
+      'Maija ja Moska: Kaada kaataa niin monta pöydän korttia kuin valinnalla voi. Jos vaihtoehtoja on useita, pienin pöydän kortti kaatuu ensin. Valittu kortti, jolle ei löydy paria, jää käteen.',
+      'Maija: kaatamatta jääneet kortit nostetaan samalla painalluksella.',
+      'Moska: nostaminen on yhä oma nappinsa, koska hyökkääjät voivat lyödä lisää kaadon jälkeen. Samalla valinnalla voi myös siirtää hyökkäyksen Siirrä-napista.',
+      'Maija, saavutettavuus: ruudunlukija kertoo, onko kortti valittu.',
+    ],
+  },
+  {
     date: '20.10.2026',
     items: [
       'Ohje, Ruudunlukijalle: NVDA:n selaustilassa H-näppäin on NVDA:n oma otsikkonäppäin eikä mene pelille. Ohje kertoo nyt, että silloin Tilanne kuuluu Tilanne-napista Enterillä ja kohdistustilassa (NVDA+välilyönti) H toimii.',
