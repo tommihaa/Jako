@@ -123,6 +123,67 @@ describe('kohdistuksen turvaverkko', () => {
     uninstall();
   });
 
+  // J-42: Ristiseiskan Lyö-nappi katosi 27 ms painalluksen jälkeen, ja kohdistus oli 54 ms
+  // sivun juuressa ennen siirtoa. TalkBack ehti sanoa "verkkonäkymä" (Pixel 8a 23.10.2026).
+  it('siirtää kohdistuksen heti eikä jätä sitä sivun juureen', async () => {
+    vi.useFakeTimers();
+    function Peli() {
+      const [played, setPlayed] = useState(false);
+      return (
+        <div>
+          <SpokenHtml as="p" html={played ? 'Vuorossa Sune.' : 'Vuorossa Hero.'} gameMessage />
+          <Card mine card={card('4', 4)} />
+          {!played && <button onClick={() => setTimeout(() => setPlayed(true), 27)}>Lyö</button>}
+        </div>
+      );
+    }
+    const uninstall = installFocusRescue();
+    const r = render(<Peli />);
+    const btn = /** @type {HTMLElement} */ (r.getByText('Lyö'));
+    btn.focus();
+    await act(async () => { fireEvent.click(btn); });
+    // Nappi katoaa, mutta viivästetty tarkistus (50 ms) ei ole vielä ajanut.
+    await act(async () => { vi.advanceTimersByTime(30); });
+    expect(r.queryByText('Lyö')).toBeNull();
+    expect(document.activeElement?.hasAttribute('data-game-message')).toBe(true);
+    uninstall();
+  });
+
+  // Aloitusnäytön oma siirto pelin nimeen tehdään seuraavassa tahdissa. Turvaverkko ei saa
+  // ehtiä ensin viestiriville, koska silloin kohdistus kuuluisi kahdesti.
+  it('ei ohita aloitusnäytön siirtoa pelin nimeen', async () => {
+    vi.useFakeTimers();
+    function Peli() {
+      const [started, setStarted] = useState(false);
+      return (
+        <LangProvider>
+          <h1 id={GAME_TITLE_ID} tabIndex={-1}>Peli</h1>
+          {started
+            ? <SpokenHtml as="p" html="Peli alkaa." gameMessage />
+            : <GameStartScreen title="PELI" counts={[2, 3, 4]} value={4} onCountChange={() => {}}
+                onStart={() => setStarted(true)} onBotBattle={() => {}} botBattleSub="" />}
+        </LangProvider>
+      );
+    }
+    const uninstall = installFocusRescue();
+    const r = render(<Peli />);
+    /** @type {string[]} */
+    const focused = [];
+    const onFocus = (/** @type {FocusEvent} */ e) => {
+      const el = /** @type {HTMLElement} */ (e.target);
+      focused.push(el.id || (el.hasAttribute('data-game-message') ? 'viesti' : el.tagName));
+    };
+    document.addEventListener('focusin', onFocus, true);
+    const button = /** @type {HTMLElement} */ ([...r.container.querySelectorAll('button')]
+      .find(b => /Aloita/.test(b.textContent ?? '')));
+    button.focus();
+    await act(async () => { fireEvent.click(button); });
+    act(() => { vi.runAllTimers(); });
+    document.removeEventListener('focusin', onFocus, true);
+    expect(focused).toEqual([GAME_TITLE_ID]);
+    uninstall();
+  });
+
   // Asetusten ja Mestarin kuplan sulkunappi katoaa paneelin mukana. Ennen tätä kohdistus
   // meni pienimpään korttiin eikä avausnappiin (tarkistus 16.10.2026).
   it('palauttaa kohdistuksen paneelin avaajaan kun sulkunappi katoaa', async () => {

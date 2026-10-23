@@ -1108,7 +1108,8 @@ laittaaksesi päälle pois"*. Kortti oli kuitenkin valittuna: CDP-luennassa (Chr
 Arvaus, jota ei ole mitattu: TalkBack lukee tilan ennen kuin React on päivittänyt sen.
 Mittaamatta myös se, koskeeko tämä muita pelejä joissa kortilla on `aria-pressed` (J-2).
 
-**J-42. Lyönnin jälkeen kuuluu ensin verkkonäkymä.** Tila: auki. Tommi: lyönnin jälkeen kuului
+**J-42. Lyönnin jälkeen kuuluu ensin verkkonäkymä.** Tila: korjattu dev-versiossa 23.10.2026,
+ei kuunneltu eikä julkaistu. Mittaus ja korjaus jaksossa *J-42:n mittaus* alla. Tommi: lyönnin jälkeen kuului
 *"Jako korttipelikokoelma verkkonäkymä, valinta poistettu, Hero ruutu jätkä pelaa yläpinoon"*,
 kun pelkkä *"Hero ruutu jätkä pelaa yläpinoon"* riittäisi. Pelaa-nappi katoaa, kun vuoro
 vaihtuu, ja kohdistus putoaa ensin sivun juureen ennen kuin turvaverkko (J-14) vie sen
@@ -1161,3 +1162,50 @@ kuunneltiin dev-versiolla ennen julkaisua. J-42 on auki.
 Mittauksen sivuvaikutus: Pixelin välilehti aktivoitiin kerran `/json/activate`illa, mikä on
 deploy-skillin nimeämä ansa. Välilehti latautui uudelleen ja peli katosi, mutta muuta haittaa
 ei tullut.
+
+## J-42:n mittaus ja korjaus 23.10.2026 klo 23.05–23.20
+
+Pixel 8a, Chrome, ei ruudunlukijaa. Sivulle asennettiin CDP:llä kirjuri, joka merkitsi
+`focusin`- ja `focusout`-tapahtumat sekä `document.activeElement`in jokaisella ruudunpäivityksellä.
+Kortti valittiin ja Lyö painettiin CDP:llä (`focus()` ja `click()`), mikä vastaa TalkBackin
+kaksoisnapautusta, koska Chrome kohdistaa elementin ennen klikkausta (J-41:n mittaus).
+
+**Ennen korjausta** (`localhost:5174`, Jako `977d360`, Ristiseiska, pata seitsemän): Lyö-nappi
+katosi 27 ms painalluksen jälkeen, eikä samassa tapahtumassa. Kohdistus oli sen jälkeen 54 ms
+sivun juuressa (`BODY` vielä ruudunpäivityksessä), ennen kuin turvaverkon 50 ms:n ajastin vei
+sen viestiriville. Päätelmä, ei mitattu TalkBackilla: tämä on se hetki, jolloin Chrome ilmoittaa
+kohdistuksen verkkonäkymälle ja TalkBack sanoo *"Jako korttipelikokoelma verkkonäkymä"*.
+`uiautomator events` ei saanut Chromen solmukohtaisia tapahtumia näkyviin, joten ilmoitusta
+itseään ei nähty.
+
+**Korjaus.** Turvaverkko siirtää kohdistuksen heti samassa tahdissa, jossa painettu elementti
+katosi, ja 50 ms:n tarkistus jää varalle (`shared/focusRescue.js`). Aloitusnäytön oma siirto
+pelin nimeen tehdään seuraavassa tahdissa, joten se ilmoitetaan uudella `focusAfterRender`illä,
+jottei turvaverkko vie kohdistusta ensin viestiriville ja kohdistus kuulu kahdesti. Kohde ei
+muuttunut (viestirivi, Tommin valinta 16.10.2026), vain ajoitus. Testit `kohdistus-alussa.test.jsx`
+(kaksi uutta), jotka kaatuvat kumpikin ilman omaa osaansa korjauksesta (tarkistettu).
+
+**Korjauksen jälkeen** (`localhost:5175`, uusi portti palvelutyöntekijän välimuistin vuoksi,
+Ristiseiska, risti kuusi): Lyö katosi 23 ms painalluksen jälkeen, ja viestirivi sai kohdistuksen
+6 ms myöhemmin. Ensimmäisessä ruudunpäivityksessä kohdistus oli jo viestirivillä, eikä `BODY`a
+näkynyt kertaakaan.
+
+Kuuntelematta: kuuluuko verkkonäkymä yhä, ja kuuluuko *valinta poistettu*. Jälkimmäinen kuultiin
+ennen J-41:n korjausta, joten se voi olla jo poissa.
+
+## Romanin ja pohjoissaamen *valittu* lähteestä 23.10.2026
+
+J-41:n avain `ui.a11y.selected`. Muut kielet ovat ennallaan.
+
+- *Pohjoissaame `válljejuvvon`: löytyy käytössä.* Muoto esiintyy merkityksessä valittu Ylen
+  pohjoissaamenkielisessä uutisessa (Ailu Valle valittiin rooliin), Saamelaiskäräjien
+  kulttuuriperintöselonteossa ja UiT:n korpuksen väitöskirjassa (*válljejuvvon cealkagat*,
+  valitut virkkeet). Sanakirjamerkintää ei löytynyt, mutta sama muoto on sovelluksessa jo
+  ryhmän kohdalla (`playersIntro`), joten se on johdonmukainen.
+- *Romani `alosardi`: verbi löytyy, muotoa ei.* ERIACin Romani Chib A2 -sanasto ja Verbixin
+  kalderašin luettelo antavat verbin *alosarel* (valita, äänestää). Partisiippi on johdettu
+  säännöllisesti, samalla tavalla kuin ERIACin *ramosardo, -i, -e* (kirjoitettu) verbistä
+  *ramosarel*. Itse muotoa *alosardo* tai *alosardi* ei löytynyt mistään lähteestä. Pääte -i on
+  feminiini tai monikko, ja se on tarkistamatta, kumpi sopii kortille.
+
+Järjestysluvut (J-37) ovat yhä tarkistamatta.

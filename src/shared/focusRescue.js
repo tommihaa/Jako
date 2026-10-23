@@ -28,9 +28,26 @@ export function rescueTarget(root = document) {
   return document.getElementById(GAME_TITLE_ID);
 }
 
-// Viive ennen tarkistusta, jotta tarkoituksellinen siirto ehtii ensin (GameStartScreen vie
-// kohdistuksen pelin nimeen 0 ms:n ajastimella). Turvaverkko ei ohita sitä.
+// Siirto tehdään heti samassa tahdissa, jossa nappi katosi (auditointi J-42). Mitattu
+// Pixel 8a:lla 23.10.2026: Ristiseiskan Lyö-nappi katosi 27 ms painalluksen jälkeen, ja
+// kohdistus oli sen jälkeen 54 ms sivun juuressa ennen viivästettyä siirtoa. Sinä aikana
+// TalkBack ehti sanoa *"Jako korttipelikokoelma verkkonäkymä"* ennen viestiriviä.
+//
+// Tarkoituksellinen siirto, joka tehdään vasta seuraavassa tahdissa, ilmoitetaan
+// `focusAfterRender`illä, jotta turvaverkko ei ehdi ensin ja kohdistus kuulu kahdesti.
+// Viivästetty tarkistus jää varalle siltä varalta, että kohdistus putoaa uudelleen.
 const RESCUE_DELAY_MS = 50;
+
+let intended = false;
+
+/**
+ * Vie kohdistuksen kohteeseen, kun React on ehtinyt piirtää seuraavan näkymän.
+ * @param {() => HTMLElement | null} target
+ */
+export function focusAfterRender(target) {
+  intended = true;
+  setTimeout(() => { intended = false; target()?.focus(); }, 0);
+}
 
 /** @param {EventTarget | null} t */
 const interactive = t => t instanceof Element
@@ -86,11 +103,13 @@ export function installFocusRescue() {
     if (!last || last.isConnected) return;
     const opener = openerOf(last);
     last = null;
-    setTimeout(() => {
+    const rescue = () => {
       const a = document.activeElement;
       if (a && a !== document.body && a.isConnected) return;
       (opener?.isConnected ? opener : rescueTarget())?.focus({ preventScroll: true });
-    }, RESCUE_DELAY_MS);
+    };
+    if (!intended) rescue();
+    setTimeout(rescue, RESCUE_DELAY_MS);
   });
   mo.observe(document.body, { childList: true, subtree: true });
   return () => {

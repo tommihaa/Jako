@@ -3,6 +3,7 @@ import { C, SUIT_COLOR } from './colors.js';
 import { useT } from './i18n.jsx';
 import GroupPicker from './GroupPicker.jsx';
 import Spoken from './Spoken.jsx';
+import { focusAfterRender } from './focusRescue.js';
 
 // Pelin aloitusnäyttö: tunnus ja nimi, pelaajamäärä, vastustajaryhmä ja kaksi nappia.
 //
@@ -26,7 +27,7 @@ function thenFocusTitle(fn) {
   return () => {
     fn();
     // Ajastin, jotta peli ehtii korvata aloitusnäytön ennen kohdistusta.
-    setTimeout(() => document.getElementById(GAME_TITLE_ID)?.focus(), 0);
+    focusAfterRender(() => document.getElementById(GAME_TITLE_ID));
   };
 }
 
