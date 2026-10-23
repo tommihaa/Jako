@@ -9,6 +9,7 @@ export const de = {
     a11y: {
       opponents: ({ names }) => `Gegner in Zugreihenfolge: ${names}.`,
       statusButton: 'Lage',
+      selected: 'ausgewählt',
       version: ({ version, date, time }) => `Version ${version}, veröffentlicht am ${date} um ${time}`,
       turn: ({ name }) => `Am Zug: ${name}.`,
       hand: ({ cards }) => `Hand: ${cards}.`,

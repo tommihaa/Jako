@@ -8,6 +8,7 @@ export const hu = {
     a11y: {
       opponents: ({ names }) => `Ellenfelek a lépések sorrendjében: ${names}.`,
       statusButton: 'Helyzet',
+      selected: 'kiválasztva',
       version: ({ version, date, time }) => `Verzió: ${version}, közzétéve: ${date} ${time}`,
       turn: ({ name }) => `Következik: ${name}.`,
       hand: ({ cards }) => `Kéz: ${cards}.`,

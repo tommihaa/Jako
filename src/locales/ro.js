@@ -7,6 +7,7 @@ export const ro = {
     a11y: {
       opponents: ({ names }) => `Adversari în ordinea mutărilor: ${names}.`,
       statusButton: 'Situația',
+      selected: 'selectată',
       version: ({ version, date, time }) => `Versiunea ${version}, publicată pe ${date} la ${time}`,
       turn: ({ name }) => `La rând: ${name}.`,
       hand: ({ cards }) => `Mână: ${cards}.`,

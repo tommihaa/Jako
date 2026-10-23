@@ -10,6 +10,7 @@ export const krl = {
     a11y: {
       opponents: ({ names }) => `Vastuštajat vuoron mukah: ${names}.`,
       statusButton: 'Tilanne',
+      selected: 'valittu',
       version: ({ version, date, time }) => `Versii ${version}, julkaistu ${date} kello ${time}`,
       turn: ({ name }) => `Vuoros ${name}.`,
       hand: ({ cards }) => `Käzi: ${cards}.`,

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { C, suitColor } from './colors.js';
 import { BACKS } from './BACKS.jsx';
 import { isRed, cardName, VAL } from './helpers.js';
+import { tr } from './i18n.jsx';
 
 const isRuutuKymppi = c => c && c.r === '10' && c.s === '♦';
 const isPataKakkonen = c => c && c.r === '2' && c.s === '♠';
@@ -140,7 +141,11 @@ export default function Card({
         overflow: 'hidden',
       }}
     >
-      {clickable && <span className="sr-only">{faceUp && card ? cardName(card) : 'kortti'}</span>}
+      {/* Valittu kortti sanoo tilan myös nimessään (Tommin valinta 23.10.2026, J-41). Chrome
+          Androidilla kaksoisnapautus siirtää DOM-kohdistuksen korttiin, ja TalkBack lukee kortin
+          uudelleen keskeyttäen tilailmoituksen "valittu" (puheloki Pixel 8a). Valitsematon
+          kortti ei sano tilaa, jotta käden selaus ei pitene. */}
+      {clickable && <span className="sr-only">{faceUp && card ? cardName(card) + (selected ? `, ${tr('ui.a11y.selected')}` : '') : 'kortti'}</span>}
       {faceUp && card ? (
         <div aria-hidden="true" style={{
           textAlign: 'center', fontFamily: 'Georgia,serif', lineHeight: 1.1,

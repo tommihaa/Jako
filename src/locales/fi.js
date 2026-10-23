@@ -13,6 +13,7 @@ export const fi = {
     a11y: {
       opponents: ({ names }) => `Vastustajat vuorojärjestyksessä: ${names}.`,
       statusButton: 'Tilanne',
+      selected: 'valittu',
       // Pisteet sanoina: "1.2.237" kuului päivämääränä "ensimmäinen toista" (J-21).
       // `plain` on alaraidan näkyvä muoto; korvalle versio sanotaan pisteineen (J-7).
       version: ({ version, date, time, plain }) => `Versio ${plain ? version : String(version).split('.').join(' piste ')}, julkaistu ${date} klo ${time}`,

@@ -9,6 +9,7 @@ export const el = {
     a11y: {
       opponents: ({ names }) => `Αντίπαλοι με σειρά παιχνιδιού: ${names}.`,
       statusButton: 'Κατάσταση',
+      selected: 'επιλεγμένο',
       version: ({ version, date, time }) => `Έκδοση ${version}, δημοσιεύθηκε ${date} στις ${time}`,
       turn: ({ name }) => `Σειρά: ${name}.`,
       hand: ({ cards }) => `Χέρι: ${cards}.`,

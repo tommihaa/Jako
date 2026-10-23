@@ -9,6 +9,7 @@ export const pt = {
     a11y: {
       opponents: ({ names }) => `Adversários por ordem de jogada: ${names}.`,
       statusButton: 'Situação',
+      selected: 'selecionada',
       version: ({ version, date, time }) => `Versão ${version}, publicada em ${date} às ${time}`,
       turn: ({ name }) => `Vez de ${name}.`,
       hand: ({ cards }) => `Mão: ${cards}.`,

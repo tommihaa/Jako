@@ -9,6 +9,7 @@ export const sv = {
     a11y: {
       opponents: ({ names }) => `Motståndare i turordning: ${names}.`,
       statusButton: 'Läge',
+      selected: 'vald',
       version: ({ version, date, time }) => `Version ${version}, publicerad ${date} kl. ${time}`,
       turn: ({ name }) => `Tur: ${name}.`,
       hand: ({ cards }) => `Hand: ${cards}.`,

@@ -18,6 +18,7 @@ export const ru = {
     a11y: {
       opponents: ({ names }) => `Соперники в порядке хода: ${names}.`,
       statusButton: 'Ситуация',
+      selected: 'выбрана',
       version: ({ version, date, time }) => `Версия ${version}, опубликована ${date} в ${time}`,
       turn: ({ name }) => `Ходит: ${name}.`,
       hand: ({ cards }) => `Рука: ${cards}.`,

@@ -1099,7 +1099,9 @@ ei osu. Pyyhkäisyjärjestyksessä se on Opasta-napin jälkeen ja ennen Ääni-n
 hyppää lyönnin jälkeen (J-42), paikka on taas haettava. Ratkaisu on Tommin päätös
 (esim. näkyvä nappi tai sama paikka aina).
 
-**J-41. Kortin valinta kuuluu tilana *valinta poistettu*.** Tila: auki. Tommi: ensimmäinen
+**J-41. Kortin valinta kuuluu tilana *valinta poistettu*.** Tila: korjattu dev-versiossa
+23.10.2026 ja kuunneltu ok, ei julkaistu. Korjaus ja mittaus alla omana jaksonaan. Havainto ennen
+korjausta: Tommi: ensimmäinen
 kaksoisnapautus lyötävään korttiin kuului *"valinta poistettu, pata yhdeksän, kaksoisnapauta
 laittaaksesi päälle pois"*. Kortti oli kuitenkin valittuna: CDP-luennassa (Chrome DevTools
 -yhteys laitteelle) heti kuuntelun jälkeen pata yhdeksällä oli `aria-pressed="true"`.
@@ -1112,3 +1114,39 @@ kun pelkkä *"Hero ruutu jätkä pelaa yläpinoon"* riittäisi. Pelaa-nappi kato
 vaihtuu, ja kohdistus putoaa ensin sivun juureen ennen kuin turvaverkko (J-14) vie sen
 eteenpäin. Välissä kuuluva *valinta poistettu* on luultavasti käden kortti, johon turvaverkko
 vie kohdistuksen, mutta tätä ei ole mitattu.
+
+## Toinen kuuntelu ja J-41:n mittaus 23.10.2026 klo 22.30–23.10
+
+Pixel 8a, `localhost:5174`, Ristiseiska. TalkBack kytkettiin adb:llä kunkin kierroksen ajaksi ja
+purettiin heti. TalkBackin lokitaso oli mittauksen ajan VERBOSE (TalkBack-asetukset ›
+Lisäasetukset › Kehittäjäasetukset › Lokiin tallennuksen lähtötaso, vahvistusikkuna
+*Otetaanko monisanainen loki käyttöön?*) ja palautettiin ERRORiin. Puhe luettiin `logcat`in
+riveiltä `SpeechControllerImpl: Speaking fragment`.
+
+- *J-40 kuunneltu ok.* Tommi: *"nappi löytyi"*.
+- *Korttiryhmät kuunneltu ok.* Tommi: *"ryhmittely ok"*.
+
+**J-41:n mekanismi, mitattu.** Sivulle asennettiin CDP:llä kirjuri, joka merkitsi
+`focusin`-, `pointerdown`-, `click`- ja `aria-pressed`-muutokset aikaleimoineen.
+
+- Kun DOM-kohdistus oli valmiiksi kortissa (asetettu CDP:llä `focus()`), kaksoisnapautus antoi
+  yhden klikkauksen, `aria-pressed` vaihtui 19 ms:ssa ja TalkBack sanoi *"valittu"*.
+- Kun Tommi kosketti korttia ja kaksoisnapautti, Chrome siirsi DOM-kohdistuksen korttiin
+  (`focusin` ennen `pointerdown`ia). TalkBack sanoi *"valittu"*, mutta Chromen
+  `TYPE_VIEW_FOCUSED`- ja `TYPE_VIEW_ACCESSIBILITY_FOCUSED`-tapahtumat saivat sen lukemaan
+  kortin uudelleen keskeytystilassa (`QUEUE_MODE_INTERRUPT`): *"ruutu viisi. Valitsin.
+  Kaksoisnapauta laittaaksesi päälle/pois"*. Uudelleenluku ei sano tilaa, joten Tommi kuuli
+  pelkän kortin.
+- Hylätty korjaus: `onMouseDown`-tapahtuman `preventDefault` ei estänyt kohdistusta, koska Chrome
+  kohdistaa kortin ennen hiiritapahtumia. Peruttu ennen committia.
+- Adb:n `input tap` ohittaa TalkBackin eleet ja klikkaa suoraan, joten eleen mittaus vaatii
+  Tommin kosketuksen.
+
+**Korjaus (Tommin valinta, vaihtoehdot: valittu nimeen, molemmat tilat nimeen, ei nyt):**
+valittu kortti sanoo tilan nimessään (*"ruutu viisi, valittu"*), ja valitsematon kuulostaa
+kuten ennen. Uusi avain `ui.a11y.selected` 23 kielellä. Romanin *alosardi* ja pohjoissaamen
+*válljejuvvon* ovat Clauden omasta kielitiedosta eikä lähteestä tarkistettuja. Testi
+`kortin-valinta.test.jsx`. Puheloki korjauksen jälkeen: *"valittu"*, sitten *"ruutu viisi,
+valittu. Valitsin"*. Tommi: *"nyt meni oikein"*.
+
+J-42 (verkkonäkymä lyönnin jälkeen) on yhä auki ja mittaamatta.

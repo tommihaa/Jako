@@ -7,6 +7,7 @@ export const se = {
     a11y: {
       opponents: ({ names }) => `Vuostebealit vuoru mielde: ${names}.`,
       statusButton: 'Dilli',
+      selected: 'válljejuvvon',
       version: ({ version, date, time }) => `Veršuvdna ${version}, almmuhuvvon ${date} dii. ${time}`,
       turn: ({ name }) => `Vuorus ${name}.`,
       hand: ({ cards }) => `Giehta: ${cards}.`,

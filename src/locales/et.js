@@ -9,6 +9,7 @@ export const et = {
     a11y: {
       opponents: ({ names }) => `Vastased käigujärjekorras: ${names}.`,
       statusButton: 'Seis',
+      selected: 'valitud',
       version: ({ version, date, time }) => `Versioon ${version}, avaldatud ${date} kell ${time}`,
       turn: ({ name }) => `Käigul: ${name}.`,
       hand: ({ cards }) => `Käsi: ${cards}.`,
