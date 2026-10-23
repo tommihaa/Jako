@@ -3,10 +3,10 @@ import { C, SUIT_COLOR, SUIT_COLOR_DARK, setTwoColorDeck } from './shared/colors
 import GameResult from './shared/GameResult.jsx';
 import StatsPanel from './shared/StatsPanel.jsx';
 import ShareQR from './shared/ShareQR.jsx';
-import Announcer from './shared/Announcer.jsx';
+import Announcer, { setWaitForSpeech } from './shared/Announcer.jsx';
 import { GAME_TITLE_ID } from './shared/GameStartScreen.jsx';
 import { installFocusRescue } from './shared/focusRescue.js';
-import { hasSymbol } from './shared/helpers.js';
+import { hasSymbol, groupedCardNames } from './shared/helpers.js';
 import Spoken, { withoutEmoji, Sep } from './shared/Spoken.jsx';
 import { useT, useLang, LANGS } from './shared/i18n.jsx';
 import { loadPref, savePref, useStickySetting } from './shared/storage.js';
@@ -569,6 +569,8 @@ export default function App() {
   useEffect(() => { setSfxTheme(soundTheme); }, [soundTheme]); // SFX on singleton kaikille 9 pelille — ei kosketa yhtään games/*.jsx-tiedostoa
   const [twoColorDeck, setTwoColorDeckPref] = useStickySetting('twoColorDeck', false); // ♠♣ musta + ♥♦ punainen; muistetaan kuten kieli ja äänet
   useEffect(() => { setTwoColorDeck(twoColorDeck); }, [twoColorDeck]); // mutatoi SUIT_COLOR-paletit (colors.js) — re-render hoitaa loput
+  const [waitSpeech, setWaitSpeech] = useStickySetting('waitSpeech', false); // botti odottaa ilmoitusten lukuajan (ruudunlukija), ks. Announcer.jsx
+  useEffect(() => { setWaitForSpeech(waitSpeech); }, [waitSpeech]);
   const [seeAll, setSeeAll]         = useState(false);  // POIKKEUS: cheat-tila EI tallennu — nollautuu joka latauksessa (ks. storage.js)
   const [showLastPlay, setShowLastPlay] = useStickySetting('showLastPlay', true);
   const [showIntention, setShowIntention] = useStickySetting('showIntention', true);
@@ -928,6 +930,7 @@ export default function App() {
                   { label: t('ui.settings.showLog'),                    val: showLog,       set: setShowLog,       preset: true },
                   { label: t('ui.settings.sound'),                      val: soundOn,       set: setSoundOn       },
                   { label: t('ui.settings.twoColorDeck'),               val: twoColorDeck,  set: setTwoColorDeckPref },
+                  { label: t('ui.settings.waitSpeech'),                 val: waitSpeech,    set: setWaitSpeech    },
                 ].filter(Boolean).map(({ label, val, set, disabled, preset }) => (
                   <label key={label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '4px 0', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.35 : 1 }}>
                     <input
@@ -1223,7 +1226,8 @@ export default function App() {
           </button>
           {showSrHelp && (
             <div style={{ padding: '0 14px 14px' }}>
-              {t('ui.infoPanel.screenReader.body', { button: t('ui.a11y.statusButton'), remembered: t('ui.a11y.remembered') }).map((para, i) => (
+              {t('ui.infoPanel.screenReader.body', { button: t('ui.a11y.statusButton'), remembered: t('ui.a11y.remembered'), wait: t('ui.settings.waitSpeech'), advanced: t('ui.settings.advanced'),
+                example: groupedCardNames([{ r: '2', s: '♠' }, { r: '3', s: '♠' }, { r: '10', s: '♥' }]), slap: GAMES.find(g => g.id === 'lapsy')?.name }).map((para, i) => (
                 <p key={i} style={{ margin: '0 0 10px', color: C.text, fontSize: 12, lineHeight: 1.7, fontFamily: 'sans-serif' }}>{para}</p>
               ))}
             </div>

@@ -61,6 +61,7 @@ export const sv = {
       showLog: 'Händelselogg öppen',
       sound: 'Ljud',
       twoColorDeck: 'Tvåfärgad kortlek (♠ ♣ svarta, ♥ ♦ röda)',
+      waitSpeech: 'Botten väntar tills meddelandena har lästs (skärmläsare)',
       aiTitle: 'AI-nivå 🤖',
       ai: {
         beginner: { label: 'Lärling',  desc: 'gör misstag, går att slå' },
@@ -98,11 +99,13 @@ export const sv = {
       changelogTranslateHint: 'Ändringsloggen finns endast på finska — använd webbläsarens Översätt-funktion för att läsa den på ditt språk.',
       screenReader: {
         title: 'För skärmläsare 🔊',
-        body: ({ button, remembered }) => [
+        body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Spelet berättar själv för skärmläsaren vad som händer: vem som spelade vilket kort och vems tur det är. Korten sägs med namn, inte som färgsymboler.',
+          `Kort i samma färg i följd sägs med ett färgnamn: ”${example}”.`,
           `Knappen ${button} läser upp hela bordet på en gång: vems tur det är, din hand, korten på bordet och hur många kort de andra har. Den finns i spelets statusrad och syns bara för skärmläsare och tangentbordsfokus. Med tangentbord ger H samma sak.`,
           `I NVDA:s bläddringsläge är H NVDA:s egen tangent för nästa rubrik och når inte spelet. Använd då knappen ${button} med Enter. I fokusläge (NVDA+mellanslag) fungerar H.`,
           `${button} berättar bara det som en seende spelare ser. I Koputus är ett kort du minns ”${remembered}” och dess värde sägs inte, eftersom även en seende måste minnas det själv.`,
+          `Om händelserna kommer snabbare än du hinner höra dem, slå på ”${wait}” (${advanced}). Då spelar botten först när de föregående meddelandena har hunnit höras. ${slap} väntar inte, eftersom snabbheten är själva spelet.`,
         ],
       },
       a2hs: {

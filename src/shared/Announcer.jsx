@@ -30,14 +30,41 @@ let queue = [];
 let busy = false;
 /** @type {ReturnType<typeof setTimeout> | null} */
 let timer = null;
+// Kesken olevan viestin loppuhetki tauko mukaan lukien, ja onko viesti vielä jonon kärjessä
+// (ensimmäisen viiveen ajan se on, jotta `skipAnnouncements` saa sen talteen).
+let busyUntil = 0;
+let headInQueue = false;
+
+/** @param {string} text */
+const speechMs = text => Math.max(MIN_SPEECH_MS, text.length * MS_PER_CHAR);
+
+// Asetus "Botti odottaa ilmoitukset" (Tommin valinta 23.10.2026). App omistaa arvon ja
+// kirjoittaa sen tänne kuten kaksivärisen pakan, joten yhdeksään peliin ei tarvita propsia.
+let waitForSpeech = false;
+/** @param {boolean} on */
+export function setWaitForSpeech(on) { waitForSpeech = on; }
+
+// Arvioitu aika siihen, että jonossa olevat ilmoitukset ovat kuuluneet. Ville Lammisen
+// AccessibleBridgessä palvelin lisää tämän robotin viiveeseen, ja siksi jono ei kasva pelin
+// aikana (Jako/docs/VERTAILU-ACCESSIBLEBRIDGE.md › Opittavaa Jakoon, kohta 1). Nolla kun
+// asetus on pois, jolloin näkijän peli ei hidastu.
+export function pendingSpeechMs() {
+  if (!waitForSpeech) return 0;
+  const rest = queue.slice(headInQueue ? 1 : 0);
+  return Math.max(0, busyUntil - Date.now())
+    + rest.reduce((sum, text) => sum + FIRST_MS + speechMs(text) + GAP_MS, 0);
+}
 
 function pump() {
   if (busy || queue.length === 0) return;
   busy = true;
+  headInQueue = true;
+  busyUntil = Date.now() + FIRST_MS + speechMs(queue[0]) + GAP_MS;
   // Ensimmäinenkin viesti lähtee ajastimella, jottei ilmoitus päivitä Announceria
   // kesken toisen komponentin päivityksen, ja jotta kohdistus ehtii viestiriville.
   timer = setTimeout(() => {
     const next = /** @type {string} */ (queue.shift());
+    headInQueue = false;
     listeners.forEach(l => l(next));
     // Puheajan jälkeen alue tyhjenee. Muuten viimeisin ilmoitus jää saavutettavuuspuuhun
     // ja sivun läpi pyyhkäisy luki sen toiseen kertaan ("Vastustajat vuorojärjestyksessä"
@@ -45,7 +72,7 @@ function pump() {
     timer = setTimeout(() => {
       listeners.forEach(l => l(''));
       timer = setTimeout(() => { busy = false; timer = null; pump(); }, GAP_MS);
-    }, Math.max(MIN_SPEECH_MS, next.length * MS_PER_CHAR));
+    }, speechMs(next));
   }, FIRST_MS);
 }
 
@@ -55,6 +82,8 @@ export function clearAnnouncements() {
   if (timer) clearTimeout(timer);
   timer = null;
   busy = false;
+  busyUntil = 0;
+  headInQueue = false;
 }
 
 // Viestirivi saa kohdistuksen oman siirron jälkeen ja sanoo jonossa odottaneet viestit itse,

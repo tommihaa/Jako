@@ -61,7 +61,8 @@ describe('taukovahti (kompositioauditointi H7)', () => {
 
   it('hookin vahdittu ajastin on olemassa ja kirjoittaa aiTmr.currentin', () => {
     const hook = readFileSync(resolve(ROOT, 'src/shared/useAIScheduler.js'), 'utf-8');
-    expect(hook).toMatch(/const schedMove = \(fn, ms\) => \{ aiTmr\.current = tm\(guard\(fn\), ms\)/);
+    // Viiveeseen saa lisätä ilmoitusten lukuajan (23.10.2026), kunhan siirto kulkee vahdin läpi.
+    expect(hook).toMatch(/const schedMove = \(fn, ms\) => \{\s*aiTmr\.current = tm\(guard\(fn\), ms\b/);
     expect(hook).toMatch(/schedMove\(fn, d \+ Math\.random\(\) \* jitter\)/);
     expect(hook).toMatch(/const schedTick = \(fn, ms\) => setInterval\(\(\) => \{ if \(!pausedRef\.current\) fn\(\); \}, ms\)/);
   });

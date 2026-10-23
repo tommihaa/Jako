@@ -46,15 +46,21 @@ korttipeliä. PBN:n vastinetta ei kummassakaan ole.
 
 ## Opittavaa Jakoon
 
-Järjestys on arvio hyödystä. Mikään ei ole päätös.
+Järjestys on arvio hyödystä. Kohdat 1 ja 3 ovat Tommin päätöksiä 23.10.2026, muut eivät.
 
-**Kysyttävä Tommilta ennen koodia** (saatteesta 22.10.2026, arkistoitu
+**Tommin päätökset 23.10.2026** (kysytty saatteen 22.10.2026 pohjalta, arkistoitu
 `Kaanon/saatteet/JATKOPROMPTI_villen_opit.md`):
-- Kohta 1: koskeeko lukuajan odotus vain ruudunlukijan käyttäjää vai aina? Jako ei tiedä
-  suoraan, onko ruudunlukija käytössä, ja näkijälle aina hidastuva peli on muutos jota Tommi ei
-  ole tilannut. Läpsy on rajattu ruudunlukijan lupauksesta pois.
-- Kohta 3: arvot numeroina (Villen tapa) vai sanoina (nykyinen)? Mitataan NVDA:lla ennen
-  päätöstä, Mikropuheella jos se on saatavilla, koska Ville suositteli sitä Heidin sijaan.
+- Kohta 1 on **oma asetus**: Lisäasetusten *"Botti odottaa, että ilmoitukset on luettu
+  (ruudunlukija)"*, oletuksena pois. Päällä ollessa bottisiirron viiveeseen lisätään jonon
+  arvioitu lukuaika (`pendingSpeechMs`, `Announcer.jsx`), Villen tapaan ajastushetkellä.
+  Läpsy ei odota (`speechWait: false`). Vaihtoehdot olivat aina, Tilanteen käytöstä
+  pääteltynä ja ei nyt.
+- Kohta 3 on tehty **sanoina**: saman maan peräkkäiset kortit yhdellä maan nimellä
+  (`groupedCardNames`, `helpers.js`) Tilanteessa sekä lokin ja ilmoitusten pilkkuluetteloissa.
+  Järjestys ei muutu, joten ryhmä katkeaa siihen missä maa vaihtuu. Numerot vai sanat on yhä
+  auki ja mitataan NVDA:lla ennen päätöstä, Mikropuheella jos se on saatavilla, koska Ville
+  suositteli sitä Heidin sijaan.
+- Kumpaakaan ei ole vielä kuunneltu TalkBackilla eikä NVDA:lla.
 - Kohtia 4, 5 ja 7 (näppäinkomennot ja vuoron merkkiääni) Tommi ei ole tilannut. Ääniä hän
   lisää säästeliäästi, koska kuuntelee pelatessaan radiota tai podcasteja.
 

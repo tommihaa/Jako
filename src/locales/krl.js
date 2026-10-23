@@ -62,6 +62,7 @@ export const krl = {
       showLog: 'Tapahtumaloki avoi',
       sound: 'Iänet',
       twoColorDeck: 'Kakšivärini pakka (♠ ♣ muššat, ♥ ♦ ruškiet)',
+      waitSpeech: 'Botti vuottau, ku ilmoitukset on luvettu (ruutulugii)',
       aiTitle: 'Konehälyn taso 🤖',
       ai: {
         beginner: { label: 'Opastuja', desc: 'luadiu virheitä, voitettavissa' },
@@ -99,11 +100,13 @@ export const krl = {
       changelogTranslateHint: 'Vajehtelulogi on vaiku suomekse — käytä brauzerin kiändö-funktiedu, ku tahtot lukie sidä omal kielel.',
       screenReader: {
         title: 'Ruutulugijale 🔊',
-        body: ({ button, remembered }) => [
+        body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Peli sanou ičeh ruutulugijale, mi tapahtuu: ken pani min kortan da kenen vuoro on. Kortat sanotah nimilöil eigo maamerkilöil.',
+          `Yhten maan peräkkäzet kortat sanotah yhtel maan nimel: ”${example}”.`,
           `${button}-nappi sanou kaiken pöüvän kerral: vuoron, sinun käin, pöüvän kortat da toizien korttulugut. Nappi on pelin tilarivil da nävüü vaigu ruutulugijale da näppäimistön kohtistukseh. Näppäimistöl sen saat H-näppäimel.`,
           `NVDA:n selailutilas H on NVDA:n oma otsikkonäppäin eigo mene pelih. Käytä sit ${button}-nappii Enterial. Kohtistustilas (NVDA+välilyönti) H ruadau.`,
           `${button} sanou vaigu sen, min nägii nägijü pelaiju. Koputukses kortta, kudaman muistat, on ”${remembered}”, eigo sen arvuo sanota, ku nägijängi pidäü muistua se iče.`,
+          `Ku tapahtumat tullah ruttoh kuin ehtit kuulla, pane piällä ”${wait}” (${advanced}). Sit botti peluau vaste konzu edelližet ilmoitukset ollah ehtineh kuuluo. ${slap} ei vuota, sentäh ku siinä ruttoloi on peli.`,
         ],
       },
       a2hs: {

@@ -61,6 +61,7 @@ export const is = {
       showLog: 'Atburðaskrá opin',
       sound: 'Hljóð',
       twoColorDeck: 'Tveggja lita stokkur (♠ ♣ svört, ♥ ♦ rauð)',
+      waitSpeech: 'Vélin bíður þar til tilkynningar hafa verið lesnar (skjálesari)',
       aiTitle: 'Stig tölvuvits 🤖',
       ai: {
         beginner: { label: 'Lærlingur', desc: 'gerir mistök, hægt að vinna' },
@@ -98,11 +99,13 @@ export const is = {
       changelogTranslateHint: 'Breytingaskráin er aðeins til á finnsku — notaðu þýðingaeiginleika vafrans til að lesa hana á þínu tungumáli.',
       screenReader: {
         title: 'Fyrir skjálesara 🔊',
-        body: ({ button, remembered }) => [
+        body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Leikurinn segir skjálesaranum sjálfur hvað gerist: hver spilaði hvaða spili og hver á leik. Spilin eru nefnd með nafni, ekki sem litatákn.',
+          `Spil í sama lit í röð eru nefnd með einu litarheiti: „${example}“.`,
           `Hnappurinn ${button} les allt borðið í einu: hver á leik, höndina þína, spilin á borðinu og hve mörg spil hinir hafa. Hann er í stöðustiku leiksins og sést aðeins skjálesurum og lyklaborðsfókus. Á lyklaborði gefur H það sama.`,
           `Í vafraham NVDA er H flýtilykill NVDA fyrir næstu fyrirsögn og nær ekki til leiksins. Notaðu þá hnappinn ${button} með Enter. Í fókusham (NVDA+bilslá) virkar H.`,
           `${button} segir aðeins það sem sjáandi leikmaður sér. Í Koputus er spil sem þú manst „${remembered}“ og gildi þess er ekki sagt, því sjáandi þarf líka að muna það sjálfur.`,
+          `Ef atburðir koma hraðar en þú nærð að heyra þá, kveiktu á „${wait}“ (${advanced}). Þá leikur vélin ekki fyrr en fyrri tilkynningar hafa heyrst. ${slap} bíður ekki, því þar er hraðinn sjálfur leikurinn.`,
         ],
       },
       a2hs: {

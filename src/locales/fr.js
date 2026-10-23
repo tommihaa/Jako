@@ -61,6 +61,7 @@ export const fr = {
       showLog: 'Journal des événements ouvert',
       sound: 'Sons',
       twoColorDeck: 'Jeu de cartes bicolore (♠ ♣ noirs, ♥ ♦ rouges)',
+      waitSpeech: 'Les bots attendent que les annonces soient lues (lecteur d’écran)',
       aiTitle: 'Niveau de l\'IA 🤖',
       ai: {
         beginner: { label: 'Apprenti',  desc: 'fait des erreurs, battable' },
@@ -98,11 +99,13 @@ export const fr = {
       changelogTranslateHint: 'Le journal des modifications n\'existe qu\'en finnois — utilisez la fonction Traduire de votre navigateur pour le lire dans votre langue.',
       screenReader: {
         title: 'Pour les lecteurs d’écran 🔊',
-        body: ({ button, remembered }) => [
+        body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Le jeu annonce lui-même au lecteur d’écran ce qui se passe : qui a joué quelle carte et à qui c’est le tour. Les cartes sont dites par leur nom, pas comme symboles de couleur.',
+          `Les cartes consécutives de même couleur sont dites avec un seul nom de couleur : « ${example} ».`,
           `Le bouton ${button} lit toute la table d’un coup : à qui c’est le tour, ta main, les cartes sur la table et combien de cartes ont les autres. Il se trouve dans la barre d’état du jeu et n’est visible que pour les lecteurs d’écran et le focus clavier. Au clavier, la touche H fait de même.`,
           `En mode navigation de NVDA, H est la touche de NVDA pour le titre suivant et n’atteint pas le jeu. Utilise alors le bouton ${button} avec Entrée. En mode formulaire (NVDA+Espace), H fonctionne.`,
           `${button} ne dit que ce qu’un joueur voyant peut voir. Dans Koputus, une carte dont tu te souviens est « ${remembered} » et sa valeur n’est pas dite, car un joueur voyant doit aussi s’en souvenir lui-même.`,
+          `Si les événements arrivent plus vite que vous ne pouvez les entendre, activez « ${wait} » (${advanced}). Les bots ne jouent alors qu’une fois les annonces précédentes entendues. ${slap} n’attend pas, car la vitesse y est le jeu.`,
         ],
       },
       a2hs: {

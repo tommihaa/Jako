@@ -59,6 +59,7 @@ export const ro = {
       showLog: 'Jurnal de evenimente deschis',
       sound: 'Sunete',
       twoColorDeck: 'Pachet bicolor (♠ ♣ negre, ♥ ♦ roșii)',
+      waitSpeech: 'Boții așteaptă până sunt citite anunțurile (cititor de ecran)',
       aiTitle: 'Nivelul inteligenței artificiale 🤖',
       ai: {
         beginner: { label: 'Ucenic',  desc: 'face greșeli, poate fi învins' },
@@ -97,11 +98,13 @@ export const ro = {
       changelogTranslateHint: 'Jurnalul de modificări este disponibil doar în finlandeză — folosește funcția de traducere a browserului pentru a-l citi în limba ta.',
       screenReader: {
         title: 'Pentru cititoare de ecran 🔊',
-        body: ({ button, remembered }) => [
+        body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Jocul îi spune singur cititorului de ecran ce se întâmplă: cine a jucat ce carte și cine este la rând. Cărțile sunt spuse cu numele, nu ca simboluri de culoare.',
+          `Cărțile consecutive de aceeași culoare sunt spuse cu un singur nume de culoare: „${example}”.`,
           `Butonul „${button}” citește toată masa deodată: cine este la rând, mâna ta, cărțile de pe masă și câte cărți au ceilalți. Se află în bara de stare a jocului și este vizibil doar pentru cititoarele de ecran și focalizarea tastaturii. De la tastatură, tasta H face același lucru.`,
           `În modul de navigare al NVDA, H este tasta proprie a NVDA pentru titlul următor și nu ajunge la joc. Folosește atunci butonul „${button}” cu Enter. În modul focalizare (NVDA+Spațiu), H funcționează.`,
           `„${button}” spune doar ce vede un jucător văzător. În Koputus o carte pe care ți-o amintești este „${remembered}” și valoarea ei nu se spune, pentru că și un văzător trebuie să și-o amintească singur.`,
+          `Dacă evenimentele vin mai repede decât le poți auzi, activează „${wait}” (${advanced}). Atunci boții joacă abia după ce anunțurile anterioare au putut fi auzite. ${slap} nu așteaptă, fiindcă acolo viteza este jocul.`,
         ],
       },
       a2hs: {

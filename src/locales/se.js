@@ -59,6 +59,7 @@ export const se = {
       showLog: 'Dáhpáhuslogga rabas',
       sound: 'Jienat',
       twoColorDeck: 'Guokteivdnásaš stohka (♠ ♣ čáhppadat, ♥ ♦ rukses)',
+      waitSpeech: 'Bohtta vuordá dassážii go dieđáhusat leat lohkkojuvvon (šearbmalohkki)',
       aiTitle: 'Mašiidnajiena dássi 🤖',
       ai: {
         beginner: { label: 'Oahppi',    desc: 'meattáhuvvá, vuoitemis' },
@@ -97,11 +98,13 @@ export const se = {
       changelogTranslateHint: 'Rievdadanlogga lea dušše suomagillii — geavat neahttalogana jorgalanfunkšuvnna vai sáhtát lohkat dan iežat gillii.',
       screenReader: {
         title: 'Šearbmalohkki várás 🔊',
-        body: ({ button, remembered }) => [
+        body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Speallu muitala ieš šearbmalohkkái mii dáhpáhuvvá: gii čuoččuhii man koartta ja gean vuorru lea. Koarttat dadjojuvvojit namain, eai ivdnemearkkain.',
+          `Seamma ivnni koarttat maŋŋálagaid dadjojuvvojit ovtta ivdnenamain: ”${example}”.`,
           `Boallu ${button} lohká olles beavddi oktanaga: gean vuorru lea, du gieđa, beavddi koarttaid ja man ollu koarttat earáin leat. Dat lea spealu dilleráiddus ja oidno dušše šearbmalohkkái ja boallobeavddi fokusii. Boallobeavddiin H dahká seammá.`,
           `NVDA bláđđenmodusis H lea NVDA iežas boallu boahtte bajilčállagii iige joavdda spealu lusa. Geavat dalle boalu ${button} Enteriin. Fokusmodusis (NVDA+gaskaboallu) H doaibmá.`,
           `${button} muitala dušše dan maid oaidni speallu oaidná. Koputusas koarta man muittát lea ”${remembered}”, iige dan árvu dadjojuvvo, go oaidnige ferte muitit dan ieš.`,
+          `Jus dáhpáhusat bohtet jođáneappot go don ádjánat gullat daid, de bija ”${wait}” doaibmat (${advanced}). Dalle bohtta speallá easkka go ovddit dieđáhusat leat gullon. ${slap} ii vuorddá, go doppe jođánvuohta lea ieš speallu.`,
         ],
       },
       a2hs: {

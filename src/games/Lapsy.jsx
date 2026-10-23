@@ -103,7 +103,7 @@ export default function Lapsy({ onResult, showLog = true, soundOn = false, seeAl
   const duelTmr      = useRef(null);
   const halvePending = useRef(false);
   const { aiTmr, tmrs, pausedRef, allBotsRef, aiDelayRef, pausedTotalMs, tm, schedMove, paused, setPaused, aiDelayMs, setAiDelayMs, togglePause, allBots, setAllBots, enterBotBattle } =
-    useAIScheduler({ extraTimerRefs: [failTmr] });
+    useAIScheduler({ extraTimerRefs: [failTmr], speechWait: false });
   const allBotNamesRef = useRef([]);
   const onSnapshotRef = useRef(onSnapshot);
   useEffect(() => { onSnapshotRef.current = onSnapshot; }, [onSnapshot]);

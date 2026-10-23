@@ -94,14 +94,31 @@ export const cardName = (c, { digit = false } = {}) => {
   const rank = RANK_NAME[L][c.r] || (!digit && RANK_WORD[L]?.[c.r]) || c.r;
   return `${SUIT_NAME[L][c.s] || ''} ${rank}`.trim();
 };
+// Peräkkäiset saman maan kortit yhdellä maan nimellä: "pata kaksi, kolme, hertta kymmenen".
+// Ville Lammisen AccessibleBridgen tapa, ja Tommin valinta 23.10.2026: arvot pysyvät sanoina
+// (J-18), vain maan toisto poistuu. Järjestystä ei muuteta, joten käsi kuuluu ruudun
+// järjestyksessä (1.2.247) ja ryhmä katkeaa siihen missä maa vaihtuu.
+/** @param {any[]} cards */
+export const groupedCardNames = cards => cards.map((c, i) => i > 0 && c && cards[i - 1]?.s === c.s
+  ? cardName({ r: c.r, s: '' })
+  : cardName(c)).join(', ');
 // Emojin esitysvalitsin (U+FE0F) koodina, koska näkymätöntä merkkiä ei erota lähdekoodista.
 const VS16 = new RegExp(String.fromCharCode(0xfe0f), 'g');
 // Näkyvä teksti ruudunlukijan sanoiksi: kortit nimiksi ("2♠" ja "♠2" → "pata 2") ja yksinäiset
 // maat sanoiksi, koska TalkBack lukee maasymbolin emojina eikä maana (Tommin kuuntelu
 // Pixelillä 14. ja 15.10.2026, auditointi J-8). Live-alue (`Announcer`) ja `Spoken` käyttävät tätä.
 /** @param {string} text */
+// Pilkulla erotettu saman maan jakso ryhmitellään ennen yksittäisiä kortteja (`groupedCardNames`).
+// Plus-merkillä erotettu summa (Kasino) ei ole luettelo, joten se jää ryhmittelemättä.
+const RUN_RANK_FIRST = /(?:10|[2-9AJQK])([♠♥♦♣])(?:\s*,\s*(?:10|[2-9AJQK])\1)+(?!:)/g;
+const RUN_SUIT_FIRST = /([♠♥♦♣])(?:10|[2-9AJQK])(?![\p{L}\d])(?:\s*,\s*\1(?:10|[2-9AJQK])(?![\p{L}\d]))+(?!:)/gu;
+/** @param {string} run @param {string} s */
+const spokenRun = (run, s) => groupedCardNames(run.split(',').map(x => ({ r: x.trim().replace(s, ''), s })));
+/** @param {string} text */
 export const spokenSuits = text => text
   .replace(VS16, '')
+  .replace(RUN_RANK_FIRST, spokenRun)
+  .replace(RUN_SUIT_FIRST, spokenRun)
   .replace(/(10|[2-9AJQK])([♠♥♦♣])(:?)/g, (_, r, s, colon) => cardName({ r, s }, { digit: !!colon }) + colon)
   .replace(/([♠♥♦♣])(10|[2-9AJQK])(?![\p{L}\d])(:?)/gu, (_, s, r, colon) => cardName({ r, s }, { digit: !!colon }) + colon)
   .replace(/[♠♥♦♣]/g, s => suitName(s));

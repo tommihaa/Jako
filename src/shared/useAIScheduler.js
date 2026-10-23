@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
+import { pendingSpeechMs } from './Announcer.jsx';
 
 // Jaettu AI-vuoron ajastin-primitiivi kaikille peleille.
 // Kapseloi ajastimen tila + siivous yhteen paikkaan; peli saa kahvan sen
@@ -16,10 +17,11 @@ import { useRef, useEffect, useState } from 'react';
 //   extraTimerRefs    — pelikohtaiset lisä-setTimeout-refit siivottavaksi (esim. [lastPlayTmr])
 //   extraIntervalRefs — pelikohtaiset setInterval-refit siivottavaksi (esim. [reactInt])
 //   onResume          — ajetaan kun tauko vapautetaan (Seiska jatkaa odottavan siirron)
+//   speechWait        — bottisiirto odottaa ilmoitusjonon, kun asetus on päällä (Läpsy false)
 /**
  * @param {{ defaultDelay?: number, jitter?: number,
  *           extraTimerRefs?: Array<{current: any}>, extraIntervalRefs?: Array<{current: any}>,
- *           onResume?: () => void }} [opts]
+ *           onResume?: () => void, speechWait?: boolean }} [opts]
  */
 export function useAIScheduler({
   defaultDelay = 2000,
@@ -27,6 +29,7 @@ export function useAIScheduler({
   extraTimerRefs = [],
   extraIntervalRefs = [],
   onResume,
+  speechWait = true,
 } = {}) {
   const aiTmr      = useRef(null);
   const tmrs       = useRef(new Set());
@@ -93,7 +96,16 @@ export function useAIScheduler({
   // vaihekohtainen tahti). Säilyttää tarkan ajoituksen, toisin kuin schedAI joka
   // laskee viiveen + jitterin itse. Kirjoittaa aiTmr.currentin, joten siirto
   // peruuntuu samalla tavalla kuin schedAI:lla.
-  const schedMove = (fn, ms) => { aiTmr.current = tm(guard(fn), ms); return aiTmr.current; };
+  //
+  // Asetuksen "Botti odottaa ilmoitukset" ollessa päällä viiveeseen lisätään jonossa olevien
+  // ilmoitusten arvioitu lukuaika (`pendingSpeechMs`), Ville Lammisen tapaan. Lisäys lasketaan
+  // ajastushetkellä eikä laukeamishetkellä, jotta siirto pysyy yhtenä ajastimena ja peruuntuu
+  // kutsupaikan `clearTimeout`illa (Kasinon jatko pitää id:n itse). Läpsy ei odota, koska sen
+  // ydin on reaktioaika ja se on rajattu ruudunlukijan lupauksesta pois.
+  const schedMove = (fn, ms) => {
+    aiTmr.current = tm(guard(fn), ms + (speechWait ? pendingSpeechMs() : 0));
+    return aiTmr.current;
+  };
 
   // AI-siirtoajastin — pysähtyy Tauko-tilassa ja skaalautuu bottikamppailun
   // (allBots) säädettävään viiveeseen. Laskee viiveen + jitterin itse.

@@ -61,6 +61,7 @@ export const pt = {
       showLog: 'Registo de eventos aberto',
       sound: 'Som',
       twoColorDeck: 'Baralho de duas cores (♠ ♣ pretos, ♥ ♦ vermelhos)',
+      waitSpeech: 'Os bots esperam que os avisos sejam lidos (leitor de ecrã)',
       aiTitle: 'Nível da IA 🤖',
       ai: {
         beginner: { label: 'Aprendiz',  desc: 'comete erros, vencível' },
@@ -98,11 +99,13 @@ export const pt = {
       changelogTranslateHint: 'O registo de alterações existe apenas em finlandês — usa a função Traduzir do teu navegador para o leres no teu idioma.',
       screenReader: {
         title: 'Para leitores de ecrã 🔊',
-        body: ({ button, remembered }) => [
+        body: ({ button, remembered, wait, advanced, example, slap }) => [
           'O jogo diz ao leitor de ecrã o que acontece: quem jogou que carta e de quem é a vez. As cartas são ditas pelo nome, não como símbolos de naipe.',
+          `As cartas seguidas do mesmo naipe são ditas com um só nome de naipe: «${example}».`,
           `O botão ${button} lê a mesa toda de uma vez: de quem é a vez, a tua mão, as cartas na mesa e quantas cartas têm os outros. Está na barra de estado do jogo e só é visível para leitores de ecrã e foco do teclado. No teclado, a tecla H faz o mesmo.`,
           `No modo de navegação do NVDA, H é a tecla do próprio NVDA para o cabeçalho seguinte e não chega ao jogo. Usa então o botão ${button} com Enter. No modo de foco (NVDA+Espaço), H funciona.`,
           `${button} diz apenas o que um jogador que vê consegue ver. Em Koputus uma carta de que te lembras está «${remembered}» e o seu valor não é dito, porque quem vê também tem de se lembrar dela.`,
+          `Se os acontecimentos chegarem mais depressa do que consegue ouvi-los, ative «${wait}» (${advanced}). Os bots só jogam depois de os avisos anteriores terem sido ouvidos. ${slap} não espera, porque aí a rapidez é o jogo.`,
         ],
       },
       a2hs: {

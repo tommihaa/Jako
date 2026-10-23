@@ -70,6 +70,7 @@ export const pl = {
       showLog: 'Dziennik zdarzeń otwarty',
       sound: 'Dźwięk',
       twoColorDeck: 'Dwukolorowa talia (♠ ♣ czarne, ♥ ♦ czerwone)',
+      waitSpeech: 'Boty czekają, aż komunikaty zostaną przeczytane (czytnik ekranu)',
       aiTitle: 'Poziom SI 🤖',
       ai: {
         beginner: { label: 'Uczeń',     desc: 'popełnia błędy, da się pokonać' },
@@ -107,11 +108,13 @@ export const pl = {
       changelogTranslateHint: 'Dziennik zmian jest dostępny tylko po fińsku — użyj funkcji Tłumacz w przeglądarce, aby przeczytać go w swoim języku.',
       screenReader: {
         title: 'Dla czytników ekranu 🔊',
-        body: ({ button, remembered }) => [
+        body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Gra sama mówi czytnikowi ekranu, co się dzieje: kto zagrał jaką kartę i czyja jest kolej. Karty są wymawiane nazwami, a nie jako symbole kolorów.',
+          `Kolejne karty w tym samym kolorze są wymawiane z jedną nazwą koloru: „${example}”.`,
           `Przycisk „${button}” odczytuje cały stół naraz: czyja kolej, twoją rękę, karty na stole i ile kart mają pozostali. Jest na pasku stanu gry i widać go tylko dla czytników ekranu i fokusu klawiatury. Na klawiaturze to samo robi klawisz H.`,
           `W trybie przeglądania NVDA klawisz H to skrót NVDA do następnego nagłówka i nie trafia do gry. Użyj wtedy przycisku „${button}” klawiszem Enter. W trybie formularza (NVDA+spacja) H działa.`,
           `„${button}” mówi tylko to, co widzi widzący gracz. W Koputus karta, którą pamiętasz, jest „${remembered}” i jej wartość nie jest wymawiana, bo widzący też musi ją zapamiętać sam.`,
+          `Jeśli zdarzenia przychodzą szybciej, niż zdążysz je usłyszeć, włącz „${wait}” (${advanced}). Wtedy boty grają dopiero, gdy poprzednie komunikaty zdążą wybrzmieć. ${slap} nie czeka, bo tam szybkość jest samą grą.`,
         ],
       },
       a2hs: {

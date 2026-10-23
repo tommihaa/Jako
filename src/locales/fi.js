@@ -84,6 +84,7 @@ export const fi = {
         hornKantele: 'Torvi & kantele',
       },
       twoColorDeck: 'Kaksivärinen pakka (♠ ♣ mustia, ♥ ♦ punaisia)',
+      waitSpeech: 'Botti odottaa, että ilmoitukset on luettu (ruudunlukija)',
       aiTitle: 'Koneälyn taso 🤖',
       ai: {
         beginner: { label: 'Oppipoika', desc: 'tekee virheitä, voitettavissa' },
@@ -130,11 +131,13 @@ export const fi = {
       changelogTranslateHint: 'Muutosloki on vain suomeksi. Käytä selaimen Käännä-toimintoa lukeaksesi sen omalla kielelläsi.',
       screenReader: {
         title: 'Ruudunlukijalle 🔊',
-        body: ({ button, remembered }) => [
+        body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Peli kertoo tapahtumat ruudunlukijalle itse: kuka pelasi minkä kortin ja kenen vuoro on. Kortit sanotaan nimillä eikä maamerkkeinä.',
+          `Saman maan peräkkäiset kortit sanotaan yhdellä maan nimellä: ”${example}”.`,
           `${button}-nappi kertoo koko pöydän kerralla: vuoron, oman kätesi, pöydän kortit ja muiden korttimäärät. Nappi on pelinäkymän tilarivillä. Se näkyy vain ruudunlukijalle ja näppäimistön kohdistukselle. Näppäimistöllä saman saa H-näppäimellä.`,
           `NVDA:n selaustilassa H on NVDA:n oma otsikkonäppäin eikä mene pelille. Käytä silloin ${button}-nappia Enterillä. Kohdistustilassa (NVDA+välilyönti) H toimii.`,
           `${button} kertoo vain sen, minkä näkevä pelaaja näkee. Koputuksessa muistamasi kortti on ”${remembered}” eikä sen arvoa sanota, koska näkevänkin on muistettava se itse.`,
+          `Jos tapahtumat tulevat nopeammin kuin ehdit kuulla ne, niin kytke päälle ”${wait}” (${advanced}). Silloin botti pelaa vasta kun edelliset ilmoitukset ovat ehtineet kuulua. ${slap} ei odota, koska siinä nopeus on peliä.`,
         ],
       },
       a2hs: {

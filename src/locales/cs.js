@@ -68,6 +68,7 @@ export const cs = {
       showLog: 'Protokol událostí otevřený',
       sound: 'Zvuky',
       twoColorDeck: 'Dvoubarevný balíček (♠ ♣ černé, ♥ ♦ červené)',
+      waitSpeech: 'Boti čekají, až budou oznámení přečtena (čtečka obrazovky)',
       aiTitle: 'Úroveň umělé inteligence 🤖',
       ai: {
         beginner: { label: 'Učeň',    desc: 'dělá chyby, dá se porazit' },
@@ -106,11 +107,13 @@ export const cs = {
       changelogTranslateHint: 'Seznam změn je k dispozici pouze ve finštině — použij funkci Přeložit ve svém prohlížeči, abys ho mohl číst ve svém jazyce.',
       screenReader: {
         title: 'Pro čtečky obrazovky 🔊',
-        body: ({ button, remembered }) => [
+        body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Hra sama říká čtečce obrazovky, co se děje: kdo zahrál kterou kartu a kdo je na tahu. Karty se říkají jménem, ne jako symboly barev.',
+          `Po sobě jdoucí karty stejné barvy se říkají s jedním názvem barvy: „${example}“.`,
           `Tlačítko „${button}“ přečte celý stůl najednou: kdo je na tahu, tvou ruku, karty na stole a kolik karet mají ostatní. Je ve stavovém řádku hry a vidí ho jen čtečky obrazovky a fokus klávesnice. Na klávesnici totéž udělá klávesa H.`,
           `V režimu prohlížení NVDA je H vlastní klávesa NVDA pro další nadpis a do hry nedojde. Pak použij tlačítko „${button}“ a stiskni Enter. V režimu fokusu (NVDA+mezerník) H funguje.`,
           `„${button}“ říká jen to, co vidí vidící hráč. V Koputus je karta, kterou si pamatuješ, „${remembered}“ a její hodnota se neříká, protože i vidící si ji musí pamatovat sám.`,
+          `Pokud události přicházejí rychleji, než je stihnete slyšet, zapněte „${wait}“ (${advanced}). Boti pak hrají až poté, co předchozí oznámení stihla zaznít. ${slap} nečeká, protože tam je rychlost samotnou hrou.`,
         ],
       },
       a2hs: {

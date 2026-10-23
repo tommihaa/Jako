@@ -61,6 +61,7 @@ export const de = {
       showLog: 'Ereignisprotokoll offen',
       sound: 'Ton',
       twoColorDeck: 'Zweifarbiges Kartendeck (♠ ♣ schwarz, ♥ ♦ rot)',
+      waitSpeech: 'Bots warten, bis die Ansagen gelesen sind (Screenreader)',
       aiTitle: 'KI-Stufe 🤖',
       ai: {
         beginner: { label: 'Lehrling',  desc: 'macht Fehler, schlagbar' },
@@ -98,11 +99,13 @@ export const de = {
       changelogTranslateHint: 'Das Änderungsprotokoll gibt es nur auf Finnisch — nutze die Übersetzungsfunktion deines Browsers, um es in deiner Sprache zu lesen.',
       screenReader: {
         title: 'Für Screenreader 🔊',
-        body: ({ button, remembered }) => [
+        body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Das Spiel sagt dem Screenreader selbst, was passiert: wer welche Karte gespielt hat und wer am Zug ist. Karten werden mit Namen genannt, nicht als Farbsymbole.',
+          `Aufeinanderfolgende Karten derselben Farbe werden mit einem Farbnamen gesagt: „${example}“.`,
           `Die Schaltfläche ${button} liest den ganzen Tisch auf einmal vor: wer am Zug ist, deine Hand, die Karten auf dem Tisch und wie viele Karten die anderen haben. Sie liegt in der Statusleiste des Spiels und ist nur für Screenreader und den Tastaturfokus sichtbar. Mit der Tastatur bewirkt H dasselbe.`,
           `Im Lesemodus von NVDA ist H die eigene NVDA-Taste für die nächste Überschrift und erreicht das Spiel nicht. Nutze dann die Schaltfläche ${button} mit Enter. Im Fokusmodus (NVDA+Leertaste) funktioniert H.`,
           `${button} sagt nur, was eine sehende Person sieht. In Koputus ist eine Karte, die du dir merkst, „${remembered}“, und ihr Wert wird nicht genannt, weil auch Sehende sie sich selbst merken müssen.`,
+          `Wenn die Ereignisse schneller kommen, als du sie hören kannst, schalte „${wait}“ ein (${advanced}). Dann spielen die Bots erst, wenn die vorherigen Ansagen zu hören waren. ${slap} wartet nicht, weil dort die Schnelligkeit das Spiel ist.`,
         ],
       },
       a2hs: {

@@ -1,4 +1,4 @@
-import { cardName, suitName, RANKS } from './helpers.js';
+import { cardName, groupedCardNames, suitName, RANKS } from './helpers.js';
 import { tr } from './i18n.jsx';
 
 // Tilanne-komento ruudunlukijalle (Tommin kuittaus 14.10.2026, Kaanon/docs/
@@ -35,8 +35,8 @@ import { tr } from './i18n.jsx';
  */
 export const spokenCard = c => cardName(c);
 
-/** @param {Kortti[]} cards */
-export const spokenCards = cards => cards.map(c => cardName(c)).join(', ');
+/** Korttilista, saman maan peräkkäiset yhdellä maan nimellä (`groupedCardNames`). @param {Kortti[]} cards */
+export const spokenCards = cards => groupedCardNames(cards);
 
 /** Ristiseiskan rivi: maa ja arvoväli, esim. "risti 5–9". @param {string} s @param {number} lo @param {number} hi */
 export const spokenRange = (s, lo, hi) => {

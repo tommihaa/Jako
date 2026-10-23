@@ -60,6 +60,7 @@ export const hu = {
       showLog: 'Eseménynapló nyitva',
       sound: 'Hangok',
       twoColorDeck: 'Kétszínű pakli (♠ ♣ fekete, ♥ ♦ piros)',
+      waitSpeech: 'A botok megvárják, amíg a bejelentések elhangzanak (képernyőolvasó)',
       aiTitle: 'Mesterséges intelligencia szintje 🤖',
       ai: {
         beginner: { label: 'Tanonc',  desc: 'hibázik, legyőzhető' },
@@ -98,11 +99,13 @@ export const hu = {
       changelogTranslateHint: 'A változásnapló csak finnül érhető el — a saját nyelveden való olvasáshoz használd a böngésződ Fordítás funkcióját.',
       screenReader: {
         title: 'Képernyőolvasóknak 🔊',
-        body: ({ button, remembered }) => [
+        body: ({ button, remembered, wait, advanced, example, slap }) => [
           'A játék maga mondja el a képernyőolvasónak, mi történik: ki melyik lapot játszotta, és ki következik. A lapokat névvel mondja, nem színszimbólumként.',
+          `Az egymást követő azonos színű lapok egyetlen színnévvel hangzanak el: „${example}”.`,
           `A(z) „${button}” gomb egyszerre felolvassa az egész asztalt: ki következik, a kezedet, az asztalon lévő lapokat és hogy a többieknél hány lap van. A játék állapotsorában van, és csak a képernyőolvasók és a billentyűzetfókusz látja. Billentyűzeten a H ugyanezt teszi.`,
           `Az NVDA böngésző módjában a H az NVDA saját billentyűje a következő címsorhoz, és nem jut el a játékhoz. Ilyenkor használd a(z) „${button}” gombot Enterrel. Fókusz módban (NVDA+Szóköz) a H működik.`,
           `A(z) „${button}” csak azt mondja el, amit egy látó játékos lát. A Koputusban egy lap, amire emlékszel, „${remembered}”, és az értékét nem mondja, mert a látónak is magának kell emlékeznie rá.`,
+          `Ha az események gyorsabban jönnek, mint ahogy meghallod őket, kapcsold be: „${wait}” (${advanced}). A botok ilyenkor csak akkor lépnek, amikor az előző bejelentések elhangzottak. A(z) ${slap} nem vár, mert ott a gyorsaság maga a játék.`,
         ],
       },
       a2hs: {
