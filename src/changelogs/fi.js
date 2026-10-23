@@ -15,6 +15,15 @@ export const CHANGELOG = [
   {
     date: '23.10.2026',
     items: [
+      'Ruudunlukija: saman maan peräkkäiset kortit sanotaan yhdellä maan nimellä, esimerkiksi ”pata kaksi, kolme, hertta kymmenen”.',
+      'Uusi lisäasetus ”Botti odottaa, että ilmoitukset on luettu”. Kun se on päällä, botti pelaa vasta kun edelliset ilmoitukset ovat ehtineet kuulua ruudunlukijalla. Läpsyssä botti ei odota.',
+      'Tilanne-nappi näkyy nyt pelin tilarivillä, joten sen löytää myös koskettamalla.',
+      'Ruudunlukija: valittu kortti sanoo nimensä perään ”valittu”.',
+    ],
+  },
+  {
+    date: '23.10.2026',
+    items: [
       'Maija ja Moska: puolustus on suoraviivaisempi. Valitse kädestä kaatavat kortit ja paina Kaada, niin peli parittaa ne pöydän kortteihin. Pöydän korttia ei enää valita erikseen.',
       'Maija ja Moska: Kaada kaataa niin monta pöydän korttia kuin valinnalla voi. Jos vaihtoehtoja on useita, pienin pöydän kortti kaatuu ensin. Valittu kortti, jolle ei löydy paria, jää käteen.',
       'Maija: kaatamatta jääneet kortit nostetaan samalla painalluksella.',

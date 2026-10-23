@@ -1,7 +1,7 @@
 {
   "name": "jako",
   "private": true,
-  "version": "1.2.248",
+  "version": "1.2.249",
   "license": "GPL-3.0-or-later",
   "scripts": {
     "dev": "vite",
