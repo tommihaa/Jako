@@ -18,6 +18,19 @@ Tavoite: päästä korteista eroon ensimmäisenä, sen jälkeen kun pakka on tyh
    - **Valttimalla** (maa ei merkitse)
 2. **Jos hyökkäyksen siirtää, niin seuraava pelaaja voi tehdä samoin, jolloin hänestä seuraavasta** tulee **uusi puolustaja**, joka hänkin voi tehdä saman
 
+### Ihmisen kaatotapa (Tommin päätös 23.10.2026)
+Puolustaja valitsee kädestä kortit kerralla, eikä pöydän korttia valita. Valinnan alla on kaksi
+nappia, ja kumpikin näkyy vain kun valinta kelpaa siihen:
+- **Kaada** parittaa valitut kortit kaatamattomiin pöydän kortteihin samalla tavalla kuin
+  Maijassa: eniten kaatava paritus, tasatilanteessa pienin pöydän kortti ensin. Valittu kortti
+  jolle ei löydy paria jää käteen ilmoituksella
+- **Siirrä** siirtää hyökkäyksen valituilla korteilla, jos siirron ehdot täyttyvät
+
+Toisin kuin Maijassa, Kaada **ei nosta** kaatamatta jääneitä. Hyökkääjät saavat lisätä kortteja
+kaadon jälkeen, ja epäonnistunut puolustus nostaa koko pöydän, joten nostaminen pysyy omana
+nappinaan. Kortti joka ei kaada eikä siirrä ei ole valittavissa. Vanha kahden vaiheen tapa
+poistui kokonaan.
+
 ### Siirtämisen (passaamisen) ehdot
 
 Kaikkien ehtojen on täytyttävä, ja ne ovat **samat ihmiselle ja boteille**:

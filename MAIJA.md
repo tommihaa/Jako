@@ -17,6 +17,19 @@ Tavoite: Pakan ehdyttyä päästä korteistaan eroon ensimmäisenä.
 2. Jos puolustaja ei kaada kaikkia → **nostaa kaatamatta jääneet käteensä** ja vuoro siirtyy
 3. Jos kaikki kortit kaadetaan → puolustaja täydentää kätensä ja **hyökkää seuraavalla vuorolla**
 
+### Ihmisen kaatotapa (Tommin päätös 23.10.2026)
+Puolustaja valitsee kädestä kaatavat kortit kerralla ja painaa **Kaada**. Pöydän korttia ei
+valita. Peli parittaa valitut kortit pöydän kortteihin:
+1. Kaadetaan niin monta pöydän korttia kuin valinnalla voi
+2. Jos vaihtoehtoja on silti useita, **pienin pöydän kortti kaatuu ensin**. Nostettavaksi jäävät
+   mieluiten suuret kortit
+3. Valittu kortti jolle ei löydy paria jää käteen, ja ilmoitus kertoo sen
+4. Kaatamatta jääneet pöydän kortit nostetaan samalla teolla
+
+Kortti joka ei kaada yhtään pöydän korttia ei ole valittavissa. Vanha kahden vaiheen tapa (ensin
+pöydän kortti, sitten käsikortti) poistui kokonaan. Tilaus ja syy:
+`docs/VERTAILU-ACCESSIBLEBRIDGE.md` › Tommin tilaus 22.10.2026.
+
 ### Spesiaalit säännöt
 - **Patakuningatar (Maija)**: ei kelpaa kaatokortiksi, vaan **on aina nostettava** käteen
 - Täysin onnistuneesta kaadosta → kaatanut saa jatkaa hyökkääjänä

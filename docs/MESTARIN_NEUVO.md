@@ -170,6 +170,16 @@ käy", mutta opastuksen osuma on yhä avainten yhtäsuuruus, joten tasapelin toi
 oman käden samat arvot ja maat, joten "nähty" on tekstissä lavea muttei väärä. Regeneroitu otos
 (`NEUVOASEMAT.md`) näyttää jaon: `playSeenTie` osuu tasapeleihin ja `passTrump` valttisiirtoihin.
 
+## Kaatotapa 23.10.2026: neuvo nimeää kohteen, jota Hero ei enää valitse (avoin)
+
+Maijan ja Moskan `beat`-neuvo sanoo *"Kaada {target} kortilla {card}"*, mutta Hero ei enää
+valitse pöydän korttia (`MAIJA.md` ja `MOSKA.md` › Ihmisen kaatotapa). Kaada parittaa
+pienimmän pöydän kortin ensin, kun taas Maijan Mestari kaataa tärkeimmän ensin. Jos neuvottu
+kortti kaataisi useamman pöydän kortin ja Hero valitsee vain sen, paritus voi kaataa eri kortin
+kuin teksti lupasi. Opastuksen osuma vertaa vain kortteja (`opastusAvain('play', …)`), joten
+palaute on silti osuma. Ei korjattu: muutos koskisi neuvon muotoa (kaikki kaatavat kortit
+kerralla), ja se on Tommin päätös.
+
 ## Miksi tästä ei tehty konetarkistinta
 
 Neuvoteksti on proosaa ja sen väite on tarkoitus, ei merkkijono. `Kaanon/TYÖTAVAT.md`:n portin

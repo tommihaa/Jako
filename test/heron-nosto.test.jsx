@@ -97,7 +97,7 @@ async function pelaaHerona(c, rivit) {
     // Pelinappi on käytössä vasta kun kortti on valittu. Maijan kortti ei kerro valintaa
     // aria-pressedillä, joten valinta luetaan napin tilasta.
     const pelaa = [...c.querySelectorAll('button')].find(b => /^(Pelaa|Lyö kortti|Hyökkää)/.test(b.textContent ?? '') && !b.disabled);
-    const nappi = button(c, /^(Ota kaikki|Ota loput|Ota kortit|Ohita|Seuraava kierros)/)
+    const nappi = button(c, /^(Ota kaikki|Ota kortit|Ohita|Seuraava kierros)/)
       ?? pelaa
       ?? kortti
       ?? button(c, /^(Nosta kasa|Aina voi kokeilla pakasta|Nosta kortti ja menetä)/);

@@ -16,6 +16,7 @@ import PoytaPanel from '../shared/PoytaPanel.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
 import { useGameState } from '../shared/useGameState.js';
+import { kaatoParitus } from '../shared/kaatoParitus.js';
 
 // A=14 for combat comparisons — different from shared helpers (A=1)
 const VAL = { A:14,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13 };
@@ -212,8 +213,11 @@ function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, 
     </div>
   );
 
+  // Valinta kerrotaan tilana kuten jaetussa Cardissa, ja nimi tulee sr-only-sisällöstä eikä
+  // aria-labelista, koska Chrome Androidilla aria-pressed pudottaa aria-labelin (J-12).
+  // Kaatotapa 23.10.2026 tekee puolustuksesta monivalinnan, joten valinta on kuultava.
   const a11y = clickable
-    ? { role:'button', tabIndex:0, 'aria-label':cardName(card),
+    ? { role:'button', tabIndex:0, 'aria-pressed':!!selected,
         onKeyDown:e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(e); } } }
     : { role:'img', 'aria-label':cardName(card), ...(mine ? { tabIndex:-1 } : {}) };
   const mineAttrs = mine && card ? { 'data-mine':'', 'data-value':String(mineValue ?? card.v) } : {};
@@ -237,7 +241,8 @@ function Card({ card, small, xsmall, highlight, advice, dim, selected, onClick, 
         boxShadow:shadow, opacity:dim ? 0.35 : 1,
         animation: advice ? 'advicePulse 1.4s ease-in-out infinite' : undefined,
       }}>
-      <div style={{ textAlign:'center', fontFamily:'Georgia,serif', lineHeight:1.1,
+      {clickable && <span className="sr-only">{cardName(card)}</span>}
+      <div aria-hidden={clickable || undefined} style={{ textAlign:'center', fontFamily:'Georgia,serif', lineHeight:1.1,
         pointerEvents:'none', color:mjBorder ? C.maija : SUIT_COLOR[card.s] }}>
         <div style={{ fontSize:xsmall ? 11 : small ? 12 : 16, fontWeight:700 }}>{card.r}</div>
         <div style={{ fontSize:xsmall ? 12 : small ? 13 : 19 }}>{card.s}</div>
@@ -288,7 +293,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   const cardBack = 'ilves';
   const { G, gRef, setGS } = useGameState();
   const [selectedCards, setSel] = useState([]);
-  const [selDefTargetIdx, setSelDefTargetIdx] = useState(null);
+  const [selDef, setSelDef] = useState([]); // puolustajan valitsemat kaatavat kortit
   const [msg, setMsg_] = useState('');
   const logOpen = showLog; // omistaja on App, ks. onShowLogChange
   // Paljastus ja asetus ovat eri asiat (kompositioauditointi H6, päätös 3.9.2026).
@@ -385,7 +390,8 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     maijaWarning: t('games.maija.msg.maijaWarning'),
     // Botin kaadot ja nosto nimeävät kortit, jotta ruudunlukijan käyttäjä kuulee mitä
     // pöydältä lähti ja mitä botin käteen tuli (Tommin toive 17.10.2026, J-25).
-    aiBeats: (name, rows, all) => t(all ? 'games.maija.msg.aiBeatsAll' : 'games.maija.msg.aiBeats', {
+    // Sama rivi kertoo Heron kaadot Kaada-napin jälkeen (kaatotapa 23.10.2026).
+    beats: (name, rows, all) => t(all ? 'games.maija.msg.aiBeatsAll' : 'games.maija.msg.aiBeats', {
       name, beats: rows.map(r => t('games.maija.msg.beatPair', { attCard: lblColored(r.att), defCard: lblColored(r.def) })).join(', '),
     }),
     aiTake: (name, cards) => t('games.maija.msg.aiTake', { name, cards: cards.map(lblColored).join(', ') }),
@@ -395,8 +401,8 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     defenderWinRoundNext: t('games.maija.msg.defenderWinRoundNext'),
     tooManyCards: t('games.maija.msg.tooManyCards'),
     maijaNotValid: t('games.maija.msg.maijaNotValid'),
-    cardTooSmall: (defCard, attCard) => t('games.maija.msg.cardTooSmall', { defCard, attCard }),
-    beatWith: (attCard, defCard) => t('games.maija.msg.beatWith', { attCard, defCard }),
+    cantBeatAny: card => t('games.maija.msg.cantBeatAny', { card }),
+    notBeaten: cards => t('games.maija.msg.notBeaten', { cards: cards.map(lblColored).join(', ') }),
   };
 
   function flashLastPlay(name, cards, isHuman = false) {
@@ -413,7 +419,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     clearTimeout(aiTmr.current);
     const count = forcedCount ?? nP;
     const g = { ...initGame(count, playerNames, allBotsMode), phase: /** @type {Vaihe} */ ('attacking') };
-    setSel([]); setSelDefTargetIdx(null);
+    setSel([]); setSelDef([]);
     resetLog(); setPakaAnim(false);
     commit(g, M.gameStart(g.trumpCard, g.players[g.attackerIdx].name, g.players[g.defenderIdx].name));
     setScreen('game');
@@ -490,7 +496,7 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     const { newAtt, newDef } = nextAttDef(g, skipDefender, g.finished);
     const g4 = { ...g, attackerIdx:newAtt, defenderIdx:newDef, table: [],
                  phase: /** @type {Vaihe} */ ('attacking') };
-    setSel([]); setSelDefTargetIdx(null);
+    setSel([]); setSelDef([]);
     commit(g4);
     lines.forEach(addLog);
     addLog(M.newAttack(g4.players[newAtt].name, g4.players[newDef].name));
@@ -608,14 +614,14 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
       const unbeaten = newTbl.filter(r => !r.def);
       const beatRows = newTbl.filter(r => r.def);
       if (unbeaten.length === 0) {
-        commit(g3, M.aiBeats(defender.name, beatRows, true));
+        commit(g3, M.beats(defender.name, beatRows, true));
         if (sndRef.current) SFX.fanfare();
         schedMove(() => resolveDefenseWin(g3), 2200);
       } else {
         // Kaato ja nosto ovat eri viestit (Tommin valinta 17.10.2026). Ilman kaatoja
         // kuuluu pelkkä nosto.
         const takeMsg = M.aiTake(defender.name, unbeaten.map(r => r.att));
-        if (beatRows.length) { commit(g3, M.aiBeats(defender.name, beatRows, false)); addLog(takeMsg); }
+        if (beatRows.length) { commit(g3, M.beats(defender.name, beatRows, false)); addLog(takeMsg); }
         else commit(g3, takeMsg);
         schedMove(() => resolveDefenseLoss(g3, true), 1500);
       }
@@ -644,34 +650,44 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     doAttack(g, selectedCards);
   }
 
-  // 1. Valitse ensin pöytäkortti
-  function humanSelectDefTarget(idx) {
+  // Kaatotapa (Tommin päätös 23.10.2026, MAIJA.md › Ihmisen kaatotapa): puolustaja valitsee
+  // kaatavat kortit kerralla, ja Kaada parittaa ne pöydän kortteihin. Pöydän korttia ei
+  // valita, koska kahden vaiheen valinta oli TalkBackilla raskas.
+  function humanToggleDef(card) {
     if (phase !== 'defending' || G.defenderIdx !== 0) return;
-    const row = table[idx];
-    if (row.def) return; // jo kaadettu
-    setSelDefTargetIdx(prev => prev === idx ? null : idx);
+    if (selDef.some(c => c.id === card.id)) { setSelDef(prev => prev.filter(c => c.id !== card.id)); return; }
+    if (isMaija(card)) { addLog(M.maijaNotValid); return; }
+    if (!table.some(r => !r.def && canBeat(r.att, card, G.trump))) { addLog(M.cantBeatAny(lblColored(card))); return; }
+    setSelDef(prev => [...prev, card]);
   }
 
-  // 2. Sitten valitse käsikortti
-  function humanBeatWithCard(card) {
-    if (phase !== 'defending' || G.defenderIdx !== 0 || selDefTargetIdx === null) return;
-    if (isMaija(card)) { addLog(M.maijaNotValid); return; }
+  function humanBeat() {
+    if (phase !== 'defending' || G.defenderIdx !== 0 || !selDef.length) return;
     const g = gRef.current;
-    const row = table[selDefTargetIdx];
-    if (!canBeat(row.att, card, g.trump)) {
-      addLog(M.cardTooSmall(lblColored(card), lblColored(row.att))); return;
-    }
-    if (sndRef.current) SFX.beat();
-    opastus.answer(opastusAvain('play', [card.id]));
-    const newTbl = g.table.map((r, i) => i === selDefTargetIdx ? { ...r, def: card } : r);
-    const players = g.players.map((p, i) => i === 0 ? { ...p, hand: p.hand.filter(c => c.id !== card.id) } : p);
+    const open = g.table.filter(r => !r.def);
+    const value = c => (c.s === g.trump ? 100 : 0) + c.v;
+    const { pairs, unused } = kaatoParitus(open.map(r => r.att), selDef, (a, d) => canBeat(a, d, g.trump), value);
+    setSelDef([]);
+    if (!pairs.length) { addLog(M.notBeaten(unused)); return; }
+    opastus.answer(opastusAvain('play', pairs.map(p => p.card.id)));
+    const defOf = new Map(pairs.map(p => [p.target.id, p.card]));
+    const usedIds = new Set(pairs.map(p => p.card.id));
+    const newTbl = g.table.map(r => defOf.has(r.att.id) ? { ...r, def: defOf.get(r.att.id) } : r);
+    const players = g.players.map((p, i) => i === 0 ? { ...p, hand: p.hand.filter(c => !usedIds.has(c.id)) } : p);
     const g2 = { ...g, players, table: newTbl };
-    commit(g2, M.beatWith(lblColored(row.att), lblColored(card)));
-    setSelDefTargetIdx(null);
-    if (newTbl.every(r => r.def)) {
+    if (sndRef.current) pairs.forEach(() => SFX.beat());
+    const all = newTbl.every(r => r.def);
+    // Pöydän järjestyksessä, kuten botin kaadot.
+    // Täyskaadon kertoo defenderWinRoundNext, joten kaatorivi ei sano "kaikki" toiseen kertaan.
+    commit(g2, M.beats(g2.players[0].name, newTbl.filter(r => r.def && usedIds.has(r.def.id)), false));
+    if (unused.length) addLog(M.notBeaten(unused));
+    if (all) {
       addLog(M.defenderWinRoundNext);
       if (sndRef.current) SFX.fanfare();
       tm(() => resolveDefenseWin(g2), 1200);
+    } else {
+      // Kaatamatta jääneet nostetaan samalla teolla (MAIJA.md › Ihmisen kaatotapa, kohta 4).
+      resolveDefenseLoss(g2);
     }
   }
 
@@ -706,7 +722,6 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
   const isHumanAttacker = G.attackerIdx === 0 && phase === 'attacking' && !allBots;
   const isHumanDefender = G.defenderIdx === 0 && phase === 'defending' && !allBots;
   const unbeaten = table.filter(r => !r.def);
-  const selDefTargetRow = selDefTargetIdx !== null ? table[selDefTargetIdx] : null;
 
   return (
     <div style={{ background:C.bg, fontFamily:'Georgia,serif', color:C.text,
@@ -796,16 +811,11 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
             </div>
           : <div style={{ display:'flex', gap:10, flexWrap:'wrap', alignItems:'flex-start' }}>
               {table.map((row, i) => {
-                const isTarget = selDefTargetIdx === i;
-                const canBeTarget = isHumanDefender && !row.def && selDefTargetIdx === null;
                 return (
                   <div key={i} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:3 }}>
                     <Card card={row.att} small
                       dim={!!row.def}
-                      selected={isTarget}
-                      highlight={canBeTarget}
                       advice={adv?.targetId === row.att.id}
-                      onClick={isHumanDefender && !row.def ? () => humanSelectDefTarget(i) : undefined}
                       backStyle={BACKS[cardBack]}/>
                     {row.def
                       ? <Card card={row.def} small backStyle={BACKS[cardBack]}/>
@@ -840,15 +850,14 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
           color:(isHumanAttacker || isHumanDefender) ? C.gold : C.dim, marginBottom:8 }}>
           <Deco>{allBots ? '🤖' : '👤'}</Deco> {G.players[0].name} <Deco>{G.attackerIdx===0 ? '⚔️' : G.defenderIdx===0 ? '🛡️' : ''}</Deco><RoleWord role={G.attackerIdx===0 ? 'attack' : G.defenderIdx===0 && 'defend'} />
           {!allBots && isHumanAttacker && <span style={{ color:C.dim, fontSize:11, marginLeft:8 }}>{t('games.maija.ui.attackHint2')}</span>}
-          {!allBots && isHumanDefender && !selDefTargetRow && <span style={{ color:C.dim, fontSize:11, marginLeft:8 }}>{t('games.maija.ui.defendHint1')}</span>}
-          {!allBots && isHumanDefender && selDefTargetRow && <span style={{ color:C.gold, fontSize:11, marginLeft:8 }}><Spoken>{t('games.maija.ui.defendHint2', { card: lbl(selDefTargetRow.att) })}</Spoken></span>}
+          {!allBots && isHumanDefender && <span style={{ color:C.dim, fontSize:11, marginLeft:8 }}>{t('games.maija.ui.defendHint')}</span>}
         </div>
         <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
           {sortHand(G.players[0].hand).map(c => {
-            const isSel = !!selectedCards.find(x => x.id === c.id);
+            const isSel = !!selectedCards.find(x => x.id === c.id) || !!selDef.find(x => x.id === c.id);
             const wrongSuit = isHumanAttacker && selectedCards.length > 0 && c.s !== selectedCards[0].s;
-            const canBeatTarget = isHumanDefender && selDefTargetRow && canBeat(selDefTargetRow.att, c, G.trump) && !isMaija(c);
-            const defDimmed = isHumanDefender && selDefTargetRow && !canBeatTarget;
+            const canBeatTarget = isHumanDefender && unbeaten.some(r => canBeat(r.att, c, G.trump));
+            const defDimmed = isHumanDefender && !canBeatTarget;
             const isAdv     = !isSel && !!adv?.cardIds?.includes(c.id);
             // Mestarin neuvo päällä: kaikki muu himmenee, jotta osoitettu kortti erottuu
             const dimmed    = adv?.cardIds?.length ? !isAdv : (wrongSuit || !!defDimmed);
@@ -857,11 +866,11 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
                 <Card card={c} mine mineValue={c.s === G.trump ? c.v + 100 : c.v}
                   small={isMobile}
                   selected={isSel}
-                  highlight={!!canBeatTarget}
+                  highlight={!!canBeatTarget && !isSel}
                   advice={isAdv}
                   dim={!!dimmed}
                   onClick={isHumanAttacker ? () => humanToggleCard(c)
-                    : (isHumanDefender && selDefTargetRow) ? () => humanBeatWithCard(c)
+                    : isHumanDefender ? () => humanToggleDef(c)
                     : undefined}
                   backStyle={BACKS[cardBack]}/>
                 {isMaija(c) && <span aria-hidden="true" style={{ fontSize:8, color:C.maija, fontFamily:'sans-serif' }}>⚠</span>}
@@ -894,17 +903,17 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
         )}
         {!allBots && isHumanDefender && (
           <>
-            {selDefTargetIdx !== null && (
-              <button onClick={() => setSelDefTargetIdx(null)} style={{ background:'transparent',
-                border:`1px solid ${C.dim}66`, borderRadius:9, padding:'10px 16px',
-                color:C.dim, fontSize:13, cursor:'pointer', fontFamily:'Georgia,serif' }}>{t('ui.action.cancelSelection')}</button>
-            )}
-            {unbeaten.length > 0 && table.some(r => r.def) && (
-              <button onClick={humanTakeAll} style={{ background:'transparent',
-                border:`1px solid ${C.gold}88`, borderRadius:9, padding:'10px 20px',
-                color:C.gold, fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'Georgia,serif' }}>
-                <Spoken>{t('games.maija.ui.takeRest', { n: unbeaten.length })}</Spoken>
-              </button>
+            {selDef.length > 0 && (
+              <>
+                <button onClick={humanBeat} style={{ background:`linear-gradient(135deg,${C.blue},#2a5f80)`,
+                  border:'none', borderRadius:9, padding:'10px 20px', color:C.text,
+                  fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'Georgia,serif' }}>
+                  <Spoken>{`${t('games.maija.ui.beat')} (${sortHand(selDef).map(lbl).join(', ')})`}</Spoken>
+                </button>
+                <button onClick={() => setSelDef([])} style={{ background:'transparent',
+                  border:`1px solid ${C.dim}66`, borderRadius:9, padding:'10px 16px',
+                  color:C.dim, fontSize:13, cursor:'pointer', fontFamily:'Georgia,serif' }}>{t('ui.action.cancelSelection')}</button>
+              </>
             )}
             {unbeaten.length === table.length && (
               <button onClick={humanTakeAll} style={{ background:'transparent',

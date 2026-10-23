@@ -17,6 +17,7 @@ import PoytaPanel from '../shared/PoytaPanel.jsx';
 import { useAIScheduler } from '../shared/useAIScheduler.js';
 import { useGameLog } from '../shared/useGameLog.js';
 import { useGameState } from '../shared/useGameState.js';
+import { kaatoParitus } from '../shared/kaatoParitus.js';
 
 // ── Moska (Durak) ─────────────────────────────────────────────
 // A=14 kaikissa taisteluvertailuissa
@@ -352,8 +353,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
 
   // Ihmispelaajan valintatila
   const [selAtk, setSelAtk] = useState([]);        // hyökkäysvalinta
-  const [selDefTarget, setSelDefTarget] = useState(null); // pöytäkortti jota kaataa
-  const [selPass, setSelPass] = useState([]);      // siirtokortti
+  const [selDef, setSelDef] = useState([]);        // puolustajan valinta: Kaada tai Siirrä
   const [selAdd, setSelAdd] = useState([]);        // lisäyskortti
   const [awaitingPlayerContinue, setAwaitingPlayerContinue] = useState(false); // odottaa seuraavaa kierrosta
   const [pendingDraw, setPendingDraw] = useState(null); // odottaa nostojen tekemistä
@@ -477,9 +477,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     badSameRank:    t('games.moska.msg.badSameRank'),
     tooManyCards:   t('games.moska.msg.tooManyCards'),
     tooManyVsDef:   count => t('games.moska.msg.tooManyVsDef', { count }),
-    cantBeat:       (card, target) => t('games.moska.msg.cantBeat', { card, target }),
-    noPassAfterBeat:t('games.moska.msg.noPassAfterBeat'),
-    badPassCard:    card => t('games.moska.msg.badPassCard', { card }),
+    cantUse:        card => t('games.moska.msg.cantUse', { card }),
+    notBeaten:      cards => t('games.moska.msg.notBeaten', { cards: cards.map(lblColored).join(', ') }),
   };
 
 
@@ -500,7 +499,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     removedRef.current = new Set();
     const g = initGame(count, playerNames, allBotsMode);
     resetLog();
-    setSelAtk([]); setSelDefTarget(null); setSelPass([]); setSelAdd([]); setPakaAnim(false);
+    setSelAtk([]); setSelDef([]); setSelAdd([]); setPakaAnim(false);
     setAwaitingPlayerContinue(false); setPendingDraw(null);
     commit(g);
     if (g.exchangeMsg) addLog(g.exchangeMsg);
@@ -946,26 +945,37 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     doAttack(g, 0, cards);
   }
 
-  function humanSelectTarget(slot) {
+  // Kaatotapa (Tommin päätös 23.10.2026, MOSKA.md › Ihmisen kaatotapa): puolustaja valitsee
+  // kortit kerralla, eikä pöydän korttia valita. Sama valinta kulkee Kaada- ja Siirrä-napille,
+  // ja kumpikin näkyy vain kun valinta kelpaa siihen. Toisin kuin Maijassa, Kaada ei nosta.
+  const kaatoPlan = (g, cards) => kaatoParitus(
+    g.table.filter(s => !s.def).map(s => s.atk), cards,
+    (atk, def) => canBeat(atk, def, g.ts), c => (c.s === g.ts ? 100 : 0) + MV(c));
+  const canPassWith = (g, cards) => cards.length > 0 && moskaCanPass(g, 0)
+    && cards.every(c => g.table.some(s => s.atk.r === c.r));
+
+  function humanToggleDef(card) {
     if (!G || G.phase !== 'defend' || G.defender !== 0) return;
-    setSelDefTarget(prev => prev?.atk.id === slot.atk.id ? null : slot);
-    setSelPass([]);
+    if (selDef.some(c => c.id === card.id)) { setSelDef(prev => prev.filter(c => c.id !== card.id)); return; }
+    const beats = G.table.some(s => !s.def && canBeat(s.atk, card, G.ts));
+    if (!beats && !canPassWith(G, [card])) { addLog(M.cantUse(lblColored(card))); return; }
+    setSelDef(prev => [...prev, card]);
   }
 
-  function humanBeatWithCard(card) {
-    if (!G || G.phase !== 'defend' || G.defender !== 0 || !selDefTarget) return;
-    if (!canBeat(selDefTarget.atk, card, G.ts)) {
-      addLog(M.cantBeat(lblColored(card), lblColored(selDefTarget.atk)));
-      return;
-    }
+  function humanBeat() {
+    if (!G || G.phase !== 'defend' || G.defender !== 0 || !selDef.length) return;
     const g = gRef.current;
-    opastus.answer(opastusAvain('play', [card.id]));
+    const { pairs, unused } = kaatoPlan(g, selDef);
+    setSelDef([]);
+    if (!pairs.length) { addLog(M.notBeaten(unused)); return; }
+    opastus.answer(opastusAvain('play', pairs.map(p => p.card.id)));
     const beatLines = /** @type {string[]} */ ([]);
-    let g2 = doBeat(g, selDefTarget.atk.id, card, beatLines);
-    setSelDefTarget(null);
+    let g2 = g;
+    for (const { target, card } of pairs) g2 = doBeat(g2, target.id, card, beatLines);
     const stillUnbeaten = g2.table.filter(t => !t.def).length;
     commit(g2);
     beatLines.forEach(addLog);
+    if (unused.length) addLog(M.notBeaten(unused));
     if (stillUnbeaten === 0) {
       schedMove(() => startAddPhase(gRef.current), 500);
     }
@@ -973,27 +983,15 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
 
   function humanTake() {
     if (!G || G.phase !== 'defend' || G.defender !== 0) return;
-    setSelDefTarget(null); setSelPass([]);
+    setSelDef([]);
     opastus.answer(opastusAvain('take'));
     resolveRound(gRef.current, false);
   }
 
-  function humanTogglePass(card) {
-    if (!G || G.phase !== 'defend' || G.defender !== 0) return;
-    if (G.table.some(t => t.def)) { addLog(M.noPassAfterBeat); return; }
-    const atkRanks = new Set(G.table.map(t => t.atk.r));
-    if (!atkRanks.has(card.r)) { addLog(M.badPassCard(lblColored(card))); return; }
-    setSelPass(prev => {
-      const has = prev.find(c => c.id === card.id);
-      return has ? prev.filter(c => c.id !== card.id) : [...prev, card];
-    });
-    setSelDefTarget(null);
-  }
-
   function humanConfirmPass() {
-    if (!selPass.length) return;
-    const cards = [...selPass];
-    setSelPass([]);
+    if (!canPassWith(G, selDef)) return;
+    const cards = [...selDef];
+    setSelDef([]);
     opastus.answer(opastusAvain('pass', cards.map(c => c.id)));
     doPass(G, cards);
   }
@@ -1151,6 +1149,9 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   // Voiko siirtää: ehdot ovat moskaCanPassissa, samat ihmiselle ja botille
   const passableRanks = new Set(G.table.map(t => t.atk.r));
   const canPassNow = isMyDef && moskaCanPass(G, 0);
+  // Kumpikin nappi näkyy vain kun valinta kelpaa siihen (MOSKA.md › Ihmisen kaatotapa).
+  const canBeatSel = isMyDef && selDef.length > 0 && kaatoPlan(G, selDef).pairs.length > 0;
+  const canPassSel = isMyDef && canPassWith(G, selDef);
 
   const humanAddable = isMyAdd ? getAddable(G, 0) : [];
 
@@ -1256,16 +1257,11 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         right={<PakkaCount count={G.deck.length} flash={pakaAnim} />}>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {G.table.map((slot, si) => {
-            const isTargeted = selDefTarget?.atk.id === slot.atk.id;
-            const cantTarget  = isMyDef && !!selDefTarget && !isTargeted && !slot.def;
             return (
               <div key={si} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
                 <Card card={slot.atk} small                   justPlaced={justPlacedIds.has(slot.atk.id)}
-                  highlight={isMyDef && !slot.def && !isTargeted}
+                  highlight={isMyDef && !slot.def}
                   advice={adv?.targetId === slot.atk.id}
-                  selected={isTargeted}
-                  dim={cantTarget}
-                  onClick={isMyDef && !slot.def ? () => humanSelectTarget(slot) : undefined}
                   backStyle={BACKS[cardBack]}
                 />
                 {slot.def
@@ -1285,11 +1281,9 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       {myTurn && (
         <div style={{ fontFamily: 'sans-serif', fontSize: 12, color: C.dim, marginBottom: 8, fontStyle: 'italic' }}>
           {isMyAtk && t('games.moska.ui.hintAttack')}
-          {isMyDef && !selDefTarget && !selPass.length && (canPassNow
+          {isMyDef && (canPassNow
             ? t('games.moska.ui.hintDefendCanPass')
             : t('games.moska.ui.hintDefend'))}
-          {isMyDef && selDefTarget && <SpokenHtml html={t('games.moska.ui.hintDefendTarget', { card: lblColored(selDefTarget.atk) })} />}
-          {isMyDef && selPass.length > 0 && <Spoken>{t('games.moska.ui.hintPass', { cards: selPass.map(lbl).join(',') })}</Spoken>}
         </div>
       )}
 
@@ -1315,30 +1309,27 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {sortHand(human.hand).map(c => {
             const isAtkSel      = !!selAtk.find(s => s.id === c.id);
-            const isPassSel     = !!selPass.find(s => s.id === c.id);
+            const isDefSel      = !!selDef.find(s => s.id === c.id);
             const isAddSel      = !!selAdd.find(s => s.id === c.id);
             const canPassCard   = isMyDef && canPassNow && passableRanks.has(c.r);
             const isAddable     = isMyAdd && !!humanAddable.find(a => a.id === c.id);
-            const canBeatTarget = isMyDef && !!selDefTarget && canBeat(selDefTarget.atk, c, G.ts);
-            const canDef        = isMyDef && !selDefTarget && unbeatenSlots.some(s => canBeat(s.atk, c, G.ts));
-            const hlght = !isAtkSel && !isPassSel && !isAddSel && (
-              selDefTarget ? canBeatTarget : (canDef || isMyAtk || isAddable || canPassCard)
-            );
-            const isAdv  = !isAtkSel && !isPassSel && !isAddSel && !!adv?.cardIds?.includes(c.id);
+            const canDef        = isMyDef && unbeatenSlots.some(s => canBeat(s.atk, c, G.ts));
+            const hlght = !isAtkSel && !isDefSel && !isAddSel && (canDef || isMyAtk || isAddable || canPassCard);
+            const isAdv  = !isAtkSel && !isDefSel && !isAddSel && !!adv?.cardIds?.includes(c.id);
             // Mestarin neuvo päällä: kaikki muu himmenee, jotta osoitettu kortti erottuu
             const dimmed = adv?.cardIds?.length
               ? !isAdv
               : (isMyAdd && !isAddable && !isAddSel)
-                || (isMyDef && !!selDefTarget && !canBeatTarget && !isPassSel)
+                || (isMyDef && !canDef && !canPassCard && !isDefSel)
                 || (isMyAtk && selAtk.length > 0 && selAtk[0].r !== c.r);
             return (
-              <Card key={c.id} card={c} mine mineValue={c.s === G.ts ? c.v + 100 : c.v} large={!isMobile} small={isMobile}                 selected={!!(isAtkSel || isPassSel || isAddSel)}
+              <Card key={c.id} card={c} mine mineValue={c.s === G.ts ? c.v + 100 : c.v} large={!isMobile} small={isMobile}                 selected={!!(isAtkSel || isDefSel || isAddSel)}
                 highlight={!!hlght}
                 advice={isAdv}
                 dim={!!dimmed}
                 onClick={
                   isMyAtk ? () => humanToggleAtk(c)
-                  : isMyDef ? () => (selDefTarget ? humanBeatWithCard(c) : canPassCard ? humanTogglePass(c) : undefined)
+                  : isMyDef ? () => humanToggleDef(c)
                   : isMyAdd ? () => humanToggleAdd(c)
                   : undefined
                 }
@@ -1373,10 +1364,16 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         )}
         {!allBots && isMyDef && (
           <>
-            {selPass.length > 0 && (
+            {canBeatSel && (
+              <button onClick={humanBeat}
+                style={{ background: `linear-gradient(135deg,${C.blue},#2a5f80)`, border: 'none', borderRadius: 10, padding: '10px 18px', color: '#fff', fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
+                <Spoken>{`${t('games.moska.ui.beat')} (${sortHand(selDef).map(lbl).join(',')})`}</Spoken>
+              </button>
+            )}
+            {canPassSel && (
               <button onClick={humanConfirmPass}
                 style={{ background: `rgba(201,168,76,0.12)`, border: `1px solid ${C.gold}55`, borderRadius: 10, padding: '10px 18px', color: C.gold, fontSize: 13, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>
-                <Spoken>{`${t('games.moska.ui.passOn')} (${selPass.map(lbl).join(',')}) →`}</Spoken>
+                <Spoken>{`${t('games.moska.ui.passOn')} (${sortHand(selDef).map(lbl).join(',')}) →`}</Spoken>
               </button>
             )}
             {!awaitingPlayerContinue && (
@@ -1385,8 +1382,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
                 {t('games.moska.ui.takeCards', { n: G.table.length })}
               </button>
             )}
-            {(selDefTarget || selPass.length > 0) && (
-              <button onClick={() => { setSelDefTarget(null); setSelPass([]); }} aria-label={t('ui.action.cancelSelection')}
+            {selDef.length > 0 && (
+              <button onClick={() => setSelDef([])} aria-label={t('ui.action.cancelSelection')}
                 style={{ background: 'transparent', border: `1px solid ${C.dim}44`, borderRadius: 9, padding: '10px 12px', color: C.dim, fontSize: 12, cursor: 'pointer' }}>✕</button>
             )}
           </>

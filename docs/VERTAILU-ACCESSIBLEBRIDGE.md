@@ -149,11 +149,11 @@ kortin. Villellä puolustaja valitsee kaatavat kortit kerralla ja painaa L, ja p
 pöydän kortteihin. Kaatamatta jääneet nostetaan. Monivalinnassa Tommi valitsi Villen tavan,
 eikä vaihtoehtoa *seuraava kaatamaton kortti automaattisesti kohteeksi*.
 
-**Ei toteutettu.** Avoinna toteutusta varten: miten peli parittaa kun sama kortti kaataisi
-kaksi pöydän korttia, ja säilyykö nykyinen kahden vaiheen tapa näkijälle rinnalla. Moskassa
-on lisäksi siirtäminen (`isPassSel`), joten sen valinta ei ole sama kuin Maijan. Lue
-`MAIJA.md` ja `MOSKA.md` ja toista sääntö Tommille ennen koodia (`CLAUDE.md` ›
-Sääntölogiikan muokkaus).
+**Päätetty 23.10.2026** (Tommin vastaukset monivalintaan): eniten kaatava paritus ja
+tasatilanteessa pienin pöydän kortti ensin, koska nostettavaksi jäävät mieluiten suuret.
+Pariton valittu kortti jää käteen ilmoituksella. Kahden vaiheen tapa poistuu kokonaan. Moskassa
+sama valinta kulkee Kaada- ja Siirrä-napille. Säännöt: `MAIJA.md` ja `MOSKA.md` › Ihmisen
+kaatotapa.
 
 Toinen havainto samalta pelikerralta: Villen pelissä uusi tapahtuma keskeytti edellisen
 lukemisen, eikä Tommi pitänyt siitä. Kohdan 2 ilmoitusten kärkeen nostaminen on siis
