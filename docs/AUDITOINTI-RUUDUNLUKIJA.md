@@ -1109,7 +1109,7 @@ Arvaus, jota ei ole mitattu: TalkBack lukee tilan ennen kuin React on päivittä
 Mittaamatta myös se, koskeeko tämä muita pelejä joissa kortilla on `aria-pressed` (J-2).
 
 **J-42. Lyönnin jälkeen kuuluu ensin verkkonäkymä.** Tila: korjattu dev-versiossa 23.10.2026,
-ei kuunneltu eikä julkaistu. Mittaus ja korjaus jaksossa *J-42:n mittaus* alla. Tommi: lyönnin jälkeen kuului
+kuunneltu ok, ei julkaistu. Mittaus, korjaus ja kuuntelu jaksossa *J-42:n mittaus* alla. Tommi: lyönnin jälkeen kuului
 *"Jako korttipelikokoelma verkkonäkymä, valinta poistettu, Hero ruutu jätkä pelaa yläpinoon"*,
 kun pelkkä *"Hero ruutu jätkä pelaa yläpinoon"* riittäisi. Pelaa-nappi katoaa, kun vuoro
 vaihtuu, ja kohdistus putoaa ensin sivun juureen ennen kuin turvaverkko (J-14) vie sen
@@ -1190,8 +1190,10 @@ Ristiseiska, risti kuusi): Lyö katosi 23 ms painalluksen jälkeen, ja viestiriv
 6 ms myöhemmin. Ensimmäisessä ruudunpäivityksessä kohdistus oli jo viestirivillä, eikä `BODY`a
 näkynyt kertaakaan.
 
-Kuuntelematta: kuuluuko verkkonäkymä yhä, ja kuuluuko *valinta poistettu*. Jälkimmäinen kuultiin
-ennen J-41:n korjausta, joten se voi olla jo poissa.
+**J-42 kuunneltu ok** (`localhost:5175`, Jako `e3f48c4`, TalkBack kytketty adb:llä ja purettu
+heti raportin jälkeen). Tommi pelasi useamman kierroksen Ristiseiskaa, ja lyönnin jälkeen kuului
+*"Hero pata kuusi alapino ei avaudu vielä vuorossa Tyche Tyche passaa valitse kortti
+annettavaksi"*. Verkkonäkymää ja *valinta poistettu* -sanoja ei kuulunut.
 
 ## Romanin ja pohjoissaamen *valittu* lähteestä 23.10.2026
 
