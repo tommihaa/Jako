@@ -57,9 +57,10 @@ Järjestys on arvio hyödystä. Kohdat 1 ja 3 ovat Tommin päätöksiä 23.10.20
   pääteltynä ja ei nyt.
 - Kohta 3 on tehty **sanoina**: saman maan peräkkäiset kortit yhdellä maan nimellä
   (`groupedCardNames`, `helpers.js`) Tilanteessa sekä lokin ja ilmoitusten pilkkuluetteloissa.
-  Järjestys ei muutu, joten ryhmä katkeaa siihen missä maa vaihtuu. Numerot vai sanat on yhä
-  auki ja mitataan NVDA:lla ennen päätöstä, Mikropuheella jos se on saatavilla, koska Ville
-  suositteli sitä Heidin sijaan.
+  Järjestys ei muutu, joten ryhmä katkeaa siihen missä maa vaihtuu. **Arvot pysyvät sanoina**
+  (Tommin päätös 23.10.2026): *"sanat, koska NVDA tuntuu taivuttavan numeroita
+  mielivaltaisesti"*. Peruste on Tommin oma kuulokokemus NVDA:sta eikä erillinen mittaus, ja
+  koodi ei muuttunut, koska sanat olivat jo käytössä. Villen numerot jäävät hänen ratkaisukseen.
 - Molemmat kuunneltu TalkBackilla Pixel 8a:lla 23.10.2026 (`docs/AUDITOINTI-RUUDUNLUKIJA.md`):
   Tommi *"botit kuulosti hyvältä"* ja *"ryhmittely ok"*. NVDA:lla kuuntelematta.
 - Kohtia 4, 5 ja 7 (näppäinkomennot ja vuoron merkkiääni) Tommi ei ole tilannut. Ääniä hän

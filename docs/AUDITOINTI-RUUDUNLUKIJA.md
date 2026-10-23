@@ -1211,3 +1211,27 @@ J-41:n avain `ui.a11y.selected`. Muut kielet ovat ennallaan.
   feminiini tai monikko, ja se on tarkistamatta, kumpi sopii kortille.
 
 Järjestysluvut (J-37) ovat yhä tarkistamatta.
+
+**Havainto: Lyö kuulostaa kolmelta napautusääneltä.** Tommi 23.10.2026: lyönnin yhteydessä
+TalkBackin napautusääni *"tuntuu kuuluvan ehkä kolmena"*. Arvaus, jota ei ole mitattu: ääni
+aktivoinnista, toinen kun Chrome siirtää sivun kohdistuksen napautettuun nappiin (J-41:n
+mekanismi, koskee kaikkia nappeja) ja kolmas turvaverkon siirrosta viestiriville. Kolmas kuuluu
+Tommin valitsemaan siirtoon, eikä sitä voi poistaa pudottamatta kohdistusta sivun juureen.
+Tommin päätös: kirjataan havainnoksi, ei mitata eikä korjata nyt. Erottelutavat, jos asia
+palaa: vertailu nappiin joka ei katoa (Tilanne) tai TalkBackin VERBOSE-loki.
+
+## J-37:n järjestysluvut lähteestä 23.10.2026
+
+Tommin pyyntö *"tarkista j-37"*. Avain `ui.placeOrdinal`, sijat 1–4.
+
+| Kieli | Ennen | Lähde | Nyt |
+|---|---|---|---|
+| Karjala | ensimmäine, toine, kolmas, nelläs | UEF:n *Karjalan grammari kaikella rahvahalla 2* (varsinaiskarjala), s. 76 ja 78: *enzimäne, toine, kolmas, n’el’läs* | enzimäne, toine, kolmas, nelläs |
+| Pohjoissaame | vuosttaš, nubbi, goalmmát, njealját | Universal Dependencies (sme, NumType): *vuosttaš, nubbi, goalmmát*. *njealját* järjestyslukuna Norjan hallituksen tiedotteessa (*jo njealját geardde*). Sanakirjamerkintää neljännelle ei löytynyt | ennallaan |
+| Romani | angluno, dujto, trinto, štarto | Omniglot (Romani): *jekhto, dujto, trinto, štarto*. Wiktionary antaa luvun *jekh* järjestysluvuksi *jèkhto*. *angluno* ei löytynyt järjestyslukuna mistään lähteestä | jekhto, dujto, trinto, štarto |
+
+Karjalan *n’el’läs* jäi ilman liudennusmerkkejä, koska `krl.js` kirjoittaa neljän muotoon
+*nellä* muuallakin, ja tiedosto käyttää jo muotoa *enzimäi*. Romanin *angluno* (edessä oleva,
+ensimmäinen) jää muihin avaimiin, joissa se tarkoittaa ensimmäistä tekijää eikä sijaa.
+Sovellus käyttää romanista yleisromania, joten Suomen romanin *iekto* tai *vaaguno* eivät
+kuulu tähän. Ei kuunneltu, koska TalkBackissa ei ole karjalan, saamen eikä romanin ääntä.
