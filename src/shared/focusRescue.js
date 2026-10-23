@@ -80,11 +80,13 @@ export function installFocusRescue() {
   let last = null;
   /** @type {HTMLElement | null} */
   let clicked = null;
+  let lastByClick = false;
   /** @param {Event} e */
-  const note = e => { last = interactive(e.target); };
+  const note = e => { last = interactive(e.target); lastByClick = false; };
   /** @param {Event} e */
   const noteClick = e => {
     note(e);
+    lastByClick = true;
     clicked = last;
     // React piirtää napautuksen seuraukset saman tapahtuman aikana, ja MutationObserver
     // ilmoittaa ne mikrotehtävänä ennen tätä ajastinta.
@@ -102,14 +104,30 @@ export function installFocusRescue() {
     }
     if (!last || last.isConnected) return;
     const opener = openerOf(last);
+    const byClick = lastByClick;
     last = null;
-    const rescue = () => {
+    // TalkBack painaa tavallisen napin ACTION_CLICKillä, eikä Chrome siirrä DOM-kohdistusta
+    // nappiin (Moska, Pixel 8a 24.10.2026). Kohdistus jäi aiemmin viestiriville, joten napin
+    // kadotessa mikään ei pudonnut, Chrome ei ilmoittanut mitään ja TalkBack vei kohdistuksen
+    // itse sivun juureen, josta se luki koko sivun. Siksi painettu nappi siirtää kohdistuksen
+    // aina, kun se katoaa, vaikka DOM-kohdistus olisi muualla.
+    /** @param {boolean} always */
+    const rescue = always => {
       const a = document.activeElement;
-      if (a && a !== document.body && a.isConnected) return;
-      (opener?.isConnected ? opener : rescueTarget())?.focus({ preventScroll: true });
+      if (!always && a && a !== document.body && a.isConnected) return;
+      let t = opener?.isConnected ? opener : rescueTarget();
+      // Chrome ei ilmoita kohdistusta, jos se asetetaan jo kohdistettuun elementtiin, ei
+      // myöskään blurin jälkeen samassa tai seuraavassa tahdissa (mitattu 24.10.2026).
+      // Kohdistettu viestirivi antaa kohdistuksen jäätyneelle puhutulle tekstilleen.
+      if (t && t === a && t.hasAttribute('data-game-message')) {
+        const said = /** @type {HTMLElement | null} */ (t.querySelector(':scope > .sr-only'));
+        if (said) said.tabIndex = -1;
+        t = said;
+      }
+      t?.focus({ preventScroll: true });
     };
-    if (!intended) rescue();
-    setTimeout(rescue, RESCUE_DELAY_MS);
+    if (!intended) rescue(byClick);
+    setTimeout(() => rescue(false), RESCUE_DELAY_MS);
   });
   mo.observe(document.body, { childList: true, subtree: true });
   return () => {

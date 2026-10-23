@@ -149,6 +149,41 @@ describe('kohdistuksen turvaverkko', () => {
     uninstall();
   });
 
+  // TalkBack painaa napin ACTION_CLICKillä, eikä Chrome siirrä DOM-kohdistusta nappiin. Moskassa
+  // kohdistus jäi viestiriville, ja Ota kortit, Ohita ja Seuraava kierros veivät TalkBackin
+  // sivun juureen, josta se luki koko sivun (Pixel 8a 24.10.2026). Chrome ilmoittaa vain
+  // siirrosta toiseen elementtiin, joten jo kohdistettu rivi antaa sen puhutulle tekstilleen.
+  it('siirtää kohdistuksen, kun painettu nappi katoaa ilman DOM-kohdistusta', async () => {
+    vi.useFakeTimers();
+    function Peli() {
+      const [step, setStep] = useState(0);
+      return (
+        <div>
+          <SpokenHtml as="p" html={`Viesti ${step}.`} gameMessage />
+          <Card mine card={card('4', 4)} />
+          <button onClick={() => setStep(s => s + 1)}>Kortti {step}</button>
+          {step < 2 && <button key={step} onClick={() => setStep(s => s + 1)}>Ota kortit</button>}
+        </div>
+      );
+    }
+    const uninstall = installFocusRescue();
+    const r = render(<Peli />);
+    const row = /** @type {HTMLElement} */ (document.querySelector('[data-game-message]'));
+    // Rivillä on kohdistus aiemmasta siirrosta.
+    act(() => { row.focus(); });
+    await act(async () => { fireEvent.click(r.getByText('Ota kortit')); });
+    const said = row.querySelector(':scope > .sr-only');
+    expect(document.activeElement).toBe(said);
+    // Rivi pysyy jäätyneenä, vaikka kohdistus siirtyi sen sisällä.
+    expect(said?.textContent).toBe('Viesti 1.');
+    act(() => { vi.advanceTimersByTime(100); });
+    expect(document.activeElement).toBe(said);
+    // Seuraavalla kerralla kohdistus on rivin tekstissä, joten se menee takaisin riviin.
+    await act(async () => { fireEvent.click(r.getByText('Ota kortit')); });
+    expect(document.activeElement).toBe(row);
+    uninstall();
+  });
+
   // Aloitusnäytön oma siirto pelin nimeen tehdään seuraavassa tahdissa. Turvaverkko ei saa
   // ehtiä ensin viestiriville, koska silloin kohdistus kuuluisi kahdesti.
   it('ei ohita aloitusnäytön siirtoa pelin nimeen', async () => {
