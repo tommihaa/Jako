@@ -48,6 +48,16 @@ korttipeliä. PBN:n vastinetta ei kummassakaan ole.
 
 Järjestys on arvio hyödystä. Mikään ei ole päätös.
 
+**Kysyttävä Tommilta ennen koodia** (saatteesta 22.10.2026, arkistoitu
+`Kaanon/saatteet/JATKOPROMPTI_villen_opit.md`):
+- Kohta 1: koskeeko lukuajan odotus vain ruudunlukijan käyttäjää vai aina? Jako ei tiedä
+  suoraan, onko ruudunlukija käytössä, ja näkijälle aina hidastuva peli on muutos jota Tommi ei
+  ole tilannut. Läpsy on rajattu ruudunlukijan lupauksesta pois.
+- Kohta 3: arvot numeroina (Villen tapa) vai sanoina (nykyinen)? Mitataan NVDA:lla ennen
+  päätöstä, Mikropuheella jos se on saatavilla, koska Ville suositteli sitä Heidin sijaan.
+- Kohtia 4, 5 ja 7 (näppäinkomennot ja vuoron merkkiääni) Tommi ei ole tilannut. Ääniä hän
+  lisää säästeliäästi, koska kuuntelee pelatessaan radiota tai podcasteja.
+
 1. **Robotin viive sisältää edellisen ilmoituksen lukuajan.** Palvelin arvioi lukuajan
    samalla kertoimella kuin selain (45 ms merkiltä) ja lisää sen robotin odotukseen. Siksi
    jono ei kasva pelin aikana. Jaossa bottiajastus (`useAIScheduler`) ja ilmoitusjono
