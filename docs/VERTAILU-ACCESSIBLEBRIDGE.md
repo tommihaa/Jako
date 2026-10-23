@@ -155,6 +155,11 @@ Pariton valittu kortti jää käteen ilmoituksella. Kahden vaiheen tapa poistuu 
 sama valinta kulkee Kaada- ja Siirrä-napille. Säännöt: `MAIJA.md` ja `MOSKA.md` › Ihmisen
 kaatotapa.
 
+**Toteutettu ja kuunneltu 23.10.2026** (commit `3e09d26`, ei vielä julkaistu). Tommi kuunteli
+Maijan puolustuksen TalkBackilla Pixel 8a:lla dev-palvelimelta: pöydällä hertta 7, kaatavina
+hertta 9 ja hertta 10. Tommin arvio: *"kuului ok"*. Moskaa ei kuunneltu laitteella, vain
+jsdom-testi (`test/kaatotapa.test.jsx`) ja paritusfunktion yksikkötestit.
+
 Toinen havainto samalta pelikerralta: Villen pelissä uusi tapahtuma keskeytti edellisen
 lukemisen, eikä Tommi pitänyt siitä. Kohdan 2 ilmoitusten kärkeen nostaminen on siis
 punnittava, eikä sitä oteta sellaisenaan.
