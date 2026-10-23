@@ -1088,7 +1088,11 @@ Ristiseiskaa 3 bottia vastaan. TalkBack purettiin heti Tommin raportin jälkeen.
   kuultu. Kaapattu teksti oli *"Käsi: pata kuusi, yhdeksän, rouva, kuningas, hertta kaksi,
   kolme, …"*.
 
-**J-40. Tilanne-nappia ei löydä koskettamalla.** Tila: auki. Tommi: *"en löydä Tilanne-nappia"*
+**J-40. Tilanne-nappia ei löydä koskettamalla.** Tila: korjattu dev-versiossa 23.10.2026,
+ei kuunneltu eikä julkaistu. Tommin valinta: nappi näkyväksi tilarivin vasempaan reunaan
+(vaihtoehto oli toimintorivi). Pixelin kaappauksessa se on Lyö-napin alla, 57 × 24 CSS-pikseliä.
+`title="H"` poistettiin (J-24), ja ohjeen maininta *näkyy vain ruudunlukijalle* korvattiin
+sijainnilla 23 kielellä. Havainto ennen korjausta: Tommi: *"en löydä Tilanne-nappia"*
 ja myöhemmin *"Tilanne nappi hävisi taas jonnekin"*. Nappi on `sr-only` (`GameStatusBar.jsx`),
 eli noin 20 × 11 pikselin kokoinen ruudun vasemmassa alakulmassa, joten kosketuksella siihen
 ei osu. Pyyhkäisyjärjestyksessä se on Opasta-napin jälkeen ja ennen Ääni-nappia. Kun kohdistus

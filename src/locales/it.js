@@ -102,7 +102,7 @@ export const it = {
         body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Il gioco dice da solo al lettore di schermo cosa succede: chi ha giocato quale carta e di chi è il turno. Le carte sono dette per nome, non come simboli di seme.',
           `Le carte consecutive dello stesso seme sono dette con un solo nome di seme: «${example}».`,
-          `Il pulsante ${button} legge tutto il tavolo in una volta: di chi è il turno, la tua mano, le carte sul tavolo e quante carte hanno gli altri. Si trova nella barra di stato del gioco ed è visibile solo ai lettori di schermo e al focus da tastiera. Da tastiera, il tasto H fa lo stesso.`,
+          `Il pulsante ${button} legge tutto il tavolo in una volta: di chi è il turno, la tua mano, le carte sul tavolo e quante carte hanno gli altri. Si trova a sinistra nella barra di stato del gioco. Da tastiera, il tasto H fa lo stesso.`,
           `In modalità navigazione di NVDA, H è il tasto di NVDA per il titolo successivo e non arriva al gioco. Usa allora il pulsante ${button} con Invio. In modalità focus (NVDA+Spazio), H funziona.`,
           `${button} dice solo ciò che vede un giocatore vedente. In Koputus una carta che ricordi è «${remembered}» e il suo valore non viene detto, perché anche chi vede deve ricordarla da sé.`,
           `Se gli eventi arrivano più in fretta di quanto riesci a sentirli, attiva «${wait}» (${advanced}). I bot giocano solo dopo che gli annunci precedenti sono stati sentiti. ${slap} non aspetta, perché lì la velocità è il gioco.`,

@@ -102,7 +102,7 @@ export const no = {
         body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Spillet forteller selv skjermleseren hva som skjer: hvem som spilte hvilket kort og hvem sin tur det er. Kortene sies med navn, ikke som fargesymboler.',
           `Kort i samme farge etter hverandre sies med ett fargenavn: «${example}».`,
-          `Knappen ${button} leser opp hele bordet på én gang: hvem sin tur det er, hånden din, kortene på bordet og hvor mange kort de andre har. Den ligger i spillets statuslinje og vises bare for skjermlesere og tastaturfokus. Med tastatur gir H det samme.`,
+          `Knappen ${button} leser opp hele bordet på én gang: hvem sin tur det er, hånden din, kortene på bordet og hvor mange kort de andre har. Den ligger lengst til venstre i spillets statuslinje. Med tastatur gir H det samme.`,
           `I NVDAs lesemodus er H NVDAs egen tast for neste overskrift og når ikke fram til spillet. Bruk da knappen ${button} med Enter. I fokusmodus (NVDA+mellomrom) virker H.`,
           `${button} forteller bare det en seende spiller ser. I Koputus er et kort du husker «${remembered}», og verdien sies ikke, fordi også en seende må huske det selv.`,
           `Hvis hendelsene kommer raskere enn du rekker å høre dem, slå på «${wait}» (${advanced}). Da spiller boten først når de forrige kunngjøringene har rukket å høres. ${slap} venter ikke, fordi hurtigheten er selve spillet.`,

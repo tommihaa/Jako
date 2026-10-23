@@ -66,9 +66,11 @@ export default function GameStatusBar({
       borderTop: borderTop ? `1px solid ${C.panelBorder}` : undefined,
       marginBottom: isMobile ? 4 : 10,
     }}>
+      {/* Näkyvä nappi 23.10.2026 (Tommin valinta, J-40): piilotettuna se oli noin 20 × 11 px
+          ruudun kulmassa, eikä TalkBackilla löytänyt sitä koskettamalla. Ei title-attribuuttia,
+          koska TalkBack lukee sen nimen perään (J-24); H mainitaan ohjeessa. */}
       {status && (
-        <button className="sr-only sr-focusable" title="H" onClick={speak}
-          style={{ fontSize: 11, padding: '5px 10px', borderRadius: 12, border: `1px solid ${C.panelBorder}`, background: 'transparent', color: accent, fontFamily: 'sans-serif' }}>
+        <button onClick={speak} style={{ ...btn(true, C.panelBorder), cursor: 'pointer' }}>
           {t('ui.a11y.statusButton')}
         </button>
       )}

@@ -101,7 +101,7 @@ export const la = {
         body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Ludus ipse lectori scrinii narrat quid fiat: quis quam chartam lusit et quis nunc ludat. Chartae nominibus dicuntur, non signis colorum.',
           `Chartae eiusdem coloris continuae uno nomine coloris dicuntur: “${example}”.`,
-          `Globulus ${button} totam mensam simul legit: quis nunc ludat, manum tuam, chartas in mensa et quot chartas ceteri habeant. In linea status ludi est et tantum lectoribus scrinii et foco claviaturae videtur. In claviatura H idem facit.`,
+          `Globulus ${button} totam mensam simul legit: quis nunc ludat, manum tuam, chartas in mensa et quot chartas ceteri habeant. In sinistra parte lineae status ludi est. In claviatura H idem facit.`,
           `In modo legendi NVDA H est clavis ipsius NVDA ad titulum proximum neque ad ludum pervenit. Tum globulo ${button} cum Enter utere. In modo foci (NVDA+spatium) H operatur.`,
           `${button} tantum dicit quod lusor videns videt. In Koputus charta quam meministi est „${remembered}“ neque eius valor dicitur, quia etiam videns eam ipse meminisse debet.`,
           `Si eventus celerius veniunt quam audire potes, “${wait}” accende (${advanced}). Tum machinae demum ludunt cum priores nuntii audiri potuerunt. ${slap} non exspectat, quia ibi celeritas ipse ludus est.`,

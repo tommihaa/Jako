@@ -101,7 +101,7 @@ export const ro = {
         body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Jocul îi spune singur cititorului de ecran ce se întâmplă: cine a jucat ce carte și cine este la rând. Cărțile sunt spuse cu numele, nu ca simboluri de culoare.',
           `Cărțile consecutive de aceeași culoare sunt spuse cu un singur nume de culoare: „${example}”.`,
-          `Butonul „${button}” citește toată masa deodată: cine este la rând, mâna ta, cărțile de pe masă și câte cărți au ceilalți. Se află în bara de stare a jocului și este vizibil doar pentru cititoarele de ecran și focalizarea tastaturii. De la tastatură, tasta H face același lucru.`,
+          `Butonul „${button}” citește toată masa deodată: cine este la rând, mâna ta, cărțile de pe masă și câte cărți au ceilalți. Se află în stânga, în bara de stare a jocului. De la tastatură, tasta H face același lucru.`,
           `În modul de navigare al NVDA, H este tasta proprie a NVDA pentru titlul următor și nu ajunge la joc. Folosește atunci butonul „${button}” cu Enter. În modul focalizare (NVDA+Spațiu), H funcționează.`,
           `„${button}” spune doar ce vede un jucător văzător. În Koputus o carte pe care ți-o amintești este „${remembered}” și valoarea ei nu se spune, pentru că și un văzător trebuie să și-o amintească singur.`,
           `Dacă evenimentele vin mai repede decât le poți auzi, activează „${wait}” (${advanced}). Atunci boții joacă abia după ce anunțurile anterioare au putut fi auzite. ${slap} nu așteaptă, fiindcă acolo viteza este jocul.`,

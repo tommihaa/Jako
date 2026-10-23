@@ -102,7 +102,7 @@ export const et = {
         body: ({ button, remembered, wait, advanced, example, slap }) => [
           'Mäng ütleb ekraanilugejale ise, mis toimub: kes mängis millise kaardi ja kelle käik on. Kaardid öeldakse nimega, mitte mastisümbolitena.',
           `Sama masti järjestikused kaardid öeldakse ühe mastinimega: „${example}“.`,
-          `Nupp „${button}” loeb kogu laua korraga ette: kelle käik on, sinu käe, laua kaardid ja mitu kaarti teistel on. See on mängu olekuribal ning nähtav ainult ekraanilugejale ja klaviatuuri fookusele. Klaviatuuril teeb sama H-klahv.`,
+          `Nupp „${button}” loeb kogu laua korraga ette: kelle käik on, sinu käe, laua kaardid ja mitu kaarti teistel on. See on mängu olekuriba vasakus servas. Klaviatuuril teeb sama H-klahv.`,
           `NVDA sirvimisrežiimis on H NVDA enda järgmise pealkirja klahv ega jõua mänguni. Siis kasuta nuppu „${button}” Enteriga. Fookusrežiimis (NVDA+tühik) H töötab.`,
           `„${button}” ütleb ainult seda, mida nägija mängija näeb. Koputuses on kaart, mida mäletad, „${remembered}” ja selle väärtust ei öelda, sest ka nägija peab selle ise meeles pidama.`,
           `Kui sündmused tulevad kiiremini, kui jõuad neid kuulda, lülita sisse „${wait}“ (${advanced}). Siis mängib bot alles siis, kui eelmised teated on jõudnud kõlada. ${slap} ei oota, sest seal on kiirus ise mäng.`,
