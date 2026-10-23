@@ -1075,3 +1075,36 @@ J-37:n järjestysluku julkaistu (Jako `afd1f10`, push klo 6.35, Tommin *julkaise
 Tuotantobundlesta todennettu: molemmat domainit tarjoavat `index-DlHmFh0-.js`:n, jossa on
 `"1.2.246"` ja avain `placeOrdinal`, ja hash on sama kuin paikallisen buildin. Kuuntelu
 tekemättä. Ennen kuuntelua luetaan laitteen versio deploy-skillin vaiheen 8 mukaan.
+
+## Kuuntelu dev-versiolla 23.10.2026 klo 22.10
+
+Pixel 8a, Chrome, `localhost:5174` (Jako `17021be`: korttiryhmät ja asetus *Botti odottaa
+ilmoitukset*, ei julkaistu). Asetus kytkettiin päälle ennen kuuntelua. Tommi pelasi
+Ristiseiskaa 3 bottia vastaan. TalkBack purettiin heti Tommin raportin jälkeen.
+
+- *Botin odotus kuunneltu ok.* Tommi: *"botit kuulosti hyvältä"*. Live-alueen loki näyttää
+  bottien vuorot noin neljän sekunnin välein, eikä jono kasvanut kierroksen aikana.
+- *Korttiryhmät kuuntelematta.* Tommi ei löytänyt Tilanne-nappia (J-40), joten Tilannetta ei
+  kuultu. Kaapattu teksti oli *"Käsi: pata kuusi, yhdeksän, rouva, kuningas, hertta kaksi,
+  kolme, …"*.
+
+**J-40. Tilanne-nappia ei löydä koskettamalla.** Tila: auki. Tommi: *"en löydä Tilanne-nappia"*
+ja myöhemmin *"Tilanne nappi hävisi taas jonnekin"*. Nappi on `sr-only` (`GameStatusBar.jsx`),
+eli noin 20 × 11 pikselin kokoinen ruudun vasemmassa alakulmassa, joten kosketuksella siihen
+ei osu. Pyyhkäisyjärjestyksessä se on Opasta-napin jälkeen ja ennen Ääni-nappia. Kun kohdistus
+hyppää lyönnin jälkeen (J-42), paikka on taas haettava. Ratkaisu on Tommin päätös
+(esim. näkyvä nappi tai sama paikka aina).
+
+**J-41. Kortin valinta kuuluu tilana *valinta poistettu*.** Tila: auki. Tommi: ensimmäinen
+kaksoisnapautus lyötävään korttiin kuului *"valinta poistettu, pata yhdeksän, kaksoisnapauta
+laittaaksesi päälle pois"*. Kortti oli kuitenkin valittuna: CDP-luennassa (Chrome DevTools
+-yhteys laitteelle) heti kuuntelun jälkeen pata yhdeksällä oli `aria-pressed="true"`.
+Arvaus, jota ei ole mitattu: TalkBack lukee tilan ennen kuin React on päivittänyt sen.
+Mittaamatta myös se, koskeeko tämä muita pelejä joissa kortilla on `aria-pressed` (J-2).
+
+**J-42. Lyönnin jälkeen kuuluu ensin verkkonäkymä.** Tila: auki. Tommi: lyönnin jälkeen kuului
+*"Jako korttipelikokoelma verkkonäkymä, valinta poistettu, Hero ruutu jätkä pelaa yläpinoon"*,
+kun pelkkä *"Hero ruutu jätkä pelaa yläpinoon"* riittäisi. Pelaa-nappi katoaa, kun vuoro
+vaihtuu, ja kohdistus putoaa ensin sivun juureen ennen kuin turvaverkko (J-14) vie sen
+eteenpäin. Välissä kuuluva *valinta poistettu* on luultavasti käden kortti, johon turvaverkko
+vie kohdistuksen, mutta tätä ei ole mitattu.
