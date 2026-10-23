@@ -1236,7 +1236,7 @@ ensimmäinen) jää muihin avaimiin, joissa se tarkoittaa ensimmäistä tekijä�
 Sovellus käyttää romanista yleisromania, joten Suomen romanin *iekto* tai *vaaguno* eivät
 kuulu tähän. Ei kuunneltu, koska TalkBackissa ei ole karjalan, saamen eikä romanin ääntä.
 
-## Moskan kuuntelu ja J-43 24.10.2026 klo 23.55–00.40
+## Moskan kuuntelu ja J-43 23.–24.10.2026 klo 23.55–00.40
 
 Pixel 8a, `localhost:5175`, Moska (kaatotapa 1.2.248). TalkBack kytkettiin adb:llä kunkin
 kierroksen ajaksi ja purettiin heti. Lokitaso oli VERBOSE ja palautettiin ERRORiin. Lokit ovat
