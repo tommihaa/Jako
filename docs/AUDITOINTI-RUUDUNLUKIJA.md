@@ -1275,3 +1275,46 @@ paikallista aikaa, +3 h) ja selvitä, lähettikö Chrome viestirivin kohdistukse
 järjestyksessä se tuli TalkBackin oman palautuksen kanssa. Ero Ristiseiskaan voi olla siinä,
 mitä napin tilalle piirtyy, koska TalkBack palauttaa kohdistuksen *samasta kohdasta*. Arvaus,
 ei mitattu.
+
+## J-43:n kolmannen kierroksen loki luettu 25.10.2026 klo 01.50
+
+`tb-moska3.txt` luettiin `dom-moska3.txt`:n aikaleimoja vasten. Kierroksella painettiin kuusi
+katoavaa nappia: Seuraava kierros, Ohita kahdesti, Kaada kahdesti ja Ota kortit. Sivun
+puolella kaikki kuusi kulkivat samoin: nappi sai `focusin`in ennen klikkausta, ja turvaverkko
+vei kohdistuksen viestiriville 10–20 ms sen kadottua.
+
+**Mitattu: Chrome lähetti viestirivin `TYPE_VIEW_FOCUSED`-tapahtuman vain Kaada-napin jälkeen.**
+Kaadan jälkeen se tuli noin 110 ms klikkauksesta, TalkBack synkronoi kohdistuksen viestiriville
+(`FOCUS_SYNCHRONIZATION`) ja sanoi *"Hero: risti viisi kaataa risti kaksi"*. Neljän muun napin
+jälkeen tapahtumaa ei tullut lainkaan, ja TalkBack valitsi kohteen itse kahdella eri tavalla:
+
+| Nappi | Mitä TalkBack teki | Lähde lokissa |
+|---|---|---|
+| Seuraava kierros | palautti kohdistuksen napin paikalta ja päätyi `id="root"`-elementtiin | `ENSURE_ON_SCREEN`, `RESTORED_LAST_FOCUS` |
+| Ohita (2×), Ota kortit | tulkitsi sivun vierityksen käyttäjän vieritykseksi ja kohdisti koko verkkonäkymän | `TYPE_VIEW_SCROLLED`, `ACTION_MANUAL_SCROLL`, `Don't focus, node=null`, `ACTION_ACCESSIBILITY_FOCUS` WebView-solmuun |
+
+Kumpikin päätyy koko sivun lukuun. Verkkonäkymän kohdistus kuuluu *"Jako · korttipelikokoelma.
+Verkkonäkymä"*, jonka jälkeen TalkBack lukee sivun alusta.
+
+**Mitattu: vieritys ei yksin selitä eroa.** Sivu vierittyi 108 px myös Kaadan jälkeen (`ScrollY`
+378 → 270), mutta vasta noin 450 ms klikkauksesta, kun TalkBack oli jo viestirivillä. Ohitan ja
+Ota korttien jälkeen vieritys tuli samassa erässä kuin ensimmäinen sisältömuutos (noin 110 ms),
+eikä kohdistustapahtumaa ollut ehtinyt tulla. Vierityksen suuruus oli joka kerta ±108 px, ja
+sivu oli kaukana alareunasta (`MaxScrollY` noin 4 600), joten kyse ei ole alareunan
+leikkautumisesta.
+
+**Ero napin ympäristössä, mitattu sivun kirjurista.** Kaadan jälkeen katosivat vain Kaada ja
+Peruuta valinta, ja Ota kortit, Kysy Mestarilta ja Opasta jäivät ruudulle noin 0,5 s. Ohitan
+ja Ota korttien jälkeen koko toimintorivi tyhjeni samassa tahdissa, koska vuoro siirtyi, ja
+samalla katosi `myTurn`-ehdon ohjerivi. Seuraava kierros vaihtaa koko kierroksen.
+
+Arvaus, ei mitattu: Chrome jättää kohdistustapahtuman lähettämättä, kun samaan päivitykseen
+osuu laaja rakennemuutos, tai TalkBack ohittaa sen vierityksen tulkinnan jälkeen. Lokista ei
+voi erottaa kumpi, koska tapahtumaa ei näy TalkBackin jonossa kummassakaan tapauksessa.
+
+**Mittausolojen muutos.** TalkBackin puheen määrän esiasetus vaihdettiin Tommin pyynnöstä
+Muokatusta Matalaksi 25.10.2026 klo 01.47. Aiemmissa kuunteluissa kuultu *"Painike"*,
+*"Valitsin"* ja *"Kaksoisnapauta aktivoidaksesi"* eivät kuulu enää. Muokatun tila ennen vaihtoa,
+näkyvät kytkimet: käyttövinkit päällä, säilön tiedot päällä, luettelokohtien määrä pois,
+elementin tyyppi päällä, ikkunoiden nimet päällä, ilmoitukset näyttö sammutettuna pois,
+äänenkorkeuden muutokset päällä. Ruudun alapuolelle jääneitä kytkimiä ei luettu.
