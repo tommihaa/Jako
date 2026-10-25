@@ -828,6 +828,7 @@ export const fi = {
         defenderWon: '{name} puolusti onnistuneesti! Pöydällä: {table}',
         defenderTook: '{name} otti {count}. Pöydällä oli: {table}',
         defenderTookSpoken: '{name} otti {count}. Pöydällä oli kaatamatta: {cards}',
+        takenPairsSpoken: 'Kaadetut parit: {pairs}',
         playerDrew: '{name} nosti {count}.',
         heroDrew: '{name} nosti {count}: {cards}.',
         beatenBy: '{atk}, kaatajana {def}',

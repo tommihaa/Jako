@@ -792,6 +792,7 @@ export const it = {
         defenderWon: '{name} ha difeso con successo! Sul tavolo: {table}',
         defenderTook: '{name} ha preso {count}. Sul tavolo c\'era: {table}',
         defenderTookSpoken: '{name} ha preso {count}. Non battute sul tavolo: {cards}',
+        takenPairsSpoken: 'Coppie battute: {pairs}',
         playerDrew: '{name} ha pescato {count}.',
         heroDrew: '{name} ha pescato {count}: {cards}.',
         beatenBy: '{atk}, battuta da {def}',

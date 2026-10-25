@@ -792,6 +792,7 @@ export const es = {
         defenderWon: '¡{name} defendió con éxito! En la mesa: {table}',
         defenderTook: '{name} cogió {count}. En la mesa había: {table}',
         defenderTookSpoken: '{name} cogió {count}. Sin cubrir en la mesa había: {cards}',
+        takenPairsSpoken: 'Parejas cubiertas: {pairs}',
         playerDrew: '{name} robó {count}.',
         heroDrew: '{name} robó {count}: {cards}.',
         beatenBy: '{atk}, cubierta con {def}',

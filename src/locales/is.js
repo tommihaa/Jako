@@ -792,6 +792,7 @@ export const is = {
         defenderWon: '{name} varðist með góðum árangri! Á borði: {table}',
         defenderTook: '{name} tók {count}. Á borðinu var: {table}',
         defenderTookSpoken: '{name} tók {count}. Ódrepin á borðinu voru: {cards}',
+        takenPairsSpoken: 'Drepin pör: {pairs}',
         playerDrew: '{name} dró {count}.',
         heroDrew: '{name} dró {count}: {cards}.',
         beatenBy: '{atk}, drepið með {def}',

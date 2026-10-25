@@ -792,6 +792,7 @@ export const de = {
         defenderWon: '{name} hat erfolgreich verteidigt! Auf dem Tisch: {table}',
         defenderTook: '{name} nahm {count}. Auf dem Tisch lag: {table}',
         defenderTookSpoken: '{name} nahm {count}. Ungestochen auf dem Tisch lag: {cards}',
+        takenPairsSpoken: 'Gestochene Paare: {pairs}',
         playerDrew: '{name} zog {count}.',
         heroDrew: '{name} zog {count}: {cards}.',
         beatenBy: '{atk}, gestochen mit {def}',

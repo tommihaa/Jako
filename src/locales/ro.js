@@ -794,6 +794,7 @@ export const ro = {
         defenderWon: '{name} s-a apărat cu succes! Pe masă: {table}',
         defenderTook: '{name} a luat {count}. Pe masă era: {table}',
         defenderTookSpoken: '{name} a luat {count}. Nebătute pe masă erau: {cards}',
+        takenPairsSpoken: 'Perechi bătute: {pairs}',
         playerDrew: '{name} a tras {count}.',
         heroDrew: '{name} a tras {count}: {cards}.',
         beatenBy: '{atk}, bătută cu {def}',

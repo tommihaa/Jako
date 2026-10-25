@@ -793,6 +793,7 @@ export const krl = {
         defenderWon: '{name} puolisti ozakkahasti! Stolalla: {table}',
         defenderTook: '{name} otti {count}. Stolalla oli: {table}',
         defenderTookSpoken: '{name} otti {count}. Stolalla oli kuadamatta: {cards}',
+        takenPairsSpoken: 'Kuadetut parit: {pairs}',
         playerDrew: '{name} nošti {count}.',
         heroDrew: '{name} nošti {count}: {cards}.',
         beatenBy: '{atk}, kuadajana {def}',

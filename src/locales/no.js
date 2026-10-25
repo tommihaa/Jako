@@ -792,6 +792,7 @@ export const no = {
         defenderWon: '{name} forsvarte seg med hell! På bordet: {table}',
         defenderTook: '{name} tok {count}. På bordet var: {table}',
         defenderTookSpoken: '{name} tok {count}. Uslått på bordet var: {cards}',
+        takenPairsSpoken: 'Slåtte par: {pairs}',
         playerDrew: '{name} trakk {count}.',
         heroDrew: '{name} trakk {count}: {cards}.',
         beatenBy: '{atk}, slått av {def}',

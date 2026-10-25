@@ -794,6 +794,7 @@ export const se = {
         defenderWon: '{name} bealuštii lihkostuvvamiin! Beavddis: {table}',
         defenderTook: '{name} válddii {count}. Beavddis lei: {table}',
         defenderTookSpoken: '{name} válddii {count}. Čuoččuhkeahttá beavddis lei: {cards}',
+        takenPairsSpoken: 'Čuoččuhuvvon bárat: {pairs}',
         playerDrew: '{name} gease {count}.',
         heroDrew: '{name} gease {count}: {cards}.',
         beatenBy: '{atk}, čuoččuhan {def}',

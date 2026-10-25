@@ -801,6 +801,7 @@ export const uk = {
         defenderWon: '{name} успішно захистився! На столі: {table}',
         defenderTook: '{name} взяв {count}. На столі було: {table}',
         defenderTookSpoken: '{name} взяв {count}. Не побито на столі було: {cards}',
+        takenPairsSpoken: 'Побиті пари: {pairs}',
         playerDrew: '{name} взяв {count}.',
         heroDrew: '{name} взяв {count}: {cards}.',
         beatenBy: '{atk}, побита {def}',

@@ -795,6 +795,7 @@ export const hu = {
         defenderWon: '{name} sikeresen védekezett! Az asztalon: {table}',
         defenderTook: '{name} felvett {count}. Az asztalon volt: {table}',
         defenderTookSpoken: '{name} felvett {count}. Ütetlen volt az asztalon: {cards}',
+        takenPairsSpoken: 'Ütött párok: {pairs}',
         playerDrew: '{name} húzott {count}.',
         heroDrew: '{name} húzott {count}: {cards}.',
         beatenBy: '{atk}, ütve ezzel: {def}',

@@ -800,6 +800,7 @@ export const en = {
         defenderWon: '{name} defended successfully! On table: {table}',
         defenderTook: '{name} took {count}. On the table was: {table}',
         defenderTookSpoken: '{name} took {count}. Unbeaten on the table: {cards}',
+        takenPairsSpoken: 'Beaten pairs: {pairs}',
         playerDrew: '{name} drew {count}.',
         heroDrew: '{name} drew {count}: {cards}.',
         beatenBy: '{atk}, beaten by {def}',

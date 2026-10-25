@@ -795,6 +795,7 @@ export const rom = {
         defenderWon: '{name} braninisardas mišto! Pe skafidi: {table}',
         defenderTook: '{name} lijas {count}. Pe skafidi sas: {table}',
         defenderTookSpoken: '{name} lijas {count}. Bimardine pe skafidi sas: {cards}',
+        takenPairsSpoken: 'Mardine para: {pairs}',
         playerDrew: '{name} cirdas {count}.',
         heroDrew: '{name} cirdas {count}: {cards}.',
         beatenBy: '{atk}, mardi {def}',

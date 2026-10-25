@@ -550,12 +550,15 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     } else {
       const taken = g.table.flatMap(t => [t.atk, t.def].filter(Boolean));
       players[g.defender] = { ...players[g.defender], hand: [...players[g.defender].hand, ...taken] };
-      // Korva kuulee vain kaatamatta jääneet, koska kaadetut kuuluivat jo kaadettaessa
-      // (Tommin kuuntelu 25.10.2026).
+      // Korva kuulee ensin kaatamatta jääneet ja sitten kaadetut parit, koska nekin menevät
+      // puolustajan käteen (MOSKA.md › Ruudunlukija, Tommin päätös 25.10.2026, J-48).
       const unbeatenCards = g.table.filter(t => !t.def).map(t => lblColored(t.atk));
+      const beatenPairs = g.table.filter(s => s.def)
+        .map(s => t('games.moska.msg.beatenBy', { atk: lblColored(s.atk), def: lblColored(s.def) })).join('; ');
+      const tookSpoken = t('games.moska.msg.defenderTookSpoken', { name: defPlayer.name, count: kortin(taken.length), cards: unbeatenCards.join(', ') })
+        + (beatenPairs ? `. ${t('games.moska.msg.takenPairsSpoken', { pairs: beatenPairs })}` : '');
       lines.push(unbeatenCards.length
-        ? eyeAndEar(M.defenderTook(defPlayer.name, kortin(taken.length), describeTableVisual(g.table)),
-                    t('games.moska.msg.defenderTookSpoken', { name: defPlayer.name, count: kortin(taken.length), cards: unbeatenCards.join(', ') }))
+        ? eyeAndEar(M.defenderTook(defPlayer.name, kortin(taken.length), describeTableVisual(g.table)), tookSpoken)
         : M.defenderTook(defPlayer.name, kortin(taken.length), tableDesc));
       if (sndRef.current) SFX.leave();
     }

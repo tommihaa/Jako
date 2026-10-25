@@ -792,6 +792,7 @@ export const et = {
         defenderWon: '{name} kaitses edukalt! Laual: {table}',
         defenderTook: '{name} võttis {count}. Laual oli: {table}',
         defenderTookSpoken: '{name} võttis {count}. Laual oli löömata: {cards}',
+        takenPairsSpoken: 'Löödud paarid: {pairs}',
         playerDrew: '{name} võttis {count}.',
         heroDrew: '{name} võttis {count}: {cards}.',
         beatenBy: '{atk}, löödud kaardiga {def}',

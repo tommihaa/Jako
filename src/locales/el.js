@@ -792,6 +792,7 @@ export const el = {
         defenderWon: 'Ο {name} αμύνθηκε επιτυχώς! Στο τραπέζι: {table}',
         defenderTook: 'Ο {name} πήρε {count}. Στο τραπέζι ήταν: {table}',
         defenderTookSpoken: 'Ο {name} πήρε {count}. Ακάλυπτα στο τραπέζι ήταν: {cards}',
+        takenPairsSpoken: 'Κομμένα ζεύγη: {pairs}',
         playerDrew: 'Ο {name} τράβηξε {count}.',
         heroDrew: 'Ο {name} τράβηξε {count}: {cards}.',
         beatenBy: '{atk}, κόπηκε με {def}',

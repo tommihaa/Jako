@@ -1663,7 +1663,17 @@ korttia: hertta viisi, risti seitsemän."*
 Tommi vahvisti Clauden kolme tarkennusta `MOSKA.md`:n ruudunlukijalinjaukseen 25.10.2026
 (sivusta lyödyt kortit, tekijä, otossa käteen menneet kortit).
 
-Auki: otto ja vahvistettu tarkennus. Puhuttu ottoviesti nimeää vain kaatamatta jääneet
+Ratkaistu J-48:ssa (alla): otto ja vahvistettu tarkennus. Puhuttu ottoviesti nimeää vain kaatamatta jääneet
 kortit ja kertoo määrän (*"Arto otti 9 korttia. Pöydällä oli kaatamatta: hertta kuusi, risti
 ässä, ruutu ässä."*). Kaadetut parit kuuluivat kaatohetkellä, mutta niiden siirtymistä
 puolustajan käteen viesti ei nimeä. Tommi arvioi oton oikeaksi ennen tarkennusta.
+
+**J-48. Otto ei nimeä kaadettuja pareja.** Tila: korjattu dev-versiossa, ei kuunneltu. Tommin
+päätös 25.10.2026: ottoviestiin lisätään kaadetut parit, jotka menevät puolustajan käteen
+(`MOSKA.md` › Ruudunlukija). Puhuttu viesti on nyt esimerkiksi *"Tyche otti 7 korttia. Pöydällä
+oli kaatamatta: pata kuusi. Kaadetut parit: hertta yhdeksän, kaatajana hertta rouva; pata
+rouva, kaatajana pata kuningas; risti kuningas, kaatajana hertta kuusi."* Parit ovat samassa
+muodossa kuin onnistuneen puolustuksen viestissä (`beatenBy`). Uusi avain `takenPairsSpoken`
+on käännetty kaikkiin 23 kieleen. Romanin (*"Mardine para"*) ja pohjoissaamen (*"Čuoččuhuvvon
+bárat"*) käännös on johdettu tiedostojen omista sanoista eikä tarkistettu lähteestä. Testi
+`moska-otto-parit.test.jsx` kaatuu ilman korjausta (tarkistettu).

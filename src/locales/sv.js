@@ -792,6 +792,7 @@ export const sv = {
         defenderWon: '{name} försvarade sig framgångsrikt! På bordet: {table}',
         defenderTook: '{name} tog {count}. På bordet låg: {table}',
         defenderTookSpoken: '{name} tog {count}. Oslagna på bordet låg: {cards}',
+        takenPairsSpoken: 'Slagna par: {pairs}',
         playerDrew: '{name} drog {count}.',
         heroDrew: '{name} drog {count}: {cards}.',
         beatenBy: '{atk}, slagen av {def}',

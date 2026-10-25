@@ -803,6 +803,7 @@ export const cs = {
         defenderWon: '{name} se úspěšně ubránil! Na stole: {table}',
         defenderTook: '{name} vzal {count}. Na stole bylo: {table}',
         defenderTookSpoken: '{name} vzal {count}. Nepřebito na stole bylo: {cards}',
+        takenPairsSpoken: 'Přebité páry: {pairs}',
         playerDrew: '{name} dobral {count}.',
         heroDrew: '{name} dobral {count}: {cards}.',
         beatenBy: '{atk}, přebita {def}',

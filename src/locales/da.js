@@ -792,6 +792,7 @@ export const da = {
         defenderWon: '{name} forsvarede sig med succes! På bordet: {table}',
         defenderTook: '{name} tog {count}. På bordet lå: {table}',
         defenderTookSpoken: '{name} tog {count}. Uslået på bordet lå: {cards}',
+        takenPairsSpoken: 'Slåede par: {pairs}',
         playerDrew: '{name} trak {count}.',
         heroDrew: '{name} trak {count}: {cards}.',
         beatenBy: '{atk}, slået af {def}',

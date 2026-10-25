@@ -794,6 +794,7 @@ export const la = {
         defenderWon: '{name} feliciter defendit! In mensa: {table}',
         defenderTook: '{name} sumpsit {count}. In mensa erat: {table}',
         defenderTookSpoken: '{name} sumpsit {count}. Invictae in mensa erant: {cards}',
+        takenPairsSpoken: 'Paria victa: {pairs}',
         playerDrew: '{name} traxit {count}.',
         heroDrew: '{name} traxit {count}: {cards}.',
         beatenBy: '{atk}, victa {def}',
