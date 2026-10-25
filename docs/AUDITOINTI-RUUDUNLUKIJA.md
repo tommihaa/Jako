@@ -1552,3 +1552,36 @@ kolme. …"*, J-45).
 
 Seuraavaksi: J-46:n syy koodista. Kuunneltavaksi jäävät Heron Ohita sekä edellisen kappaleen
 kohdat korvalla.
+
+## J-46:n syy lokista 25.10.2026 klo 05.30–05.45: puhelimessa ajoi vanhempi Moska
+
+**J-46 ei ole botin vika.** Tila: syy luettu lokista, koodiin ei tarvita korjausta, suljetaan
+kuuntelussa. Puhelimen
+sivu ajoi kuuntelussa Moskaa, jossa ryhmittelyä (`2762074`) eikä Heron Ohitan viestiä
+(`3e68233`) ollut. Kolme todistetta lokista `tb-kuuntelu5.txt`:
+
+- *Erilliset virkkeet syntyivät yhdessä siirrossa.* Rebekan kolmen kaadon välissä ei ole
+  viestiä *"Rebekka puolustaa…"*, jonka jokainen uusi puolustusvuoro kirjoittaisi
+  (`goDefend`). Virkkeiden tapahtuma-aikojen välit (7 595 ms ja 6 874 ms, TalkBackin
+  `event time`) vastaavat ilmoitusjonon tahtia: 75 ms merkiltä sekä 850 ms taukoja
+  (`shared/Announcer.jsx`). Ensimmäisessä virkkeessä on 91 merkkiä, mistä jono laskee
+  7 675 ms, ja toisessa 80 merkkiä eli 6 850 ms. Kolme viestiä lähti siis jonoon kerralla.
+- *Ryhmiteltyä virkettä ei ole koko lokissa.* Haku *"kaataa X, Y kaataa"* antaa 0 osumaa, vaikka
+  Kirsi ja Rebekka kaatoivat monen kortin pöydän. Yhden siirron kaadot kertovat kukin oman
+  tilanteensa, eli muoto on `9982a2c`:n (rivi per kaato, `lines.push(M.beat(…))`).
+- *"Hero ohittaa." puuttuu.* Haku antaa 0 osumaa, vaikka Hero painoi Ohita kahdesti. Viesti
+  tuli `3e68233`:ssa.
+
+Nykyinen koodi ryhmittelee botin kaadot: väliaikainen koe (`test/tmp-j46.test.jsx`, neljä
+siementä) antoi Tychen kahden kortin kaadon yhtenä virkkeenä. Botin erilliset viestit kokeessa
+olivat sivustalyöntejä, joista jokainen käynnistää oman puolustusvuoron, ja se on oikein.
+
+*Miksi vanha koodi ajoi, ei mitattu.* Sivu oli ladattu klo 04.51.16, ja palvelin
+(`jako-dev-adb-5188`) palvelee Jaon `main`ia ilman worktreetä. Edellisen kuuntelun kirjauksesta
+ei selviä, luettiinko moduulin teksti sivun muistista vai palvelimelta, joten se ei todista
+ajossa ollutta koodia. Seuraavassa kuuntelussa ajettava koodi luetaan sivun muistista: komponentin
+`toString()` sisältää sen sisäiset funktiot, joten `beatManySpoken` ja Ohitan viesti näkyvät
+siitä.
+
+Seuraavaksi: kuuntelu, jossa ajossa oleva koodi on todennettu ennen aloitusta. Kuunneltavat
+kohdat ovat edellisen kuuntelun kohdat 1 ja 2 sekä Heron Ohita.
