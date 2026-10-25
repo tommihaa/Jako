@@ -1243,8 +1243,11 @@ kierroksen ajaksi ja purettiin heti. Lokitaso oli VERBOSE ja palautettiin ERRORi
 versioimattomassa kansiossa `raakasivut/talkback-24-10-moska/` (`tb-moska*.txt` logcat,
 `tb-koe.txt` kohdistuskoe, `dom-moska3.txt` sivun kohdistuskirjuri kolmannelta kierrokselta).
 
-**J-43. Ota kortit, Ohita ja Seuraava kierros vievät TalkBackin sivun juureen.** Tila: auki,
-kaksi korjausyritystä ei riittänyt. Tommi: *"otin kortit ja kohdistus siirtyi sivuun joka alkoi
+**J-43. Ota kortit, Ohita ja Seuraava kierros vievät TalkBackin sivun juureen.** Tila: korjattu
+dev-versiossa 25.10.2026 (korjaus 2, toinen siirto), kuunneltu ok sivu alas vieritettynä ja
+suljettu Tommin päätöksellä, ei julkaistu. Lyhyt sivun nimi ennen viestiä hyväksyttiin
+(Tommi: *"lyhyt sivun nimi ennen viestiä on hyväksyttävä"*). Alla kaksi ensimmäistä
+korjausyritystä, jotka eivät riittäneet. Tommi: *"otin kortit ja kohdistus siirtyi sivuun joka alkoi
 kertomaan sivulla näkyvää kokonaisuutta"*, sama Seuraava kierros -napista, ja Ohita sanoi
 *"Jako korttipelikokoelma verkkonäkymä"*.
 
@@ -1380,4 +1383,5 @@ ollut nopea pelaaminen vaan vieritys. Kumpi kerroista kuului, ei voi lokista ero
 kuuluu lyhyesti ennen viestiä. Muiden nappien jälkeen viesti kuului kahdesti, kuten
 edellisellä kierroksella, paitsi Kaadan jälkeen, jolloin se kuului kerran.
 
-J-43:n tila odottaa Tommin päätöstä: suljetaanko vai jatketaanko sivun nimen poistamiseen.
+J-43 suljettu 25.10.2026 Tommin päätöksellä (vaihtoehdot: sulje, jatka sivun nimen
+poistamiseen).
