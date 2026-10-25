@@ -60,11 +60,17 @@ function otherInMessage(row, a) {
   return said;
 }
 
+// Toinen siirto pitää rivin jäätyneen tekstin (`data-keep-frozen`, luetaan Spoken.jsx:ssä).
+// Mitattu Pixel 8a:lla 25.10.2026: kun rivi haki siirrossa uuden tekstin, TalkBack keskeytti
+// kierroksen lopun pitkän viestin 317 ms:n kohdalla, ja *"Hero nosti 1 kortin: hertta viisi"*
+// jäi kuulematta. Sama teksti alkaa alusta, joten mitään ei jää pois.
 function secondMove() {
   const a = document.activeElement;
   const row = /** @type {HTMLElement | null} */ (a?.closest('[data-game-message]') ?? null);
   if (!row) return;
+  row.setAttribute('data-keep-frozen', '');
   otherInMessage(row, a)?.focus({ preventScroll: true });
+  row.removeAttribute('data-keep-frozen');
 }
 
 let intended = false;

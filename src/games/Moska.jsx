@@ -143,6 +143,12 @@ function describeTable(table) {
   }).join(eyeAndEar(', ', '; '));
 }
 
+// Pöytä vain näkyvänä, kun koko viestille annetaan oma puhuttu muotonsa (eyeAndEar ei
+// salli sisäkkäistä eyeAndEaria).
+function describeTableVisual(table) {
+  return table.map(t => `${lblColored(t.atk)}${t.def ? `→${lblColored(t.def)}` : '❌'}`).join(', ');
+}
+
 function getMaxAdd(g) {
   const def = g.players[g.defender];
   const unbeaten = g.table.filter(t => !t.def).length;
@@ -466,6 +472,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       : t('games.moska.msg.defendAI', { name }),
     addPhase:       cards => t('games.moska.msg.addPhase', { cards }),
     canAdd:         (name, cards) => t('games.moska.msg.canAdd', { name, cards }),
+    canAddSpoken:   name => t('games.moska.msg.canAddSpoken', { name }),
+    addPhaseSpoken: t('games.moska.msg.addPhaseSpoken'),
     // Kaadettujen ja kaatamattomien määrä: silmälle 🛡️/⚔️, korvalle sanoina, koska TalkBack
     // luki rivin "0 emoji 2 emoji" (Tommin kuuntelu 17.10.2026, J-27).
     // Nolla kaadettua jätetään korvalta pois: "kaadettu nolla" ei kerro mitään, ja kortit
@@ -783,10 +791,11 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
 
     // Näytä lisäysvaiheen alku
     // Pöytä pareittain: puolustuskorttienkin arvoilla saa lyödä sivusta, joten pelkät
-    // hyökkäyskortit kertoivat vain osan (Tommin kuuntelu 17.10.2026, J-27).
-    const tableCards = describeTable(g.table);
+    // hyökkäyskortit kertoivat vain osan (Tommin kuuntelu 17.10.2026, J-27). Ruudunlukija
+    // kuulee vain vaiheen nimen, koska jo kaadettujen korttien luettelo toistui joka
+    // sivustalyönnissä ja Tilanne kertoo pöydän (Tommin valinta 25.10.2026).
     const g2 = { ...g, phase: 'add', addQueue: queue };
-    commit(g2, M.addPhase(tableCards));
+    commit(g2, eyeAndEar(M.addPhase(describeTableVisual(g.table)), M.addPhaseSpoken));
     processAddQueue(g2);
   }
 
@@ -816,7 +825,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       return;
     }
     if (p.isHuman) {
-      addLog(M.canAdd(p.name, addable.map(lblColored).join(', ')));
+      // Kortit näkyvät, mutta ruudunlukija kuulee ne Tilanteesta (Tommin valinta 25.10.2026).
+      addLog(eyeAndEar(M.canAdd(p.name, addable.map(lblColored).join(', ')), M.canAddSpoken(p.name)));
       setSelAdd([]);
     } else {
       // AI lisää sivusta — aggressiivisuus riippuu tasosta, korttivalinta suosii pieniä parittomia
@@ -1391,6 +1401,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         {!allBots && isMyAdd && (
           <>
             <button onClick={humanConfirmAdd} disabled={!selAdd.length}
+              /* Valitut kortit kuuluvat jo valintahetkellä, joten nimi ei toista niitä (25.10.2026). */
+              aria-label={t('games.moska.ui.addSide')}
               style={{ background: selAdd.length ? `linear-gradient(135deg,${C.gold},#a07830)` : 'rgba(255,255,255,0.04)', border: `1px solid ${selAdd.length ? C.gold : C.panelBorder}`, borderRadius: 10, padding: '10px 18px', color: selAdd.length ? '#0d2118' : C.dim, fontSize: 13, cursor: selAdd.length ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
               <Spoken>{`${t('games.moska.ui.addSide')} ${selAdd.length > 0 ? `(${selAdd.map(lbl).join(',')})` : ''}`}</Spoken>
             </button>

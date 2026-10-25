@@ -155,6 +155,35 @@ describe('kohdistuksen turvaverkko', () => {
     uninstall();
   });
 
+  // Kierroksen lopun pitkä viesti katkesi, kun toinen siirto haki rivin uuden tekstin, ja
+  // nostetut kortit jäivät kuulematta (Moska, Pixel 8a 25.10.2026).
+  it('toinen siirto pitää jäätyneen tekstin, vaikka viesti vaihtui', async () => {
+    vi.useFakeTimers();
+    function Peli() {
+      const [step, setStep] = useState(0);
+      return (
+        <div>
+          <SpokenHtml as="p" html={['Vuorossa Hero.', 'Hero nosti 1 kortin: hertta viisi.', 'Sari hyökkää.'][step]} gameMessage />
+          <Card mine card={card('4', 4)} onClick={() => {}} />
+          {step === 0 && <button onClick={() => setStep(1)}>Seuraava kierros</button>}
+          <button onClick={() => setStep(2)}>Botti</button>
+        </div>
+      );
+    }
+    const uninstall = installFocusRescue();
+    const r = render(<Peli />);
+    await act(async () => { fireEvent.click(r.getByText('Seuraava kierros')); });
+    const row = /** @type {HTMLElement} */ (document.querySelector('[data-game-message]'));
+    expect(document.activeElement).toBe(row);
+    // Botti ehtii vaihtaa viestin ennen toista siirtoa. Klikkaus ilman kohdistusta, kuten botti.
+    act(() => { r.getByText('Botti').click(); });
+    act(() => { vi.advanceTimersByTime(300); });
+    const said = row.querySelector(':scope > .sr-only');
+    expect(document.activeElement).toBe(said);
+    expect(said?.textContent).toBe('Hero nosti 1 kortin: hertta viisi.');
+    uninstall();
+  });
+
   it('ei vie toisella siirrolla kohdistusta pois, jos pelaaja on jo muualla', async () => {
     vi.useFakeTimers();
     function Peli() {

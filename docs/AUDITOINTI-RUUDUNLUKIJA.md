@@ -1385,3 +1385,40 @@ edellisellä kierroksella, paitsi Kaadan jälkeen, jolloin se kuului kerran.
 
 J-43 suljettu 25.10.2026 Tommin päätöksellä (vaihtoehdot: sulje, jatka sivun nimen
 poistamiseen).
+
+## Sivustalyönnin toisto ja nostetut kortit 25.10.2026 klo 03.25–03.40
+
+Tommin palaute vieritetyn kuuntelun jälkeen: *"sivustalyöntivaiheessa korttien toisto alkaa viedä
+hermot, ehkä tilanne riittää"*, *"älä luettele aiemmin kaadettuja kortteja, niistäkin tilanne
+kertoo jos haluaa sen kuulla"* ja *"Moskassa pitäisi saada tietää myös mitä kortteja nosti
+kierroksen jälkeen"*.
+
+**J-44. Sivustalyönnissä samat kortit kuuluvat neljästi.** Tila: korjattu dev-versiossa, ei
+kuunneltu. Lokissa `tb-moska5.txt` yksi sivustalyönti kuului neljässä kohdassa: vaiheen alun
+pöytäluettelossa, vihjeessä (*"Voit lyödä sivusta: hertta kuusi, risti yhdeksän, tai paina
+Ohita"*), napin nimessä (*"Lyö sivusta (hertta kuusi, risti yhdeksän)"*) ja lyönnin jälkeen.
+Tommin valinnat (monivalinta, koskee vain ruudunlukijaa, näkyvä teksti ennallaan):
+
+- *Vaiheen alku* kuuluu vain vaiheen nimenä (*"Sivustalyöntivaihe."*). Tämä kumoaa J-27:n
+  pareittaisen luettelon puhutun muodon 17.10.2026. Näkyvä pöytä pysyy pareittain.
+- *Vihje* kuuluu ilman korttiluetteloa (*"Hero: Voit lyödä sivusta tai painaa Ohita."*).
+- *Napin nimi* on pelkkä *"Lyö sivusta"*, koska valitut kortit kuuluvat jo valittaessa.
+- *Lyönnin jälkeinen toisto* jää. Se on J-43:n toisen siirron hinta, eikä sitä voi poistaa
+  luopumatta toisesta siirrosta, koska sivu ei tiedä, menikö ensimmäinen ilmoitus perille.
+
+Uudet avaimet `games.moska.msg.addPhaseSpoken` ja `canAddSpoken` 23 kielellä. Vaiheen nimi on
+johdettu kunkin kielen nykyisestä `addPhase`-tekstistä pienaakkosin, ja kreikka on kirjoitettu
+käsin painomerkkien vuoksi (*Φάση πλάγιας επίθεσης*). Muiden kielten vihje on nykyinen teksti
+ilman korttipaikkaa. Puolustusvuoron viesti luettelee jo nyt vain kaatamattomat kortit, ja
+kaadetut kuuluvat vain lukumääränä (*"kaadettu 3, kaatamatta 2"*).
+
+**J-45. Nostetut kortit jäävät kuulematta kierroksen jälkeen.** Tila: korjattu dev-versiossa,
+ei kuunneltu. Viesti sanoo nostetut kortit jo, mutta J-43:n toinen siirto katkaisi sen. Mitattu
+lokista `tb-moska4.txt` klo 03.05.10: TalkBack aloitti *"Tarja nosti 2 korttia. Sari nosti 1
+kortin. Hero nosti 1 kortin: hertta viisi. Sari hyökkää, Hero puolustaa"*, ja 317 ms myöhemmin
+toinen siirto korvasi sen rivin uudella tekstillä *"Sari hyökkää, Hero puolustaa."*, koska rivi
+haki siirrossa tekstinsä uudelleen. Korjaus: toinen siirto pitää rivin jäätyneen tekstin
+(`data-keep-frozen`, `shared/focusRescue.js` ja `shared/Spoken.jsx`), ja rivin sisäinen siirto
+ei enää tyhjennä sitä. Pitkä viesti alkaa siis noin 0,3 s kohdalla alusta, mutta kuuluu
+kokonaan. Testi `kohdistus-alussa.test.jsx` (*toinen siirto pitää jäätyneen tekstin*) kaatuu
+ilman korjausta (tarkistettu).

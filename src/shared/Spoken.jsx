@@ -123,8 +123,12 @@ export function GameMessageRow({ said, children, as: Tag = 'div', style }) {
   const Wrap = Tag === 'p' ? 'span' : 'div';
   return (
     <Tag data-game-message="" tabIndex={-1} style={style}
-      onFocus={() => { const pending = skipAnnouncements(); setFrozen(pending.length ? pending.join(' ') : spokenSymbols(said)); }}
-      onBlur={() => setFrozen(null)}>
+      onFocus={e => {
+        // Turvaverkon toinen siirto rivin sisällä pitää jäätyneen tekstin (focusRescue.js).
+        if (frozen !== null && e.currentTarget.hasAttribute('data-keep-frozen')) return;
+        const pending = skipAnnouncements(); setFrozen(pending.length ? pending.join(' ') : spokenSymbols(said));
+      }}
+      onBlur={e => { if (!e.currentTarget.contains(/** @type {Node | null} */ (e.relatedTarget))) setFrozen(null); }}>
       {frozen !== null && <span className="sr-only">{frozen}</span>}
       <Wrap aria-hidden={frozen !== null ? 'true' : undefined}>{children}</Wrap>
     </Tag>
