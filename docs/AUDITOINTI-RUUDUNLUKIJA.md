@@ -1677,3 +1677,32 @@ muodossa kuin onnistuneen puolustuksen viestissä (`beatenBy`). Uusi avain `take
 on käännetty kaikkiin 23 kieleen. Romanin (*"Mardine para"*) ja pohjoissaamen (*"Čuoččuhuvvon
 bárat"*) käännös on johdettu tiedostojen omista sanoista eikä tarkistettu lähteestä. Testi
 `moska-otto-parit.test.jsx` kaatuu ilman korjausta (tarkistettu).
+
+**J-49. Tyhjän pöydän hyökkäyksen kortit toistuvat puolustusvuorossa.** Tila: korjattu
+dev-versiossa, ei kuunneltu. Tommi: *"kun hyökkää tyhjään pöytään, niin onko puolustaessa
+tarve heti toistaa niitä?"* Esimerkki lokista `tb-kuuntelu5.txt`: *"Hero hyökkäsi: pata kolme,
+hertta kolme, risti kolme. Rebekka puolustaa… (pöydällä: pata kolme, hertta kolme, risti
+kolme)."* Tommin valinta: luettelo jätetään pois vain tyhjän pöydän hyökkäyksen jälkeen.
+Puolustusvuoro kuuluu silloin *"Rebekka puolustaa…"* tai *"On vuorosi puolustautua."*, ja
+näkyvä loki pitää luettelon. Siirron, sivustalyönnin ja uuden puolustusvuoron jälkeen
+luettelo säilyy. Testi `moska-puolustus-toisto.test.jsx` kaatuu ilman korjausta (tarkistettu).
+
+**Muut peräkkäiset toistot, mitattu 25.10.2026 klo 06.30.** Kahdeksan siemennettyä peliä
+(3 028 ilmoitusta, väliaikainen keruutesti) ja peräkkäiset ilmoitukset, joissa on yhteinen
+kortti. J-49:n jälkeen hyökkäyksen ja puolustusvuoron toistoa ei enää ole. Määrät laskevat
+peräkkäisiä viestipareja, joissa sama kortti mainitaan:
+
+| Pari | Määrä | Esimerkki | Arvio |
+|---|---|---|---|
+| sivustalyönti → puolustusvuoro | 103 | *"Tyche löi sivusta: pata kolme."* → *"Fortuna puolustaa… (pöydällä: pata kolme)"* | sama kuin J-49, kun kaatamatta on vain lyöty kortti |
+| puolustusvuoro → botin kaato | 43 | *"Fortuna puolustaa… (pöydällä: pata kolme)"* → *"Fortuna: pata rouva kaataa pata kolme."* | kaato nimeää parin, tarpeen |
+| kaato → onnistui | 29 | *"… kaataa pata kaksi."* → *"… puolusti onnistuneesti! Pöydällä: pata kaksi, kaatajana …"* | linjauksen *pois pelistä*, tarpeen |
+| siirto → puolustusvuoro | 27 | *"Fortuna siirsi (hertta kuusi), Hero puolustaa."* → *"… Pöydällä: ruutu kuusi, hertta kuusi"* | luettelossa on muutakin, tarpeen |
+| puolustusvuoro → otto | 19 | *"Tyche puolustaa… (pöydällä: risti seitsemän)"* → *"Tyche otti 5 korttia. … risti seitsemän …"* | linjauksen otto, tarpeen |
+| vihje → Heron sivustalyönti | 6 | *"Voit lyödä sivusta: risti kolme, pata kolme …"* → *"Hero löi sivusta: pata kolme."* | vahvistus omasta teosta |
+
+**Avoin havainto, ei todennettu pelissä.** Kolmessa kohdassa samassa keruussa *"Hero ohittaa."*
+-viestin jälkeen jokainen viesti tuli kahdesti, ja pöydälle päätyi sama kortti kahdesti
+(*"hertta viisi, viisi"*). Peli eteni siis kahtena ketjuna. Ohita-nappi näkyy vain, kun jonon
+ensimmäinen on Hero (`isMyAdd`), eikä koodista löytynyt reittiä kahteen ketjuun. Keruutesti
+korvasi `Math.random`in, joten syy voi olla testiajurin.

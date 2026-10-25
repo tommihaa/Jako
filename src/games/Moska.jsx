@@ -695,7 +695,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     tm(() => setJustPlaced(new Set()), 1800);
     const g2 = { ...g, players, table: newTable, attackers: [atkIdx], phase: 'defend' };
     commit(g2, M.attack(p.name, cards.map(lblColored).join(', ')));
-    goDefend(g2);
+    goDefend(g2, true);
   }
 
   // Palauttaa uuden tilan committoimatta sitä, koska botti kaataa monta korttia peräkkäin
@@ -786,16 +786,25 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   }
 
   // ── Puolustuskierros ──────────────────────────────────────
-  function goDefend(g) {
+  // `fresh`: hyökkäys tyhjään pöytään. Silloin pöydällä on täsmälleen edellisen virkkeen
+  // hyökkäyskortit, joten korva ei kuule niitä uudelleen; silmä näkee luettelon yhä (Tommin
+  // valinta 25.10.2026, J-49).
+  function goDefend(g, fresh = false) {
     const def = g.players[g.defender];
     const unbeaten = g.table.filter(t => !t.def).length;
     const unbeatenCards = g.table.filter(t => !t.def).map(t => lblColored(t.atk));
     const beaten = g.table.filter(t => t.def).length;
 
     if (def.isHuman) {
-      addLog(M.defendHuman(unbeaten, unbeatenCards.join(', '), beaten));
+      // Silmän muodossa tilanne on pelkkä merkkijono, koska `M.tally` on jo eyeAndEar eikä
+      // sisäkkäinen eyeAndEar toimi.
+      addLog(fresh
+        ? eyeAndEar(t('games.moska.msg.defendHumanCards', { cards: unbeatenCards.join(', '), tally: `${beaten}🛡️/${unbeaten}⚔️` }),
+            M.defendHuman(0, '', 0))
+        : M.defendHuman(unbeaten, unbeatenCards.join(', '), beaten));
     } else {
-      addLog(M.defendAI(def.name, unbeaten, unbeatenCards.join(', ')));
+      const msg = M.defendAI(def.name, unbeaten, unbeatenCards.join(', '));
+      addLog(fresh ? eyeAndEar(msg, M.defendAI(def.name, 0, '')) : msg);
       schedAI(() => runAI(gRef.current), 1400);
     }
   }
