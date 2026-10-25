@@ -804,6 +804,8 @@ export const es = {
         nextRound: '{att} ataca → {def} defiende.',
         attack: '{name} atacó: {cards}.',
         beat: '{defName}: {defCard} vence {atkCard}. {status}',
+        beatPairSpoken: '{defCard} vence {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '({tally} en la mesa)',
         statusUnbeatenSpoken: '(sin cubrir en la mesa: {cards})',
         statusAllBeaten: '(todas vencidas)',

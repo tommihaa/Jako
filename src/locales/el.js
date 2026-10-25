@@ -804,6 +804,8 @@ export const el = {
         nextRound: 'Ο {att} επιτίθεται → ο {def} αμύνεται.',
         attack: 'Ο {name} επιτέθηκε: {cards}.',
         beat: '{defName}: {defCard} καλύπτει {atkCard}. {status}',
+        beatPairSpoken: '{defCard} καλύπτει {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '({tally} στο τραπέζι)',
         statusUnbeatenSpoken: '(ακάλυπτα στο τραπέζι: {cards})',
         statusAllBeaten: '(όλα καλύφθηκαν)',

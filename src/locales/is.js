@@ -804,6 +804,8 @@ export const is = {
         nextRound: '{att} sækir → {def} ver.',
         attack: '{name} sótti: {cards}.',
         beat: '{defName}: {defCard} fellir {atkCard}. {status}',
+        beatPairSpoken: '{defCard} fellir {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '({tally} á borði)',
         statusUnbeatenSpoken: '(ódrepin á borði: {cards})',
         statusAllBeaten: '(allt fellt)',

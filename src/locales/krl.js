@@ -805,6 +805,8 @@ export const krl = {
         nextRound: '{att} hyökkiäy → {def} puolistau.',
         attack: '{name} hyökkäi: {cards}.',
         beat: '{defName}: {defCard} kuatau {atkCard}. {status}',
+        beatPairSpoken: '{defCard} kuatau {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '(stolalla {tally})',
         statusUnbeatenSpoken: '(stolalla on kuadamatta: {cards})',
         statusAllBeaten: '(kaikki kuattu)',

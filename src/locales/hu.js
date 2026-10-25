@@ -807,6 +807,8 @@ export const hu = {
         nextRound: '{att} támad → {def} véd.',
         attack: '{name} támadott: {cards}.',
         beat: '{defName}: {defCard} ledönti a(z) {atkCard}. {status}',
+        beatPairSpoken: '{defCard} ledönti a(z) {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '({tally} az asztalon)',
         statusUnbeatenSpoken: '(ütetlen az asztalon: {cards})',
         statusAllBeaten: '(minden ledöntve)',

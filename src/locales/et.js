@@ -804,6 +804,8 @@ export const et = {
         nextRound: '{att} ründab → {def} kaitseb.',
         attack: '{name} ründas: {cards}.',
         beat: '{defName}: {defCard} lööb maha {atkCard}. {status}',
+        beatPairSpoken: '{defCard} lööb maha {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '({tally} laual)',
         statusUnbeatenSpoken: '(laual löömata: {cards})',
         statusAllBeaten: '(kõik maha löödud)',

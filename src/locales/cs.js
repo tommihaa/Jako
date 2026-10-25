@@ -815,6 +815,8 @@ export const cs = {
         nextRound: '{att} útočí → {def} brání.',
         attack: '{name} zaútočil: {cards}.',
         beat: '{defName}: {defCard} shazuje {atkCard}. {status}',
+        beatPairSpoken: '{defCard} shazuje {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '({tally} na stole)',
         statusUnbeatenSpoken: '(nepřebito na stole: {cards})',
         statusAllBeaten: '(vše shozeno)',

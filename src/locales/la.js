@@ -806,6 +806,8 @@ export const la = {
         nextRound: '{att} oppugnat → {def} defendit.',
         attack: '{name} oppugnavit: {cards}.',
         beat: '{defName}: {defCard} sternit {atkCard}. {status}',
+        beatPairSpoken: '{defCard} sternit {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '({tally} in mensa)',
         statusUnbeatenSpoken: '(invictae in mensa: {cards})',
         statusAllBeaten: '(omnia strata)',

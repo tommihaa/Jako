@@ -696,7 +696,8 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   // Palauttaa uuden tilan committoimatta sitä, koska botti kaataa monta korttia peräkkäin
   // ja kutsuja kirjoittaa tilan kerran. Siksi lokirivi menee `lines`-listaan, jonka
   // kutsuja purkaa vasta commitin jälkeen (kompositioauditointi H4).
-  function doBeat(g, atkId, defCard, lines = /** @type {string[]} */ ([])) {
+  /** @typedef {{ defName: string, defCard: string, atkCard: string, status: string, spokenStatus: string }} BeatRec */
+  function doBeat(g, atkId, defCard, beats = /** @type {BeatRec[]} */ ([])) {
     const def = g.players[g.defender];
     const newHand = def.hand.filter(c => c.id !== defCard.id);
     const atkCard = g.table.find(t => t.atk.id === atkId)?.atk;
@@ -708,15 +709,35 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     const beaten = newTable.filter(t => t.def).length;
     // Korva kuulee kaatamatta jääneet kortit lukujen sijaan (Tommin kuuntelu 25.10.2026).
     const unbeatenCards = newTable.filter(t => !t.def).map(t => lblColored(t.atk)).join(', ');
-    const statusMsg = unbeaten > 0
-      ? eyeAndEar(t('games.moska.msg.statusOnTable', { tally: `${beaten}🛡️/${unbeaten}⚔️` }),
-                  t('games.moska.msg.statusUnbeatenSpoken', { cards: unbeatenCards }))
+    const status = unbeaten > 0
+      ? t('games.moska.msg.statusOnTable', { tally: `${beaten}🛡️/${unbeaten}⚔️` })
+      : t('games.moska.msg.statusAllBeaten');
+    const spokenStatus = unbeaten > 0
+      ? t('games.moska.msg.statusUnbeatenSpoken', { cards: unbeatenCards })
       : t('games.moska.msg.statusAllBeaten');
 
-    lines.push(M.beat(def.name, lblColored(defCard), lblColored(atkCard), statusMsg));
+    beats.push({ defName: def.name, defCard: lblColored(defCard), atkCard: lblColored(atkCard), status, spokenStatus });
     flashLastPlay(def.name, defCard, def.isHuman);
     if (sndRef.current) SFX.beat();
     return { ...g, players, table: newTable };
+  }
+
+  // Saman siirron kaadot kuuluvat yhtenä viestinä ja tilanne kerran lopussa, mutta näkyvä
+  // loki pysyy rivi per kaato (Tommin valinta 25.10.2026). Muut rivit ovat korvalta
+  // tyhjiä, jolloin niitä ei ilmoiteta eikä lokipaneeli lue niitä.
+  /** @param {BeatRec[]} beats */
+  function beatLines(beats) {
+    if (!beats.length) return [];
+    const last = beats[beats.length - 1];
+    const spoken = beats.length === 1
+      ? M.beat(last.defName, last.defCard, last.atkCard, last.spokenStatus)
+      : t('games.moska.msg.beatManySpoken', {
+          defName: last.defName,
+          pairs: beats.map(b => t('games.moska.msg.beatPairSpoken', { defCard: b.defCard, atkCard: b.atkCard })).join(', '),
+          status: last.spokenStatus,
+        });
+    return beats.map((b, i) => eyeAndEar(M.beat(b.defName, b.defCard, b.atkCard, b.status),
+      i === beats.length - 1 ? spoken : ''));
   }
 
   function doPass(g, passCards) {
@@ -918,12 +939,12 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       if (plan.kind === 'beat') {
         schedMove(() => {
           let cur = gRef.current;
-          const beatLines = /** @type {string[]} */ ([]);
+          const beats = /** @type {BeatRec[]} */ ([]);
           for (const { slot, card } of plan.beats) {
-            cur = doBeat(cur, slot.atk.id, card, beatLines);
+            cur = doBeat(cur, slot.atk.id, card, beats);
           }
           commit(cur);
-          beatLines.forEach(addLog);
+          beatLines(beats).forEach(addLog);
           schedMove(() => startAddPhase(cur), isSN ? 400 : 700);
         }, isSN ? 450 : 900);
       } else {
@@ -990,12 +1011,12 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     setSelDef([]);
     if (!pairs.length) { addLog(M.notBeaten(unused)); return; }
     opastus.answer(opastusAvain('play', pairs.map(p => p.card.id)));
-    const beatLines = /** @type {string[]} */ ([]);
+    const beats = /** @type {BeatRec[]} */ ([]);
     let g2 = g;
-    for (const { target, card } of pairs) g2 = doBeat(g2, target.id, card, beatLines);
+    for (const { target, card } of pairs) g2 = doBeat(g2, target.id, card, beats);
     const stillUnbeaten = g2.table.filter(t => !t.def).length;
     commit(g2);
-    beatLines.forEach(addLog);
+    beatLines(beats).forEach(addLog);
     if (unused.length) addLog(M.notBeaten(unused));
     if (stillUnbeaten === 0) {
       schedMove(() => startAddPhase(gRef.current), 500);

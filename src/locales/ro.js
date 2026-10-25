@@ -806,6 +806,8 @@ export const ro = {
         nextRound: '{att} atacă → {def} apără.',
         attack: '{name} a atacat: {cards}.',
         beat: '{defName}: {defCard} doboară {atkCard}. {status}',
+        beatPairSpoken: '{defCard} doboară {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '({tally} pe masă)',
         statusUnbeatenSpoken: '(nebătute pe masă: {cards})',
         statusAllBeaten: '(toate doborâte)',

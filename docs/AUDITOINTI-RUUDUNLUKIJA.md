@@ -1431,6 +1431,15 @@ valitsi:
 Uudet avaimet `statusUnbeatenSpoken` ja `defenderTookSpoken` 23 kielellä, `canAddSpoken`
 poistettu. Ei vielä kuunneltu.
 
+Tommi samassa kuuntelussa: *"jos puolustautuu kerralla useammalla kortilla, niin tämä pitäisi
+saada ryhmiteltyä yhteen viestiin"*. Valinta (monivalinta): vain ruudunlukija. Saman siirron
+kaadot kuuluvat yhtenä viestinä (*"Sari: risti viisi kaataa risti kaksi, hertta kuusi kaataa
+hertta neljä. (pöydällä on kaatamatta: ruutu yhdeksän)"*), ja näkyvä loki pysyy rivi per kaato.
+Muut rivit ovat korvalta tyhjiä, jolloin niitä ei ilmoiteta, ja `GameLog` piilottaa ne
+ruudunlukijalta. Avaimet `beatPairSpoken` ja `beatManySpoken` on johdettu kunkin kielen
+`beat`-tekstistä. Testi `moska-kaadot-yhtena.test.jsx` kaatuu ilman korjausta (tarkistettu).
+Ei vielä kuunneltu.
+
 **J-45. Nostetut kortit jäävät kuulematta kierroksen jälkeen.** Tila: korjattu dev-versiossa,
 ei kuunneltu. Viesti sanoo nostetut kortit jo, mutta J-43:n toinen siirto katkaisi sen. Mitattu
 lokista `tb-moska4.txt` klo 03.05.10: TalkBack aloitti *"Tarja nosti 2 korttia. Sari nosti 1

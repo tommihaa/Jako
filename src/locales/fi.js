@@ -840,6 +840,8 @@ export const fi = {
         nextRound: '{att} hyökkää → {def} puolustaa.',
         attack: '{name} hyökkäsi: {cards}.',
         beat: '{defName}: {defCard} kaataa {atkCard}. {status}',
+        beatPairSpoken: '{defCard} kaataa {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '(pöydällä {tally})',
         statusUnbeatenSpoken: '(pöydällä on kaatamatta: {cards})',
         statusAllBeaten: '(kaikki kaadettu)',

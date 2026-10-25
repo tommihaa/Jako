@@ -806,6 +806,8 @@ export const se = {
         nextRound: '{att} fallehat → {def} bealušta.',
         attack: '{name} fallehii: {cards}.',
         beat: '{defName}: {defCard} gahččá {atkCard}. {status}',
+        beatPairSpoken: '{defCard} gahččá {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '({tally} beavddis)',
         statusUnbeatenSpoken: '(čuoččuhkeahttá beavddis: {cards})',
         statusAllBeaten: '(buot gahččojuvvon)',

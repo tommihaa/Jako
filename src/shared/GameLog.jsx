@@ -51,7 +51,9 @@ export default function GameLog({
             // Rivi jossa on kortti näkyy symbolein, mutta ruudunlukija saa sen sanoina
             // (auditointi J-8), samassa muodossa kuin live-alue sen ilmoitti. Emoji jää pois (J-13).
             const said = typeof e.m === 'string' && (needsSpoken(e.m) || hasEmoji(e.m)) ? spokenHtml(e.m) : null;
-            const hide = said ? /** @type {const} */ ('true') : undefined;
+            // Tyhjä puhuttu muoto piilottaa rivin: sen sisältö kuuluu seuraavassa rivissä (Moskan
+            // saman siirron kaadot yhtenä viestinä, 25.10.2026).
+            const hide = said !== null ? /** @type {const} */ ('true') : undefined;
             return (
               <div key={i} style={{ display: 'flex', gap: 10, padding: '4px 14px', borderTop: rowBorder, background: i === 0 ? accentBg : 'transparent' }}>
                 {/* Kellonaika vain näkevälle: NVDA:n Heidi luki muodon 18.11.05 päivämääränä, ja

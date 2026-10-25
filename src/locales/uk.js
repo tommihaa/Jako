@@ -813,6 +813,8 @@ export const uk = {
         nextRound: '{att} атакує → {def} захищається.',
         attack: '{name} атакував: {cards}.',
         beat: '{defName}: {defCard} відбиває {atkCard}. {status}',
+        beatPairSpoken: '{defCard} відбиває {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '({tally} на столі)',
         statusUnbeatenSpoken: '(не побито на столі: {cards})',
         statusAllBeaten: '(усе відбито)',

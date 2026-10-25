@@ -804,6 +804,8 @@ export const da = {
         nextRound: '{att} angriber → {def} forsvarer.',
         attack: '{name} angreb: {cards}.',
         beat: '{defName}: {defCard} slår {atkCard}. {status}',
+        beatPairSpoken: '{defCard} slår {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '({tally} på bordet)',
         statusUnbeatenSpoken: '(uslået på bordet: {cards})',
         statusAllBeaten: '(alle slået)',

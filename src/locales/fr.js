@@ -804,6 +804,8 @@ export const fr = {
         nextRound: '{att} attaque → {def} défend.',
         attack: '{name} a attaqué : {cards}.',
         beat: '{defName} : {defCard} coupe {atkCard}. {status}',
+        beatPairSpoken: '{defCard} coupe {atkCard}',
+        beatManySpoken: '{defName} : {pairs}. {status}',
         statusOnTable: '({tally} sur la table)',
         statusUnbeatenSpoken: '(non battues sur la table : {cards})',
         statusAllBeaten: '(tout coupé)',

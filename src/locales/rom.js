@@ -807,6 +807,8 @@ export const rom = {
         nextRound: '{att} marel → {def} braninil.',
         attack: '{name} mardas: {cards}.',
         beat: '{defName}: {defCard} perel {atkCard}. {status}',
+        beatPairSpoken: '{defCard} perel {atkCard}',
+        beatManySpoken: '{defName}: {pairs}. {status}',
         statusOnTable: '({tally} pe skafidi)',
         statusUnbeatenSpoken: '(bimardine pe skafidi: {cards})',
         statusAllBeaten: '(sa perade)',
