@@ -13,6 +13,17 @@
 // kolme viikkoa sen jälkeen kun käytäntö oli jo muuttunut.
 export const CHANGELOG = [
   {
+    date: '25.10.2026',
+    items: [
+      'Ruudunlukija: kun painettu nappi katoaa, kohdistus siirtyy heti pelin viestiriville eikä käy ensin sivun alussa.',
+      'Moska, ruudunlukija: saman siirron kaadot kuuluvat yhtenä viestinä. Pöydän tilanne sanotaan kerran lopussa.',
+      'Moska, ruudunlukija: sivustalyönnin vihje kertoo kortit, joilla voit lyödä. Ohita kertoo ohituksesi, joten vihje ei kuulu uudelleen.',
+      'Moska, ruudunlukija: otto kertoo kaatamatta jääneet kortit ja myös kaadetut parit, jotka menevät puolustajan käteen.',
+      'Moska, ruudunlukija: kun pöytä oli tyhjä ennen hyökkäystä tai sivusta lyöty kortti on ainoa kaatamaton, puolustusvuoro ei toista juuri kuultuja kortteja.',
+      'Moska ja Maija, ruudunlukija: pakasta nostetut kortit kuuluvat kokonaan ja maittain järjestettyinä, joten kukin maa sanotaan kerran.',
+    ],
+  },
+  {
     date: '23.10.2026',
     items: [
       'Ruudunlukija: saman maan peräkkäiset kortit sanotaan yhdellä maan nimellä, esimerkiksi ”pata kaksi, kolme, hertta kymmenen”.',
