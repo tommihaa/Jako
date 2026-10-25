@@ -1327,5 +1327,30 @@ vielä kerran viestirivin sisällä: rivistä sen puhuttuun tekstiin tai takaisi
 ilmoitus voittaa sen. Siirtoa ei tehdä, jos kohdistus on jo muualla kuin viestirivillä. Hinta
 on hyväksytty valinnassa: kun ensimmäinen ilmoitus meni perille (Kaada), viesti kuuluu kahdesti.
 Testit `kohdistus-alussa.test.jsx` (kaksi uutta). Toinen siirto -testi kaatuu ilman korjausta
-(tarkistettu), ja vanha viestirivitesti katsoo nyt tilaa ennen toista siirtoa. Ei vielä
-kuunneltu.
+(tarkistettu), ja vanha viestirivitesti katsoo nyt tilaa ennen toista siirtoa.
+
+## Korjauksen 2 kuuntelu 25.10.2026 klo 03.02–03.07
+
+Pixel 8a, `localhost:5188`, Jako `0539df2`, Moska, puheen määrä Matala. TalkBack kytkettiin
+adb:llä ja purettiin heti, lokitaso VERBOSE ja palautettiin ERRORiin (todennettu asetuksista).
+Loki on versioimattomassa tiedostossa `raakasivut/talkback-25-10-moska/tb-moska4.txt`.
+
+Tommi: *"napin jälkeen kuului viestirivi eikä koko sivua"*. Painetut napit lokista: Ota kortit
+kahdesti, Seuraava kierros kolmesti, Ohita kerran ja Lyö sivusta kerran. Verkkonäkymää tai sivun
+alusta luettua ei puhuttu kertaakaan, eikä `RESTORED_LAST_FOCUS`ia esiintynyt.
+
+**Mitattu: virheen olot eivät toistuneet.** Chrome lähetti viestirivin `TYPE_VIEW_FOCUSED`in
+jokaisen napin jälkeen jo ensimmäisestä siirrosta, ja toinen siirto toi toisen tapahtuman
+250–300 ms myöhemmin. Sivu ei vierittynyt kertaakaan (`TYPE_VIEW_SCROLLED` 0 kertaa), kun
+24.10. se vierittyi ±108 px lähes jokaisen napin jälkeen. Kierros todentaa siis, että toinen
+siirto ei riko mitään. Se ei todenna, että siirto korjaa J-43:n, koska ensimmäinen ilmoitus
+meni tällä kertaa perille ilman sitä.
+
+**Hinta kuultiin.** Joka napin jälkeen viesti kuului kahdesti. Ensimmäinen luenta oli jonossa
+odottanut viesti (*"Hero otti 1 kortin. Pöydällä oli: pata seitsemän kaatamatta."*), ja
+toinen luenta oli rivin nykyinen viesti (*"Puolustus epäonnistui!"*). Kun viesti ei ehtinyt
+vaihtua, sama teksti toistui (*"Hero löi sivusta: hertta kuusi, risti yhdeksän."*).
+
+J-43 on yhä auki. Seuraava askel on kuunnella sivu alas vieritettynä, kuten 24.10. (`ScrollY`
+noin 300), koska vieritys oli ainoa havaittu ero onnistuneen ja epäonnistuneen kierroksen
+välillä. Arvaus, ei mitattu.
