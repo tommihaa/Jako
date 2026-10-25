@@ -1318,3 +1318,14 @@ Muokatusta Matalaksi 25.10.2026 klo 01.47. Aiemmissa kuunteluissa kuultu *"Paini
 näkyvät kytkimet: käyttövinkit päällä, säilön tiedot päällä, luettelokohtien määrä pois,
 elementin tyyppi päällä, ikkunoiden nimet päällä, ilmoitukset näyttö sammutettuna pois,
 äänenkorkeuden muutokset päällä. Ruudun alapuolelle jääneitä kytkimiä ei luettu.
+
+**Korjaus 2 (Tommin valinta 25.10.2026, vaihtoehdot: toinen siirto, vakiokorkuinen
+toimintorivi).** Kun painettu nappi katoaa, turvaverkko siirtää kohdistuksen 300 ms myöhemmin
+vielä kerran viestirivin sisällä: rivistä sen puhuttuun tekstiin tai takaisin
+(`shared/focusRescue.js`, `SECOND_MOVE_MS`). Chrome ilmoittaa siirrosta toiseen elementtiin
+(kohdistuskoe 24.10.), ja tässä vaiheessa TalkBack on jo tehnyt oman valintansa, joten uusi
+ilmoitus voittaa sen. Siirtoa ei tehdä, jos kohdistus on jo muualla kuin viestirivillä. Hinta
+on hyväksytty valinnassa: kun ensimmäinen ilmoitus meni perille (Kaada), viesti kuuluu kahdesti.
+Testit `kohdistus-alussa.test.jsx` (kaksi uutta). Toinen siirto -testi kaatuu ilman korjausta
+(tarkistettu), ja vanha viestirivitesti katsoo nyt tilaa ennen toista siirtoa. Ei vielä
+kuunneltu.

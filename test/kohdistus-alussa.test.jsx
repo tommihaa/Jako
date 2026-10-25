@@ -116,10 +116,65 @@ describe('kohdistuksen turvaverkko', () => {
     const btn = /** @type {HTMLElement} */ (r.getByText('Pelaa'));
     btn.focus();
     await act(async () => { fireEvent.click(btn); });
-    act(() => { vi.runAllTimers(); });
+    // Ennen toista siirtoa (J-43), joka vie kohdistuksen rivin sisällä puhuttuun tekstiin.
+    act(() => { vi.advanceTimersByTime(100); });
     expect(document.activeElement?.hasAttribute('data-game-message')).toBe(true);
     // Kohdistettu rivi jäätyy ruudunlukijalle (J-22): puhuttu muoto on sr-only-tekstissä.
     expect(document.activeElement?.querySelector('.sr-only')?.textContent).toBe('Hero: 4.');
+    uninstall();
+  });
+
+  // J-43: sivu siirsi kohdistuksen viestiriville, mutta Chrome ilmoitti siitä TalkBackille vain
+  // osan kerroista, ja TalkBack luki muuten koko sivun (Moska, Pixel 8a 24.10.2026). Toinen
+  // siirto rivin sisällä 300 ms:n kohdalla antaa Chromelle uuden ilmoitettavan siirron.
+  it('siirtää kohdistuksen toisen kerran rivin sisällä', async () => {
+    vi.useFakeTimers();
+    function Peli() {
+      const [played, setPlayed] = useState(false);
+      return (
+        <div>
+          <SpokenHtml as="p" html={played ? 'Vortumna puolustaa.' : 'Vuorossa Hero.'} gameMessage />
+          <Card mine card={card('4', 4)} onClick={() => {}} />
+          {!played && <button onClick={() => setPlayed(true)}>Ohita</button>}
+        </div>
+      );
+    }
+    const uninstall = installFocusRescue();
+    const r = render(<Peli />);
+    await act(async () => { fireEvent.click(r.getByText('Ohita')); });
+    const row = /** @type {HTMLElement} */ (document.querySelector('[data-game-message]'));
+    act(() => { vi.advanceTimersByTime(299); });
+    expect(document.activeElement).toBe(row);
+    act(() => { vi.advanceTimersByTime(1); });
+    const said = row.querySelector(':scope > .sr-only');
+    expect(document.activeElement).toBe(said);
+    expect(said?.textContent).toBe('Vortumna puolustaa.');
+    // Siirtoja on yksi, ei toistuvaa.
+    act(() => { vi.runAllTimers(); });
+    expect(document.activeElement).toBe(said);
+    uninstall();
+  });
+
+  it('ei vie toisella siirrolla kohdistusta pois, jos pelaaja on jo muualla', async () => {
+    vi.useFakeTimers();
+    function Peli() {
+      const [played, setPlayed] = useState(false);
+      return (
+        <div>
+          <SpokenHtml as="p" html={played ? 'Vortumna puolustaa.' : 'Vuorossa Hero.'} gameMessage />
+          <Card mine card={card('4', 4)} onClick={() => {}} />
+          {!played && <button onClick={() => setPlayed(true)}>Ohita</button>}
+        </div>
+      );
+    }
+    const uninstall = installFocusRescue();
+    const r = render(<Peli />);
+    await act(async () => { fireEvent.click(r.getByText('Ohita')); });
+    act(() => { vi.advanceTimersByTime(100); });
+    const kortti = /** @type {HTMLElement} */ (document.querySelector('[data-mine]'));
+    act(() => { kortti.focus(); });
+    act(() => { vi.runAllTimers(); });
+    expect(document.activeElement).toBe(kortti);
     uninstall();
   });
 

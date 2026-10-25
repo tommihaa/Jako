@@ -38,6 +38,35 @@ export function rescueTarget(root = document) {
 // Viivästetty tarkistus jää varalle siltä varalta, että kohdistus putoaa uudelleen.
 const RESCUE_DELAY_MS = 50;
 
+// Toinen siirto (auditointi J-43, Tommin valinta 25.10.2026). Mitattu Pixel 8a:lla
+// 24.10.2026: Moskassa sivu siirsi kohdistuksen viestiriville joka kerta, mutta Chrome
+// ilmoitti siitä TalkBackille vain Kaada-napin jälkeen. Ohitan, Ota korttien ja Seuraavan
+// kierroksen jälkeen TalkBack valitsi itse sivun juuren tai koko verkkonäkymän. Chrome
+// ilmoittaa siirrosta toiseen elementtiin, joten kohdistus siirretään vielä kerran rivin ja
+// sen puhutun tekstin välillä, kun TalkBack on jo tehnyt oman valintansa. Hinta: kun
+// ensimmäinen ilmoitus meni perille, viesti kuuluu kahdesti.
+const SECOND_MOVE_MS = 300;
+
+/**
+ * Viestirivin sisäinen siirto: rivistä puhuttuun tekstiin tai takaisin riviin. Rivi pysyy
+ * jäätyneenä ruudunlukijalle, koska kohdistus ei poistu sen sisältä.
+ * @param {HTMLElement} row
+ * @param {Element | null} a  nykyinen kohdistus
+ */
+function otherInMessage(row, a) {
+  if (a !== row) return row;
+  const said = /** @type {HTMLElement | null} */ (row.querySelector(':scope > .sr-only'));
+  if (said) said.tabIndex = -1;
+  return said;
+}
+
+function secondMove() {
+  const a = document.activeElement;
+  const row = /** @type {HTMLElement | null} */ (a?.closest('[data-game-message]') ?? null);
+  if (!row) return;
+  otherInMessage(row, a)?.focus({ preventScroll: true });
+}
+
 let intended = false;
 
 /**
@@ -119,14 +148,13 @@ export function installFocusRescue() {
       // Chrome ei ilmoita kohdistusta, jos se asetetaan jo kohdistettuun elementtiin, ei
       // myöskään blurin jälkeen samassa tai seuraavassa tahdissa (mitattu 24.10.2026).
       // Kohdistettu viestirivi antaa kohdistuksen jäätyneelle puhutulle tekstilleen.
-      if (t && t === a && t.hasAttribute('data-game-message')) {
-        const said = /** @type {HTMLElement | null} */ (t.querySelector(':scope > .sr-only'));
-        if (said) said.tabIndex = -1;
-        t = said;
-      }
+      if (t && t === a && t.hasAttribute('data-game-message')) t = otherInMessage(t, a);
       t?.focus({ preventScroll: true });
     };
-    if (!intended) rescue(byClick);
+    if (!intended) {
+      rescue(byClick);
+      if (byClick) setTimeout(secondMove, SECOND_MOVE_MS);
+    }
     setTimeout(() => rescue(false), RESCUE_DELAY_MS);
   });
   mo.observe(document.body, { childList: true, subtree: true });
