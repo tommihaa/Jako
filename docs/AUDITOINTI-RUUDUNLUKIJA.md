@@ -1354,3 +1354,30 @@ vaihtua, sama teksti toistui (*"Hero löi sivusta: hertta kuusi, risti yhdeksän
 J-43 on yhä auki. Seuraava askel on kuunnella sivu alas vieritettynä, kuten 24.10. (`ScrollY`
 noin 300), koska vieritys oli ainoa havaittu ero onnistuneen ja epäonnistuneen kierroksen
 välillä. Arvaus, ei mitattu.
+
+## Kuuntelu sivu alas vieritettynä 25.10.2026 klo 03.13–03.22
+
+Samat olot kuin edellisessä, mutta Tommi vieritti sivun alas ennen ensimmäistä nappia. TalkBack
+kytkettiin adb:llä ja purettiin heti, lokitaso VERBOSE ja palautettiin ERRORiin (todennettu
+asetuksista). Loki: `raakasivut/talkback-25-10-moska/tb-moska5.txt`.
+
+Tommi: *"viestirivi kuului, paitsi kerran aika alussa kuului sivu, mutta se voi johtua liian
+nopeasta pelaamisesta"*. Painetut katoavat napit lokista: Seuraava kierros kuudesti, Lyö
+sivusta viidesti, Ohita kahdesti, Kaada kahdesti, Hyökkää kahdesti ja Ota kortit kahdesti.
+
+**Mitattu: vika toistui, ja toinen siirto korjasi sen.** Sivu vierittyi tällä kertaa
+(`TYPE_VIEW_SCROLLED` 306 kertaa). Kahdesti, Lyö sivusta -napin jälkeen klo 03.15.51 ja
+Hyökkää-napin jälkeen klo 03.16.15, vieritys ehti ennen Chromen kohdistusilmoitusta. TalkBack
+kohdisti verkkonäkymän (`MANUAL_SCROLL`) ja sanoi *"Jako · korttipelikokoelma"*, kuten 24.10.
+Noin 230 ms myöhemmin toinen siirto toi kohdistusilmoituksen, TalkBack synkronoi kohdistuksen
+viestiriville (`FOCUS_SYNCHRONIZATION`) ja luki viestin. Koko sivun lukua ei tullut kummallakaan
+kerralla, koska viesti keskeytti sen.
+
+Tommin *"kerran aika alussa kuului sivu"* on siis luultavasti toinen näistä kahdesta. Syy ei
+ollut nopea pelaaminen vaan vieritys. Kumpi kerroista kuului, ei voi lokista erottaa.
+
+**Jäljelle jäävä haitta.** Kun vieritys ehtii ensin, sivun nimi *"Jako · korttipelikokoelma"*
+kuuluu lyhyesti ennen viestiä. Muiden nappien jälkeen viesti kuului kahdesti, kuten
+edellisellä kierroksella, paitsi Kaadan jälkeen, jolloin se kuului kerran.
+
+J-43:n tila odottaa Tommin päätöstä: suljetaanko vai jatketaanko sivun nimen poistamiseen.
