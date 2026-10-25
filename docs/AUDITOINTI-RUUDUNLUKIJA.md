@@ -1604,8 +1604,8 @@ Tommi:
 4. Otto kertoo pöydästä nostetut kortit oikein, sivustalyönnin vihje on ok, ja pakasta nostetut
    kortit kuuluvat, mutta *"ei ryhmittele niitä maittain"*.
 
-**J-47. Pakasta nostetut kortit eivät ryhmity maittain.** Tila: korjattu dev-versiossa, ei
-kuunneltu. Lokissa on *"Hero nosti 3 korttia: hertta kuningas, ruutu kolme, hertta kymmenen."*,
+**J-47. Pakasta nostetut kortit eivät ryhmity maittain.** Tila: suljettu 25.10.2026,
+kuunneltu ok klo 06.04–06.08 Moskassa ja Maijassa. Lokissa on *"Hero nosti 3 korttia: hertta kuningas, ruutu kolme, hertta kymmenen."*,
 mutta myös *"Hero nosti 4 korttia: pata kuningas, rouva, risti neljä, kuusi."* Ryhmittely
 (`groupedCardNames` ja `spokenSuits`, `shared/helpers.js`) yhdistää vain peräkkäiset saman maan
 kortit, ja nostoviesti luetteli kortit nostojärjestyksessä. Toinen nosto ryhmittyi siis
@@ -1647,3 +1647,17 @@ peliviesti katkesi kesken 13 kertaa, esimerkiksi *"Hero puolusti onnistuneesti! 
 (`handleTouchInteractionStartEvent`), joten katkot olivat Tommin eleitä eivätkä sovelluksen
 kohdistussiirtoja. Sovellus ei katkaissut yhtään viestiä. Sitä, saako pelaaja kesken jääneen
 viestin takaisin, ei ole tarkistettu (viestirivi lukee vain viimeisimmän viestin).
+
+## J-47:n kuuntelu 25.10.2026 klo 06.04–06.08: suljettu
+
+Pixel 8a, `localhost:5188/?lataus=0600`, Jako `5f6067d`. Ajossa oleva koodi luettiin sivun
+muistista ennen kuuntelua: Moskan nostoviesti lajittelee kortit (`sortHand(drawn)`). Vanha
+välilehti `?lataus=0545` suljettiin CDP:llä. TalkBack kytkettiin adb:llä klo 06.03.42 ja purettiin
+heti kuuntelun jälkeen (`Bound services:{}`). Loki: `raakasivut/talkback-25-10-kuuntelu/tb-kuuntelu7.txt`.
+
+Tommi: *"moska ja maija pakasta nostetut kortit luetellaan nyt oikein, niin että maa esiintyy
+enintään kerran"*. Lokin nostot: *"Hero nosti 3 korttia: hertta neljä, viisi,
+kymmenen."*, *"Hero nosti 3 korttia: pata seitsemän, rouva, risti yhdeksän."* ja *"Hero nosti 2
+korttia: hertta viisi, risti seitsemän."*
+
+Auki: Clauden tarkennukset `MOSKA.md`:n ruudunlukijalinjaukseen odottavat Tommin vahvistusta.
