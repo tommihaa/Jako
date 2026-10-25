@@ -886,11 +886,13 @@ export default function Koputus({ onResult, showLog = true, soundOn = false, see
             </div>
           )
           : (
-            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 10, flexWrap: isMobile ? 'nowrap' : 'wrap', marginBottom: isMobile ? 6 : 12 }}>
+            // Botit allekkain myös työpöydällä: neljän kortin rivi nimineen vie noin 300 px, joten
+            // kolme bottia rinnakkain (169 px kullekin) vuoti toistensa päälle.
+            <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 10 : 6, marginBottom: isMobile ? 6 : 12 }}>
               {ais.map((ai) => {
                 const pi = ai.id;
                 return (
-                  <div key={ai.id} style={isMobile ? { width: '100%' } : { flex: 1, minWidth: 110 }}>
+                  <div key={ai.id} style={{ width: '100%' }}>
                     <PlayerGrid player={ai} isActive={curIdx === pi} small={true} backStyle={BACKS[cardBack]}
                       phase={phase} debug={revealAll} showKnown={showAIKnown}
                       lastSwap={lastSwap?.pIdx === pi ? lastSwap.cIdx : null}
