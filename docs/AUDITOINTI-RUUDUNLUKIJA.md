@@ -1454,6 +1454,39 @@ viestinsä eli vihjeen (`GameMessageRow`, ei jonossa odottavia viestejä). J-43:
 toisti sen. Korjaus: Ohita kirjoittaa *"Hero ohittaa."* kuten botin ohitus. Testi
 `moska-ohita-viesti.test.jsx` kaatuu ilman korjausta (tarkistettu). Ei vielä kuunneltu.
 
+## Kuuntelu 25.10.2026 klo 04.50–04.58: kaksi kohtaa auki
+
+Pixel 8a, `localhost:5188`, versio `3e68233`. TalkBackin lokitaso VERBOSE, palautettu ERRORiin.
+Tommi:
+
+1. *"omalla kaksi korttia kerralla puolustaessa oli toistoa"*. Heron kahden kortin kaato.
+2. *"rebekan vuorolla kuuntelun lopussa kolmen kortin peluussa kaatuu kortti kerrallaan, kolme
+   pitkää virkettä"*. Botin puolustus kolmea korttia vastaan.
+
+**Lokista puuttuu kumpikin kohta.** Logcatin pääpuskuri on Pixelillä 256 KiB, ja se täyttyi:
+tiedosto `raakasivut/talkback-25-10-kuuntelu/tb-kuuntelu4.txt` alkaa klo 04.57.32. Mukana on vain
+Rebekan viimeinen sivustalyönnin kaato ja kierroksen loppu:
+
+- *"Rebekka puolustaa… (pöydällä: hertta yhdeksän)."*
+- *"Rebekka: hertta jätkä kaataa hertta yhdeksän. (kaikki kaadettu)."*
+- *"Rebekka puolusti onnistuneesti! Pöydällä: hertta kaksi, kaatajana hertta viisi; …"* (kuusi
+  paria). Tämä on kuuntelun pisin virke.
+
+Arvaukset, ei mitattu:
+
+- *Kohta 1.* Ryhmitelty viesti kuuluu kerran ilmoituksena, mutta kadonneen Kaada-napin jälkeen
+  viestirivi lukee sen uudelleen, ja J-43:n toinen siirto voi toistaa sen vielä kerran. Tämä
+  on sama *lyönnin jälkeinen toisto*, joka J-44:ssä jätettiin toisen siirron hinnaksi.
+- *Kohta 2.* Kolme pitkää virkettä voivat olla botin puolustus sivustalyönti kerrallaan
+  (*puolustaa…*, *kaataa*, ja kierroksen lopun pöytäluettelo), koska jokainen sivustalyönti
+  käynnistää oman puolustusvuoron. Kaatoryhmittely koskee vain yhden siirron kaatoja.
+
+**Seuraava kuuntelu (seuraava sessio).** Ennen kuuntelua suurennetaan puskuri (`adb logcat -G 16M`)
+ja tarkistetaan `adb logcat -g`:llä. Lokitaso VERBOSEksi TalkBackin kehittäjäasetuksista. Sivu
+ladataan uudella kyselyosoitteella (`?lataus=…`), jotta puhelimessa on varmasti uusin versio.
+Kuunneltavat kohdat: kohdat 1 ja 2 yllä, Heron Ohita (*"Hero ohittaa."*), kaato- ja ottoviestin
+kaatamattomat kortit sekä sivustalyönnin vihje ja nappi korttiluetteloineen.
+
 **J-45. Nostetut kortit jäävät kuulematta kierroksen jälkeen.** Tila: korjattu dev-versiossa,
 ei kuunneltu. Viesti sanoo nostetut kortit jo, mutta J-43:n toinen siirto katkaisi sen. Mitattu
 lokista `tb-moska4.txt` klo 03.05.10: TalkBack aloitti *"Tarja nosti 2 korttia. Sari nosti 1
