@@ -1497,3 +1497,58 @@ haki siirrossa tekstinsä uudelleen. Korjaus: toinen siirto pitää rivin jäät
 ei enää tyhjennä sitä. Pitkä viesti alkaa siis noin 0,3 s kohdalla alusta, mutta kuuluu
 kokonaan. Testi `kohdistus-alussa.test.jsx` (*toinen siirto pitää jäätyneen tekstin*) kaatuu
 ilman korjausta (tarkistettu).
+
+## Kuuntelu 25.10.2026 klo 05.10–05.19: botti kaataa kortit erikseen
+
+Pixel 8a, `localhost:5188`, Jako `3e68233`, Moska, puheen määrä Matala. TalkBack oli
+päivittynyt versioon 17.1 (aiemmin 17.0.1). Logcatin puskuri suurennettiin 16 MiB:iin
+(`adb logcat -G 16M`, tarkistettu `-g`:llä), ja lokitaso vaihdettiin VERBOSEksi TalkBackin
+kehittäjäasetuksista adb:n napautuksilla ennen TalkBackin kytkentää. TalkBack kytkettiin adb:llä
+ja purettiin heti (`Bound services:{}`). VERBOSE jäi päälle Tommin pyynnöstä. Loki:
+`raakasivut/talkback-25-10-kuuntelu/tb-kuuntelu5.txt`, jossa on 192 puhuttua katkelmaa eikä
+puskuri täyttynyt.
+
+Tommi: *"peli alkoi keskeltä"*, kohdat 1 ja 2 *"erillisiä virkkeitä"* ja loput seuraavassa
+kuuntelussa.
+
+**Peli alkoi keskeltä, mitattu.** Chrome avattiin viimeaikaisista, ja edessä oli välilehti
+`?lataus=0500`, jossa edellisen kuuntelun peli oli kesken. CDP:n mukaan sivu oli ladattu klo
+04.51.16 (`performance.timeOrigin`, UTC+2, kesäaika päättyi samana yönä), eli samalla
+sekunnilla kuin `3e68233`. Sivun lataama Moska-moduuli sisälsi ryhmittelyn (`beatLines`,
+`beatManySpoken`), joten koodi oli uusin. Jaon peli ei tallennu, joten kyse oli samasta sivusta
+eikä palautuksesta. Puhelimessa oli yhdeksän Jaon dev-välilehteä aiemmista kuunteluista. Ne
+suljettiin CDP:llä, ja jatkossa ne suljetaan session lopussa (Tommin pyyntö).
+
+**J-46. Botti kaataa monen kortin pöydän kortti kerrallaan.** Tila: auki, syy tuntematon.
+Lokissa ei ole Heron monen kortin kaatoa, koska Heron kaadot (klo 05.14.43 ja 05.16.28) olivat
+yhden kortin kaatoja. Erilliset virkkeet ovat botin puolustuksia. Kumpaa Tommin kohdat 1 ja 2
+tarkoittavat, on päätelmä:
+
+- Kirsi kaatoi kahden kortin pöydän kahtena viestinä (klo 05.12.51 ja 05.12.58, uudelleen klo
+  05.13.22 ja 05.13.30), esimerkiksi *"Kirsi: risti rouva kaataa risti kahdeksan. (pöydällä on
+  kaatamatta: ruutu kahdeksan)."*
+- Rebekka kaatoi Heron kolmen kolmosen hyökkäyksen kolmena viestinä noin 7 sekunnin välein (klo
+  05.17.31, 05.17.38 ja 05.17.44), ja jokaisella oli oma tilanteensa.
+
+Ryhmitellyssä koodissa yhden parin perään tuleva tilanne syntyy vain, kun siirrossa on yksi
+kaato (`beatLines`). Botti siis kaatoi pöydän useana siirtona, vaikka `moskaPlanBeats`
+suunnittelee koko pöydän kerralla ja botin puolustus kaataa suunnitelman yhdessä
+`schedMove`ssa. Väliaikainen koe (`test/tmp-botti-kaadot.test.jsx`, kolme siementä) näki
+molemmat: Tyche kaatoi kolme kuutosta yhtenä viestinä, mutta Loki kaatoi kolmen kakkosen
+hyökkäyksen erillisinä viesteinä, ja jokainen niistä sanoi *(kaikki kaadettu)*. Kokeen
+`Math.random`-korvike tuotti päällekkäisiä korttiavaimia, joten sen yksityiskohdat voivat olla
+kokeen omia. Ryhmittelytesti `moska-kaadot-yhtena.test.jsx` kattaa vain Heron kaadon.
+
+*Sivuhavainto, Tommi ei arvioinut.* Heron Ohitan jälkeen (klo 05.13.31 ja 05.15.51) ei kuulunut
+*"Hero ohittaa."*, vaan viestirivi luki botin seuraavan viestin. Viestirivin teksti on lokissa
+neljästi noin 0,2 sekunnin sisällä (kaksi siirtoa, kumpikin kahtena tapahtumana), eikä lokista
+erota, kuuluiko se kerran vai useammin.
+
+*Lokissa toteutuneet, Tommin arvio tekemättä:* otto (*"Sari otti 4 korttia. Pöydällä oli
+kaatamatta: risti ässä, hertta ässä."*), sivustalyönnin vihje (*"Hero: Voit lyödä sivusta:
+risti kahdeksan, tai paina Ohita."*), nappi (*"Lyö sivusta (risti kahdeksan)"*) ja nostetut
+kortit kokonaisena virkkeenä (*"Hero nosti 3 korttia: pata kaksi, risti kymmenen, ruutu
+kolme. …"*, J-45).
+
+Seuraavaksi: J-46:n syy koodista. Kuunneltavaksi jäävät Heron Ohita sekä edellisen kappaleen
+kohdat korvalla.
