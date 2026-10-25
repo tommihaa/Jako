@@ -1715,3 +1715,11 @@ pitää luettelon. Testi `moska-puolustus-toisto.test.jsx` kaatuu ilman korjaust
 (*"hertta viisi, viisi"*). Peli eteni siis kahtena ketjuna. Ohita-nappi näkyy vain, kun jonon
 ensimmäinen on Hero (`isMyAdd`), eikä koodista löytynyt reittiä kahteen ketjuun. Keruutesti
 korvasi `Math.random`in, joten syy voi olla testiajurin.
+
+## Julkaisu 1.2.250 25.10.2026
+
+J-42–J-50 julkaistu (Jako `2397547`, push klo 06.39, Tommin *julkaise*). Tuotantobundlesta
+todennettu selaimessa klo 06.40: molemmat domainit tarjoavat `index-DV5PJfAc.js`:n, jossa on
+`"1.2.250"` ja *"Kaadetut parit"*, ja sen Moska-chunk sisältää `takenPairsSpoken`in ja
+`lastAdd`in. Kuunneltu dev-versiolla ennen julkaisua: J-42–J-47. Kuuntelematta julkaistiin
+J-48 (otto ja kaadetut parit), J-49 ja J-50 (puolustusvuoro ei toista juuri kuultuja kortteja).
