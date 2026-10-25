@@ -472,7 +472,6 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       : t('games.moska.msg.defendAI', { name }),
     addPhase:       cards => t('games.moska.msg.addPhase', { cards }),
     canAdd:         (name, cards) => t('games.moska.msg.canAdd', { name, cards }),
-    canAddSpoken:   name => t('games.moska.msg.canAddSpoken', { name }),
     addPhaseSpoken: t('games.moska.msg.addPhaseSpoken'),
     // Kaadettujen ja kaatamattomien määrä: silmälle 🛡️/⚔️, korvalle sanoina, koska TalkBack
     // luki rivin "0 emoji 2 emoji" (Tommin kuuntelu 17.10.2026, J-27).
@@ -549,7 +548,13 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     } else {
       const taken = g.table.flatMap(t => [t.atk, t.def].filter(Boolean));
       players[g.defender] = { ...players[g.defender], hand: [...players[g.defender].hand, ...taken] };
-      lines.push(M.defenderTook(defPlayer.name, kortin(taken.length), tableDesc));
+      // Korva kuulee vain kaatamatta jääneet, koska kaadetut kuuluivat jo kaadettaessa
+      // (Tommin kuuntelu 25.10.2026).
+      const unbeatenCards = g.table.filter(t => !t.def).map(t => lblColored(t.atk));
+      lines.push(unbeatenCards.length
+        ? eyeAndEar(M.defenderTook(defPlayer.name, kortin(taken.length), describeTableVisual(g.table)),
+                    t('games.moska.msg.defenderTookSpoken', { name: defPlayer.name, count: kortin(taken.length), cards: unbeatenCards.join(', ') }))
+        : M.defenderTook(defPlayer.name, kortin(taken.length), tableDesc));
       if (sndRef.current) SFX.leave();
     }
 
@@ -701,7 +706,12 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     // Laske pöydän tila: kaadetut/kaatamatta jääneet
     const unbeaten = newTable.filter(t => !t.def).length;
     const beaten = newTable.filter(t => t.def).length;
-    const statusMsg = unbeaten > 0 ? t('games.moska.msg.statusOnTable', { tally: M.tally(beaten, unbeaten) }) : t('games.moska.msg.statusAllBeaten');
+    // Korva kuulee kaatamatta jääneet kortit lukujen sijaan (Tommin kuuntelu 25.10.2026).
+    const unbeatenCards = newTable.filter(t => !t.def).map(t => lblColored(t.atk)).join(', ');
+    const statusMsg = unbeaten > 0
+      ? eyeAndEar(t('games.moska.msg.statusOnTable', { tally: `${beaten}🛡️/${unbeaten}⚔️` }),
+                  t('games.moska.msg.statusUnbeatenSpoken', { cards: unbeatenCards }))
+      : t('games.moska.msg.statusAllBeaten');
 
     lines.push(M.beat(def.name, lblColored(defCard), lblColored(atkCard), statusMsg));
     flashLastPlay(def.name, defCard, def.isHuman);
@@ -825,8 +835,9 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
       return;
     }
     if (p.isHuman) {
-      // Kortit näkyvät, mutta ruudunlukija kuulee ne Tilanteesta (Tommin valinta 25.10.2026).
-      addLog(eyeAndEar(M.canAdd(p.name, addable.map(lblColored).join(', ')), M.canAddSpoken(p.name)));
+      // Kortit kuuluvat myös ruudunlukijalle: Heron vuorolla pitää tietää mitkä käyvät
+      // (Tommin kuuntelu 25.10.2026, kumosi saman päivän J-44-valinnan).
+      addLog(M.canAdd(p.name, addable.map(lblColored).join(', ')));
       setSelAdd([]);
     } else {
       // AI lisää sivusta — aggressiivisuus riippuu tasosta, korttivalinta suosii pieniä parittomia
@@ -1401,8 +1412,6 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
         {!allBots && isMyAdd && (
           <>
             <button onClick={humanConfirmAdd} disabled={!selAdd.length}
-              /* Valitut kortit kuuluvat jo valintahetkellä, joten nimi ei toista niitä (25.10.2026). */
-              aria-label={t('games.moska.ui.addSide')}
               style={{ background: selAdd.length ? `linear-gradient(135deg,${C.gold},#a07830)` : 'rgba(255,255,255,0.04)', border: `1px solid ${selAdd.length ? C.gold : C.panelBorder}`, borderRadius: 10, padding: '10px 18px', color: selAdd.length ? '#0d2118' : C.dim, fontSize: 13, cursor: selAdd.length ? 'pointer' : 'default', fontFamily: 'Georgia,serif' }}>
               <Spoken>{`${t('games.moska.ui.addSide')} ${selAdd.length > 0 ? `(${selAdd.map(lbl).join(',')})` : ''}`}</Spoken>
             </button>

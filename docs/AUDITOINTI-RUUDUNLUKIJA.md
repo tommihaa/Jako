@@ -1412,9 +1412,24 @@ käsin painomerkkien vuoksi (*Φάση πλάγιας επίθεσης*). Muiden
 ilman korttipaikkaa. Puolustusvuoron viesti luettelee jo nyt vain kaatamattomat kortit, ja
 kaadetut kuuluvat vain lukumääränä (*"kaadettu 3, kaatamatta 2"*).
 
-Avoin: Tommin monivalinnassa oli valittuna "jokin muu" tyhjällä tekstillä. Kysymys siitä,
-poistetaanko puolustusvuoron lukumäärä vai tarkoittiko Tommi jotain kolmatta viestiä, jäi
-auki. Tommi tarkentaa J-44:n kuuntelun jälkeen, jos toistoa on yhä liikaa (25.10.2026).
+Tommin monivalinnassa oli valittuna "jokin muu" tyhjällä tekstillä, ja kysymys jäi
+kuuntelun jälkeen tarkennettavaksi.
+
+**J-44:n kuuntelu 25.10.2026 klo 04.05.** TalkBackin lokitaso ei ollut VERBOSE, joten puhetta ei
+ole lokissa, ja tulos on Tommin korvan varassa. Tommi: *"sivustalyöntivaiheessa kun heron vuoro
+niin kerro mitkä kortit käy"* ja *"kun joku puolustaa tai epäonnistuu siinä, niin pitää kuulua
+pöydällä on/oli kaatamatta (luettelo korteista)"*. Tulkinta toistettiin monivalintana, ja Tommi
+valitsi:
+
+- *Vihje* ja *napin nimi* luettelevat kortit taas kuten ennen J-44:ää. Tämä kumoaa J-44:n kaksi
+  ensimmäistä valintaa. Vaiheen alku kuuluu yhä pelkkänä nimenä.
+- *Kaato* sanoo korvalle *"(pöydällä on kaatamatta: hertta kuusi, risti yhdeksän)"* lukujen
+  sijaan. Silmä näkee yhä 🛡️/⚔️-luvut.
+- *Otto* sanoo korvalle *"Sari otti 4 korttia. Pöydällä oli kaatamatta: …"* koko pöydän sijaan.
+  Jos kaatamattomia ei ole, viesti on ennallaan.
+
+Uudet avaimet `statusUnbeatenSpoken` ja `defenderTookSpoken` 23 kielellä, `canAddSpoken`
+poistettu. Ei vielä kuunneltu.
 
 **J-45. Nostetut kortit jäävät kuulematta kierroksen jälkeen.** Tila: korjattu dev-versiossa,
 ei kuunneltu. Viesti sanoo nostetut kortit jo, mutta J-43:n toinen siirto katkaisi sen. Mitattu
