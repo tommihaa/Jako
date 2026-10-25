@@ -80,6 +80,25 @@ Pelin lopussa muodostuu ranking:
 - Nostopakan koko on **näkyvä kaikille**
 - Kuka on hyökkääjä, puolustaja ja siirretyt puolustajat ovat **selviä** pelinjohdon kautta
 
+## Ruudunlukija (Tommin linjaus 25.10.2026)
+
+Toiston vähentäminen ei saa johtaa siihen, että ruudunlukija jättää tärkeän tiedon kertomatta,
+ei vahingossa eikä suunnitelmallisesti. Moska on kokoelman haastavin peli, koska yhdellä
+kierroksella voi olla monta toistuvaa vaihetta. Toistoa saa karsia vain niin, että seuraava
+tieto kuuluu silti vähintään kerran:
+
+- millä korteilla on hyökätty, siirretty, puolustettu ja kaadettu
+- onnistuiko puolustus
+- mitkä kortit eivät enää ole pelissä mukana
+
+Clauden tarkennus, odottaa Tommin vahvistusta: samaan joukkoon kuuluvat sivusta lyödyt kortit,
+se kuka kunkin teon teki, ja otossa puolustajan käteen menneet kortit (myös jo kaadetut
+parit, jotka puolustaja ottaa mukaan). Onnistuneen puolustuksen jälkeen pöydän kortit menevät
+poistopakkaan (Nostorutiini, kohta 3), ja ne ovat pois pelistä.
+
+Vastustajien salaiset kortit pysyvät salaisina (Pelaajien näkyvyys, yllä). Karsinnan
+perustelut ja kuuntelut: `docs/AUDITOINTI-RUUDUNLUKIJA.md` (J-26, J-44, J-46 ja J-47).
+
 ## AI-strategia
 
 ### AI:n hyökkäys

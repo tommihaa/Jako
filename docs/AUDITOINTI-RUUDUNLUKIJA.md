@@ -1616,3 +1616,34 @@ maalla ole pelissä merkitystä. Testi `nosto-maittain.test.jsx` kaatuu ilman ko
 (tarkistettu): seitsemännessä siemennetyssä pelissä viesti sanoi ristin kahdesti.
 
 Seuraavaksi: J-47:n kuuntelu.
+
+## Moskan viestit Tommin linjausta vasten 25.10.2026 klo 06.05
+
+Tommi: *"toiston vähentäminen ei saa johtaa siihen, että ruudunlukija ohittaa tärkeän tiedon
+siitä vahingossa tai suunnitelmallisesti kertomatta"*. Linjaus on kirjattu `MOSKA.md`:hen
+(› Ruudunlukija). Clauden tarkennukset odottavat siellä vahvistusta.
+
+**Suunnitelmallinen karsinta, luettu koodista (`src/games/Moska.jsx`, `src/locales/fi.js`).**
+Jokainen linjauksen tieto kuuluu vähintään kerran:
+
+| Tieto | Viesti, joka sen kertoo | Karsittu toisto |
+|---|---|---|
+| Hyökkäyksen kortit | *"X hyökkäsi: …"* | ei |
+| Siirron kortit | *"X siirsi (…), Y puolustaa"* | ei |
+| Sivustalyönnin kortit | *"X löi sivusta: …"* | vaiheen alun pöytäluettelo (J-44), kortit kuuluivat jo lyönnissä |
+| Kaadon kortit | *"X: A kaataa B, …"* | saman siirron tilanne kerran (J-44), parit kaikki |
+| Puolustus onnistui | *"X puolusti onnistuneesti! Pöydällä: A, kaatajana B; …"* | ei |
+| Pois pelistä | sama viesti, kaikki parit | ei sanota sanaa *poistopakka* |
+| Otto | *"X otti N korttia. Pöydällä oli kaatamatta: …"* | kaadetut parit, jotka kuuluivat jo kaadossa |
+
+Kaksi kohtaa, joissa korva saa vähemmän kuin silmä. Otossa puhuttu viesti nimeää vain kaatamatta
+jääneet kortit, vaikka puolustaja ottaa myös kaadetut parit (`MOSKA.md` › Nostorutiini, kohta 4).
+Tommi arvioi oton oikeaksi klo 05.40:n kuuntelussa. Onnistuneen puolustuksen viesti luettelee
+poistuvat kortit, mutta ei sano niiden menevän poistopakkaan.
+
+**Vahingossa putoaminen, mitattu lokista `tb-kuuntelu6.txt`.** Kuuntelussa klo 05.39–05.47
+peliviesti katkesi kesken 13 kertaa, esimerkiksi *"Hero puolusti onnistuneesti! Pöydällä: …"*
+4,6 sekunnin kohdalla. Jokaista katkoa edelsi kosketus 4–16 ms aiemmin
+(`handleTouchInteractionStartEvent`), joten katkot olivat Tommin eleitä eivätkä sovelluksen
+kohdistussiirtoja. Sovellus ei katkaissut yhtään viestiä. Sitä, saako pelaaja kesken jääneen
+viestin takaisin, ei ole tarkistettu (viestirivi lukee vain viimeisimmän viestin).
