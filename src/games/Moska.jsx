@@ -1065,7 +1065,9 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     opastus.answer(opastusAvain('skip'));
     const rest = (g.addQueue || []).slice(1);
     const g2 = { ...g, addQueue: rest };
-    commit(g2);
+    // Ohitus kirjoitetaan kuten botin, koska muuten kadonneen napin jälkeen viestirivi luki
+    // uudelleen vihjeen "Voit lyödä sivusta" (Tommin kuuntelu 25.10.2026).
+    commit(g2, M.aiSkips(g.players[0].name));
     processAddQueue(g2);
   }
 

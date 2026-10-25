@@ -1440,6 +1440,20 @@ ruudunlukijalta. Avaimet `beatPairSpoken` ja `beatManySpoken` on johdettu kunkin
 `beat`-tekstistä. Testi `moska-kaadot-yhtena.test.jsx` kaatuu ilman korjausta (tarkistettu).
 Ei vielä kuunneltu.
 
+Tommi kuuli Sunen puolustuksen jakautuvan useaan virkkeeseen. Kohta ei ole lokissa, koska
+VERBOSE kytkettiin vasta sen jälkeen, eikä tiedetä, oliko puhelimen sivu jo päivittynyt
+ryhmittelyyn. Botin kaato kulkee koodissa samaa `beatLines`-reittiä kuin Heron. Tommin
+mukaan botit eivät näytä lyövän sivusta montaa korttia kerralla, joten botin monen kortin
+kaato syntyy lähinnä Heron monen kortin hyökkäyksestä, eikä sitä ole vielä kuunneltu.
+
+**Ohitan jälkeen vihje kuului uudelleen.** Tommi: *"oma Ohita kun painettu niin sen jälkeen
+monesti heti toistaa että voit sivustalyödä"*. Kohta ei ole lokissa (loki tyhjennettiin
+sivun uudelleenlatauksessa ennen sitä). Syy luettu koodista: Heron Ohita ei kirjoittanut
+viestiä, joten kadonneen napin jälkeen kohdistus meni viestiriville, ja rivi luki nykyisen
+viestinsä eli vihjeen (`GameMessageRow`, ei jonossa odottavia viestejä). J-43:n toinen siirto
+toisti sen. Korjaus: Ohita kirjoittaa *"Hero ohittaa."* kuten botin ohitus. Testi
+`moska-ohita-viesti.test.jsx` kaatuu ilman korjausta (tarkistettu). Ei vielä kuunneltu.
+
 **J-45. Nostetut kortit jäävät kuulematta kierroksen jälkeen.** Tila: korjattu dev-versiossa,
 ei kuunneltu. Viesti sanoo nostetut kortit jo, mutta J-43:n toinen siirto katkaisi sen. Mitattu
 lokista `tb-moska4.txt` klo 03.05.10: TalkBack aloitti *"Tarja nosti 2 korttia. Sari nosti 1
