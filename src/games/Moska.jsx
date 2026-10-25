@@ -452,8 +452,10 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     defenderTook:   (name, count, table) => t('games.moska.msg.defenderTook', { name, count, table }),
     // Heron täydennys nimeää kortit ruudunlukijalle; botin kortit ovat salaisia
     // (Tommin toive 17.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md › J-26).
+    // Kortit käden järjestyksessä, jotta saman maan kortit ovat peräkkäin ja ruudunlukija
+    // ryhmittelee ne maittain (Tommin kuuntelu 25.10.2026, J-47).
     drew:           (p, drawn) => p.isHuman
-      ? t('games.moska.msg.heroDrew', { name: p.name, count: kortin(drawn.length), cards: drawn.map(lblColored).join(', ') })
+      ? t('games.moska.msg.heroDrew', { name: p.name, count: kortin(drawn.length), cards: sortHand(drawn).map(lblColored).join(', ') })
       : t('games.moska.msg.playerDrew', { name: p.name, count: kortin(drawn.length) }),
     won:            name => t('games.moska.msg.won', { name }),
     out:            name => t('games.moska.msg.out', { name }),

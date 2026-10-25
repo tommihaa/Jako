@@ -1393,8 +1393,8 @@ hermot, ehkä tilanne riittää"*, *"älä luettele aiemmin kaadettuja kortteja,
 kertoo jos haluaa sen kuulla"* ja *"Moskassa pitäisi saada tietää myös mitä kortteja nosti
 kierroksen jälkeen"*.
 
-**J-44. Sivustalyönnissä samat kortit kuuluvat neljästi.** Tila: korjattu dev-versiossa, ei
-kuunneltu. Lokissa `tb-moska5.txt` yksi sivustalyönti kuului neljässä kohdassa: vaiheen alun
+**J-44. Sivustalyönnissä samat kortit kuuluvat neljästi.** Tila: korjattu dev-versiossa,
+kuunneltu ok 25.10.2026 klo 05.40 (Kuuntelu 25.10.2026 klo 05.39–05.47). Lokissa `tb-moska5.txt` yksi sivustalyönti kuului neljässä kohdassa: vaiheen alun
 pöytäluettelossa, vihjeessä (*"Voit lyödä sivusta: hertta kuusi, risti yhdeksän, tai paina
 Ohita"*), napin nimessä (*"Lyö sivusta (hertta kuusi, risti yhdeksän)"*) ja lyönnin jälkeen.
 Tommin valinnat (monivalinta, koskee vain ruudunlukijaa, näkyvä teksti ennallaan):
@@ -1488,7 +1488,7 @@ Kuunneltavat kohdat: kohdat 1 ja 2 yllä, Heron Ohita (*"Hero ohittaa."*), kaato
 kaatamattomat kortit sekä sivustalyönnin vihje ja nappi korttiluetteloineen.
 
 **J-45. Nostetut kortit jäävät kuulematta kierroksen jälkeen.** Tila: korjattu dev-versiossa,
-ei kuunneltu. Viesti sanoo nostetut kortit jo, mutta J-43:n toinen siirto katkaisi sen. Mitattu
+kuunneltu ok 25.10.2026 klo 05.40. Viesti sanoo nostetut kortit jo, mutta J-43:n toinen siirto katkaisi sen. Mitattu
 lokista `tb-moska4.txt` klo 03.05.10: TalkBack aloitti *"Tarja nosti 2 korttia. Sari nosti 1
 kortin. Hero nosti 1 kortin: hertta viisi. Sari hyökkää, Hero puolustaa"*, ja 317 ms myöhemmin
 toinen siirto korvasi sen rivin uudella tekstillä *"Sari hyökkää, Hero puolustaa."*, koska rivi
@@ -1553,10 +1553,10 @@ kolme. …"*, J-45).
 Seuraavaksi: J-46:n syy koodista. Kuunneltavaksi jäävät Heron Ohita sekä edellisen kappaleen
 kohdat korvalla.
 
-## J-46:n syy lokista 25.10.2026 klo 05.30–05.45: puhelimessa ajoi vanhempi Moska
+## J-46:n syy lokista 25.10.2026 klo 05.30–05.38: puhelimessa ajoi vanhempi Moska
 
-**J-46 ei ole botin vika.** Tila: syy luettu lokista, koodiin ei tarvita korjausta, suljetaan
-kuuntelussa. Puhelimen
+**J-46 ei ole botin vika.** Tila: suljettu 25.10.2026, kuunneltu ok klo 05.40. Koodiin ei tarvittu
+korjausta. Puhelimen
 sivu ajoi kuuntelussa Moskaa, jossa ryhmittelyä (`2762074`) eikä Heron Ohitan viestiä
 (`3e68233`) ollut. Kolme todistetta lokista `tb-kuuntelu5.txt`:
 
@@ -1585,3 +1585,34 @@ siitä.
 
 Seuraavaksi: kuuntelu, jossa ajossa oleva koodi on todennettu ennen aloitusta. Kuunneltavat
 kohdat ovat edellisen kuuntelun kohdat 1 ja 2 sekä Heron Ohita.
+
+## Kuuntelu 25.10.2026 klo 05.39–05.47: J-46 suljettu, nostetut kortit maittain (J-47)
+
+Pixel 8a, `localhost:5188/?lataus=0545`, Jako `769f354`, Moska. Sivu avattiin tuoreena adb:n
+intentillä, ja ajossa oleva koodi luettiin ennen kuuntelua sivun muistista CDP:llä:
+Moska-moduulin komponentissa olivat sekä `beatManySpoken` että Heron Ohitan viesti
+(`M.aiSkips(g.players[0].name)`). Puhelimessa ei ollut aiempia Jaon dev-välilehtiä. Sivua
+hallitsee service worker (`sw.js`), joka hakee lähdetiedostot verkosta ensin. Logcatin puskuri
+oli yhä 16 MiB ja lokitaso VERBOSE. TalkBack kytkettiin adb:llä klo 05.39.30 ja purettiin heti
+kuuntelun jälkeen (`Bound services:{}`). Loki: `raakasivut/talkback-25-10-kuuntelu/tb-kuuntelu6.txt`.
+
+Tommi:
+
+1. Botin monen kortin kaato yhtenä virkkeenä: ok. J-46 suljettu.
+2. Heron kahden kortin kaato ilman toistoa: ok.
+3. Heron Ohita (*"Hero ohittaa."*): ok.
+4. Otto kertoo pöydästä nostetut kortit oikein, sivustalyönnin vihje on ok, ja pakasta nostetut
+   kortit kuuluvat, mutta *"ei ryhmittele niitä maittain"*.
+
+**J-47. Pakasta nostetut kortit eivät ryhmity maittain.** Tila: korjattu dev-versiossa, ei
+kuunneltu. Lokissa on *"Hero nosti 3 korttia: hertta kuningas, ruutu kolme, hertta kymmenen."*,
+mutta myös *"Hero nosti 4 korttia: pata kuningas, rouva, risti neljä, kuusi."* Ryhmittely
+(`groupedCardNames` ja `spokenSuits`, `shared/helpers.js`) yhdistää vain peräkkäiset saman maan
+kortit, ja nostoviesti luetteli kortit nostojärjestyksessä. Toinen nosto ryhmittyi siis
+sattumalta. Korjaus: nostetut kortit luetellaan käden järjestyksessä (`sortHand`, maittain ja
+maan sisällä arvon mukaan), samoin kuin ruudulla. Sama nostoviesti on Maijassa, joten se
+korjattiin samalla. Paskahousua ei muutettu, koska sen käsi järjestetään arvon mukaan eikä
+maalla ole pelissä merkitystä. Testi `nosto-maittain.test.jsx` kaatuu ilman korjausta
+(tarkistettu): seitsemännessä siemennetyssä pelissä viesti sanoi ristin kahdesti.
+
+Seuraavaksi: J-47:n kuuntelu.

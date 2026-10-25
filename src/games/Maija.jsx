@@ -396,8 +396,9 @@ export default function Maija({ onResult, showLog = true, soundOn = false, seeAl
     }),
     aiTake: (name, cards) => t('games.maija.msg.aiTake', { name, cards: cards.map(lblColored).join(', ') }),
     // Heron täydennys pakasta nimeää kortit. Botin nostoa ei nimetä, koska sen kortit ovat
-    // salaisia (Tommin toive 17.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md › J-26).
-    heroDrew: (name, cards) => t('games.maija.msg.heroDrew', { name, count: kortin(cards.length), cards: cards.map(lblColored).join(', ') }),
+    // salaisia (Tommin toive 17.10.2026, docs/AUDITOINTI-RUUDUNLUKIJA.md › J-26). Kortit käden
+    // järjestyksessä, jotta ruudunlukija ryhmittelee ne maittain (Tommin kuuntelu 25.10.2026, J-47).
+    heroDrew: (name, cards) => t('games.maija.msg.heroDrew', { name, count: kortin(cards.length), cards: sortHand(cards).map(lblColored).join(', ') }),
     defenderWinRoundNext: t('games.maija.msg.defenderWinRoundNext'),
     tooManyCards: t('games.maija.msg.tooManyCards'),
     maijaNotValid: t('games.maija.msg.maijaNotValid'),
