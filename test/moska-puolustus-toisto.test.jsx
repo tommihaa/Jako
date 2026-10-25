@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 //
-// Tyhjään pöytään hyökättäessä puolustusvuoron viesti ei toista korville juuri sanottuja
-// hyökkäyskortteja. Muulloin pöytäluettelo säilyy, koska pöydällä on muutakin (Tommin valinta
-// 25.10.2026, auditointi J-49).
+// Puolustusvuoron viesti ei toista korville juuri sanottuja kortteja: tyhjän pöydän hyökkäyksen
+// jälkeen (J-49) eikä sivustalyönnin jälkeen, kun kaatamatta on vain lyöty kortti (J-50).
+// Muulloin pöytäluettelo säilyy, koska pöydällä on muutakin (Tommin valinnat 25.10.2026).
 
 import { it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, cleanup, act, fireEvent } from '@testing-library/react';
@@ -45,8 +45,13 @@ const button = (c, re) => /** @type {HTMLElement | undefined} */ ([...c.querySel
 const omat = c => /** @type {HTMLElement[]} */ ([...c.querySelectorAll('[role="button"][data-mine]')]);
 const parit = () => ilmoitetut.slice(1).map((s, i) => [ilmoitetut[i], s]);
 const hyokkays = () => parit().filter(([a]) => / hyökkäsi: /.test(a));
-// Puolustusvuoro, joka alkaa muusta kuin hyökkäyksestä, esimerkiksi sivustalyönnin jälkeen.
-const muuVuoro = () => parit().filter(([a, b]) => !/ hyökkäsi: /.test(a) && /puolustaa… \(pöydällä:|On vuorosi puolustautua\. Pöydällä:/.test(b));
+const VUORO = /puolustaa…|On vuorosi puolustautua/;
+const LUETTELO = /(?:puolustaa… \(pöydällä: ([^)]*)\)|On vuorosi puolustautua\. Pöydällä: (.*) \()/;
+// Sivustalyöntiä seuraava puolustusvuoro.
+const lyonti = () => parit().filter(([a, b]) => / löi sivusta: /.test(a) && VUORO.test(b));
+// Puolustusvuoro luetteloineen muun kuin hyökkäyksen tai sivustalyönnin jälkeen, esimerkiksi siirron.
+const muuVuoro = () => parit().filter(([a, b]) => !/ hyökkäsi: | löi sivusta: /.test(a) && LUETTELO.test(b));
+const valmis = () => hyokkays().length >= 3 && lyonti().length >= 3 && muuVuoro().length;
 
 async function pelaa(siemen) {
   vi.spyOn(Math, 'random').mockImplementation(mulberry32(strSeed(siemen)));
@@ -54,7 +59,7 @@ async function pelaa(siemen) {
   await act(async () => { utils = render(<LangProvider><Moska {...props()} /></LangProvider>); });
   const c = utils.container;
   await act(async () => { fireEvent.click(/** @type {HTMLElement} */ (button(c, /^Aloita/))); });
-  for (let i = 0; i < 600 && !(hyokkays().length >= 3 && muuVuoro().length); i++) {
+  for (let i = 0; i < 600 && !valmis(); i++) {
     await act(async () => { await vi.advanceTimersByTimeAsync(1700); });
     const otto = button(c, /^Ota kortit/);
     if (otto) {
@@ -70,11 +75,18 @@ async function pelaa(siemen) {
   cleanup();
 }
 
-it('Moskan puolustusvuoro ei toista tyhjän pöydän hyökkäyksen kortteja', async () => {
-  for (let n = 0; n < 6 && !(hyokkays().length >= 3 && muuVuoro().length); n++) await pelaa(`puolustus-toisto-${n}`);
+it('Moskan puolustusvuoro ei toista juuri sanottuja kortteja', async () => {
+  for (let n = 0; n < 6 && !valmis(); n++) await pelaa(`puolustus-toisto-${n}`);
   expect(hyokkays().length).toBeGreaterThanOrEqual(3);
   for (const [a, b] of hyokkays()) {
     expect(b, a).toMatch(/^(\S+ puolustaa…|On vuorosi puolustautua\.)$/);
+  }
+  // Sivustalyönnin jälkeen luettelo ei ole pelkkä juuri lyöty kortti.
+  expect(lyonti().length).toBeGreaterThanOrEqual(3);
+  for (const [a, b] of lyonti()) {
+    const lyoty = / löi sivusta: (.*?)\.?$/.exec(a)?.[1];
+    const m = LUETTELO.exec(b);
+    expect(m ? (m[1] ?? m[2]) : null, `${a} → ${b}`).not.toBe(lyoty);
   }
   // Muualla luettelo säilyy.
   expect(muuVuoro().length).toBeGreaterThan(0);

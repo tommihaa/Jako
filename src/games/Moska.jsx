@@ -693,7 +693,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     const ids = new Set(cards.map(c => c.id));
     setJustPlaced(ids);
     tm(() => setJustPlaced(new Set()), 1800);
-    const g2 = { ...g, players, table: newTable, attackers: [atkIdx], phase: 'defend' };
+    const g2 = { ...g, players, table: newTable, attackers: [atkIdx], phase: 'defend', lastAdd: null };
     commit(g2, M.attack(p.name, cards.map(lblColored).join(', ')));
     goDefend(g2, true);
   }
@@ -724,7 +724,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     beats.push({ defName: def.name, defCard: lblColored(defCard), atkCard: lblColored(atkCard), status, spokenStatus });
     flashLastPlay(def.name, defCard, def.isHuman);
     if (sndRef.current) SFX.beat();
-    return { ...g, players, table: newTable };
+    return { ...g, players, table: newTable, lastAdd: null };
   }
 
   // Saman siirron kaadot kuuluvat yhtenä viestinä ja tilanne kerran lopussa, mutta näkyvä
@@ -758,7 +758,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     const players = g.players.map((p, i) => i === g.defender ? { ...p, hand: newHand } : p);
     const g2 = {
       ...g, players, table: newTable, defender: nextDef,
-      passChain: [...g.passChain, g.defender],
+      passChain: [...g.passChain, g.defender], lastAdd: null,
       attackers: [...new Set([...g.attackers, g.defender])],
       phase: 'defend',
     };
@@ -778,7 +778,7 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
     const g2 = {
       ...g, players, table: newTable,
       attackers: [...new Set([...g.attackers, playerIdx])],
-      addQueue: rest, phase: 'add',
+      addQueue: rest, phase: 'add', lastAdd: cards.map(c => c.id),
     };
     commit(g2, M.add(p.name, cards.map(lblColored).join(', ')));
     // Jatka lisäysvaiheen jonoa seuraavalle pelaajalle (phase pysyy 'add')
@@ -786,14 +786,20 @@ export default function Moska({ onResult, showLog = true, soundOn = false, seeAl
   }
 
   // ── Puolustuskierros ──────────────────────────────────────
-  // `fresh`: hyökkäys tyhjään pöytään. Silloin pöydällä on täsmälleen edellisen virkkeen
+  // `attackJustSaid`: hyökkäys tyhjään pöytään. Silloin pöydällä on täsmälleen edellisen virkkeen
   // hyökkäyskortit, joten korva ei kuule niitä uudelleen; silmä näkee luettelon yhä (Tommin
   // valinta 25.10.2026, J-49).
-  function goDefend(g, fresh = false) {
+  function goDefend(g, attackJustSaid = false) {
     const def = g.players[g.defender];
     const unbeaten = g.table.filter(t => !t.def).length;
     const unbeatenCards = g.table.filter(t => !t.def).map(t => lblColored(t.atk));
     const beaten = g.table.filter(t => t.def).length;
+    // Sama sääntö sivustalyönnille: kun kaatamatta on vain viimeksi lyöty kortti, se kuului
+    // juuri lyönnin viestissä (Tommin valinta 25.10.2026, J-50). `lastAdd` nollautuu
+    // hyökkäyksessä, siirrossa ja kaadossa.
+    const unbeatenIds = g.table.filter(t => !t.def).map(t => t.atk.id);
+    const fresh = attackJustSaid || (!!g.lastAdd?.length && unbeatenIds.length === g.lastAdd.length
+      && unbeatenIds.every(id => g.lastAdd.includes(id)));
 
     if (def.isHuman) {
       // Silmän muodossa tilanne on pelkkä merkkijono, koska `M.tally` on jo eyeAndEar eikä

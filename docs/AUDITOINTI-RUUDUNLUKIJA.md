@@ -1694,12 +1694,21 @@ peräkkäisiä viestipareja, joissa sama kortti mainitaan:
 
 | Pari | Määrä | Esimerkki | Arvio |
 |---|---|---|---|
-| sivustalyönti → puolustusvuoro | 103 | *"Tyche löi sivusta: pata kolme."* → *"Fortuna puolustaa… (pöydällä: pata kolme)"* | sama kuin J-49, kun kaatamatta on vain lyöty kortti |
+| sivustalyönti → puolustusvuoro | 103 | *"Tyche löi sivusta: pata kolme."* → *"Fortuna puolustaa… (pöydällä: pata kolme)"* | sama kuin J-49, kun kaatamatta on vain lyöty kortti (korjattu J-50:ssä) |
 | puolustusvuoro → botin kaato | 43 | *"Fortuna puolustaa… (pöydällä: pata kolme)"* → *"Fortuna: pata rouva kaataa pata kolme."* | kaato nimeää parin, tarpeen |
 | kaato → onnistui | 29 | *"… kaataa pata kaksi."* → *"… puolusti onnistuneesti! Pöydällä: pata kaksi, kaatajana …"* | linjauksen *pois pelistä*, tarpeen |
 | siirto → puolustusvuoro | 27 | *"Fortuna siirsi (hertta kuusi), Hero puolustaa."* → *"… Pöydällä: ruutu kuusi, hertta kuusi"* | luettelossa on muutakin, tarpeen |
 | puolustusvuoro → otto | 19 | *"Tyche puolustaa… (pöydällä: risti seitsemän)"* → *"Tyche otti 5 korttia. … risti seitsemän …"* | linjauksen otto, tarpeen |
 | vihje → Heron sivustalyönti | 6 | *"Voit lyödä sivusta: risti kolme, pata kolme …"* → *"Hero löi sivusta: pata kolme."* | vahvistus omasta teosta |
+
+**J-50. Sivustalyönnin kortti toistuu puolustusvuorossa.** Tila: korjattu dev-versiossa, ei
+kuunneltu. Tommin valinta 25.10.2026: *"sivustalyönnin jälkeen puolustusvuoro ilman luetteloa,
+kun kaatamatta on vain juuri lyöty kortti. Muuten luettelo säilyy."* Tulkinta tiukka: luettelo
+jää pois vain, kun kaatamatta jääneet ovat täsmälleen viimeisimmän sivustalyönnin kortit
+(`lastAdd`, nollautuu hyökkäyksessä, siirrossa ja kaadossa). Jos samassa vaiheessa kaksi
+pelaajaa lyö sivusta, luettelo säilyy, koska ensimmäinen kortti kuului kauempana. Näkyvä loki
+pitää luettelon. Testi `moska-puolustus-toisto.test.jsx` kaatuu ilman korjausta (tarkistettu):
+*"Loki löi sivusta: risti viisi."* → *"Fortuna puolustaa… (pöydällä: risti viisi)"*.
 
 **Avoin havainto, ei todennettu pelissä.** Kolmessa kohdassa samassa keruussa *"Hero ohittaa."*
 -viestin jälkeen jokainen viesti tuli kahdesti, ja pöydälle päätyi sama kortti kahdesti
