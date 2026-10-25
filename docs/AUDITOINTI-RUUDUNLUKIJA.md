@@ -1668,7 +1668,7 @@ kortit ja kertoo määrän (*"Arto otti 9 korttia. Pöydällä oli kaatamatta: h
 ässä, ruutu ässä."*). Kaadetut parit kuuluivat kaatohetkellä, mutta niiden siirtymistä
 puolustajan käteen viesti ei nimeä. Tommi arvioi oton oikeaksi ennen tarkennusta.
 
-**J-48. Otto ei nimeä kaadettuja pareja.** Tila: korjattu dev-versiossa, ei kuunneltu. Tommin
+**J-48. Otto ei nimeä kaadettuja pareja.** Tila: korjattu ja julkaistu 1.2.250, kuunneltu ok tuotannossa 25.10.2026 klo 06.53–07.01. Tommin
 päätös 25.10.2026: ottoviestiin lisätään kaadetut parit, jotka menevät puolustajan käteen
 (`MOSKA.md` › Ruudunlukija). Puhuttu viesti on nyt esimerkiksi *"Tyche otti 7 korttia. Pöydällä
 oli kaatamatta: pata kuusi. Kaadetut parit: hertta yhdeksän, kaatajana hertta rouva; pata
@@ -1678,8 +1678,8 @@ on käännetty kaikkiin 23 kieleen. Romanin (*"Mardine para"*) ja pohjoissaamen 
 bárat"*) käännös on johdettu tiedostojen omista sanoista eikä tarkistettu lähteestä. Testi
 `moska-otto-parit.test.jsx` kaatuu ilman korjausta (tarkistettu).
 
-**J-49. Tyhjän pöydän hyökkäyksen kortit toistuvat puolustusvuorossa.** Tila: korjattu
-dev-versiossa, ei kuunneltu. Tommi: *"kun hyökkää tyhjään pöytään, niin onko puolustaessa
+**J-49. Tyhjän pöydän hyökkäyksen kortit toistuvat puolustusvuorossa.** Tila:
+korjattu ja julkaistu 1.2.250, kuunneltu ok tuotannossa 25.10.2026 klo 06.53–07.01. Tommi: *"kun hyökkää tyhjään pöytään, niin onko puolustaessa
 tarve heti toistaa niitä?"* Esimerkki lokista `tb-kuuntelu5.txt`: *"Hero hyökkäsi: pata kolme,
 hertta kolme, risti kolme. Rebekka puolustaa… (pöydällä: pata kolme, hertta kolme, risti
 kolme)."* Tommin valinta: luettelo jätetään pois vain tyhjän pöydän hyökkäyksen jälkeen.
@@ -1701,8 +1701,8 @@ peräkkäisiä viestipareja, joissa sama kortti mainitaan:
 | puolustusvuoro → otto | 19 | *"Tyche puolustaa… (pöydällä: risti seitsemän)"* → *"Tyche otti 5 korttia. … risti seitsemän …"* | linjauksen otto, tarpeen |
 | vihje → Heron sivustalyönti | 6 | *"Voit lyödä sivusta: risti kolme, pata kolme …"* → *"Hero löi sivusta: pata kolme."* | vahvistus omasta teosta |
 
-**J-50. Sivustalyönnin kortti toistuu puolustusvuorossa.** Tila: korjattu dev-versiossa, ei
-kuunneltu. Tommin valinta 25.10.2026: *"sivustalyönnin jälkeen puolustusvuoro ilman luetteloa,
+**J-50. Sivustalyönnin kortti toistuu puolustusvuorossa.** Tila:
+korjattu ja julkaistu 1.2.250, kuunneltu ok tuotannossa 25.10.2026 klo 06.53–07.01. Tommin valinta 25.10.2026: *"sivustalyönnin jälkeen puolustusvuoro ilman luetteloa,
 kun kaatamatta on vain juuri lyöty kortti. Muuten luettelo säilyy."* Tulkinta tiukka: luettelo
 jää pois vain, kun kaatamatta jääneet ovat täsmälleen viimeisimmän sivustalyönnin kortit
 (`lastAdd`, nollautuu hyökkäyksessä, siirrossa ja kaadossa). Jos samassa vaiheessa kaksi
@@ -1723,3 +1723,31 @@ todennettu selaimessa klo 06.40: molemmat domainit tarjoavat `index-DV5PJfAc.js`
 `"1.2.250"` ja *"Kaadetut parit"*, ja sen Moska-chunk sisältää `takenPairsSpoken`in ja
 `lastAdd`in. Kuunneltu dev-versiolla ennen julkaisua: J-42–J-47. Kuuntelematta julkaistiin
 J-48 (otto ja kaadetut parit), J-49 ja J-50 (puolustusvuoro ei toista juuri kuultuja kortteja).
+
+## J-48–J-50:n kuuntelu tuotannossa 25.10.2026 klo 06.53–07.01: suljettu
+
+Pixel 8a, `tommi-jako.vercel.app/?lataus=0700`, Moska. Tuotanto tarjosi kuuntelun aikaan
+bundlen `index-DiaU2HMJ.js` eikä julkaisun yhteydessä todennettua `index-DV5PJfAc.js`:ää, koska
+kirjauskommitin `ebda10e` push käynnisti uuden Vercel-buildin. Ajossa oleva koodi luettiin
+ennen kuuntelua: sivun lataama bundle sisälsi `"1.2.250"`:n ja `takenPairsSpoken`in, ja sen
+Moska-chunk (`Moska-Bd1cxDrD.js`) sisälsi `takenPairsSpoken`in ja `lastAdd`in. TalkBack
+kytkettiin adb:llä klo 06.52.47 ja purettiin klo 07.01.05 (`Bound services:{}`). Loki:
+`raakasivut/talkback-25-10-kuuntelu/tb-kuuntelu8.txt`, joka on poimittu logcatin puskurista
+(`logcat -d`), koska rinnalla ajettu suodatettu kaappaus jäi tyhjäksi.
+
+Tommi: *"1,2,3 kaikki ok"*. Lokin vastaavat kohdat:
+
+- J-48: *"Sune otti 9 korttia. Pöydällä oli kaatamatta: ruutu rouva. Kaadetut parit: risti
+  kaksi, kaatajana risti jätkä; hertta kaksi, kaatajana pata kymmenen; pata jätkä, kaatajana
+  pata rouva; ruutu kaksi, kaatajana ruutu kolme."* Toinen otto (Sari, 11 korttia) samassa muodossa.
+- J-49: *"Sari hyökkäsi: hertta kolme."* → *"On vuorosi puolustautua."*
+- J-50: *"Hero löi sivusta: ruutu rouva."* → *"Sune puolustaa…"*. Kun samassa vaiheessa kaksi
+  pelaajaa löi sivusta, luettelo säilyi tulkinnan mukaisesti: *"Osku löi sivusta: ruutu viisi."*,
+  *"Sune löi sivusta: ruutu kolme."* → *"On vuorosi puolustautua. Pöydällä: ruutu viisi, kolme
+  (kaadettu 1, kaatamatta 2)."*
+
+**Havainto, ei arvioitu.** Moni viesti alkoi lokissa 2–4 kertaa alle puolen sekunnin sisällä
+omalla puhetunnisteellaan, esimerkiksi *"Hero löi sivusta: ruutu kaksi."* neljästi klo
+06.54.25,7–06.54.26,0 (`talkback_27`–`talkback_30`). Sama näkyy lokissa `tb-kuuntelu7.txt`
+(*"nosti 3"* kahdeksan kertaa), eli se ei ole tämän julkaisun muutos. Tommi ei maininnut sitä.
+Kuuluuko se alun katkeiluna, ei ole kysytty.
