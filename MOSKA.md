@@ -91,7 +91,7 @@ tieto kuuluu silti vähintään kerran:
 - onnistuiko puolustus
 - mitkä kortit eivät enää ole pelissä mukana
 
-Clauden tarkennus, odottaa Tommin vahvistusta: samaan joukkoon kuuluvat sivusta lyödyt kortit,
+Tarkennus (Clauden ehdotus, Tommi vahvisti 25.10.2026): samaan joukkoon kuuluvat sivusta lyödyt kortit,
 se kuka kunkin teon teki, ja otossa puolustajan käteen menneet kortit (myös jo kaadetut
 parit, jotka puolustaja ottaa mukaan). Onnistuneen puolustuksen jälkeen pöydän kortit menevät
 poistopakkaan (Nostorutiini, kohta 3), ja ne ovat pois pelistä.

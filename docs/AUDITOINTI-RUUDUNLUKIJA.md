@@ -1660,4 +1660,10 @@ enintään kerran"*. Lokin nostot: *"Hero nosti 3 korttia: hertta neljä, viisi,
 kymmenen."*, *"Hero nosti 3 korttia: pata seitsemän, rouva, risti yhdeksän."* ja *"Hero nosti 2
 korttia: hertta viisi, risti seitsemän."*
 
-Auki: Clauden tarkennukset `MOSKA.md`:n ruudunlukijalinjaukseen odottavat Tommin vahvistusta.
+Tommi vahvisti Clauden kolme tarkennusta `MOSKA.md`:n ruudunlukijalinjaukseen 25.10.2026
+(sivusta lyödyt kortit, tekijä, otossa käteen menneet kortit).
+
+Auki: otto ja vahvistettu tarkennus. Puhuttu ottoviesti nimeää vain kaatamatta jääneet
+kortit ja kertoo määrän (*"Arto otti 9 korttia. Pöydällä oli kaatamatta: hertta kuusi, risti
+ässä, ruutu ässä."*). Kaadetut parit kuuluivat kaatohetkellä, mutta niiden siirtymistä
+puolustajan käteen viesti ei nimeä. Tommi arvioi oton oikeaksi ennen tarkennusta.
