@@ -1412,6 +1412,10 @@ käsin painomerkkien vuoksi (*Φάση πλάγιας επίθεσης*). Muiden
 ilman korttipaikkaa. Puolustusvuoron viesti luettelee jo nyt vain kaatamattomat kortit, ja
 kaadetut kuuluvat vain lukumääränä (*"kaadettu 3, kaatamatta 2"*).
 
+Avoin: Tommin monivalinnassa oli valittuna "jokin muu" tyhjällä tekstillä. Kysymys siitä,
+poistetaanko puolustusvuoron lukumäärä vai tarkoittiko Tommi jotain kolmatta viestiä, jäi
+auki. Tommi tarkentaa J-44:n kuuntelun jälkeen, jos toistoa on yhä liikaa (25.10.2026).
+
 **J-45. Nostetut kortit jäävät kuulematta kierroksen jälkeen.** Tila: korjattu dev-versiossa,
 ei kuunneltu. Viesti sanoo nostetut kortit jo, mutta J-43:n toinen siirto katkaisi sen. Mitattu
 lokista `tb-moska4.txt` klo 03.05.10: TalkBack aloitti *"Tarja nosti 2 korttia. Sari nosti 1
