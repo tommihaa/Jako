@@ -15,6 +15,12 @@ export const CHANGELOG = [
   {
     date: '25.10.2026',
     items: [
+      'Koputus: vastustajat ovat leveällä näytöllä allekkain omilla riveillään. Kolmen vastustajan kortit menivät aiemmin toistensa päälle, ja vain ensimmäisen nimi näkyi.',
+    ],
+  },
+  {
+    date: '25.10.2026',
+    items: [
       'Ruudunlukija: kun painettu nappi katoaa, kohdistus siirtyy heti pelin viestiriville eikä käy ensin sivun alussa.',
       'Moska, ruudunlukija: saman siirron kaadot kuuluvat yhtenä viestinä. Pöydän tilanne sanotaan kerran lopussa.',
       'Moska, ruudunlukija: sivustalyönnin vihje kertoo kortit, joilla voit lyödä. Ohita kertoo ohituksesi, joten vihje ei kuulu uudelleen.',
